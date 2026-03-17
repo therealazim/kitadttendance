@@ -37,7 +37,7 @@
 <div class="movov" id="movov" onclick="cSb()"></div>
 <div class="main">
   <div class="topbar">
-    <button class="mbtn" onclick="tSb()">☰</button>
+    <button class="mbtn" onclick="tSb()"><i class="lucide lucide-menu"></i></button>
     <div id="pgtitle">Dashboard</div>
     <div class="online"><div class="dot"></div><span id="updlbl">Yuklanmoqda...</span></div>
     <button class="rbtn" onclick="fetchAll()" data-i18n="btn_refresh"><i class="lucide lucide-refresh-cw"></i> Yangilash</button>
@@ -374,7 +374,7 @@
     </div>
   </div>
   <div style="margin-top:16px;display:flex;gap:10px">
-    <button class="btn bp" onclick="saveSiteConfig()">💾 Saqlash</button>
+    <button class="btn bp" onclick="saveSiteConfig()"><i class="lucide lucide-save"></i> Saqlash</button>
     <span id="site-save-msg" style="align-self:center;font-size:13px;color:var(--gr)"></span>
   </div>
 </div>
@@ -414,7 +414,7 @@
       <div class="ft"><i class="lucide lucide-calendar-range"></i> Kunlik hisobot</div>
       <div class="fg">
         <label>Sana tanlang</label>
-        <div class="calnav"><button onclick="calP()">‹</button><span id="caltitle"></span><button onclick="calN()">›</button></div>
+        <div class="calnav"><i class="lucide lucide-chevron-left"></i></button><span id="caltitle"></span><button onclick="calN()"><i class="lucide lucide-chevron-right"></i></button></div>
         <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:5px">
           <div style="text-align:center;font-size:9px;color:var(--tx3);padding:4px">Du</div><div style="text-align:center;font-size:9px;color:var(--tx3);padding:4px">Se</div><div style="text-align:center;font-size:9px;color:var(--tx3);padding:4px">Ch</div><div style="text-align:center;font-size:9px;color:var(--tx3);padding:4px">Pa</div><div style="text-align:center;font-size:9px;color:var(--tx3);padding:4px">Ju</div><div style="text-align:center;font-size:9px;color:var(--tx3);padding:4px">Sh</div><div style="text-align:center;font-size:9px;color:var(--tx3);padding:4px">Ya</div>
         </div>
@@ -491,7 +491,7 @@
     <input type="hidden" id="esid"><input type="hidden" id="esgid">
     <div class="fg"><label>Ism</label><input type="text" id="esnm" class="inp"></div>
     <div class="fg"><label>Telefon</label><input type="text" id="esph" class="inp"></div>
-    <div class="mact"><button class="btn bg" onclick="cM('esm')">Bekor</button><button class="btn bp" onclick="saveS()">💾 Saqlash</button></div>
+    <div class="mact"><button class="btn bg" onclick="cM('esm')">Bekor</button><button class="btn bp" onclick="saveS()"><i class="lucide lucide-save"></i> Saqlash</button></div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -873,7 +873,7 @@ oM('cgm');
 }
 function updCgT(){const ch=[...document.querySelectorAll('#cgdays input:checked')].map(i=>i.value);document.getElementById('cgtimes').innerHTML=ch.length?ch.map(d=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px"><span style="width:90px;font-size:11px;color:var(--tx)">${d}</span><input type="text" class="inp" id="ct${d.replace(/\s/g,'')}" placeholder="14:00" style="flex:1;max-width:100px"></div>`).join(''):'';}
 function addCgS(){_cgS.push({name:'',phone:''});rCgS();}
-function rCgS(){document.getElementById('cgstds').innerHTML=_cgS.map((s,i)=>`<div style="display:flex;gap:6px;margin-bottom:6px"><input type="text" class="inp" value="${s.name}" placeholder="Ism" oninput="_cgS[${i}].name=this.value" style="flex:2"><input type="text" class="inp" value="${s.phone}" placeholder="Telefon" oninput="_cgS[${i}].phone=this.value" style="flex:2"><button class="btn bd" style="padding:4px 9px" onclick="_cgS.splice(${i},1);rCgS()">✕</button></div>`).join('');}
+function rCgS(){document.getElementById('cgstds').innerHTML=_cgS.map((s,i)=>`<div style="display:flex;gap:6px;margin-bottom:6px"><input type="text" class="inp" value="${s.name}" placeholder="Ism" oninput="_cgS[${i}].name=this.value" style="flex:2"><input type="text" class="inp" value="${s.phone}" placeholder="Telefon" oninput="_cgS[${i}].phone=this.value" style="flex:2"><button class="btn bd" style="padding:4px 9px" onclick="_cgS.splice(${i},1);rCgS()"><i class="lucide lucide-x"></i></button></div>`).join('');}
 async function createG(){
 const nm=document.getElementById('cgnm').value.trim();const tp=document.getElementById('cgtp').value;const br=document.getElementById('cgbr').value;const tid=parseInt(document.getElementById('cgte').value);
 const ch=[...document.querySelectorAll('#cgdays input:checked')].map(i=>i.value);
@@ -940,7 +940,7 @@ if(bestD>2) badge=`<span class="b" style="background:rgba(251,191,36,.15);color:
 else badge=`<span class="b bok"><i class="lucide lucide-check"></i> Keldi${bestD<-2?' ('+Math.abs(bestD)+' daq erta)':''}</span>`;
 }
 } else {
-badge=`<span class="b bno" style="font-size:10px">❓ Darsiz</span>`;
+badge=`<span class="b bno" style="font-size:10px"><i class="lucide lucide-help-circle"></i> Darsiz</span>`;
 }
 const atAv=u?.photo_url?`<img src="${u.photo_url}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1.5px solid ${c}44;flex-shrink:0" onerror="this.style.display='none'">`:`<div class="avatar" style="background:${c}22;color:${c};border:1.5px solid ${c}44;font-size:10px">${ini(u?.name||'?')}</div>`;return`<tr><td><div style="display:flex;align-items:center;gap:7px">${atAv}${u?.name||a.user_id}</div></td><td><span class="b ${sb}">${u?.specialty||'—'}</span></td><td style="font-size:11px">${a.branch}</td><td style="font-weight:700;color:var(--ac)">${arrTime}</td><td>${badge}</td></tr>`;
 }),
@@ -957,13 +957,13 @@ document.getElementById('atttt').textContent='Davomat — '+dateStr;
 async function loadAtt(){const d=document.getElementById('attd').value;const r=await fetch(`/admin/api/attendance?date=${d}`).then(x=>x.json()).catch(()=>null);if(r)rAtt(r.attendance||[]);}
 function rSaBrs(){
 const brs=D?.branches||[];
-document.getElementById('sabrlist').innerHTML=brs.map((b,i)=>`<div onclick="saBr(${i},'${b.name.replace(/'/g,"\\'")}' )" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:border-color .1s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--bd)'"><span style="font-size:24px"><i class="lucide lucide-building-2"></i></span><div><div style="font-weight:700;font-size:13px">${b.name}</div><div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:3px">${GROUPS.filter(g=>g.branch===b.name).map(g=>{const cls=g.lesson_type==='Koreys tili'?'bkr':g.lesson_type==='IT'?'bit':'bno';return`<span class="b ${cls}" style="font-size:9px">${g.group_name}</span>`;}).join('')||'<span style="font-size:10px;color:var(--tx3)">Guruh yo\'q</span>'}</div></div><span style="margin-left:auto;color:var(--ac);font-size:16px">›</span></div>`).join('')||`<div class="empty"><div class="ei"><i class="lucide lucide-building-2"></i></div>Filiallar yo\'q</div>`;
+document.getElementById('sabrlist').innerHTML=brs.map((b,i)=>`<div onclick="saBr(${i},'${b.name.replace(/'/g,"\\'")}' )" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:border-color .1s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--bd)'"><span style="font-size:24px"><i class="lucide lucide-building-2"></i></span><div><div style="font-weight:700;font-size:13px">${b.name}</div><div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:3px">${GROUPS.filter(g=>g.branch===b.name).map(g=>{const cls=g.lesson_type==='Koreys tili'?'bkr':g.lesson_type==='IT'?'bit':'bno';return`<span class="b ${cls}" style="font-size:9px">${g.group_name}</span>`;}).join('')||'<span style="font-size:10px;color:var(--tx3)">Guruh yo\'q</span>'}</div></div><span style="margin-left:auto;color:var(--ac);font-size:16px"><i class="lucide lucide-chevron-right"></i></span></div>`).join('')||`<div class="empty"><div class="ei"><i class="lucide lucide-building-2"></i></div>Filiallar yo\'q</div>`;
 }
 async function saBr(idx,brNm){
 _saBr=brNm;document.getElementById('sabranches').style.display='none';document.getElementById('sagroups').style.display='block';document.getElementById('saatt').style.display='none';document.getElementById('sabrname').innerHTML='<i class="lucide lucide-building-2"></i> '+brNm;
 const r=await fetch(`/admin/api/branch/groups?branch=${encodeURIComponent(brNm)}`).then(x=>x.json()).catch(()=>null);
 const gs=r?.groups||[];
-document.getElementById('sagrplist').innerHTML=gs.length?gs.map(g=>`<div onclick="saGrp(${g.id},'${g.group_name.replace(/'/g,"\\'")}' )" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:13px;cursor:pointer;display:flex;align-items:center;gap:10px;margin-bottom:8px;transition:border-color .1s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--bd)'"><span class="b ${SBG[g.lesson_type]||'bno'}">${g.lesson_type}</span><div><div style="font-weight:700">${g.group_name}</div><div style="font-size:10px;color:var(--tx2)"><i class="lucide lucide-user"></i> ${g.teacher_name} — ${Object.entries(g.day_times||{}).slice(0,2).map(([d,t])=>d.slice(0,2)+' '+t).join(', ')}</div></div><span style="margin-left:auto;color:var(--ac);font-size:16px">›</span></div>`).join(''):`<div class="empty"><div class="ei"><i class="lucide lucide-book"></i></div>Bu filialda guruh yo\'q</div>`;
+document.getElementById('sagrplist').innerHTML=gs.length?gs.map(g=>`<div onclick="saGrp(${g.id},'${g.group_name.replace(/'/g,"\\'")}' )" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:13px;cursor:pointer;display:flex;align-items:center;gap:10px;margin-bottom:8px;transition:border-color .1s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--bd)'"><span class="b ${SBG[g.lesson_type]||'bno'}">${g.lesson_type}</span><div><div style="font-weight:700">${g.group_name}</div><div style="font-size:10px;color:var(--tx2)"><i class="lucide lucide-user"></i> ${g.teacher_name} — ${Object.entries(g.day_times||{}).slice(0,2).map(([d,t])=>d.slice(0,2)+' '+t).join(', ')}</div></div><span style="margin-left:auto;color:var(--ac);font-size:16px"><i class="lucide lucide-chevron-right"></i></span></div>`).join(''):`<div class="empty"><div class="ei"><i class="lucide lucide-book"></i></div>Bu filialda guruh yo\'q</div>`;
 }
 function saBack(){document.getElementById('sabranches').style.display='block';document.getElementById('sagroups').style.display='none';}
 async function saGrp(gid,gnm){_saGid=gid;document.getElementById('sagroups').style.display='none';document.getElementById('saatt').style.display='block';document.getElementById('sagrpname').innerHTML='<i class="lucide lucide-book"></i> '+gnm;document.getElementById('saday').value='';await loadSaAtt();}
@@ -1008,7 +1008,7 @@ let _payBr=null, _payGid=null, _payGnm=null;
 function renderPayBranches(){
 const brs = D?.branches || [];
 document.getElementById('pay-brlist').innerHTML = brs.length
-? brs.map((b,i)=>`<div onclick="paySelBr('${b.name.replace(/'/g,"\\'")}' )" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:13px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:border-color .1s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--bd)'"><span style="font-weight:600"><i class="lucide lucide-building-2"></i> ${b.name}</span><span style="color:var(--ac)">›</span></div>`).join('')
+? brs.map((b,i)=>`<div onclick="paySelBr('${b.name.replace(/'/g,"\\'")}' )" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:13px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:border-color .1s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--bd)'"><span style="font-weight:600"><i class="lucide lucide-building-2"></i> ${b.name}</span><span style="color:var(--ac)"><i class="lucide lucide-chevron-right"></i></span></div>`).join('')
 : '<div class="empty"><div class="ei"><i class="lucide lucide-building-2"></i></div>Filiallar yo\'q</div>';
 }
 function paySelBr(brNm){
@@ -1021,7 +1021,7 @@ document.getElementById('pay-grplist').innerHTML=gs.length
 ? gs.map(g=>`<div onclick="paySelGrp(${g.id},'${g.group_name.replace(/'/g,"\\'")}' )" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:13px;cursor:pointer;display:flex;align-items:center;gap:10px;margin-bottom:8px;transition:border-color .1s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--bd)'">
 <span class="b ${SBG[g.lesson_type]||'bno'}">${g.lesson_type}</span>
 <div style="flex:1"><div style="font-weight:700">${g.group_name}</div><div style="font-size:10px;color:var(--tx2)"><i class="lucide lucide-user"></i> ${g.teacher_name||'—'} · <i class="lucide lucide-graduation-cap"></i> ${g.student_count||0} ta</div></div>
-<span style="color:var(--ac)">›</span></div>`).join('')
+<span style="color:var(--ac)"><i class="lucide lucide-chevron-right"></i></span></div>`).join('')
 : '<div class="empty"><div class="ei"><i class="lucide lucide-book"></i></div>Bu filialda guruh yo\'q</div>';
 }
 function payBack(){
@@ -1070,10 +1070,10 @@ document.getElementById('pay-progress').innerHTML=`
 </div>
 </div>
 ${r.school_amount>0?`<div style="background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.3);border-radius:10px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center">
-<span style="font-size:12px;font-weight:700">🏫 Maktab to'lovi</span>
+<span style="font-size:12px;font-weight:700"><i class="lucide lucide-school"></i> Maktab to'lovi</span>
 <span style="font-size:14px;font-weight:800;color:#818cf8">${fmt(r.school_amount)} so'm</span>
 </div>`:''}
-<button class="btn" style="width:100%;margin-top:4px;background:rgba(99,102,241,.15);color:#818cf8;border:1px dashed rgba(99,102,241,.4);font-size:12px" onclick="openSchoolPay()">🏫 ${r.school_amount>0?'Maktab to\'lovini tahrirlash':'+ Maktab to\'lovi qo\'shish'}</button>`;
+<button class="btn" style="width:100%;margin-top:4px;background:rgba(99,102,241,.15);color:#818cf8;border:1px dashed rgba(99,102,241,.4);font-size:12px" onclick="openSchoolPay()"><i class="lucide lucide-school"></i> ${r.school_amount>0?'Maktab to\'lovini tahrirlash':'+ Maktab to\'lovi qo\'shish'}</button>`;
 window._lastPayData=r;
 document.getElementById('pay-table').innerHTML=`
 <div class="tw">
@@ -1218,7 +1218,7 @@ return`<tr style="cursor:pointer" onclick="paySelBrDirect('${g.branch.replace(/'
 <span style="font-weight:800;color:${gc}">${g.pct}%</span>
 </div>
 </td>
-<td style="font-weight:700;color:#34d399">${g.amount?fmt(g.amount)+' so\'m'+(g.school_amount?'<br><span style="font-size:9px;color:#818cf8">🏫 '+fmt(g.school_amount)+'</span>':''):'—'}</td>
+<td style="font-weight:700;color:#34d399">${g.amount?fmt(g.amount)+' so\'m'+(g.school_amount?'<br><span style="font-size:9px;color:#818cf8"><i class="lucide lucide-school"></i> '+fmt(g.school_amount)+'</span>':''):'—'}</td>
 </tr>`;
 }).join('')}
 </tbody>
@@ -1258,7 +1258,7 @@ const fileInput=document.getElementById('bcfile');
 const file=fileInput?.files?.[0];
 if(!txt&&!file){toast('<i class="lucide lucide-alert-triangle"></i> Matn yoki fayl kiriting');return;}
 if(!confirm(`${to?'"'+to+'"':'Barcha foydalanuvchilar'}ga yuborilsinmi?`))return;
-const btn=document.getElementById('bcbtn');btn.disabled=true;btn.textContent='⏳ Yuborilmoqda...';
+const btn=document.getElementById('bcbtn');btn.disabled=true;btn.textContent='<i class="lucide lucide-loader"></i> Yuborilmoqda...';
 try{
 if(file){
 const fd=new FormData();
@@ -1290,12 +1290,12 @@ grps.forEach((g,i)=>{
 h+=`<div class="salbr">
 <div class="salbrt"><i class="lucide lucide-book"></i> ${g.name} <span style="font-size:10px;color:var(--tx2);font-weight:400">· <i class="lucide lucide-building-2"></i> ${g.branch}</span></div>`;
 if(sp==='IT'){
-h+=`<div style="font-size:10px;color:var(--tx2);margin:4px 0 6px;font-weight:600">📦 250,000 UZS (8 dars/oy)</div>
+h+=`<div style="font-size:10px;color:var(--tx2);margin:4px 0 6px;font-weight:600"><i class="lucide lucide-box"></i> 250,000 UZS (8 dars/oy)</div>
 <div class="fr2">
 <div class="fg"><label>O'quvchi soni</label><input type="number" id="sb250s${i}" class="inp" placeholder="0" min="0" value="${g.student_count||0}"></div>
 <div class="fg"><label>Bu oy dars</label><input type="number" id="sb250l${i}" class="inp" placeholder="8" min="0" value="8"></div>
 </div>
-<div style="font-size:10px;color:var(--tx2);margin:8px 0 6px;font-weight:600">📦 400,000 UZS (12 dars/oy)</div>
+<div style="font-size:10px;color:var(--tx2);margin:8px 0 6px;font-weight:600"><i class="lucide lucide-box"></i> 400,000 UZS (12 dars/oy)</div>
 <div class="fr2">
 <div class="fg"><label>O'quvchi soni</label><input type="number" id="sb400s${i}" class="inp" placeholder="0" min="0" value="0"></div>
 <div class="fg"><label>Bu oy dars</label><input type="number" id="sb400l${i}" class="inp" placeholder="12" min="0" value="12"></div>
@@ -1347,7 +1347,7 @@ perc:parseInt(document.getElementById(`sbc${i}`).value||35),
 penalty:parseInt(document.getElementById(`sbn${i}`).value||0),
 bonus:parseInt(document.getElementById(`sbbonus${i}`)?.value||0)};
 });
-const btn=document.getElementById('salbtn');btn.disabled=true;btn.textContent='⏳...';
+const btn=document.getElementById('salbtn');btn.disabled=true;btn.textContent='<i class="lucide lucide-loader"></i>...';
 const r=await api('/admin/api/salary',{teacher_id:uid,specialty:sp,branches});
 btn.disabled=false;btn.textContent='<i class="lucide lucide-banknote"></i> Hisoblash';
 if(!r?.ok){toast('<i class="lucide lucide-x"></i> '+(r?.error||'Xatolik'));return;}
@@ -1355,15 +1355,15 @@ _salRes=r;
 document.getElementById('salres').innerHTML=`<div class="fb"><div class="ft"><i class="lucide lucide-banknote"></i> ${r.teacher_name}</div><span class="b ${SBG[r.specialty]||'bno'}" style="margin-bottom:12px;display:inline-block">${r.specialty}</span>${r.results.map(x=>`<div class="salbr"><div class="salbrt"><i class="lucide lucide-book"></i> ${x.group_name||x.branch} <span style="font-size:10px;color:var(--tx3)">· <i class="lucide lucide-building-2"></i> ${x.branch}</span></div><div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0"><span style="color:var(--tx2)">${sp==='IT'?`250k: ${x.s250||0}o'q×${x.l250||0}d | 400k: ${x.s400||0}o'q×${x.l400||0}d | ${x.perc}%`:'O\'quvchi: '+(x.students||0)+' ta · Imtixon: '+x.perc+'%'}</span><span style="color:var(--ac);font-weight:700">${fmt(x.gross)} so\'m</span>${x.bonus?`<div style="font-size:10px;color:#34d399;padding:2px 0">+ <i class="lucide lucide-gift"></i> Bonus: ${fmt(x.bonus)} so'm</div>`:''}</div></div>`).join('')}<div class="resbox"><div style="font-size:10px;color:var(--tx2)">Jami (soliqsiz)</div><div style="font-size:22px;font-weight:800;color:var(--ac)">${fmt(r.total_gross)} so\'m</div><div style="font-size:11px;color:var(--tx2);margin:5px 0">Soliq (7.5%): ${fmt(r.tax)} so\'m</div><div style="font-size:28px;font-weight:800;color:#34d399">${fmt(r.net)} so\'m</div><div style="font-size:11px;color:#34d399"><i class="lucide lucide-dollar-sign"></i> Qo'lga tegadi</div></div><button class="btn bpu bfull" style="margin-top:12px" onclick="dlSalE()"><i class="lucide lucide-download"></i> Excel yuklab olish</button></div>`;
 }
 async function dlSalE(){
-if(!_salRes){toast('<i class="lucide lucide-alert-triangle"></i> Avval hisoblang');return;}toast('⏳ Excel tayyorlanmoqda...',5000);
+if(!_salRes){toast('<i class="lucide lucide-alert-triangle"></i> Avval hisoblang');return;}toast('<i class="lucide lucide-loader"></i> Excel tayyorlanmoqda...',5000);
 try{const r=await fetch('/admin/api/salary/excel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(_salRes)});if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`Oylik_${_salRes.teacher_name}.xlsx`;a.click();URL.revokeObjectURL(url);toast('<i class="lucide lucide-check"></i> Excel yuklab olindi');}
 catch(e){toast('<i class="lucide lucide-x"></i> '+e.message);}
 }
 function rBrs(){const br=D.branches||[];document.getElementById('brcnt').textContent=br.length+' ta';document.getElementById('brlist').innerHTML=br.length?br.map((b,i)=>`<div class="brit"><div class="brnum">${i+1}</div><div style="flex:1"><div style="font-size:12px;font-weight:600">${b.name}</div><div style="font-size:10px;color:var(--tx2)"><i class="lucide lucide-map-pin"></i> ${b.lat?.toFixed(4)||'?'}, ${b.lon?.toFixed(4)||'?'}</div></div><div style="display:flex;gap:4px"><a href="https://yandex.com/maps/?pt=${b.lon},${b.lat}&z=17" target="_blank" class="btn bg" style="font-size:10px;padding:3px 8px"><i class="lucide lucide-map"></i></a><button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="delBr(${i})"><i class="lucide lucide-trash-2"></i></button></div></div>`).join(''):'<div class="empty"><div class="ei"><i class="lucide lucide-building-2"></i></div>Filiallar yo\u2019q</div>';}
 async function addBr(){const nm=document.getElementById('brnm').value.trim();const lt=parseFloat(document.getElementById('brlt').value);const ln=parseFloat(document.getElementById('brln').value);if(!nm||isNaN(lt)||isNaN(ln)){toast("<i class="lucide lucide-alert-triangle"></i> Barcha maydonlarni to'ldiring!");return;}const r=await api('/admin/api/branch/add',{name:nm,lat:lt,lon:ln});if(r?.ok){toast('<i class="lucide lucide-check"></i> '+tr("Filial qo'shildi"));['brnm','brlt','brln'].forEach(id=>document.getElementById(id).value='');await fetchAll();}else toast('<i class="lucide lucide-x"></i> Xatolik');}
 async function delBr(idx){const b=D.branches[idx];if(!confirm(`"${b?.name||idx}" o'chirilsinmi?`))return;const r=await api('/admin/api/branch/delete',{index:idx});if(r?.ok){toast('<i class="lucide lucide-check"></i> '+tr("Filial o'chirildi"));await fetchAll();}else toast('<i class="lucide lucide-x"></i> Xatolik');}
-async function dlMonthly(){const m=document.getElementById('rpmonth').value;if(!m){toast('<i class="lucide lucide-alert-triangle"></i> Oy tanlang');return;}const[y,mo]=m.split('-');toast('⏳ Excel tayyorlanmoqda...',7000);try{const r=await fetch(`/admin/api/report/monthly?year=${y}&month=${mo}`);if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`Davomat_${y}_${mo}.xlsx`;a.click();URL.revokeObjectURL(url);toast('<i class="lucide lucide-check"></i> Yuklab olindi');}catch(e){toast('<i class="lucide lucide-x"></i> '+e.message);}}
-async function dlSchedPdf(){toast('⏳ PDF tayyorlanmoqda...',7000);try{const r=await fetch('/admin/api/report/schedule_pdf');if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='jadval.pdf';a.click();URL.revokeObjectURL(url);toast('<i class="lucide lucide-check"></i> PDF yuklab olindi');}catch(e){toast('<i class="lucide lucide-x"></i> '+e.message);}}
+async function dlMonthly(){const m=document.getElementById('rpmonth').value;if(!m){toast('<i class="lucide lucide-alert-triangle"></i> Oy tanlang');return;}const[y,mo]=m.split('-');toast('<i class="lucide lucide-loader"></i> Excel tayyorlanmoqda...',7000);try{const r=await fetch(`/admin/api/report/monthly?year=${y}&month=${mo}`);if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`Davomat_${y}_${mo}.xlsx`;a.click();URL.revokeObjectURL(url);toast('<i class="lucide lucide-check"></i> Yuklab olindi');}catch(e){toast('<i class="lucide lucide-x"></i> '+e.message);}}
+async function dlSchedPdf(){toast('<i class="lucide lucide-loader"></i> PDF tayyorlanmoqda...',7000);try{const r=await fetch('/admin/api/report/schedule_pdf');if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='jadval.pdf';a.click();URL.revokeObjectURL(url);toast('<i class="lucide lucide-check"></i> PDF yuklab olindi');}catch(e){toast('<i class="lucide lucide-x"></i> '+e.message);}}
 function rCal(){document.getElementById('caltitle').textContent=MNS[_calM]+' '+_calY;const fd=new Date(_calY,_calM,1).getDay();const off=(fd+6)%7;const dim=new Date(_calY,_calM+1,0).getDate();const tn=new Date();const ts=`${tn.getFullYear()}-${String(tn.getMonth()+1).padStart(2,'0')}-${String(tn.getDate()).padStart(2,'0')}`;let h='';for(let i=0;i<off;i++)h+=`<div class="calday ot"></div>`;for(let d=1;d<=dim;d++){const ds=`${_calY}-${String(_calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;h+=`<div class="calday ${ds===ts?'tod':''} ${ds===_calSel?'sel':''}" onclick="calSel('${ds}')">${d}</div>`;}document.getElementById('caldays').innerHTML=h;}
 function calP(){_calM--;if(_calM<0){_calM=11;_calY--;}rCal();}
 function calN(){_calM++;if(_calM>11){_calM=0;_calY++;}rCal();}
@@ -1388,8 +1388,8 @@ if(!att.length&&!abs.length) html='<div class="empty"><div class="ei"><i class="
 document.getElementById('pdfprev').innerHTML=html;
 }
 async function dlDailyPdf(){
-if(!_calSel){toast('<i class="lucide lucide-alert-triangle"></i> Sana tanlang');return;}toast('⏳ PDF tayyorlanmoqda...',7000);
-const btn=document.getElementById('pdfbtn');btn.disabled=true;btn.textContent='⏳ Tayyorlanmoqda...';
+if(!_calSel){toast('<i class="lucide lucide-alert-triangle"></i> Sana tanlang');return;}toast('<i class="lucide lucide-loader"></i> PDF tayyorlanmoqda...',7000);
+const btn=document.getElementById('pdfbtn');btn.disabled=true;btn.textContent='<i class="lucide lucide-loader"></i> Tayyorlanmoqda...';
 try{const r=await fetch(`/admin/api/report/daily_pdf?date=${_calSel}`);btn.disabled=false;btn.textContent='<i class="lucide lucide-file-text"></i> PDF ko\'rish / yuklash';if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);document.getElementById('pdfprev').innerHTML=`<div style="display:flex;gap:7px;margin-top:8px"><button class="btn bpu" onclick="window.open('${url}','_blank')" style="flex:1;justify-content:center"><i class="lucide lucide-eye"></i> Ko'rish</button><button class="btn bp" onclick="dlBlob('${url}','davomat_${_calSel}.pdf')" style="flex:1;justify-content:center"><i class="lucide lucide-download"></i> Yuklash</button></div>`;toast('<i class="lucide lucide-check"></i> PDF tayyor');}
 catch(e){btn.disabled=false;btn.textContent='<i class="lucide lucide-file-text"></i> PDF ko\'rish / yuklash';toast('<i class="lucide lucide-x"></i> '+e.message);}
 }
@@ -1537,11 +1537,11 @@ setTimeout(()=>msg.textContent='',3000);
 <!-- TO'LOV TAHRIRLASH MODAL -->
 <div id="school-pay-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center">
   <div style="background:var(--card2);border:1px solid var(--bd);border-radius:16px;padding:24px;width:100%;max-width:340px;margin:16px">
-    <div style="font-size:16px;font-weight:800;margin-bottom:16px">🏫 Maktab to'lovi — <span id="sp-month"></span></div>
+    <div style="font-size:16px;font-weight:800;margin-bottom:16px"><i class="lucide lucide-school"></i> Maktab to'lovi — <span id="sp-month"></span></div>
     <div class="fg"><label>Summa (so'm)</label><input type="number" id="sp-amount" class="inp" placeholder="10800000" min="0"></div>
     <div style="display:flex;gap:8px;margin-top:14px">
       <button class="btn bg" style="flex:1" onclick="document.getElementById('school-pay-modal').style.display='none'">Bekor</button>
-      <button class="btn bp" style="flex:2" onclick="saveSchoolPay()">💾 Saqlash</button>
+      <button class="btn bp" style="flex:2" onclick="saveSchoolPay()"><i class="lucide lucide-save"></i> Saqlash</button>
     </div>
   </div>
 </div>
@@ -1549,7 +1549,7 @@ setTimeout(()=>msg.textContent='',3000);
   <div style="background:var(--card);border-radius:16px 16px 0 0;padding:20px 18px 32px;width:100%;max-width:500px">
     <div style="display:flex;align-items:center;margin-bottom:16px">
       <b style="flex:1;font-size:14px"><i class="lucide lucide-banknote"></i> <span id="ep-modal-title"></span></b>
-      <button onclick="document.getElementById('ep-modal').style.display='none'" style="background:var(--bd2);border:none;border-radius:8px;padding:5px 12px;color:var(--tx);cursor:pointer;font-family:inherit">✕</button>
+      <button onclick="document.getElementById('ep-modal').style.display='none'" style="background:var(--bd2);border:none;border-radius:8px;padding:5px 12px;color:var(--tx);cursor:pointer;font-family:inherit"><i class="lucide lucide-x"></i></button>
     </div>
     <input type="hidden" id="ep-gid"><input type="hidden" id="ep-name-h">
     <input type="hidden" id="ep-phone-h"><input type="hidden" id="ep-month-h">
@@ -1559,7 +1559,7 @@ setTimeout(()=>msg.textContent='',3000);
     </div>
     <div class="fg"><label>Summa (so'm)</label><input type="number" id="ep-amount" class="inp" placeholder="0"></div>
     <div class="fg"><label>Izoh</label><input type="text" id="ep-note" class="inp" placeholder="Ixtiyoriy..."></div>
-    <button class="btn bp bfull" onclick="savePayEdit()" style="margin-top:8px">💾 Saqlash</button>
+    <button class="btn bp bfull" onclick="savePayEdit()" style="margin-top:8px"><i class="lucide lucide-save"></i> Saqlash</button>
   </div>
 </div>
 <script>
