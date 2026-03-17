@@ -693,12 +693,39 @@ function toggleFaq(btn){
   item.classList.toggle('open',!isOpen);
 }
 
-// Scroll reveal
+// Enhanced Scroll Reveal Animations
 const obs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}});
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.style.opacity='1';
+      e.target.style.transform='translateY(0)';
+      // Add stagger effect for children
+      const children=e.target.querySelectorAll('.course-card,.news-card,.gallery-item,.contact-item');
+      children.forEach((child,i)=>{
+        child.style.opacity='0';
+        child.style.transform='translateY(30px)';
+        child.style.transition='all 0.5s ease '+(i*0.1)+'s';
+        setTimeout(()=>{
+          child.style.opacity='1';
+          child.style.transform='translateY(0)';
+        },50);
+      });
+    }
+  });
 },{threshold:0.1});
+
+// Apply to sections
+document.querySelectorAll('section,.stats').forEach(el=>{
+  el.style.opacity='0';
+  el.style.transform='translateY(40px)';
+  el.style.transition='all 0.8s ease';
+  obs.observe(el);
+});
+
+// Also observe individual items
 document.querySelectorAll('.course-card,.gallery-item,.contact-item,.news-card,.faq-item').forEach(el=>{
-  el.style.opacity='0';el.style.transform='translateY(24px)';
+  el.style.opacity='0';
+  el.style.transform='translateY(24px)';
   el.style.transition='opacity .6s ease,transform .6s ease';
   obs.observe(el);
 });
