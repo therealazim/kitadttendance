@@ -746,7 +746,7 @@ sched:()=>t('title_sched'), stats:()=>t('title_stats'), broadcast:()=>t('title_b
 salary:()=>t('title_sal'), branches:()=>t('title_br'), reports:()=>t('title_rep'),
 applies:'<i class="fas fa-envelope"></i> Arizalar', news_admin:'<i class="fas fa-newspaper"></i> Yangiliklar', site:'<i class="fas fa-globe"></i> Sayt sozlamalari'
 };
-function gp(n,el){document.querySelectorAll('.sbi').forEach(b=>b.classList.remove('on'));document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));el.classList.add('on');document.getElementById('pg-'+n).classList.add('on');window._curPage=n;const tf=TITLES[n];document.getElementById('pgtitle').textContent=(typeof tf==='function'?tf():tf)||n;if(n==='stats')ldSt();if(n==='sched')ldSched();if(n==='payments')renderPaymentsPage();if(n==='applies')loadApps();if(n==='news_admin')loadNewsAdmin();if(n==='site')loadSiteConfig();cSb();}
+function gp(n,el){document.querySelectorAll('.sbi').forEach(b=>b.classList.remove('on'));document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));el.classList.add('on');document.getElementById('pg-'+n).classList.add('on');window._curPage=n;const tf=TITLES[n];document.getElementById('pgtitle').innerHTML=(typeof tf==='function'?tf():tf)||n;if(n==='stats')ldSt();if(n==='sched')ldSched();if(n==='payments')renderPaymentsPage();if(n==='applies')loadApps();if(n==='news_admin')loadNewsAdmin();if(n==='site')loadSiteConfig();cSb();}
 function toast(msg,dur=3200){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
 function oM(id){document.getElementById(id).classList.add('open');}
 function cM(id){document.getElementById(id).classList.remove('open');}
@@ -760,19 +760,19 @@ location.reload();
 }
 async function fetchAll(){
 try{
-document.getElementById('updlbl').textContent=t('txt_loading');
+document.getElementById('updlbl').innerHTML=t('txt_loading');
 const r=await fetch('/admin/api/data');
-if(r.status===401){document.getElementById('updlbl').textContent='<i class="fas fa-times"></i> Server xato 401';return;}
+if(r.status===401){document.getElementById('updlbl').innerHTML='<i class="fas fa-times"></i> Server xato 401';return;}
 if(!r.ok)throw new Error('HTTP '+r.status);
 const txt=await r.text();
 try{D=JSON.parse(txt);}catch(pe){console.error('JSON parse xato:',txt.slice(0,200));throw new Error('JSON parse xato');}
 USERS=D.users||[];GROUPS=D.groups||[];window._BRANCHES=(D.branches||[]).map(b=>b.name||b).filter(Boolean);
-try{rAll();}catch(re){console.error('rAll xato:',re);document.getElementById('updlbl').textContent='<i class="fas fa-times"></i> Render xato: '+re.message;return;}
+try{rAll();}catch(re){console.error('rAll xato:',re);document.getElementById('updlbl').innerHTML='<i class="fas fa-times"></i> Render xato: '+re.message;return;}
 applyLang();
-document.getElementById('updlbl').textContent=t('txt_updated')+': '+new Date().toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit'});
+document.getElementById('updlbl').innerHTML=t('txt_updated')+': '+new Date().toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit'});
 }catch(e){
 console.error('fetchAll xato:',e);
-document.getElementById('updlbl').textContent='<i class="fas fa-times"></i> Ulanmadi: '+e.message;
+document.getElementById('updlbl').innerHTML='<i class="fas fa-times"></i> Ulanmadi: '+e.message;
 toast('<i class="fas fa-times"></i> '+e.message);
 }
 }
@@ -1320,16 +1320,16 @@ fd.append('specialty',to);
 fd.append('file',file);
 const resp=await fetch(_ap('/admin/api/broadcast'),{method:'POST',headers:_ah(),body:fd});
 const r=await resp.json().catch(()=>null);
-btn.disabled=false;btn.textContent='<i class="fas fa-paper-plane"></i> Yuborish';
+btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> Yuborish';
 if(r?.ok){toast(`<i class="fas fa-check"></i> ${r.sent} ta yuborildi`);document.getElementById('bctxt').value='';fileInput.value='';document.getElementById('bcprev').style.display='none';await fetchAll();}
 else toast('<i class="fas fa-times"></i> '+(r?.error||'Xatolik'));
 }else{
 const r=await api('/admin/api/broadcast',{text:txt,specialty:to});
-btn.disabled=false;btn.textContent='<i class="fas fa-paper-plane"></i> Yuborish';
+btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> Yuborish';
 if(r?.ok){toast(`<i class="fas fa-check"></i> ${r.sent} ta yuborildi, ${r.failed||0} ta xato`);document.getElementById('bctxt').value='';document.getElementById('bcprev').style.display='none';await fetchAll();}
 else toast('<i class="fas fa-times"></i> Xatolik');
 }
-}catch(e){btn.disabled=false;btn.textContent='<i class="fas fa-paper-plane"></i> Yuborish';toast('<i class="fas fa-times"></i> '+e.message);}
+}catch(e){btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> Yuborish';toast('<i class="fas fa-times"></i> '+e.message);}
 }
 function rBcH(){const h=D.broadcast_history||[];document.getElementById('bchist').innerHTML=h.length?h.slice(0,12).map(x=>`<div class="bcit"><div class="bcmt">${x.date||''} · ${x.specialty||'Barcha'}</div><div style="font-size:12px;margin-bottom:6px">${(x.text||'').slice(0,100)}${(x.text?.length||0)>100?'...':''}</div><div style="display:flex;gap:5px"><span class="b bok"><i class="fas fa-check"></i> ${x.sent_count}</span>${x.failed_count?`<span class="b bbl"><i class="fas fa-times"></i> ${x.failed_count}</span>`:''}</div></div>`).join(''):`<div class="empty"><div class="ei"><i class="fas fa-megaphone"></i></div>Tarix yo\'q</div>`;}
 async function loadSalT(){const sp=document.getElementById('salsp').value;if(!sp)return;const data=await fetch(`/admin/api/teachers?specialty=${encodeURIComponent(sp)}`).then(r=>r.json()).catch(()=>[]);SALS=data||[];const s=document.getElementById('salte');s.innerHTML="<option value=''>O'qituvchi tanlang</option>"+SALS.map(t=>`<option value="${t.user_id}">${t.name}</option>`).join('');document.getElementById('salbrs').innerHTML='';document.getElementById('salbtn').style.display='none';document.getElementById('salres').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-money-bill-wave"></i></div>O\'qituvchi tanlang</div>';}
@@ -1400,9 +1400,9 @@ perc:parseInt(document.getElementById(`sbc${i}`).value||35),
 penalty:parseInt(document.getElementById(`sbn${i}`).value||0),
 bonus:parseInt(document.getElementById(`sbbonus${i}`)?.value||0)};
 });
-const btn=document.getElementById('salbtn');btn.disabled=true;btn.textContent='⏳...';
+const btn=document.getElementById('salbtn');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i>...';
 const r=await api('/admin/api/salary',{teacher_id:uid,specialty:sp,branches});
-btn.disabled=false;btn.textContent='<i class="fas fa-money-bill-wave"></i> Hisoblash';
+btn.disabled=false;btn.innerHTML='<i class="fas fa-money-bill-wave"></i> Hisoblash';
 if(!r?.ok){toast('<i class="fas fa-times"></i> '+(r?.error||'Xatolik'));return;}
 _salRes=r;
 document.getElementById('salres').innerHTML=`<div class="fb"><div class="ft"><i class="fas fa-money-bill-wave"></i> ${r.teacher_name}</div><span class="b ${SBG[r.specialty]||'bno'}" style="margin-bottom:12px;display:inline-block">${r.specialty}</span>${r.results.map(x=>`<div class="salbr"><div class="salbrt"><i class="fas fa-book"></i> ${x.group_name||x.branch} <span style="font-size:10px;color:var(--tx3)">· <i class="fas fa-building"></i> ${x.branch}</span></div><div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0"><span style="color:var(--tx2)">${sp==='IT'?`250k: ${x.s250||0}o'q×${x.l250||0}d | 400k: ${x.s400||0}o'q×${x.l400||0}d | ${x.perc}%`:'O\'quvchi: '+(x.students||0)+' ta · Imtixon: '+x.perc+'%'}</span><span style="color:var(--ac);font-weight:700">${fmt(x.gross)} so\'m</span>${x.bonus?`<div style="font-size:10px;color:#34d399;padding:2px 0">+ <i class="fas fa-gift"></i> Bonus: ${fmt(x.bonus)} so'm</div>`:''}</div></div>`).join('')}<div class="resbox"><div style="font-size:10px;color:var(--tx2)">Jami (soliqsiz)</div><div style="font-size:22px;font-weight:800;color:var(--ac)">${fmt(r.total_gross)} so\'m</div><div style="font-size:11px;color:var(--tx2);margin:5px 0">Soliq (7.5%): ${fmt(r.tax)} so\'m</div><div style="font-size:28px;font-weight:800;color:#34d399">${fmt(r.net)} so\'m</div><div style="font-size:11px;color:#34d399"><i class="fas fa-money-bill-alt"></i> Qo'lga tegadi</div></div><button class="btn bpu bfull" style="margin-top:12px" onclick="dlSalE()"><i class="fas fa-download"></i> Excel yuklab olish</button></div>`;
@@ -1412,15 +1412,15 @@ if(!_salRes){toast('<i class="fas fa-exclamation-triangle"></i> Avval hisoblang'
 try{const r=await fetch('/admin/api/salary/excel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(_salRes)});if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`Oylik_${_salRes.teacher_name}.xlsx`;a.click();URL.revokeObjectURL(url);toast('<i class="fas fa-check"></i> Excel yuklab olindi');}
 catch(e){toast('<i class="fas fa-times"></i> '+e.message);}
 }
-function rBrs(){const br=D.branches||[];document.getElementById('brcnt').textContent=br.length+' ta';document.getElementById('brlist').innerHTML=br.length?br.map((b,i)=>`<div class="brit"><div class="brnum">${i+1}</div><div style="flex:1"><div style="font-size:12px;font-weight:600">${b.name}</div><div style="font-size:10px;color:var(--tx2)"><i class="fas fa-map-marker-alt"></i> ${b.lat?.toFixed(4)||'?'}, ${b.lon?.toFixed(4)||'?'}</div></div><div style="display:flex;gap:4px"><a href="https://yandex.com/maps/?pt=${b.lon},${b.lat}&z=17" target="_blank" class="btn bg" style="font-size:10px;padding:3px 8px"><i class="fas fa-map"></i></a><button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="delBr(${i})"><i class="fas fa-trash"></i></button></div></div>`).join(''):'<div class="empty"><div class="ei"><i class="fas fa-building"></i></div>Filiallar yo\u2019q</div>';}
+function rBrs(){const br=D.branches||[];document.getElementById('brcnt').innerHTML=br.length+' ta';document.getElementById('brlist').innerHTML=br.length?br.map((b,i)=>`<div class="brit"><div class="brnum">${i+1}</div><div style="flex:1"><div style="font-size:12px;font-weight:600">${b.name}</div><div style="font-size:10px;color:var(--tx2)"><i class="fas fa-map-marker-alt"></i> ${b.lat?.toFixed(4)||'?'}, ${b.lon?.toFixed(4)||'?'}</div></div><div style="display:flex;gap:4px"><a href="https://yandex.com/maps/?pt=${b.lon},${b.lat}&z=17" target="_blank" class="btn bg" style="font-size:10px;padding:3px 8px"><i class="fas fa-map"></i></a><button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="delBr(${i})"><i class="fas fa-trash"></i></button></div></div>`).join(''):'<div class="empty"><div class="ei"><i class="fas fa-building"></i></div>Filiallar yo\'q</div>';}
 async function addBr(){const nm=document.getElementById('brnm').value.trim();const lt=parseFloat(document.getElementById('brlt').value);const ln=parseFloat(document.getElementById('brln').value);if(!nm||isNaN(lt)||isNaN(ln)){toast("<i class='fas fa-exclamation-triangle'></i> Barcha maydonlarni to'ldiring!");return;}const r=await api('/admin/api/branch/add',{name:nm,lat:lt,lon:ln});if(r?.ok){toast('<i class="fas fa-check"></i> '+tr("Filial qo'shildi"));['brnm','brlt','brln'].forEach(id=>document.getElementById(id).value='');await fetchAll();}else toast('<i class="fas fa-times"></i> Xatolik');}
 async function delBr(idx){const b=D.branches[idx];if(!confirm(`"${b?.name||idx}" o'chirilsinmi?`))return;const r=await api('/admin/api/branch/delete',{index:idx});if(r?.ok){toast('<i class="fas fa-check"></i> '+tr("Filial o'chirildi"));await fetchAll();}else toast('<i class="fas fa-times"></i> Xatolik');}
 async function dlMonthly(){const m=document.getElementById('rpmonth').value;if(!m){toast('<i class="fas fa-exclamation-triangle"></i> Oy tanlang');return;}const[y,mo]=m.split('-');toast('⏳ Excel tayyorlanmoqda...',7000);try{const r=await fetch(`/admin/api/report/monthly?year=${y}&month=${mo}`);if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`Davomat_${y}_${mo}.xlsx`;a.click();URL.revokeObjectURL(url);toast('<i class="fas fa-check"></i> Yuklab olindi');}catch(e){toast('<i class="fas fa-times"></i> '+e.message);}}
-async function dlSchedPdf(){toast('⏳ PDF tayyorlanmoqda...',7000);try{const r=await fetch('/admin/api/report/schedule_pdf');if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='jadval.pdf';a.click();URL.revokeObjectURL(url);toast('<i class="fas fa-check"></i> PDF yuklab olindi');}catch(e){toast('<i class="fas fa-times"></i> '+e.message);}}
-function rCal(){document.getElementById('caltitle').textContent=MNS[_calM]+' '+_calY;const fd=new Date(_calY,_calM,1).getDay();const off=(fd+6)%7;const dim=new Date(_calY,_calM+1,0).getDate();const tn=new Date();const ts=`${tn.getFullYear()}-${String(tn.getMonth()+1).padStart(2,'0')}-${String(tn.getDate()).padStart(2,'0')}`;let h='';for(let i=0;i<off;i++)h+=`<div class="calday ot"></div>`;for(let d=1;d<=dim;d++){const ds=`${_calY}-${String(_calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;h+=`<div class="calday ${ds===ts?'tod':''} ${ds===_calSel?'sel':''}" onclick="calSel('${ds}')">${d}</div>`;}document.getElementById('caldays').innerHTML=h;}
+async function dlSchedPdf(){toast('<i class="fas fa-spinner fa-spin"></i> PDF tayyorlanmoqda...',7000);try{const r=await fetch('/admin/api/report/schedule_pdf');if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='jadval.pdf';a.click();URL.revokeObjectURL(url);toast('<i class="fas fa-check"></i> PDF yuklab olindi');}catch(e){toast('<i class="fas fa-times"></i> '+e.message);}}
+function rCal(){document.getElementById('caltitle').innerHTML=MNS[_calM]+' '+_calY;const fd=new Date(_calY,_calM,1).getDay();const off=(fd+6)%7;const dim=new Date(_calY,_calM+1,0).getDate();const tn=new Date();const ts=`${tn.getFullYear()}-${String(tn.getMonth()+1).padStart(2,'0')}-${String(tn.getDate()).padStart(2,'0')}`;let h='';for(let i=0;i<off;i++)h+=`<div class="calday ot"></div>`;for(let d=1;d<=dim;d++){const ds=`${_calY}-${String(_calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;h+=`<div class="calday ${ds===ts?'tod':''} ${ds===_calSel?'sel':''}" onclick="calSel('${ds}')">${d}</div>`;}document.getElementById('caldays').innerHTML=h;}
 function calP(){_calM--;if(_calM<0){_calM=11;_calY--;}rCal();}
 function calN(){_calM++;if(_calM>11){_calM=0;_calY++;}rCal();}
-function calSel(ds){_calSel=ds;rCal();document.getElementById('calsel').textContent=ds;document.getElementById('pdfprev').innerHTML='';loadDailyReport();}
+function calSel(ds){_calSel=ds;rCal();document.getElementById('calsel').innerHTML=ds;document.getElementById('pdfprev').innerHTML='';loadDailyReport();}
 async function loadDailyReport(){
 if(!_calSel)return;
 document.getElementById('pdfprev').innerHTML='<div class="ldr"><div class="spin"></div></div>';
@@ -1441,10 +1441,10 @@ if(!att.length&&!abs.length) html='<div class="empty"><div class="ei"><i class="
 document.getElementById('pdfprev').innerHTML=html;
 }
 async function dlDailyPdf(){
-if(!_calSel){toast('<i class="fas fa-exclamation-triangle"></i> Sana tanlang');return;}toast('⏳ PDF tayyorlanmoqda...',7000);
-const btn=document.getElementById('pdfbtn');btn.disabled=true;btn.textContent='⏳ Tayyorlanmoqda...';
-try{const r=await fetch(`/admin/api/report/daily_pdf?date=${_calSel}`);btn.disabled=false;btn.textContent='<i class="fas fa-file-pdf"></i> PDF ko\'rish / yuklash';if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);document.getElementById('pdfprev').innerHTML=`<div style="display:flex;gap:7px;margin-top:8px"><button class="btn bpu" onclick="window.open('${url}','_blank')" style="flex:1;justify-content:center"><i class="fas fa-eye"></i> Ko'rish</button><button class="btn bp" onclick="dlBlob('${url}','davomat_${_calSel}.pdf')" style="flex:1;justify-content:center"><i class="fas fa-download"></i> Yuklash</button></div>`;toast('<i class="fas fa-check"></i> PDF tayyor');}
-catch(e){btn.disabled=false;btn.textContent='<i class="fas fa-file-pdf"></i> PDF ko\'rish / yuklash';toast('<i class="fas fa-times"></i> '+e.message);}
+if(!_calSel){toast('<i class="fas fa-exclamation-triangle"></i> Sana tanlang');return;}toast('<i class="fas fa-spinner fa-spin"></i> PDF tayyorlanmoqda...',7000);
+const btn=document.getElementById('pdfbtn');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Tayyorlanmoqda...';
+try{const r=await fetch(`/admin/api/report/daily_pdf?date=${_calSel}`);btn.disabled=false;btn.innerHTML='<i class="fas fa-file-pdf"></i> PDF ko\'rish / yuklash';if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);document.getElementById('pdfprev').innerHTML=`<div style="display:flex;gap:7px;margin-top:8px"><button class="btn bpu" onclick="window.open('${url}','_blank')" style="flex:1;justify-content:center"><i class="fas fa-eye"></i> Ko'rish</button><button class="btn bp" onclick="dlBlob('${url}','davomat_${_calSel}.pdf')" style="flex:1;justify-content:center"><i class="fas fa-download"></i> Yuklash</button></div>`;toast('<i class="fas fa-check"></i> PDF tayyor');}
+catch(e){btn.disabled=false;btn.innerHTML='<i class="fas fa-file-pdf"></i> PDF ko\'rish / yuklash';toast('<i class="fas fa-times"></i> '+e.message);}
 }
 function dlBlob(url,fn){const a=document.createElement('a');a.href=url;a.download=fn;a.click();}
 applyLang();
@@ -1455,7 +1455,7 @@ document.getElementById('apps-table').innerHTML='<div class="ldr"><div class="sp
 const r=await fetch('/admin/api/applications',{credentials:'include'}).then(x=>x.json()).catch(()=>null);
 if(!r?.ok){document.getElementById('apps-table').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-times"></i></div>Yuklanmadi</div>';return;}
 const apps=r.applications||[];
-document.getElementById('app-cnt').textContent=apps.length+' ta';
+document.getElementById('app-cnt').innerHTML=apps.length+' ta';
 const newCount=apps.filter(a=>a.status==='new').length;
 const badge=document.getElementById('nap');
 if(newCount>0){badge.textContent=newCount;badge.style.display='';}else{badge.style.display='none';}
