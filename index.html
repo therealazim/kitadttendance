@@ -217,22 +217,22 @@ footer{background:var(--navy);padding:28px 5% 0;}
 
 <div class="mobile-menu" id="mobileMenu">
   <a href="#courses" onclick="toggleMenu()" data-i18n="m_courses"><i class="fas fa-book"></i> Kurslar</a>
-  <a href="#gallery" onclick="toggleMenu()" data-i18n="m_gallery">🖼️ Galereya</a>
-  <a href="#news" onclick="toggleMenu()" data-i18n="m_news">📰 Yangiliklar</a>
-  <a href="#history" onclick="toggleMenu()" data-i18n="m_about">ℹ️ Biz haqimizda</a>
-  <a href="#contact" onclick="toggleMenu()" data-i18n="m_contact">📞 Aloqa</a>
-  <a href="#apply" onclick="toggleMenu()" style="color:var(--gold);font-weight:700;" data-i18n="m_apply">✍️ Ariza qoldirish</a>
+  <a href="#gallery" onclick="toggleMenu()" data-i18n="m_gallery"><i class="fas fa-images"></i> Galereya</a>
+  <a href="#news" onclick="toggleMenu()" data-i18n="m_news"><i class="fas fa-newspaper"></i> Yangiliklar</a>
+  <a href="#history" onclick="toggleMenu()" data-i18n="m_about"><i class="fas fa-info-circle"></i> Biz haqimizda</a>
+  <a href="#contact" onclick="toggleMenu()" data-i18n="m_contact"><i class="fas fa-phone"></i> Aloqa</a>
+  <a href="#apply" onclick="toggleMenu()" style="color:var(--gold);font-weight:700;" data-i18n="m_apply"><i class="fas fa-edit"></i> Ariza qoldirish</a>
 </div>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-content">
-    <div class="hero-badge" data-i18n="hero_badge">🎓 Toshkentning yetakchi o'quv markazi</div>
+    <div class="hero-badge" data-i18n="hero_badge"><i class="fas fa-graduation-cap"></i> Toshkentning yetakchi o'quv markazi</div>
     <h1 id="hero-title">KITA <span>구</span> HANCOM<br>Academy</h1>
     <p id="hero-subtitle" data-i18n="hero_subtitle">IT texnologiyalari, Koreys tili va ofis ko'nikmalarini professional darajada o'rganing.</p>
     <div class="hero-btns">
-      <a href="#apply" class="btn-primary" data-i18n="btn_apply">✍️ Ariza qoldirish</a>
-      <a href="https://t.me/Hancom_A" class="btn-secondary" target="_blank" data-i18n="btn_telegram">Telegram orqali yozish</a>
+      <a href="#apply" class="btn-primary" data-i18n="btn_apply"><i class="fas fa-edit"></i> Ariza qoldirish</a>
+      <a href="https://t.me/Hancom_A" class="btn-secondary" target="_blank" data-i18n="btn_telegram"><i class="fab fa-telegram"></i> Telegram orqali yozish</a>
     </div>
   </div>
 </section>
@@ -353,7 +353,7 @@ footer{background:var(--navy);padding:28px 5% 0;}
     <div class="history-text">
       <p id="about-text">KITA (Korea IT Academy) — Toshkentda joylashgan zamonaviy o'quv markazi.</p>
     </div>
-    <a href="/docs/history.pdf" class="history-pdf-btn" target="_blank">📄 To'liq tarix va yutuqlar (PDF)</a>
+    <a href="/docs/history.pdf" class="history-pdf-btn" target="_blank"><i class="fas fa-file-pdf"></i> To'liq tarix va yutuqlar (PDF)</a>
   </div>
 </section>
 
@@ -599,9 +599,9 @@ async function loadNews(){
       const title = n['title_'+_lang]||n.title||'';
       const body = n['body_'+_lang]||n.body||'';
       return `<div class="news-card" onclick="showNewsModal('${(n.image_url||'').replace(/'/g,"\\'")}','${title.replace(/'/g,"\\'")}','${body.replace(/'/g,"\\'")}','${n.created_at||''}')" style="cursor:pointer">
-        ${n.image_url?`<img src="${n.image_url}" alt="${title}" class="news-img">`:'<div class="news-img" style="display:flex;align-items:center;justify-content:center;font-size:40px;">📰</div>'}
+        ${n.image_url?`<img src="${n.image_url}" alt="${title}" class="news-img">`:'<div class="news-img" style="display:flex;align-items:center;justify-content:center;font-size:40px;"><i class="fas fa-newspaper"></i></div>'}
         <div class="news-body">
-          <div class="news-date">📅 ${n.created_at}</div>
+          <div class="news-date"><i class="fas fa-calendar"></i> ${n.created_at}</div>
           <div class="news-title">${title}</div>
           <div class="news-text">${body.substring(0,120)}${body.length>120?'...':''}</div>
         </div>
@@ -613,7 +613,7 @@ function showNewsModal(imgUrl,title,body,date){
   const m=document.getElementById('news-modal');
   document.getElementById('nm-img').innerHTML=imgUrl?'<img src="'+imgUrl+'" style="width:100%;max-height:300px;object-fit:cover;border-radius:10px;">':'';
   document.getElementById('nm-title').textContent=title;
-  document.getElementById('nm-date').textContent='📅 '+date;
+  document.getElementById('nm-date').innerHTML='<i class="fas fa-calendar"></i> '+date;
   document.getElementById('nm-body').innerText=body;
   m.style.display='flex';
 }
@@ -689,7 +689,7 @@ async function loadBranchesMap() {
     }).addTo(_map);
 
     const TYPE_COLOR = { 'IT': '#1565C0', 'Koreys tili': '#E53935', 'Ofis xodimi': '#2E7D32' };
-    const TYPE_ICON  = { 'IT': '💻', 'Koreys tili': '🇰🇷', 'Ofis xodimi': '🏢' };
+    const TYPE_ICON  = { 'IT': '<i class="fas fa-laptop-code"></i>', 'Koreys tili': '<i class="fas fa-language"></i>', 'Ofis xodimi': '<i class="fas fa-building"></i>' };
 
     // Turlar bo'yicha marker rangi — agar bir necha tur bo'lsa ko'k
     function markerColor(lessons) {
@@ -735,10 +735,10 @@ async function loadBranchesMap() {
       for (const [type, times] of Object.entries(byType)) {
         const cls = type === 'IT' ? 'it' : type === 'Koreys tili' ? 'kr' : 'of';
         const schedule = times.map(t => `${dayShort[t.day]||t.day.slice(0,2)} ${t.time}`).join(' · ');
-        const typeLabel = type === 'IT' ? '💻 IT' : type === 'Koreys tili' ? '🇰🇷 Koreys tili' : '🏢 Ofis';
+        const typeLabel = type === 'IT' ? '<i class="fas fa-laptop-code"></i> IT' : type === 'Koreys tili' ? '<i class="fas fa-language"></i> Koreys tili' : '<i class="fas fa-building"></i> Ofis';
         rows += `<div class="map-popup-item">
           <span class="map-popup-type ${cls}">${typeLabel}</span>
-          <span class="map-popup-time">⏰ ${schedule}</span>
+          <span class="map-popup-time"><i class="far fa-clock"></i> ${schedule}</span>
         </div>`;
         const safeType = type.replace(/'/g, "\\'");
         const safeBranch = branch.name.replace(/'/g, "\\'");
@@ -750,10 +750,10 @@ async function loadBranchesMap() {
       const yandexUrl = `https://yandex.uz/maps/?rtext=~${branch.lat},${branch.lon}&rtt=pd`;
 
       return `<div class="map-popup">
-        <h4>🏢 ${branch.name}</h4>
+        <h4><i class="fas fa-building"></i> ${branch.name}</h4>
         ${rows}
         <div style="margin-top:10px;display:flex;flex-direction:column;gap:5px">${enrollBtns}</div>
-        <a href="${yandexUrl}" target="_blank" rel="noopener" style="display:block;margin-top:8px;text-align:center;font-size:11px;color:#555;text-decoration:none;padding:5px 8px;border:1px solid #ddd;border-radius:7px;background:#f9f9f9">🗺 Yandex Maps — marshrut</a>
+        <a href="${yandexUrl}" target="_blank" rel="noopener" style="display:block;margin-top:8px;text-align:center;font-size:11px;color:#555;text-decoration:none;padding:5px 8px;border:1px solid #ddd;border-radius:7px;background:#f9f9f9"><i class="fas fa-map-marked-alt"></i> Yandex Maps — marshrut</a>
       </div>`;
     }
 
@@ -761,7 +761,7 @@ async function loadBranchesMap() {
     const locBtn = L.control({ position: 'topright' });
     locBtn.onAdd = function() {
       const btn = L.DomUtil.create('button', '');
-      btn.innerHTML = '📍';
+      btn.innerHTML = '<i class="fas fa-location-arrow"></i>';
       btn.title = 'Mening joylashuvim';
       btn.style.cssText = 'width:34px;height:34px;background:white;border:2px solid rgba(0,0,0,.2);border-radius:4px;cursor:pointer;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 5px rgba(0,0,0,.2)';
       L.DomEvent.on(btn, 'click', function() {
@@ -772,7 +772,7 @@ async function loadBranchesMap() {
           L.circleMarker(latlng, {
             radius: 10, fillColor: '#1565C0', color: 'white',
             weight: 3, opacity: 1, fillOpacity: 0.9
-          }).addTo(_map).bindPopup('📍 Siz shu yerdasiz').openPopup();
+          }).addTo(_map).bindPopup('<i class="fas fa-map-marker-alt"></i> Siz shu yerdasiz').openPopup();
         }, function() { alert("Joylashuv aniqlanmadi"); });
       });
       return btn;
