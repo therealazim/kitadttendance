@@ -594,7 +594,17 @@ user_photo_cache = {}  # uid -> Telegram photo URL
 ADMIN_PASSWORD = "7117"
 
 def _check_admin_request(request) -> bool:
-    return True  # Auth login sahifasida tekshiriladi
+    # URL dan parolni olish (?p=xxxx)
+    from yarl import URL
+    try:
+        url = URL(str(request.url))
+        password = url.query.get('p', '')
+        if password == ADMIN_PASSWORD:
+            return True
+    except:
+        pass
+    return False
+
 WEEKDAYS_UZ =["Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba", "Yakshanba"]
 
 TRANSLATIONS = {
