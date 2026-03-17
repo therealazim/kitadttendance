@@ -47,7 +47,7 @@ function checkLogin(){
     document.getElementById('login-page').style.display='none';
     document.querySelector('.layout').style.display='flex';
     localStorage.setItem('kita_admin_logged','1');
-    fetchAll();
+    if(typeof fetchAll==='function')fetchAll();
   }else{
     document.getElementById('login-error').style.display='block';
     document.getElementById('login-pass').value='';
@@ -59,7 +59,9 @@ document.getElementById('login-pass').addEventListener('keypress',function(e){
 if(localStorage.getItem('kita_admin_logged')==='1'){
   document.getElementById('login-page').style.display='none';
   document.querySelector('.layout').style.display='flex';
-  window.addEventListener('load',fetchAll);
+  window.addEventListener('load',function(){
+    if(typeof fetchAll==='function')fetchAll();
+  });
 }
 </script>
 
