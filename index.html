@@ -523,9 +523,9 @@ function setLang(l) {
   // Course select options
   const sel = document.getElementById('apply-course');
   if (sel) {
-    sel.options[0].text = T.course_opt_it||'IT Texnologiyalari';
-    sel.options[1].text = T.course_opt_kr||'Koreys Tili';
-    sel.options[2].text = T.course_opt_of||'Ofis Xizmati';
+    sel.options[0].innerHTML = T.course_opt_it||'<i class="fas fa-laptop-code"></i> IT Texnologiyalari';
+    sel.options[1].innerHTML = T.course_opt_kr||'<i class="fas fa-language"></i> Koreys Tili';
+    sel.options[2].innerHTML = T.course_opt_of||'<i class="fas fa-building"></i> Ofis Xizmati';
   }
   // Placeholders
   const pn = document.getElementById('apply-name');
@@ -641,12 +641,12 @@ async function submitApply(){
       document.getElementById('apply-phone').value='';
       document.getElementById('apply-course').value='';
       document.getElementById('apply-message').value='';
-      btn.textContent=T.form_submit;
+      btn.innerHTML=T.form_submit;
       setTimeout(()=>document.getElementById('apply-success').style.display='none',5000);
     }else{alert('Xato: '+d.error);}
   }catch(e){alert('Xato yuz berdi');}
   btn.disabled=false;
-  btn.textContent=T.form_submit;
+  btn.innerHTML=T.form_submit;
 }
 
 // FAQ accordion
