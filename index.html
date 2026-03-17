@@ -15,7 +15,7 @@ body{font-family:'Outfit',sans-serif;background:var(--white);color:var(--text);o
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 5%;background:rgba(13,27,75,0.96);backdrop-filter:blur(10px);}
-.nav-logo{height:44px;filter:brightness(0) invert(1);}
+.nav-logo{height:44px;}
 .nav-links{display:flex;gap:24px;list-style:none;}
 .nav-links a{color:rgba(255,255,255,0.8);text-decoration:none;font-size:14px;font-weight:500;transition:color .2s;}
 .nav-links a:hover{color:var(--gold);}
@@ -193,7 +193,7 @@ footer{background:var(--navy);padding:28px 5% 0;}
 <body>
 
 <nav>
-  <img src="/static/KITA_LOGO.svg" alt="KITA" class="nav-logo">
+  <img src="/KITA_LOGO.svg" alt="KITA" class="nav-logo">
   <ul class="nav-links">
     <li><a href="#courses" data-i18n="nav_courses">Kurslar</a></li>
     <li><a href="#gallery" data-i18n="nav_gallery">Galereya</a></li>
@@ -201,6 +201,8 @@ footer{background:var(--navy);padding:28px 5% 0;}
     <li><a href="#map" data-i18n="nav_map">Xarita</a></li>
     <li><a href="#history" data-i18n="nav_about">Biz haqimizda</a></li>
     <li><a href="#contact" data-i18n="nav_contact">Aloqa</a></li>
+    <li><a href="/admin" style="color:var(--gold)"><i class="fas fa-user-lock"></i> Admin</a></li>
+  </div>
   </ul>
   <div style="display:flex;align-items:center;gap:10px">
     <div class="lang-switch">
@@ -373,7 +375,7 @@ footer{background:var(--navy);padding:28px 5% 0;}
 
 <footer>
   <div class="footer-top">
-    <img src="/static/KITA_LOGO.svg" alt="KITA" class="footer-logo">
+    <img src="/KITA_LOGO.svg" alt="KITA" class="footer-logo">
     <p class="footer-text" data-i18n="footer_copy">© 2026 KITA HANCOM Academy. Barcha huquqlar himoyalangan.</p>
     <div class="footer-links">
       <a href="#courses" data-i18n="nav_courses">Kurslar</a>
