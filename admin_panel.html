@@ -18,17 +18,17 @@
     <button class="sbi" onclick="gp('users',this)"><span class="ico"><i class="fas fa-users"></i></span><span class="lbl" data-i18n="nav_users">Foydalanuvchilar</span><span class="bdg" id="nbu">0</span></button>
     <button class="sbi" onclick="gp('groups',this)"><span class="ico"><i class="fas fa-book"></i></span><span class="lbl" data-i18n="nav_groups">Guruhlar</span><span class="bdg" id="nbg">0</span></button>
     <div class="sbsec" data-i18n="sec_control">Nazorat</div>
-    <button class="sbi" onclick="gp('att',this)"><span class="ico"><i class="fas fa-map-pin"></i></span><span class="lbl" data-i18n="nav_att">O'qituvchi davomat</span></button>
-    <button class="sbi" onclick="gp('stuatt',this)"><span class="ico"><i class="fas fa-graduation-cap"></i></span><span class="lbl" data-i18n="nav_stuatt">O'quvchi davomat</span></button>
-    <button class="sbi" onclick="gp('payments',this)"><span class="ico"><i class="fas fa-banknote"></i></span><span class="lbl" data-i18n="nav_pay">O'quvchi to'lovlar</span></button>
-    <button class="sbi" onclick="gp('sched',this)"><span class="ico"><i class="fas fa-calendar-days"></i></span><span class="lbl" data-i18n="nav_sched">Dars jadvali</span></button>
-    <button class="sbi" onclick="gp('stats',this)"><span class="ico"><i class="fas fa-bar-chart-3"></i></span><span class="lbl" data-i18n="nav_stats">Statistika</span></button>
+    <button class="sbi" onclick="gp('att',this)"><span class="ico"><i class="fas fa-map-marker-alt"></i></span><span class="lbl" data-i18n="nav_att">O'qituvchi davomat</span></button>
+    <button class="sbi" onclick="gp('stuatt',this)"><span class="ico"><i class="fas fa-user-graduate"></i></span><span class="lbl" data-i18n="nav_stuatt">O'quvchi davomat</span></button>
+    <button class="sbi" onclick="gp('payments',this)"><span class="ico"><i class="fas fa-money-bill-wave"></i></span><span class="lbl" data-i18n="nav_pay">O'quvchi to'lovlar</span></button>
+    <button class="sbi" onclick="gp('sched',this)"><span class="ico"><i class="fas fa-calendar-alt"></i></span><span class="lbl" data-i18n="nav_sched">Dars jadvali</span></button>
+    <button class="sbi" onclick="gp('stats',this)"><span class="ico"><i class="fas fa-chart-bar"></i></span><span class="lbl" data-i18n="nav_stats">Statistika</span></button>
     <div class="sbsec" data-i18n="sec_actions">Amallar</div>
     <button class="sbi" onclick="gp('broadcast',this)"><span class="ico"><i class="fas fa-bullhorn"></i></span><span class="lbl" data-i18n="nav_bc">Xabar yuborish</span></button>
     <button class="sbi" onclick="gp('salary',this)"><span class="ico"><i class="fas fa-coins"></i></span><span class="lbl" data-i18n="nav_sal">Maosh hisoblash</span></button>
-    <button class="sbi" onclick="gp('branches',this)"><span class="ico"><i class="fas fa-building-2"></i></span><span class="lbl" data-i18n="nav_br">Filiallar</span></button>
+    <button class="sbi" onclick="gp('branches',this)"><span class="ico"><i class="fas fa-building"></i></span><span class="lbl" data-i18n="nav_br">Filiallar</span></button>
     <button class="sbi" onclick="gp('reports',this)"><span class="ico"><i class="fas fa-clipboard-list"></i></span><span class="lbl" data-i18n="nav_rep">Hisobotlar</span></button>
-    <button class="sbi" onclick="gp('applies',this)"><span class="ico"><i class="fas fa-mail"></i></span><span class="lbl">Arizalar</span><span class="bdg" id="nap" style="display:none">0</span></button>
+    <button class="sbi" onclick="gp('applies',this)"><span class="ico"><i class="fas fa-envelope"></i></span><span class="lbl">Arizalar</span><span class="bdg" id="nap" style="display:none">0</span></button>
     <button class="sbi" onclick="gp('news_admin',this)"><span class="ico"><i class="fas fa-newspaper"></i></span><span class="lbl">Yangiliklar</span></button>
     <button class="sbi" onclick="gp('site',this)"><span class="ico"><i class="fas fa-globe"></i></span><span class="lbl">Sayt</span></button>
   </div>
@@ -40,9 +40,9 @@
     <button class="mbtn" onclick="tSb()">☰</button>
     <div id="pgtitle">Dashboard</div>
     <div class="online"><div class="dot"></div><span id="updlbl">Yuklanmoqda...</span></div>
-    <button class="rbtn" onclick="fetchAll()" data-i18n="btn_refresh"><i class="fas fa-refresh-cw"></i> Yangilash</button>
+    <button class="rbtn" onclick="fetchAll()" data-i18n="btn_refresh"><i class="fas fa-sync"></i> Yangilash</button>
   
-  <button class="rbtn" style="background:rgba(248,113,113,.15);color:#f87171;border:1px solid rgba(248,113,113,.3)" onclick="logout()" data-i18n="btn_logout"><i class="fas fa-log-out"></i> Chiqish</button>
+  <button class="rbtn" style="background:rgba(248,113,113,.15);color:#f87171;border:1px solid rgba(248,113,113,.3)" onclick="logout()" data-i18n="btn_logout"><i class="fas fa-sign-out-alt"></i> Chiqish</button>
   </div>
   <div class="content">
 
@@ -178,7 +178,7 @@
   <div style="display:flex;gap:9px;margin-bottom:12px;flex-wrap:wrap">
     <select id="schedbr" class="inp" style="max-width:220px" onchange="loadSched()"><option value="">Barcha filiallar</option></select>
     <button class="btn bp" onclick="loadSched()">Ko'rsatish</button>
-    <button class="btn bpu" onclick="dlSchedPdf()"><i class="fas fa-file-text"></i> PDF yuklash</button>
+    <button class="btn bpu" onclick="dlSchedPdf()"><i class="fas fa-file-pdf"></i> PDF yuklash</button>
   </div>
   <div id="schedct"><div class="ldr"><div class="spin"></div></div></div>
 </div>
@@ -212,7 +212,7 @@
       <div id="bcprev" style="display:none;background:var(--card2);border:1px solid var(--bd);border-radius:8px;padding:10px;margin-bottom:10px;font-size:12px;white-space:pre-wrap;word-break:break-word"></div>
       <div style="display:flex;gap:7px">
         <button class="btn bg" onclick="prevBC()"><i class="fas fa-eye"></i> Ko'rish</button>
-        <button class="btn bp" style="flex:1;justify-content:center" id="bcbtn" onclick="sendBC()"><i class="fas fa-send"></i> Yuborish</button>
+        <button class="btn bp" style="flex:1;justify-content:center" id="bcbtn" onclick="sendBC()"><i class="fas fa-paper-plane"></i> Yuborish</button>
       </div>
     </div>
     <div class="tw" style="height:fit-content">
@@ -231,7 +231,7 @@
         <div class="fg"><label>Mutaxassislik</label>
           <select id="salsp" class="inp" onchange="loadSalT()">
             <option value="">Tanlang...</option>
-            <option value="IT"><i class="fas fa-laptop"></i> IT</option>
+            <option value="IT"><i class="fas fa-laptop-code"></i> IT</option>
             <option value="Koreys tili"><i class="fas fa-language"></i> Koreys tili</option>
           </select>
         </div>
@@ -249,8 +249,8 @@
 <!-- ARIZALAR -->
 <div class="page" id="pg-applies">
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px">
-    <div class="th" style="margin:0"><span class="tt"><i class="fas fa-mail"></i> Arizalar</span><span class="tm" id="app-cnt"></span></div>
-    <button class="btn bd" onclick="loadApps()"><i class="fas fa-refresh-cw"></i> Yangilash</button>
+    <div class="th" style="margin:0"><span class="tt"><i class="fas fa-envelope"></i> Arizalar</span><span class="tm" id="app-cnt"></span></div>
+    <button class="btn bd" onclick="loadApps()"><i class="fas fa-sync"></i> Yangilash</button>
   </div>
   <div id="apps-table"></div>
 </div>
@@ -289,7 +289,7 @@
     </div>
     <div style="display:flex;gap:10px;margin-top:14px">
       <button class="btn bp" onclick="saveNews()"><i class="fas fa-save"></i> Saqlash</button>
-      <button class="btn bd" onclick="document.getElementById('news-form-wrap').style.display='none'"><i class="fas fa-x"></i> Bekor</button>
+      <button class="btn bd" onclick="document.getElementById('news-form-wrap').style.display='none'"><i class="fas fa-times"></i> Bekor</button>
     </div>
   </div>
 </div>
@@ -301,7 +301,7 @@
 
     <!-- Til tablar - faqat matnlar uchun -->
     <div style="background:var(--bg2);border-radius:10px;padding:16px;margin-bottom:14px">
-      <div style="font-weight:700;font-size:13px;color:var(--ac);margin-bottom:12px"><i class="fas fa-pen-tool"></i> Asosiy matnlar (3 tilda)</div>
+      <div style="font-weight:700;font-size:13px;color:var(--ac);margin-bottom:12px"><i class="fas fa-pen"></i> Asosiy matnlar (3 tilda)</div>
       <div class="tabrow" style="margin-bottom:14px">
         <button class="tab on" onclick="scTab('uz',this)"><i class="fas fa-flag"></i> O'zbekcha</button>
         <button class="tab" onclick="scTab('ru',this)"><i class="fas fa-flag"></i> Русский</button>
@@ -344,7 +344,7 @@
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
       <div style="background:var(--bg2);border-radius:10px;padding:16px">
-        <div style="font-weight:700;font-size:13px;color:var(--ac);margin-bottom:12px"><i class="fas fa-bar-chart-3"></i> Statistika</div>
+        <div style="font-weight:700;font-size:13px;color:var(--ac);margin-bottom:12px"><i class="fas fa-chart-bar"></i> Statistika</div>
         <div class="fg"><label>Bitiruvchilar</label><input class="inp" id="sc-stat_graduates" placeholder="500+"></div>
         <div class="fg"><label>Yo'nalishlar</label><input class="inp" id="sc-stat_directions" placeholder="3"></div>
         <div class="fg"><label>Yillik tajriba</label><input class="inp" id="sc-stat_years" placeholder="5+"></div>
@@ -383,7 +383,7 @@
 <div class="page" id="pg-branches">
   <div class="gbr">
     <div class="tw">
-      <div class="th"><span class="tt"><i class="fas fa-building-2"></i> Filiallar ro'yxati</span><span class="tm" id="brcnt"></span></div>
+      <div class="th"><span class="tt"><i class="fas fa-building"></i> Filiallar ro'yxati</span><span class="tm" id="brcnt"></span></div>
       <div id="brlist"></div>
     </div>
     <div class="fb">
@@ -401,7 +401,7 @@
   <div class="g2">
     <div>
       <div class="fb">
-        <div class="ft"><i class="fas fa-file-spreadsheet"></i> Oylik Excel hisobot</div>
+        <div class="ft"><i class="fas fa-file-excel"></i> Oylik Excel hisobot</div>
         <div class="fg"><label>Oy tanlang</label><input type="month" id="rpmonth" class="inp"></div>
         <button class="btn bp bfull" onclick="dlMonthly()"><i class="fas fa-download"></i> Excel yuklash</button>
       </div>
@@ -411,7 +411,7 @@
       </div>
     </div>
     <div class="fb">
-      <div class="ft"><i class="fas fa-calendar-range"></i> Kunlik hisobot</div>
+      <div class="ft"><i class="fas fa-calendar-day"></i> Kunlik hisobot</div>
       <div class="fg">
         <label>Sana tanlang</label>
         <div class="calnav"><button onclick="calP()">‹</button><span id="caltitle"></span><button onclick="calN()">›</button></div>
@@ -463,7 +463,7 @@
     <div class="mt">Yangi guruh yaratish</div>
     <div class="fr2">
       <div class="fg"><label>Guruh nomi</label><input type="text" id="cgnm" class="inp" placeholder="IT-A1"></div>
-      <div class="fg"><label>Fan turi</label><select id="cgtp" class="inp"><option value="IT"><i class="fas fa-laptop"></i> IT</option><option value="Koreys tili"><i class="fas fa-language"></i> Koreys tili</option></select></div>
+      <div class="fg"><label>Fan turi</label><select id="cgtp" class="inp"><option value="IT"><i class="fas fa-laptop-code"></i> IT</option><option value="Koreys tili"><i class="fas fa-language"></i> Koreys tili</option></select></div>
     </div>
     <div class="fr2">
       <div class="fg"><label>Filial</label><select id="cgbr" class="inp"></select></div>
@@ -487,7 +487,7 @@
 </div>
 <div class="overlay" id="esm" onclick="if(event.target===this)cM('esm')">
   <div class="modal" style="max-width:400px">
-    <div class="mt"><i class="fas fa-edit-3"></i> O'quvchini tahrirlash</div>
+    <div class="mt"><i class="fas fa-edit"></i> O'quvchini tahrirlash</div>
     <input type="hidden" id="esid"><input type="hidden" id="esgid">
     <div class="fg"><label>Ism</label><input type="text" id="esnm" class="inp"></div>
     <div class="fg"><label>Telefon</label><input type="text" id="esph" class="inp"></div>
@@ -649,7 +649,7 @@ bc_specialty:'Mutaxassislik bo\'yicha',
 bc_msg:'Xabar matni',
 bc_file:'Fayl yuklash (ixtiyoriy)',
 br_count:'ta filial',
-br_map:'Xarita <i class="fas fa-external-link"></i>',
+br_map:'Xarita <i class="fas fa-external-link-alt"></i>',
 br_name:'Filial nomi',
 br_lat:'Kenglik (lat)',
 br_lon:'Uzunlik (lon)',
@@ -662,11 +662,11 @@ st_blocked:'Bloklangan',
 st_deleted:'Arxivlangan',
 toast_saved:'<i class="fas fa-check"></i> '+'Saqlandi',
   toast_deleted:'<i class="fas fa-check"></i> '+"O'chirildi",
-  toast_error:'<i class="fas fa-x"></i> Xatolik',
+  toast_error:'<i class="fas fa-times"></i> Xatolik',
   toast_blocked:'<i class="fas fa-ban"></i> '+'Bloklandi',
   toast_unblocked:'<i class="fas fa-check"></i> '+'Faollashtirildi',
   toast_sent:'ta yuborildi',
-  toast_no_group:'<i class="fas fa-alert-triangle"></i> Guruh biriktirilmagan'
+  toast_no_group:'<i class="fas fa-exclamation-triangle"></i> Guruh biriktirilmagan'
 },
 };
 let LANG='uz';
@@ -691,13 +691,13 @@ dash:()=>t('title_dash'), users:()=>t('title_users'), groups:()=>t('title_groups
 att:()=>t('title_att'), stuatt:()=>t('title_stuatt'), payments:()=>t('title_pay'),
 sched:()=>t('title_sched'), stats:()=>t('title_stats'), broadcast:()=>t('title_bc'),
 salary:()=>t('title_sal'), branches:()=>t('title_br'), reports:()=>t('title_rep'),
-applies:'<i class="fas fa-mail"></i> Arizalar', news_admin:'<i class="fas fa-newspaper"></i> Yangiliklar', site:'<i class="fas fa-globe"></i> Sayt sozlamalari'
+applies:'<i class="fas fa-envelope"></i> Arizalar', news_admin:'<i class="fas fa-newspaper"></i> Yangiliklar', site:'<i class="fas fa-globe"></i> Sayt sozlamalari'
 };
 function gp(n,el){document.querySelectorAll('.sbi').forEach(b=>b.classList.remove('on'));document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));el.classList.add('on');document.getElementById('pg-'+n).classList.add('on');window._curPage=n;const tf=TITLES[n];document.getElementById('pgtitle').textContent=(typeof tf==='function'?tf():tf)||n;if(n==='stats')ldSt();if(n==='sched')ldSched();if(n==='payments')renderPaymentsPage();if(n==='applies')loadApps();if(n==='news_admin')loadNewsAdmin();if(n==='site')loadSiteConfig();cSb();}
 function toast(msg,dur=3200){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
 function oM(id){document.getElementById(id).classList.add('open');}
 function cM(id){document.getElementById(id).classList.remove('open');}
-async function api(path,data){try{const r=await fetch(path,data?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}:{});return await r.json();}catch(e){toast('<i class="fas fa-x"></i> '+e.message);return null;}}
+async function api(path,data){try{const r=await fetch(path,data?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}:{});return await r.json();}catch(e){toast('<i class="fas fa-times"></i> '+e.message);return null;}}
 function ini(n){if(!n)return'?';const p=n.trim().split(' ');return p.length>=2?(p[0][0]+p[1][0]).toUpperCase():n[0].toUpperCase();}
 function fmt(n){return Math.round(n).toLocaleString('uz-UZ');}
 async function logout(){
@@ -709,18 +709,18 @@ async function fetchAll(){
 try{
 document.getElementById('updlbl').textContent=t('txt_loading');
 const r=await fetch(_ap('/admin/api/data'));
-if(r.status===401){document.getElementById('updlbl').textContent='<i class="fas fa-x"></i> Server xato 401';return;}
+if(r.status===401){document.getElementById('updlbl').textContent='<i class="fas fa-times"></i> Server xato 401';return;}
 if(!r.ok)throw new Error('HTTP '+r.status);
 const txt=await r.text();
 try{D=JSON.parse(txt);}catch(pe){console.error('JSON parse xato:',txt.slice(0,200));throw new Error('JSON parse xato');}
 USERS=D.users||[];GROUPS=D.groups||[];window._BRANCHES=(D.branches||[]).map(b=>b.name||b).filter(Boolean);
-try{rAll();}catch(re){console.error('rAll xato:',re);document.getElementById('updlbl').textContent='<i class="fas fa-x"></i> Render xato: '+re.message;return;}
+try{rAll();}catch(re){console.error('rAll xato:',re);document.getElementById('updlbl').textContent='<i class="fas fa-times"></i> Render xato: '+re.message;return;}
 applyLang();
 document.getElementById('updlbl').textContent=t('txt_updated')+': '+new Date().toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit'});
 }catch(e){
 console.error('fetchAll xato:',e);
-document.getElementById('updlbl').textContent='<i class="fas fa-x"></i> Ulanmadi: '+e.message;
-toast('<i class="fas fa-x"></i> '+e.message);
+document.getElementById('updlbl').textContent='<i class="fas fa-times"></i> Ulanmadi: '+e.message;
+toast('<i class="fas fa-times"></i> '+e.message);
 }
 }
 function rAll(){
@@ -740,7 +740,7 @@ sb.innerHTML='<option value="">Barcha filiallar</option>'+brs.map(b=>`<option va
 }
 function rDash(){
 const att=D.today_attendance||[];const act=USERS.filter(u=>u.status!=='blocked'&&u.status!=='deleted');
-const spMap={'Koreys tili':{ic:'<i class="fas fa-language"></i>',cls:'bkr'},'IT':{ic:'<i class="fas fa-laptop"></i>',cls:'bit'},'Ofis xodimi':{ic:'<i class="fas fa-building-2"></i>',cls:'bof'}};
+const spMap={'Koreys tili':{ic:'<i class="fas fa-language"></i>',cls:'bkr'},'IT':{ic:'<i class="fas fa-laptop-code"></i>',cls:'bit'},'Ofis xodimi':{ic:'<i class="fas fa-building"></i>',cls:'bof'}};
 const spCnt={};act.forEach(u=>{const k=u.specialty||'Boshqa';spCnt[k]=(spCnt[k]||0)+1;});
 const spHtml=Object.entries(spCnt).map(([k,v])=>{const sp=spMap[k]||{ic:'<i class="fas fa-user"></i>',cls:'bno'};return`<span class="b ${sp.cls}" style="font-size:10px;margin:1px">${sp.ic} ${k}: ${v}</span>`;}).join('');
 const grpSp={};GROUPS.forEach(g=>{const k=g.lesson_type||'Boshqa';grpSp[k]=(grpSp[k]||0)+1;});
@@ -752,12 +752,12 @@ const payCol=ps.total?(ps.paid/ps.total>=0.8?'#34d399':ps.paid/ps.total>=0.5?'#f
 document.getElementById('dashcards').innerHTML=
 `<div class="sc"><div class="si"><i class="fas fa-users"></i></div><div class="sv">${act.length}</div><div class="sl">Faol foydalanuvchilar</div><div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:2px">${spHtml}</div></div>`+
 `<div class="sc cgn"><div class="si"><i class="fas fa-book"></i></div><div class="sv">${GROUPS.length}</div><div class="sl">Guruhlar</div><div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:2px">${grpSpHtml}</div></div>`+
-`<div class="sc cog"><div class="si"><i class="fas fa-map-pin"></i></div><div class="sv">${att.length}</div><div class="sl">Bugun keldi</div><div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:2px">${attSpHtml||'<span style="font-size:10px;color:var(--tx3)">hali yo\'q</span>'}</div></div>`+
-`<div class="sc" style="cursor:pointer" onclick="gp('payments',document.querySelector('.sbi[onclick*=payments]'))"><div class="si"><i class="fas fa-banknote"></i></div><div class="sv" style="color:${payCol}">${ps.total}<span style="font-size:13px;color:var(--tx2)">/${ps.paid}</span></div><div class="sl">Bu oy to'lov</div><div style="font-size:11px;font-weight:700;color:#34d399;margin-top:3px">${fmt(ps.amount)} so'm</div></div>`;
+`<div class="sc cog"><div class="si"><i class="fas fa-map-marker-alt"></i></div><div class="sv">${att.length}</div><div class="sl">Bugun keldi</div><div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:2px">${attSpHtml||'<span style="font-size:10px;color:var(--tx3)">hali yo\'q</span>'}</div></div>`+
+`<div class="sc" style="cursor:pointer" onclick="gp('payments',document.querySelector('.sbi[onclick*=payments]'))"><div class="si"><i class="fas fa-money-bill-wave"></i></div><div class="sv" style="color:${payCol}">${ps.total}<span style="font-size:13px;color:var(--tx2)">/${ps.paid}</span></div><div class="sl">Bu oy to'lov</div><div style="font-size:11px;font-weight:700;color:#34d399;margin-top:3px">${fmt(ps.amount)} so'm</div></div>`;
 const wk=D.weekly_stats||[];const mx=Math.max(...wk.map(w=>w.count),1);
 document.getElementById('wkch').innerHTML=`<div style="display:flex;align-items:flex-end;gap:7px;height:90px">${wk.map(w=>{const h=Math.max(Math.round(w.count/mx*82),3);return`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="font-size:10px;color:var(--tx2)">${w.count}</div><div style="height:${h}px;width:100%;background:var(--ac);border-radius:4px 4px 0 0;opacity:.75"></div><div style="font-size:9px;color:var(--tx3)">${w.day}</div></div>`;}).join('')}</div>`;
 const ts=att.slice().sort((a,b)=>a.time>b.time?1:-1).slice(0,8);
-document.getElementById('todtop').innerHTML=ts.length?ts.map(a=>{const u=USERS.find(x=>x.user_id===a.user_id);const c=AVC[a.user_id%AVC.length];const tAv=u?.photo_url?`<img src="${u.photo_url}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:1.5px solid ${c}44;flex-shrink:0" onerror="this.style.display='none'">`:`<div class="avatar" style="background:${c}22;color:${c};border:1.5px solid ${c}44">${ini(u?.name||'?')}</div>`;return`<div class="rnk">${tAv}<div style="flex:1"><div style="font-size:12px">${u?.name||a.user_id}</div><div style="font-size:10px;color:var(--tx2)">${a.branch}</div></div><div style="font-size:11px;color:var(--ac);font-weight:700">${(a.time||'').slice(0,5)}</div></div>`;}).join(''):`<div class="empty"><div class="ei"><i class="fas fa-map-pin"></i></div>Bugun hali kim kelmadi</div>`;
+document.getElementById('todtop').innerHTML=ts.length?ts.map(a=>{const u=USERS.find(x=>x.user_id===a.user_id);const c=AVC[a.user_id%AVC.length];const tAv=u?.photo_url?`<img src="${u.photo_url}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:1.5px solid ${c}44;flex-shrink:0" onerror="this.style.display='none'">`:`<div class="avatar" style="background:${c}22;color:${c};border:1.5px solid ${c}44">${ini(u?.name||'?')}</div>`;return`<div class="rnk">${tAv}<div style="flex:1"><div style="font-size:12px">${u?.name||a.user_id}</div><div style="font-size:10px;color:var(--tx2)">${a.branch}</div></div><div style="font-size:11px;color:var(--ac);font-weight:700">${(a.time||'').slice(0,5)}</div></div>`;}).join(''):`<div class="empty"><div class="ei"><i class="fas fa-map-marker-alt"></i></div>Bugun hali kim kelmadi</div>`;
 }
 function rUsers(list){
 document.getElementById('ucnt').textContent=list.length+' ta';const tb=document.getElementById('utb');
@@ -765,8 +765,8 @@ if(!list.length){tb.innerHTML=`<tr><td colspan="5"><div class="empty"><div class
 tb.innerHTML=list.map(u=>{
 const c=AVC[u.user_id%AVC.length],sb=SBG[u.specialty]||'bno';
 const isB=u.status==='blocked',isDel=u.status==='deleted';
-const stB=isDel?'<span class="b bdel"><i class="fas fa-trash-2"></i></span>':isB?'<span class="b bbl"><i class="fas fa-ban"></i></span>':'<span class="b bok"><i class="fas fa-check"></i></span>';
-const acts=isDel?`<span style="color:var(--tx3);font-size:10px">Arxivlangan</span>`:`<button class="btn bg" style="font-size:10px;padding:4px 9px" onclick="oUM(${u.user_id})">Ko'rish</button><button class="btn ${isB?'bs':'bd'}" style="font-size:10px;padding:4px 9px" onclick="${isB?'unblk':'blk'}(${u.user_id})">${isB?'Faollashtirish':'Bloklash'}</button><button class="btn bw" style="font-size:10px;padding:4px 9px" onclick="shUS(${u.user_id})">Stat</button><button class="btn bd" style="font-size:10px;padding:4px 9px" onclick="delU(${u.user_id})"><i class="fas fa-trash-2"></i></button>`;
+const stB=isDel?'<span class="b bdel"><i class="fas fa-trash"></i></span>':isB?'<span class="b bbl"><i class="fas fa-ban"></i></span>':'<span class="b bok"><i class="fas fa-check"></i></span>';
+const acts=isDel?`<span style="color:var(--tx3);font-size:10px">Arxivlangan</span>`:`<button class="btn bg" style="font-size:10px;padding:4px 9px" onclick="oUM(${u.user_id})">Ko'rish</button><button class="btn ${isB?'bs':'bd'}" style="font-size:10px;padding:4px 9px" onclick="${isB?'unblk':'blk'}(${u.user_id})">${isB?'Faollashtirish':'Bloklash'}</button><button class="btn bw" style="font-size:10px;padding:4px 9px" onclick="shUS(${u.user_id})">Stat</button><button class="btn bd" style="font-size:10px;padding:4px 9px" onclick="delU(${u.user_id})"><i class="fas fa-trash"></i></button>`;
 const uAv=u.photo_url?`<img src="${u.photo_url}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:1.5px solid ${c}44;flex-shrink:0" onerror="this.style.display='none'">`:`<div class="avatar" style="background:${c}22;color:${c};border:1.5px solid ${c}44">${ini(u.name)}</div>`;return`<tr style="${(isB||isDel)?'opacity:.5':''}"><td><div style="display:flex;align-items:center;gap:8px">${uAv}<span>${u.name||'—'}</span></div></td><td><span class="b ${sb}">${u.specialty||'—'}</span></td><td><b>${u.attendance_count||0}</b></td><td>${stB}</td><td><div style="display:flex;gap:3px;flex-wrap:wrap">${acts}</div></td></tr>`;
 }).join('');
 }
@@ -776,15 +776,15 @@ function oUM(uid){
 const u=USERS.find(x=>x.user_id===uid);if(!u)return;const gs=GROUPS.filter(g=>g.teacher_id===uid);const isB=u.status==='blocked';
 document.getElementById('umt').textContent=u.name||'—';
 document.getElementById('umb').innerHTML=`<div class="mr"><span class="mk">Mutaxassislik</span><span class="mv"><span class="b ${SBG[u.specialty]||'bno'}">${u.specialty||'—'}</span></span></div><div class="mr"><span class="mk">Til</span><span class="mv">${u.language||'uz'}</span></div><div class="mr"><span class="mk">Bu oy</span><span class="mv"><b>${u.attendance_count||0}</b> marta</span></div><div class="mr"><span class="mk">Guruhlari</span><span class="mv">${gs.length} ta</span></div><div class="mr"><span class="mk">Holat</span><span class="mv" style="color:${isB?'#f87171':'#34d399'}">${isB?'Bloklangan':'Faol'}</span></div>${gs.length?`<div class="msec">GURUHLAR</div>${gs.map(g=>`<div class="mr"><span class="mk">${g.group_name}</span><span class="mv">${g.branch}</span></div>`).join('')}`:''}`;
-document.getElementById('uma').innerHTML=isB?`<button class="btn bs" onclick="unblk(${uid});cM('um')"><i class="fas fa-check"></i> Faollashtirish</button>`:`<button class="btn bd" onclick="blk(${uid});cM('um')"><i class="fas fa-ban"></i> Bloklash</button><button class="btn bw" onclick="cM('um');shUS(${uid})"><i class="fas fa-bar-chart-3"></i> Statistika</button><button class="btn bg" onclick="delU(${uid})"><i class="fas fa-trash-2"></i> O'chirish</button>`;
+document.getElementById('uma').innerHTML=isB?`<button class="btn bs" onclick="unblk(${uid});cM('um')"><i class="fas fa-check"></i> Faollashtirish</button>`:`<button class="btn bd" onclick="blk(${uid});cM('um')"><i class="fas fa-ban"></i> Bloklash</button><button class="btn bw" onclick="cM('um');shUS(${uid})"><i class="fas fa-chart-bar"></i> Statistika</button><button class="btn bg" onclick="delU(${uid})"><i class="fas fa-trash"></i> O'chirish</button>`;
 oM('um');
 }
-async function blk(uid){if(!confirm('Bloklashni tasdiqlaysizmi?'))return;const r=await api('/admin/api/user/status',{user_id:uid,status:'blocked'});if(r?.ok){toast('<i class="fas fa-ban"></i> '+tr('Bloklandi'));await fetchAll();}else toast('<i class="fas fa-x"></i> Xatolik');}
-async function unblk(uid){const r=await api('/admin/api/user/status',{user_id:uid,status:'active'});if(r?.ok){toast('<i class="fas fa-check"></i> '+tr('Faollashtirildi'));await fetchAll();}else toast('<i class="fas fa-x"></i> Xatolik');}
-async function delU(uid){const u=USERS.find(x=>x.user_id===uid);if(!confirm(`"${u?.name||uid}" arxivlansinmi?\nDavomat tarixi saqlanadi.`))return;const r=await api('/admin/api/user/delete',{user_id:uid});if(r?.ok){toast('<i class="fas fa-check"></i> '+tr('Arxivlandi'));cM('um');await fetchAll();}else toast('<i class="fas fa-x"></i> '+(r?.error||'Xatolik'));}
+async function blk(uid){if(!confirm('Bloklashni tasdiqlaysizmi?'))return;const r=await api('/admin/api/user/status',{user_id:uid,status:'blocked'});if(r?.ok){toast('<i class="fas fa-ban"></i> '+tr('Bloklandi'));await fetchAll();}else toast('<i class="fas fa-times"></i> Xatolik');}
+async function unblk(uid){const r=await api('/admin/api/user/status',{user_id:uid,status:'active'});if(r?.ok){toast('<i class="fas fa-check"></i> '+tr('Faollashtirildi'));await fetchAll();}else toast('<i class="fas fa-times"></i> Xatolik');}
+async function delU(uid){const u=USERS.find(x=>x.user_id===uid);if(!confirm(`"${u?.name||uid}" arxivlansinmi?\nDavomat tarixi saqlanadi.`))return;const r=await api('/admin/api/user/delete',{user_id:uid});if(r?.ok){toast('<i class="fas fa-check"></i> '+tr('Arxivlandi'));cM('um');await fetchAll();}else toast('<i class="fas fa-times"></i> '+(r?.error||'Xatolik'));}
 async function shUS(uid){
-const r=await fetch(`/admin/api/user/stats?user_id=${uid}`).then(x=>x.json()).catch(()=>null);if(!r?.ok){toast('<i class="fas fa-x"></i> Yuklanmadi');return;}
-document.getElementById('usmt').innerHTML='<i class="fas fa-bar-chart-3"></i> '+r.name;
+const r=await fetch(`/admin/api/user/stats?user_id=${uid}`).then(x=>x.json()).catch(()=>null);if(!r?.ok){toast('<i class="fas fa-times"></i> Yuklanmadi');return;}
+document.getElementById('usmt').innerHTML='<i class="fas fa-chart-bar"></i> '+r.name;
 document.getElementById('usmb').innerHTML=`<div class="mr"><span class="mk">Jami davomatlar</span><span class="mv" style="color:var(--ac);font-size:16px;font-weight:800">${r.total} ta</span></div><div class="mr"><span class="mk">Mutaxassislik</span><span class="mv">${r.specialty||'—'}</span></div>${r.groups?.length?`<div class="msec">GURUHLAR</div>${r.groups.map(g=>`<div class="mr"><span class="mk">${g.name}</span><span class="mv">${g.branch}</span></div>`).join('')}`:''}${r.branch_stats?.length?`<div class="msec">FILIALLAR</div>${r.branch_stats.map((b,i)=>`<div class="mr"><span class="mk">${MED[i]||i+1+'.'} ${b.branch}</span><span class="mv" style="color:var(--ac);font-weight:700">${b.count} ta</span></div>`).join('')}`:''}${r.month_stats?.length?`<div class="msec">OYLAR</div>${r.month_stats.slice(0,6).map(m=>`<div class="mr"><span class="mk"><i class="fas fa-calendar"></i> ${m.month}</span><span class="mv">${m.count} ta</span></div>`).join('')}`:''}`;
 oM('usm');
 }
@@ -794,23 +794,23 @@ if(!list.length){tb.innerHTML=`<tr><td colspan="7"><div class="empty"><div class
 tb.innerHTML=list.map(g=>{
 const t=USERS.find(u=>u.user_id===g.teacher_id);const sb=SBG[g.lesson_type]||'bno';
 const dt=Object.entries(g.day_times||{}).map(([d,ti])=>`<span class="dtag">${d.slice(0,2)} ${ti}</span>`).join('')||(g.days||[]).map(d=>`<span class="dtag">${d.slice(0,2)}</span>`).join('');
-return`<tr><td><b>${g.group_name}</b></td><td><span class="b ${sb}">${g.lesson_type||'—'}</span></td><td style="font-size:11px;white-space:nowrap">${g.branch}</td><td style="font-size:11px">${t?t.name:'—'}</td><td style="text-align:center"><b>${(g.students||[]).length}</b></td><td><div style="display:flex;flex-wrap:wrap;gap:2px">${dt}</div></td><td><div style="display:flex;gap:3px"><button class="btn bg" style="font-size:10px;padding:4px 9px" onclick="oGM(${g.id})"><i class="fas fa-edit-3"></i> Edit</button><button class="btn bd" style="font-size:10px;padding:4px 9px" onclick="delG(${g.id})"><i class="fas fa-trash-2"></i></button></div></td></tr>`;
+return`<tr><td><b>${g.group_name}</b></td><td><span class="b ${sb}">${g.lesson_type||'—'}</span></td><td style="font-size:11px;white-space:nowrap">${g.branch}</td><td style="font-size:11px">${t?t.name:'—'}</td><td style="text-align:center"><b>${(g.students||[]).length}</b></td><td><div style="display:flex;flex-wrap:wrap;gap:2px">${dt}</div></td><td><div style="display:flex;gap:3px"><button class="btn bg" style="font-size:10px;padding:4px 9px" onclick="oGM(${g.id})"><i class="fas fa-edit"></i> Edit</button><button class="btn bd" style="font-size:10px;padding:4px 9px" onclick="delG(${g.id})"><i class="fas fa-trash"></i></button></div></td></tr>`;
 }).join('');
 }
 function fgrp(){const q=document.getElementById('gq').value.toLowerCase();rGroups(GROUPS.filter(g=>(g.group_name||'').toLowerCase().includes(q)||(g.branch||'').toLowerCase().includes(q)));}
 async function oGM(gid){
 window._gid=gid;_gid=gid;const [r,rp]=await Promise.all([fetch(`/admin/api/group/detail?id=${gid}`).then(x=>x.json()).catch(()=>null),fetch(`/admin/api/student_payments?group_id=${gid}&month=${TODAY.slice(0,7)}`).then(x=>x.json()).catch(()=>null)]);
-if(!r?.ok){toast('<i class="fas fa-x"></i> Yuklanmadi');return;}
+if(!r?.ok){toast('<i class="fas fa-times"></i> Yuklanmadi');return;}
 _gdat=r;document.getElementById('gmt').textContent=r.group_name;
-const _payBadge=rp?.ok?`<div style="background:var(--card2);border-radius:8px;padding:8px 12px;margin-bottom:10px;display:flex;align-items:center;gap:8px;font-size:12px"><span style="font-size:16px"><i class="fas fa-banknote"></i></span><div>Bu oy to'lov: <b style="color:${rp.paid_count>0?'#34d399':'#f87171'}">${rp.paid_count}/${rp.total}</b> <span style="color:var(--tx2);font-size:10px">(${rp.unpaid_count} to'lamagan · ${fmt(rp.total_amount)} so'm)</span></div></div>`:'' ;
-document.getElementById('gminfo').innerHTML=_payBadge+`<div class="mr"><span class="mk"><i class="fas fa-building-2"></i> Filial</span><span class="mv">${r.branch}</span></div><div class="mr"><span class="mk"><i class="fas fa-book"></i> Fan</span><span class="mv"><span class="b ${SBG[r.lesson_type]||'bno'}">${r.lesson_type}</span></span></div><div class="mr"><span class="mk"><i class="fas fa-user"></i> O'qituvchi</span><span class="mv">${r.teacher_name}</span></div><div class="mr"><span class="mk"><i class="fas fa-graduation-cap"></i> O'quvchilar</span><span class="mv">${r.students.length} ta</span></div>${Object.entries(r.day_times||{}).map(([d,ti])=>`<div class="mr"><span class="mk"><i class="fas fa-calendar"></i> ${d}</span><span class="mv"><i class="fas fa-clock"></i> ${ti}</span></div>`).join('')}<div style="margin-top:10px"><button class="btn bg" onclick="dlGE(${gid})"><i class="fas fa-file-spreadsheet"></i> O'quvchilar Excel</button></div>`;
+const _payBadge=rp?.ok?`<div style="background:var(--card2);border-radius:8px;padding:8px 12px;margin-bottom:10px;display:flex;align-items:center;gap:8px;font-size:12px"><span style="font-size:16px"><i class="fas fa-money-bill-wave"></i></span><div>Bu oy to'lov: <b style="color:${rp.paid_count>0?'#34d399':'#f87171'}">${rp.paid_count}/${rp.total}</b> <span style="color:var(--tx2);font-size:10px">(${rp.unpaid_count} to'lamagan · ${fmt(rp.total_amount)} so'm)</span></div></div>`:'' ;
+document.getElementById('gminfo').innerHTML=_payBadge+`<div class="mr"><span class="mk"><i class="fas fa-building"></i> Filial</span><span class="mv">${r.branch}</span></div><div class="mr"><span class="mk"><i class="fas fa-book"></i> Fan</span><span class="mv"><span class="b ${SBG[r.lesson_type]||'bno'}">${r.lesson_type}</span></span></div><div class="mr"><span class="mk"><i class="fas fa-user"></i> O'qituvchi</span><span class="mv">${r.teacher_name}</span></div><div class="mr"><span class="mk"><i class="fas fa-user-graduate"></i> O'quvchilar</span><span class="mv">${r.students.length} ta</span></div>${Object.entries(r.day_times||{}).map(([d,ti])=>`<div class="mr"><span class="mk"><i class="fas fa-calendar"></i> ${d}</span><span class="mv"><i class="fas fa-clock"></i> ${ti}</span></div>`).join('')}<div style="margin-top:10px"><button class="btn bg" onclick="dlGE(${gid})"><i class="fas fa-file-excel"></i> O'quvchilar Excel</button></div>`;
 rGS(r);rGSch(r);rGT(r);rGBranch(r);rGName(r);
 gtab('info',document.querySelector('#gm .tab'));oM('gm');
 }
 function gtab(t,el){document.querySelectorAll('#gm .tab').forEach(b=>b.classList.remove('on'));if(el)el.classList.add('on');['info','studs','sched','teacher','branch','name'].forEach(n=>document.getElementById('gm'+n).style.display=n===t?'block':'none');}
 function rGS(r){
 const gid=r.id;
-document.getElementById('gmstuds').innerHTML=`<div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="btn bp" style="font-size:11px" onclick="addS(${gid})"><i class="fas fa-plus"></i> O'quvchi qo'shish</button></div><div id="gsl">${r.students.length?r.students.map((s,i)=>`<div class="stdi"><span style="font-size:10px;color:var(--tx3);width:22px">${i+1}</span><div style="flex:1"><div style="font-size:12px;font-weight:600">${s.name}</div><div style="font-size:10px;color:var(--tx2)">${s.phone}</div></div><div style="display:flex;gap:4px"><button class="btn bg" style="font-size:10px;padding:3px 8px" onclick="eStM(${s.id},${gid},'${s.name.replace(/'/g,"\\'")}','${s.phone}')"><i class="fas fa-edit-3"></i></button><button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="rmS(${s.id},${gid})"><i class="fas fa-trash-2"></i></button></div></div>`).join(''):`<div class="empty"><div class="ei"><i class="fas fa-graduation-cap"></i></div>O'quvchilar yo\'q</div>`}</div>`;
+document.getElementById('gmstuds').innerHTML=`<div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="btn bp" style="font-size:11px" onclick="addS(${gid})"><i class="fas fa-plus"></i> O'quvchi qo'shish</button></div><div id="gsl">${r.students.length?r.students.map((s,i)=>`<div class="stdi"><span style="font-size:10px;color:var(--tx3);width:22px">${i+1}</span><div style="flex:1"><div style="font-size:12px;font-weight:600">${s.name}</div><div style="font-size:10px;color:var(--tx2)">${s.phone}</div></div><div style="display:flex;gap:4px"><button class="btn bg" style="font-size:10px;padding:3px 8px" onclick="eStM(${s.id},${gid},'${s.name.replace(/'/g,"\\'")}','${s.phone}')"><i class="fas fa-edit"></i></button><button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="rmS(${s.id},${gid})"><i class="fas fa-trash"></i></button></div></div>`).join(''):`<div class="empty"><div class="ei"><i class="fas fa-user-graduate"></i></div>O'quvchilar yo\'q</div>`}</div>`;
 }
 function rGSch(r){
 const gid=r.id;
@@ -825,7 +825,7 @@ const gid=r.id;
 const branches=window._BRANCHES||[];
 const opts=branches.map(b=>`<option value="${b}" ${b===r.branch?'selected':''}>${b}</option>`).join('');
 document.getElementById('gmbranch').innerHTML=`
-<div class="mr"><span class="mk">Hozirgi filial</span><span class="mv" style="color:var(--ac);font-weight:700"><i class="fas fa-building-2"></i> ${r.branch}</span></div>
+<div class="mr"><span class="mk">Hozirgi filial</span><span class="mv" style="color:var(--ac);font-weight:700"><i class="fas fa-building"></i> ${r.branch}</span></div>
 <div class="fg" style="margin-top:14px"><label>Yangi filial tanlang</label>
 <select id="newbr" class="inp"><option value="">Tanlang...</option>${opts}</select>
 </div>
@@ -842,26 +842,26 @@ document.getElementById('gmname').innerHTML=`
 }
 async function saveGName(gid){
 const nm=document.getElementById('newgrpname').value.trim();
-if(!nm){toast('<i class="fas fa-alert-triangle"></i> Guruh nomi kerak');return;}
+if(!nm){toast('<i class="fas fa-exclamation-triangle"></i> Guruh nomi kerak');return;}
 const r=await api('/admin/api/group/edit/name',{group_id:gid,name:nm});
 if(r?.ok){toast('<i class="fas fa-check"></i> Guruh nomi o\'zgartirildi');await fetchAll();await oGM(gid);}
-else toast('<i class="fas fa-x"></i> '+(r?.error||'Xatolik'));
+else toast('<i class="fas fa-times"></i> '+(r?.error||'Xatolik'));
 }
 async function saveBr(gid){
 const br=document.getElementById('newbr').value;
-if(!br){toast('<i class="fas fa-alert-triangle"></i> Filial tanlang');return;}
+if(!br){toast('<i class="fas fa-exclamation-triangle"></i> Filial tanlang');return;}
 const r=await api('/admin/api/group/edit/branch',{group_id:gid,branch:br});
 if(r?.ok){toast('<i class="fas fa-check"></i> Filial o\'zgartirildi');await fetchAll();await oGM(gid);}
-else toast('<i class="fas fa-x"></i> '+(r?.error||'Xatolik'));
+else toast('<i class="fas fa-times"></i> '+(r?.error||'Xatolik'));
 }
-async function saveSch(gid){const dt={};DAYS.forEach(d=>{const v=(document.getElementById('sc'+d.replace(/\s/g,''))||{}).value?.trim();if(v)dt[d]=v;});if(!Object.keys(dt).length){toast('<i class="fas fa-alert-triangle"></i> Kamida 1 kun kerak');return;}const r=await api('/admin/api/group/edit/schedule',{group_id:gid,day_times:dt});if(r?.ok){toast('<i class="fas fa-check"></i> Jadval saqlandi');await oGM(gid);}else toast('<i class="fas fa-x"></i> '+(r?.error||'Xatolik'));}
-async function saveT(gid){const tid=parseInt(document.getElementById('newte').value);if(!tid){toast("<i class="fas fa-alert-triangle"></i> O'qituvchi tanlang");return;}const r=await api('/admin/api/group/edit/teacher',{group_id:gid,teacher_id:tid});if(r?.ok){toast('<i class="fas fa-check"></i> '+tr("O'qituvchi o'zgartirildi"));await fetchAll();await oGM(gid);}else toast('<i class="fas fa-x"></i> Xatolik');}
-async function delG(gid){const g=GROUPS.find(x=>x.id===gid);if(!confirm(`"${g?.group_name||gid}" o'chirilsinmi?`))return;const r=await api('/admin/api/group/delete',{group_id:gid});if(r?.ok){toast('<i class="fas fa-check"></i> '+tr("O'chirildi"));cM('gm');await fetchAll();}else toast('<i class="fas fa-x"></i> Xatolik');}
-async function dlGE(gid){toast('<i class="fas fa-spinner"></i>...',4000);const r=await fetch(`/admin/api/group/excel?id=${gid}`);if(!r.ok){toast('<i class="fas fa-x"></i> Xatolik');return;}const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`oquvchilar_${gid}.xlsx`;a.click();URL.revokeObjectURL(url);toast('<i class="fas fa-check"></i> Yuklab olindi');}
+async function saveSch(gid){const dt={};DAYS.forEach(d=>{const v=(document.getElementById('sc'+d.replace(/\s/g,''))||{}).value?.trim();if(v)dt[d]=v;});if(!Object.keys(dt).length){toast('<i class="fas fa-exclamation-triangle"></i> Kamida 1 kun kerak');return;}const r=await api('/admin/api/group/edit/schedule',{group_id:gid,day_times:dt});if(r?.ok){toast('<i class="fas fa-check"></i> Jadval saqlandi');await oGM(gid);}else toast('<i class="fas fa-times"></i> '+(r?.error||'Xatolik'));}
+async function saveT(gid){const tid=parseInt(document.getElementById('newte').value);if(!tid){toast("<i class='fas fa-exclamation-triangle'></i> O'qituvchi tanlang");return;}const r=await api('/admin/api/group/edit/teacher',{group_id:gid,teacher_id:tid});if(r?.ok){toast('<i class="fas fa-check"></i> '+tr("O'qituvchi o'zgartirildi"));await fetchAll();await oGM(gid);}else toast('<i class="fas fa-times"></i> Xatolik');}
+async function delG(gid){const g=GROUPS.find(x=>x.id===gid);if(!confirm(`"${g?.group_name||gid}" o'chirilsinmi?`))return;const r=await api('/admin/api/group/delete',{group_id:gid});if(r?.ok){toast('<i class="fas fa-check"></i> '+tr("O'chirildi"));cM('gm');await fetchAll();}else toast('<i class="fas fa-times"></i> Xatolik');}
+async function dlGE(gid){toast('<i class="fas fa-spinner"></i>...',4000);const r=await fetch(`/admin/api/group/excel?id=${gid}`);if(!r.ok){toast('<i class="fas fa-times"></i> Xatolik');return;}const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`oquvchilar_${gid}.xlsx`;a.click();URL.revokeObjectURL(url);toast('<i class="fas fa-check"></i> Yuklab olindi');}
 function eStM(sid,gid,nm,ph){document.getElementById('esid').value=sid;document.getElementById('esgid').value=gid;document.getElementById('esnm').value=nm;document.getElementById('esph').value=ph;oM('esm');}
-async function saveS(){const sid=parseInt(document.getElementById('esid').value);const gid=parseInt(document.getElementById('esgid').value);const nm=document.getElementById('esnm').value.trim();const ph=document.getElementById('esph').value.trim();if(!nm||!ph){toast('<i class="fas fa-alert-triangle"></i> Ism va telefon kerak');return;}const r=await api('/admin/api/student/edit',{student_id:sid,name:nm,phone:ph});if(r?.ok){toast('<i class="fas fa-check"></i> '+tr('Saqlandi'));cM('esm');await oGM(gid);}else toast('<i class="fas fa-x"></i> Xatolik');}
-async function addS(gid){const nm=prompt("O'quvchi ismi:");if(!nm?.trim())return;const ph=prompt("Telefon:");if(!ph?.trim())return;const r=await api('/admin/api/student/add',{group_id:gid,name:nm.trim(),phone:ph.trim()});if(r?.ok){toast("<i class="fas fa-check"></i> Qo'shildi");await oGM(gid);}else toast('<i class="fas fa-x"></i> '+(r?.error||'Xatolik'));}
-async function rmS(sid,gid){if(!confirm("O'chirishni tasdiqlaysizmi?"))return;const r=await api('/admin/api/student/delete',{student_id:sid});if(r?.ok){toast('<i class="fas fa-check"></i> '+tr("O'chirildi"));await oGM(gid);}else toast('<i class="fas fa-x"></i> Xatolik');}
+async function saveS(){const sid=parseInt(document.getElementById('esid').value);const gid=parseInt(document.getElementById('esgid').value);const nm=document.getElementById('esnm').value.trim();const ph=document.getElementById('esph').value.trim();if(!nm||!ph){toast('<i class="fas fa-exclamation-triangle"></i> Ism va telefon kerak');return;}const r=await api('/admin/api/student/edit',{student_id:sid,name:nm,phone:ph});if(r?.ok){toast('<i class="fas fa-check"></i> '+tr('Saqlandi'));cM('esm');await oGM(gid);}else toast('<i class="fas fa-times"></i> Xatolik');}
+async function addS(gid){const nm=prompt("O'quvchi ismi:");if(!nm?.trim())return;const ph=prompt("Telefon:");if(!ph?.trim())return;const r=await api('/admin/api/student/add',{group_id:gid,name:nm.trim(),phone:ph.trim()});if(r?.ok){toast("<i class='fas fa-check'></i> Qo'shildi");await oGM(gid);}else toast('<i class="fas fa-times"></i> '+(r?.error||'Xatolik'));}
+async function rmS(sid,gid){if(!confirm("O'chirishni tasdiqlaysizmi?"))return;const r=await api('/admin/api/student/delete',{student_id:sid});if(r?.ok){toast('<i class="fas fa-check"></i> '+tr("O'chirildi"));await oGM(gid);}else toast('<i class="fas fa-times"></i> Xatolik');}
 function oCG(){
 document.getElementById('cgnm').value='';_cgS=[];document.getElementById('cgstds').innerHTML='';document.getElementById('cgtimes').innerHTML='';
 document.querySelectorAll('#cgdays input[type=checkbox]').forEach(c=>c.checked=false);
@@ -877,11 +877,11 @@ function rCgS(){document.getElementById('cgstds').innerHTML=_cgS.map((s,i)=>`<di
 async function createG(){
 const nm=document.getElementById('cgnm').value.trim();const tp=document.getElementById('cgtp').value;const br=document.getElementById('cgbr').value;const tid=parseInt(document.getElementById('cgte').value);
 const ch=[...document.querySelectorAll('#cgdays input:checked')].map(i=>i.value);
-if(!nm){toast('<i class="fas fa-alert-triangle"></i> Guruh nomini kiriting');return;}if(!ch.length){toast('<i class="fas fa-alert-triangle"></i> Kamida 1 kun tanlang');return;}
+if(!nm){toast('<i class="fas fa-exclamation-triangle"></i> Guruh nomini kiriting');return;}if(!ch.length){toast('<i class="fas fa-exclamation-triangle"></i> Kamida 1 kun tanlang');return;}
 const dt={};ch.forEach(d=>{const v=(document.getElementById('ct'+d.replace(/\s/g,''))||{}).value?.trim()||'—';dt[d]=v;});
 const stds=_cgS.filter(s=>s.name&&s.phone);
 const r=await api('/admin/api/group/create',{group_name:nm,lesson_type:tp,branch:br,teacher_id:tid,day_times:dt,students:stds});
-if(r?.ok){toast('<i class="fas fa-check"></i> Guruh yaratildi!');cM('cgm');_cgS=[];await fetchAll();}else toast('<i class="fas fa-x"></i> '+(r?.error||'Xatolik'));
+if(r?.ok){toast('<i class="fas fa-check"></i> Guruh yaratildi!');cM('cgm');_cgS=[];await fetchAll();}else toast('<i class="fas fa-times"></i> '+(r?.error||'Xatolik'));
 }
 function getTeacherSchedule(userId, dateStr){
 const dow=new Date(dateStr+'T00:00:00').getDay();
@@ -924,7 +924,7 @@ lessonMap[tid].push({time:(g.day_times||{})[dayName]||g.time_text||'?', branch:g
 const act=USERS.filter(u=>u.status!=='blocked'&&u.status!=='deleted');
 const prs=new Set(att.map(a=>a.user_id));
 const absWithLesson=act.filter(u=>hasLesson.has(u.user_id)&&!prs.has(u.user_id));
-document.getElementById('attsum').innerHTML=`<div class="asc"><div class="asv" style="color:#34d399">${att.length}</div><div class="asl"><i class="fas fa-check"></i> Keldi</div></div><div class="asc"><div class="asv" style="color:#f87171">${absWithLesson.length}</div><div class="asl"><i class="fas fa-x"></i> Darsi bor, kelmadi</div></div>`;
+document.getElementById('attsum').innerHTML=`<div class="asc"><div class="asv" style="color:#34d399">${att.length}</div><div class="asl"><i class="fas fa-check"></i> Keldi</div></div><div class="asc"><div class="asv" style="color:#f87171">${absWithLesson.length}</div><div class="asl"><i class="fas fa-times"></i> Darsi bor, kelmadi</div></div>`;
 const rows=[
 ...att.map(a=>{
 const u=USERS.find(x=>x.user_id===a.user_id);
@@ -948,19 +948,19 @@ const atAv=u?.photo_url?`<img src="${u.photo_url}" style="width:28px;height:28px
 const sb=SBG[u.specialty]||'bno';
 const ls=lessonMap[u.user_id]||[];
 const lessonInfo=ls.map(l=>`${l.time}`).join(', ');
-return`<tr style="opacity:.45"><td><div style="display:flex;align-items:center;gap:7px"><div class="avatar" style="background:var(--bd2);color:var(--tx3);border:1.5px solid var(--bd);font-size:10px">${ini(u.name)}</div>${u.name}</div></td><td><span class="b ${sb}">${u.specialty||'—'}</span></td><td style="font-size:11px;color:var(--tx2)">${ls[0]?.branch||'—'}</td><td style="font-size:11px;color:var(--tx2)">${lessonInfo}</td><td><span class="b bbl"><i class="fas fa-x"></i> Kelmadi</span></td></tr>`;
+return`<tr style="opacity:.45"><td><div style="display:flex;align-items:center;gap:7px"><div class="avatar" style="background:var(--bd2);color:var(--tx3);border:1.5px solid var(--bd);font-size:10px">${ini(u.name)}</div>${u.name}</div></td><td><span class="b ${sb}">${u.specialty||'—'}</span></td><td style="font-size:11px;color:var(--tx2)">${ls[0]?.branch||'—'}</td><td style="font-size:11px;color:var(--tx2)">${lessonInfo}</td><td><span class="b bbl"><i class="fas fa-times"></i> Kelmadi</span></td></tr>`;
 })
 ];
-document.getElementById('atttb').innerHTML=rows.length?rows.join(''):`<tr><td colspan="5"><div class="empty"><div class="ei"><i class="fas fa-map-pin"></i></div>Bu kunda dars yo\'q</div></td></tr>`;
+document.getElementById('atttb').innerHTML=rows.length?rows.join(''):`<tr><td colspan="5"><div class="empty"><div class="ei"><i class="fas fa-map-marker-alt"></i></div>Bu kunda dars yo\'q</div></td></tr>`;
 document.getElementById('atttt').textContent='Davomat — '+dateStr;
 }
 async function loadAtt(){const d=document.getElementById('attd').value;const r=await fetch(`/admin/api/attendance?date=${d}`).then(x=>x.json()).catch(()=>null);if(r)rAtt(r.attendance||[]);}
 function rSaBrs(){
 const brs=D?.branches||[];
-document.getElementById('sabrlist').innerHTML=brs.map((b,i)=>`<div onclick="saBr(${i},'${b.name.replace(/'/g,"\\'")}' )" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:border-color .1s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--bd)'"><span style="font-size:24px"><i class="fas fa-building-2"></i></span><div><div style="font-weight:700;font-size:13px">${b.name}</div><div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:3px">${GROUPS.filter(g=>g.branch===b.name).map(g=>{const cls=g.lesson_type==='Koreys tili'?'bkr':g.lesson_type==='IT'?'bit':'bno';return`<span class="b ${cls}" style="font-size:9px">${g.group_name}</span>`;}).join('')||'<span style="font-size:10px;color:var(--tx3)">Guruh yo\'q</span>'}</div></div><span style="margin-left:auto;color:var(--ac);font-size:16px">›</span></div>`).join('')||`<div class="empty"><div class="ei"><i class="fas fa-building-2"></i></div>Filiallar yo\'q</div>`;
+document.getElementById('sabrlist').innerHTML=brs.map((b,i)=>`<div onclick="saBr(${i},'${b.name.replace(/'/g,"\\'")}' )" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:border-color .1s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--bd)'"><span style="font-size:24px"><i class="fas fa-building"></i></span><div><div style="font-weight:700;font-size:13px">${b.name}</div><div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:3px">${GROUPS.filter(g=>g.branch===b.name).map(g=>{const cls=g.lesson_type==='Koreys tili'?'bkr':g.lesson_type==='IT'?'bit':'bno';return`<span class="b ${cls}" style="font-size:9px">${g.group_name}</span>`;}).join('')||'<span style="font-size:10px;color:var(--tx3)">Guruh yo\'q</span>'}</div></div><span style="margin-left:auto;color:var(--ac);font-size:16px">›</span></div>`).join('')||`<div class="empty"><div class="ei"><i class="fas fa-building"></i></div>Filiallar yo\'q</div>`;
 }
 async function saBr(idx,brNm){
-_saBr=brNm;document.getElementById('sabranches').style.display='none';document.getElementById('sagroups').style.display='block';document.getElementById('saatt').style.display='none';document.getElementById('sabrname').innerHTML='<i class="fas fa-building-2"></i> '+brNm;
+_saBr=brNm;document.getElementById('sabranches').style.display='none';document.getElementById('sagroups').style.display='block';document.getElementById('saatt').style.display='none';document.getElementById('sabrname').innerHTML='<i class="fas fa-building"></i> '+brNm;
 const r=await fetch(`/admin/api/branch/groups?branch=${encodeURIComponent(brNm)}`).then(x=>x.json()).catch(()=>null);
 const gs=r?.groups||[];
 document.getElementById('sagrplist').innerHTML=gs.length?gs.map(g=>`<div onclick="saGrp(${g.id},'${g.group_name.replace(/'/g,"\\'")}' )" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:13px;cursor:pointer;display:flex;align-items:center;gap:10px;margin-bottom:8px;transition:border-color .1s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--bd)'"><span class="b ${SBG[g.lesson_type]||'bno'}">${g.lesson_type}</span><div><div style="font-weight:700">${g.group_name}</div><div style="font-size:10px;color:var(--tx2)"><i class="fas fa-user"></i> ${g.teacher_name} — ${Object.entries(g.day_times||{}).slice(0,2).map(([d,t])=>d.slice(0,2)+' '+t).join(', ')}</div></div><span style="margin-left:auto;color:var(--ac);font-size:16px">›</span></div>`).join(''):`<div class="empty"><div class="ei"><i class="fas fa-book"></i></div>Bu filialda guruh yo\'q</div>`;
@@ -997,7 +997,7 @@ const dayCells=allDates.map(dt=>{
 const st=dayMap[dt];
 if(!st)return`<td style="text-align:center;font-size:11px;color:var(--tx3)">—</td>`;
 const ok=st==='Kelgan'||st==='present';
-return`<td style="text-align:center;font-size:12px">${ok?'<i class="fas fa-check"></i>':'<i class="fas fa-x"></i>'}</td>`;
+return`<td style="text-align:center;font-size:12px">${ok?'<i class="fas fa-check"></i>':'<i class="fas fa-times"></i>'}</td>`;
 }).join('');
 return`<tr><td style="font-size:11px;white-space:nowrap">${i+1}. <b>${n}</b></td><td style="font-size:10px;color:var(--tx2);white-space:nowrap">${info.phone}</td>${dayCells}<td style="font-weight:700;color:${col};white-space:nowrap">${prs}/${tot} (${pct}%)</td></tr>`;
 }).join('');
@@ -1008,19 +1008,19 @@ let _payBr=null, _payGid=null, _payGnm=null;
 function renderPayBranches(){
 const brs = D?.branches || [];
 document.getElementById('pay-brlist').innerHTML = brs.length
-? brs.map((b,i)=>`<div onclick="paySelBr('${b.name.replace(/'/g,"\\'")}' )" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:13px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:border-color .1s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--bd)'"><span style="font-weight:600"><i class="fas fa-building-2"></i> ${b.name}</span><span style="color:var(--ac)">›</span></div>`).join('')
-: '<div class="empty"><div class="ei"><i class="fas fa-building-2"></i></div>Filiallar yo\'q</div>';
+? brs.map((b,i)=>`<div onclick="paySelBr('${b.name.replace(/'/g,"\\'")}' )" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:13px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:border-color .1s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--bd)'"><span style="font-weight:600"><i class="fas fa-building"></i> ${b.name}</span><span style="color:var(--ac)">›</span></div>`).join('')
+: '<div class="empty"><div class="ei"><i class="fas fa-building"></i></div>Filiallar yo\'q</div>';
 }
 function paySelBr(brNm){
 _payBr=brNm;
 document.getElementById('pay-branches').style.display='none';
 document.getElementById('pay-groups').style.display='block';
-document.getElementById('pay-brname').innerHTML='<i class="fas fa-building-2"></i> '+brNm;
+document.getElementById('pay-brname').innerHTML='<i class="fas fa-building"></i> '+brNm;
 const gs=GROUPS.filter(g=>g.branch===brNm);
 document.getElementById('pay-grplist').innerHTML=gs.length
 ? gs.map(g=>`<div onclick="paySelGrp(${g.id},'${g.group_name.replace(/'/g,"\\'")}' )" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:13px;cursor:pointer;display:flex;align-items:center;gap:10px;margin-bottom:8px;transition:border-color .1s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--bd)'">
 <span class="b ${SBG[g.lesson_type]||'bno'}">${g.lesson_type}</span>
-<div style="flex:1"><div style="font-weight:700">${g.group_name}</div><div style="font-size:10px;color:var(--tx2)"><i class="fas fa-user"></i> ${g.teacher_name||'—'} · <i class="fas fa-graduation-cap"></i> ${g.student_count||0} ta</div></div>
+<div style="flex:1"><div style="font-weight:700">${g.group_name}</div><div style="font-size:10px;color:var(--tx2)"><i class="fas fa-user"></i> ${g.teacher_name||'—'} · <i class="fas fa-user-graduate"></i> ${g.student_count||0} ta</div></div>
 <span style="color:var(--ac)">›</span></div>`).join('')
 : '<div class="empty"><div class="ei"><i class="fas fa-book"></i></div>Bu filialda guruh yo\'q</div>';
 }
@@ -1045,7 +1045,7 @@ const m=document.getElementById('pay-month').value||TODAY.slice(0,7);
 document.getElementById('pay-stats').innerHTML='<div class="ldr"><div class="spin"></div></div>';
 document.getElementById('pay-table').innerHTML='';
 const r=await fetch(`/admin/api/student_payments?group_id=${_payGid}&month=${m}`).then(x=>x.json()).catch(()=>null);
-if(!r?.ok){document.getElementById('pay-stats').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-x"></i></div>'+(r?.error||'Xatolik')+'</div>';return;}
+if(!r?.ok){document.getElementById('pay-stats').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-times"></i></div>'+(r?.error||'Xatolik')+'</div>';return;}
 const sel=document.getElementById('pay-month');
 const curVal=sel.value||m;
 sel.innerHTML=r.months_list.map(mo=>`<option value="${mo}" ${mo===curVal?'selected':''}>${fmtMonth(mo)}</option>`).join('');
@@ -1053,12 +1053,12 @@ const pct=r.paid_pct;
 const col=pct>=80?'#34d399':pct>=50?'#fbbf24':'#f87171';
 document.getElementById('pay-stats').innerHTML=`
 <div class="sc"><div class="sv" style="color:#34d399">${r.paid_count}</div><div class="sl"><i class="fas fa-check"></i> To\'ladi</div></div>
-<div class="sc"><div class="sv" style="color:#f87171">${r.unpaid_count}</div><div class="sl"><i class="fas fa-x"></i> To\'lamadi</div></div>
-<div class="sc"><div class="sv" style="color:${col}">${pct}%</div><div class="sl"><i class="fas fa-bar-chart-3"></i> Foiz</div></div>`;
+<div class="sc"><div class="sv" style="color:#f87171">${r.unpaid_count}</div><div class="sl"><i class="fas fa-times"></i> To\'lamadi</div></div>
+<div class="sc"><div class="sv" style="color:${col}">${pct}%</div><div class="sl"><i class="fas fa-chart-bar"></i> Foiz</div></div>`;
 document.getElementById('pay-progress').innerHTML=`
 <div style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:13px">
 <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:12px">
-<span style="font-weight:700"><i class="fas fa-banknote"></i> Jami yig'ilgan</span>
+<span style="font-weight:700"><i class="fas fa-money-bill-wave"></i> Jami yig'ilgan</span>
 <span style="font-weight:800;color:#34d399">${fmt(r.total_amount)} so\'m</span>
 </div>
 <div style="background:var(--bd2);border-radius:20px;height:10px;overflow:hidden">
@@ -1095,7 +1095,7 @@ ${s.paid?t('lbl_paid'):t('lbl_unpaid')}
 </td>
 <td style="font-weight:700;color:${s.paid?'#34d399':'var(--tx2)'}">${s.paid?fmt(s.amount)+' so\'m':'—'}</td>
 <td style="font-size:11px;color:var(--tx2)">${s.note||'—'}</td>
-<td><button onclick="editPay(${_payGid},this.dataset.nm,this.dataset.ph,${s.paid},${s.amount||0},this.dataset.nt)" data-nm="${s.name}" data-ph="${s.phone}" data-nt="${s.note||''}" class="btn bg" style="font-size:10px;padding:3px 8px"><i class="fas fa-edit-3"></i></button></td>
+<td><button onclick="editPay(${_payGid},this.dataset.nm,this.dataset.ph,${s.paid},${s.amount||0},this.dataset.nt)" data-nm="${s.name}" data-ph="${s.phone}" data-nt="${s.note||''}" class="btn bg" style="font-size:10px;padding:3px 8px"><i class="fas fa-edit"></i></button></td>
 </tr>`).join('')}
 </tbody>
 </table>
@@ -1114,13 +1114,13 @@ const m=document.getElementById('pay-month').value||TODAY.slice(0,7);
 const amount=parseInt(document.getElementById('sp-amount').value||0);
 const r=await api('/admin/api/payment/save',{group_id:_payGid,student_name:'__school__',student_phone:'',month:m,paid:true,amount:amount,note:'school'});
 if(r?.ok){document.getElementById('school-pay-modal').style.display='none';toast('<i class="fas fa-check"></i> Maktab to\'lovi saqlandi');await loadPayments();}
-else toast('<i class="fas fa-x"></i> '+(r?.error||'Xatolik'));
+else toast('<i class="fas fa-times"></i> '+(r?.error||'Xatolik'));
 }
 async function togglePay(gid, name, phone, newPaid, amount){
 const m=document.getElementById('pay-month').value||TODAY.slice(0,7);
 const r=await api('/admin/api/payment/save',{group_id:gid,student_name:name,student_phone:phone,month:m,paid:newPaid,amount:amount||0});
-if(r?.ok){toast(newPaid?'<i class="fas fa-check"></i> To\'landi':'<i class="fas fa-x"></i> Bekor qilindi');await loadPayments();}
-else toast('<i class="fas fa-x"></i> '+(r?.error||'Xatolik'));
+if(r?.ok){toast(newPaid?'<i class="fas fa-check"></i> To\'landi':'<i class="fas fa-times"></i> Bekor qilindi');await loadPayments();}
+else toast('<i class="fas fa-times"></i> '+(r?.error||'Xatolik'));
 }
 async function editPay(gid, name, phone, paid, amount, note){
 const m=document.getElementById('pay-month').value||TODAY.slice(0,7);
@@ -1146,7 +1146,7 @@ const amount=parseInt(document.getElementById('ep-amount').value)||0;
 const note=document.getElementById('ep-note').value.trim();
 const r=await api('/admin/api/payment/save',{group_id:gid,student_name:name,student_phone:phone,month:month,paid:paid,amount:amount,note:note});
 if(r?.ok){document.getElementById('ep-modal').style.display='none';toast('<i class="fas fa-check"></i> '+tr('Saqlandi'));await loadPayments();}
-else toast('<i class="fas fa-x"></i> '+(r?.error||'Xatolik'));
+else toast('<i class="fas fa-times"></i> '+(r?.error||'Xatolik'));
 }
 function fmtMonth(m){
 const MNS=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
@@ -1169,21 +1169,21 @@ document.getElementById('pay-sum-stats').innerHTML='<div class="ldr"><div class=
 document.getElementById('pay-sum-table').innerHTML='';
 const r=await fetch(`/admin/api/payments/summary?month=${m}`).then(x=>x.json()).catch(()=>null);
 if(!r?.ok){
-document.getElementById('pay-sum-stats').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-x"></i></div>'+(r?.error||'Xatolik')+'</div>';
+document.getElementById('pay-sum-stats').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-times"></i></div>'+(r?.error||'Xatolik')+'</div>';
 return;
 }
 const col=r.overall_pct>=80?'#34d399':r.overall_pct>=50?'#fbbf24':'#f87171';
 document.getElementById('pay-sum-stats').innerHTML=`
 <div class="sc"><div class="sv" style="color:#34d399">${r.total_paid}</div><div class="sl"><i class="fas fa-check"></i> To\'ladi</div></div>
-<div class="sc"><div class="sv" style="color:#f87171">${r.total_unpaid}</div><div class="sl"><i class="fas fa-x"></i> To\'lamadi</div></div>
-<div class="sc"><div class="sv" style="color:${col}">${r.overall_pct}%</div><div class="sl"><i class="fas fa-bar-chart-3"></i> Umumiy foiz</div></div>`;
+<div class="sc"><div class="sv" style="color:#f87171">${r.total_unpaid}</div><div class="sl"><i class="fas fa-times"></i> To\'lamadi</div></div>
+<div class="sc"><div class="sv" style="color:${col}">${r.overall_pct}%</div><div class="sl"><i class="fas fa-chart-bar"></i> Umumiy foiz</div></div>`;
 if(!r.groups.length){
-document.getElementById('pay-sum-table').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-banknote"></i></div>Bu oy uchun to\'lov ma\'lumoti yo\'q</div>';
+document.getElementById('pay-sum-table').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-money-bill-wave"></i></div>Bu oy uchun to\'lov ma\'lumoti yo\'q</div>';
 return;
 }
 const totalAmtH=`<div style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:13px;margin-bottom:12px">
 <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:12px">
-<span style="font-weight:700"><i class="fas fa-banknote"></i> Jami yig'ilgan (${fmtMonth(m)})</span>
+<span style="font-weight:700"><i class="fas fa-money-bill-wave"></i> Jami yig'ilgan (${fmtMonth(m)})</span>
 <span style="font-weight:800;color:#34d399">${fmt(r.total_amount)} so\'m</span>
 </div>
 <div style="background:var(--bd2);border-radius:20px;height:10px;overflow:hidden">
@@ -1240,14 +1240,14 @@ const br=document.getElementById('schedbr').value;document.getElementById('sched
 const r=await fetch(`/admin/api/schedule/view?branch=${encodeURIComponent(br)}`).then(x=>x.json()).catch(()=>null);
 if(!r?.ok||!r.schedules?.length){document.getElementById('schedct').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-calendar"></i></div>Jadval yo\'q</div>';return;}
 const byB={};r.schedules.forEach(s=>{if(!byB[s.branch])byB[s.branch]=[];byB[s.branch].push(s);});
-document.getElementById('schedct').innerHTML=Object.entries(byB).map(([bn,gs])=>`<div class="tw" style="margin-bottom:14px"><div class="th"><span class="tt"><i class="fas fa-building-2"></i> ${bn}</span><span class="tm">${gs.length} guruh</span></div><div style="padding:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:10px">${gs.map(g=>`<div class="schcard"><div style="font-size:13px;font-weight:700;margin-bottom:5px">${g.group_name}</div><div style="margin-bottom:6px"><span class="b ${SBG[g.lesson_type]||'bno'}">${g.lesson_type}</span></div><div style="font-size:11px;color:var(--tx2);margin-bottom:7px"><i class="fas fa-user"></i> ${g.teacher_name}</div><div style="display:flex;flex-wrap:wrap;gap:3px">${Object.entries(g.day_times||{}).map(([d,ti])=>`<span class="dtag"><i class="fas fa-calendar"></i> ${d.slice(0,3)} <i class="fas fa-clock"></i> ${ti}</span>`).join('')||(g.days||[]).map(d=>`<span class="dtag">${d.slice(0,3)}</span>`).join('')}</div><button class="btn bg" style="margin-top:8px;font-size:10px;width:100%;justify-content:center" onclick="oGM(${g.id})"><i class="fas fa-edit-3"></i> Tahrirlash</button></div>`).join('')}</div></div>`).join('');
+document.getElementById('schedct').innerHTML=Object.entries(byB).map(([bn,gs])=>`<div class="tw" style="margin-bottom:14px"><div class="th"><span class="tt"><i class="fas fa-building"></i> ${bn}</span><span class="tm">${gs.length} guruh</span></div><div style="padding:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:10px">${gs.map(g=>`<div class="schcard"><div style="font-size:13px;font-weight:700;margin-bottom:5px">${g.group_name}</div><div style="margin-bottom:6px"><span class="b ${SBG[g.lesson_type]||'bno'}">${g.lesson_type}</span></div><div style="font-size:11px;color:var(--tx2);margin-bottom:7px"><i class="fas fa-user"></i> ${g.teacher_name}</div><div style="display:flex;flex-wrap:wrap;gap:3px">${Object.entries(g.day_times||{}).map(([d,ti])=>`<span class="dtag"><i class="fas fa-calendar"></i> ${d.slice(0,3)} <i class="fas fa-clock"></i> ${ti}</span>`).join('')||(g.days||[]).map(d=>`<span class="dtag">${d.slice(0,3)}</span>`).join('')}</div><button class="btn bg" style="margin-top:8px;font-size:10px;width:100%;justify-content:center" onclick="oGM(${g.id})"><i class="fas fa-edit"></i> Tahrirlash</button></div>`).join('')}</div></div>`).join('');
 }
 async function ldSt(){
 document.getElementById('stld').style.display='flex';document.getElementById('stct').style.display='none';
 const r=await fetch('/admin/api/stats').then(x=>x.json()).catch(()=>null);
 document.getElementById('stld').style.display='none';
-if(!r){document.getElementById('stct').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-x"></i></div>Yuklanmadi</div>';document.getElementById('stct').style.display='block';return;}
-document.getElementById('stct').innerHTML=`<div class="sg"><div class="sc cgn"><div class="si"><i class="fas fa-users"></i></div><div class="sv">${r.active_users}</div><div class="sl">Faol</div></div><div class="sc crd"><div class="si"><i class="fas fa-ban"></i></div><div class="sv" style="color:#f87171">${r.blocked_users}</div><div class="sl">Bloklangan</div></div><div class="sc cog"><div class="si"><i class="fas fa-calendar"></i></div><div class="sv">${r.month_att}</div><div class="sl">Bu oy</div></div><div class="sc"><div class="si"><i class="fas fa-map-pin"></i></div><div class="sv">${r.today_att}</div><div class="sl">Bugun</div></div></div><div class="g2"><div class="sg" style="grid-template-columns:1fr 1fr 1fr;margin:0"><div class="sc"><div class="si"><i class="fas fa-laptop"></i></div><div class="sv">${r.it}</div><div class="sl">IT</div></div><div class="sc"><div class="si"><i class="fas fa-language"></i></div><div class="sv">${r.kr}</div><div class="sl">Koreys</div></div><div class="sc cgn"><div class="si"><i class="fas fa-book"></i></div><div class="sv">${r.total_groups}</div><div class="sl">Guruhlar</div></div></div><div></div></div><div class="g2" style="margin-top:14px"><div class="tw"><div class="th"><span class="tt"><i class="fas fa-trophy"></i> Filiallar reytingi</span></div>${r.top_branches?.map((b,i)=>`<div class="rnk"><div class="rn">${MED[i]||i+1+'.'}</div><div style="flex:1;font-size:12px">${b.branch}</div><div style="font-size:15px;font-weight:800;color:var(--ac)">${b.count}</div></div>`).join('')||'<div class="empty">Yo\'q</div>'}</div><div class="tw"><div class="th"><span class="tt"><i class="fas fa-crown"></i> O\'qituvchilar reytingi</span></div>${r.top_teachers?.map((t,i)=>`<div class="rnk"><div class="rn">${MED[i]||i+1+'.'}</div><div style="flex:1"><div style="font-size:12px">${t.name}</div><div style="font-size:10px;color:var(--tx2)">${t.specialty||''}</div></div><div style="font-size:15px;font-weight:800;color:var(--ac)">${t.count}</div></div>`).join('')||'<div class="empty">Yo\'q</div>'}</div></div>`;
+if(!r){document.getElementById('stct').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-times"></i></div>Yuklanmadi</div>';document.getElementById('stct').style.display='block';return;}
+document.getElementById('stct').innerHTML=`<div class="sg"><div class="sc cgn"><div class="si"><i class="fas fa-users"></i></div><div class="sv">${r.active_users}</div><div class="sl">Faol</div></div><div class="sc crd"><div class="si"><i class="fas fa-ban"></i></div><div class="sv" style="color:#f87171">${r.blocked_users}</div><div class="sl">Bloklangan</div></div><div class="sc cog"><div class="si"><i class="fas fa-calendar"></i></div><div class="sv">${r.month_att}</div><div class="sl">Bu oy</div></div><div class="sc"><div class="si"><i class="fas fa-map-marker-alt"></i></div><div class="sv">${r.today_att}</div><div class="sl">Bugun</div></div></div><div class="g2"><div class="sg" style="grid-template-columns:1fr 1fr 1fr;margin:0"><div class="sc"><div class="si"><i class="fas fa-laptop"></i></div><div class="sv">${r.it}</div><div class="sl">IT</div></div><div class="sc"><div class="si"><i class="fas fa-language"></i></div><div class="sv">${r.kr}</div><div class="sl">Koreys</div></div><div class="sc cgn"><div class="si"><i class="fas fa-book"></i></div><div class="sv">${r.total_groups}</div><div class="sl">Guruhlar</div></div></div><div></div></div><div class="g2" style="margin-top:14px"><div class="tw"><div class="th"><span class="tt"><i class="fas fa-trophy"></i> Filiallar reytingi</span></div>${r.top_branches?.map((b,i)=>`<div class="rnk"><div class="rn">${MED[i]||i+1+'.'}</div><div style="flex:1;font-size:12px">${b.branch}</div><div style="font-size:15px;font-weight:800;color:var(--ac)">${b.count}</div></div>`).join('')||'<div class="empty">Yo\'q</div>'}</div><div class="tw"><div class="th"><span class="tt"><i class="fas fa-crown"></i> O\'qituvchilar reytingi</span></div>${r.top_teachers?.map((t,i)=>`<div class="rnk"><div class="rn">${MED[i]||i+1+'.'}</div><div style="flex:1"><div style="font-size:12px">${t.name}</div><div style="font-size:10px;color:var(--tx2)">${t.specialty||''}</div></div><div style="font-size:15px;font-weight:800;color:var(--ac)">${t.count}</div></div>`).join('')||'<div class="empty">Yo\'q</div>'}</div></div>`;
 document.getElementById('stct').style.display='block';
 }
 function prevBC(){const t=document.getElementById('bctxt').value;const p=document.getElementById('bcprev');if(!t.trim()){p.style.display='none';return;}p.style.display='block';p.textContent=t;}
@@ -1256,7 +1256,7 @@ const txt=document.getElementById('bctxt').value.trim();
 const to=document.getElementById('bcto').value;
 const fileInput=document.getElementById('bcfile');
 const file=fileInput?.files?.[0];
-if(!txt&&!file){toast('<i class="fas fa-alert-triangle"></i> Matn yoki fayl kiriting');return;}
+if(!txt&&!file){toast('<i class="fas fa-exclamation-triangle"></i> Matn yoki fayl kiriting');return;}
 if(!confirm(`${to?'"'+to+'"':'Barcha foydalanuvchilar'}ga yuborilsinmi?`))return;
 const btn=document.getElementById('bcbtn');btn.disabled=true;btn.textContent='⏳ Yuborilmoqda...';
 try{
@@ -1267,28 +1267,28 @@ fd.append('specialty',to);
 fd.append('file',file);
 const resp=await fetch(_ap('/admin/api/broadcast'),{method:'POST',headers:_ah(),body:fd});
 const r=await resp.json().catch(()=>null);
-btn.disabled=false;btn.textContent='<i class="fas fa-send"></i> Yuborish';
+btn.disabled=false;btn.textContent='<i class="fas fa-paper-plane"></i> Yuborish';
 if(r?.ok){toast(`<i class="fas fa-check"></i> ${r.sent} ta yuborildi`);document.getElementById('bctxt').value='';fileInput.value='';document.getElementById('bcprev').style.display='none';await fetchAll();}
-else toast('<i class="fas fa-x"></i> '+(r?.error||'Xatolik'));
+else toast('<i class="fas fa-times"></i> '+(r?.error||'Xatolik'));
 }else{
 const r=await api('/admin/api/broadcast',{text:txt,specialty:to});
-btn.disabled=false;btn.textContent='<i class="fas fa-send"></i> Yuborish';
+btn.disabled=false;btn.textContent='<i class="fas fa-paper-plane"></i> Yuborish';
 if(r?.ok){toast(`<i class="fas fa-check"></i> ${r.sent} ta yuborildi, ${r.failed||0} ta xato`);document.getElementById('bctxt').value='';document.getElementById('bcprev').style.display='none';await fetchAll();}
-else toast('<i class="fas fa-x"></i> Xatolik');
+else toast('<i class="fas fa-times"></i> Xatolik');
 }
-}catch(e){btn.disabled=false;btn.textContent='<i class="fas fa-send"></i> Yuborish';toast('<i class="fas fa-x"></i> '+e.message);}
+}catch(e){btn.disabled=false;btn.textContent='<i class="fas fa-paper-plane"></i> Yuborish';toast('<i class="fas fa-times"></i> '+e.message);}
 }
-function rBcH(){const h=D.broadcast_history||[];document.getElementById('bchist').innerHTML=h.length?h.slice(0,12).map(x=>`<div class="bcit"><div class="bcmt">${x.date||''} · ${x.specialty||'Barcha'}</div><div style="font-size:12px;margin-bottom:6px">${(x.text||'').slice(0,100)}${(x.text?.length||0)>100?'...':''}</div><div style="display:flex;gap:5px"><span class="b bok"><i class="fas fa-check"></i> ${x.sent_count}</span>${x.failed_count?`<span class="b bbl"><i class="fas fa-x"></i> ${x.failed_count}</span>`:''}</div></div>`).join(''):`<div class="empty"><div class="ei"><i class="fas fa-megaphone"></i></div>Tarix yo\'q</div>`;}
-async function loadSalT(){const sp=document.getElementById('salsp').value;if(!sp)return;const data=await fetch(`/admin/api/teachers?specialty=${encodeURIComponent(sp)}`).then(r=>r.json()).catch(()=>[]);SALS=data||[];const s=document.getElementById('salte');s.innerHTML="<option value=''>O'qituvchi tanlang</option>"+SALS.map(t=>`<option value="${t.user_id}">${t.name}</option>`).join('');document.getElementById('salbrs').innerHTML='';document.getElementById('salbtn').style.display='none';document.getElementById('salres').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-banknote"></i></div>O\'qituvchi tanlang</div>';}
+function rBcH(){const h=D.broadcast_history||[];document.getElementById('bchist').innerHTML=h.length?h.slice(0,12).map(x=>`<div class="bcit"><div class="bcmt">${x.date||''} · ${x.specialty||'Barcha'}</div><div style="font-size:12px;margin-bottom:6px">${(x.text||'').slice(0,100)}${(x.text?.length||0)>100?'...':''}</div><div style="display:flex;gap:5px"><span class="b bok"><i class="fas fa-check"></i> ${x.sent_count}</span>${x.failed_count?`<span class="b bbl"><i class="fas fa-times"></i> ${x.failed_count}</span>`:''}</div></div>`).join(''):`<div class="empty"><div class="ei"><i class="fas fa-megaphone"></i></div>Tarix yo\'q</div>`;}
+async function loadSalT(){const sp=document.getElementById('salsp').value;if(!sp)return;const data=await fetch(`/admin/api/teachers?specialty=${encodeURIComponent(sp)}`).then(r=>r.json()).catch(()=>[]);SALS=data||[];const s=document.getElementById('salte');s.innerHTML="<option value=''>O'qituvchi tanlang</option>"+SALS.map(t=>`<option value="${t.user_id}">${t.name}</option>`).join('');document.getElementById('salbrs').innerHTML='';document.getElementById('salbtn').style.display='none';document.getElementById('salres').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-money-bill-wave"></i></div>O\'qituvchi tanlang</div>';}
 function loadSalBr(){
 const uid=parseInt(document.getElementById('salte').value);const sp=document.getElementById('salsp').value;
 const t=SALS.find(x=>x.user_id===uid);
 const grps=t?.teacher_groups||[];
-if(!grps.length){document.getElementById('salbrs').innerHTML='<div style="color:var(--tx3);font-size:11px;padding:8px 0"><i class="fas fa-alert-triangle"></i> Guruh biriktirilmagan</div>';return;}
+if(!grps.length){document.getElementById('salbrs').innerHTML='<div style="color:var(--tx3);font-size:11px;padding:8px 0"><i class="fas fa-exclamation-triangle"></i> Guruh biriktirilmagan</div>';return;}
 let h='';
 grps.forEach((g,i)=>{
 h+=`<div class="salbr">
-<div class="salbrt"><i class="fas fa-book"></i> ${g.name} <span style="font-size:10px;color:var(--tx2);font-weight:400">· <i class="fas fa-building-2"></i> ${g.branch}</span></div>`;
+<div class="salbrt"><i class="fas fa-book"></i> ${g.name} <span style="font-size:10px;color:var(--tx2);font-weight:400">· <i class="fas fa-building"></i> ${g.branch}</span></div>`;
 if(sp==='IT'){
 h+=`<div style="font-size:10px;color:var(--tx2);margin:4px 0 6px;font-weight:600">📦 250,000 UZS (8 dars/oy)</div>
 <div class="fr2">
@@ -1349,21 +1349,21 @@ bonus:parseInt(document.getElementById(`sbbonus${i}`)?.value||0)};
 });
 const btn=document.getElementById('salbtn');btn.disabled=true;btn.textContent='⏳...';
 const r=await api('/admin/api/salary',{teacher_id:uid,specialty:sp,branches});
-btn.disabled=false;btn.textContent='<i class="fas fa-banknote"></i> Hisoblash';
-if(!r?.ok){toast('<i class="fas fa-x"></i> '+(r?.error||'Xatolik'));return;}
+btn.disabled=false;btn.textContent='<i class="fas fa-money-bill-wave"></i> Hisoblash';
+if(!r?.ok){toast('<i class="fas fa-times"></i> '+(r?.error||'Xatolik'));return;}
 _salRes=r;
-document.getElementById('salres').innerHTML=`<div class="fb"><div class="ft"><i class="fas fa-banknote"></i> ${r.teacher_name}</div><span class="b ${SBG[r.specialty]||'bno'}" style="margin-bottom:12px;display:inline-block">${r.specialty}</span>${r.results.map(x=>`<div class="salbr"><div class="salbrt"><i class="fas fa-book"></i> ${x.group_name||x.branch} <span style="font-size:10px;color:var(--tx3)">· <i class="fas fa-building-2"></i> ${x.branch}</span></div><div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0"><span style="color:var(--tx2)">${sp==='IT'?`250k: ${x.s250||0}o'q×${x.l250||0}d | 400k: ${x.s400||0}o'q×${x.l400||0}d | ${x.perc}%`:'O\'quvchi: '+(x.students||0)+' ta · Imtixon: '+x.perc+'%'}</span><span style="color:var(--ac);font-weight:700">${fmt(x.gross)} so\'m</span>${x.bonus?`<div style="font-size:10px;color:#34d399;padding:2px 0">+ <i class="fas fa-gift"></i> Bonus: ${fmt(x.bonus)} so'm</div>`:''}</div></div>`).join('')}<div class="resbox"><div style="font-size:10px;color:var(--tx2)">Jami (soliqsiz)</div><div style="font-size:22px;font-weight:800;color:var(--ac)">${fmt(r.total_gross)} so\'m</div><div style="font-size:11px;color:var(--tx2);margin:5px 0">Soliq (7.5%): ${fmt(r.tax)} so\'m</div><div style="font-size:28px;font-weight:800;color:#34d399">${fmt(r.net)} so\'m</div><div style="font-size:11px;color:#34d399"><i class="fas fa-dollar-sign"></i> Qo'lga tegadi</div></div><button class="btn bpu bfull" style="margin-top:12px" onclick="dlSalE()"><i class="fas fa-download"></i> Excel yuklab olish</button></div>`;
+document.getElementById('salres').innerHTML=`<div class="fb"><div class="ft"><i class="fas fa-money-bill-wave"></i> ${r.teacher_name}</div><span class="b ${SBG[r.specialty]||'bno'}" style="margin-bottom:12px;display:inline-block">${r.specialty}</span>${r.results.map(x=>`<div class="salbr"><div class="salbrt"><i class="fas fa-book"></i> ${x.group_name||x.branch} <span style="font-size:10px;color:var(--tx3)">· <i class="fas fa-building"></i> ${x.branch}</span></div><div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0"><span style="color:var(--tx2)">${sp==='IT'?`250k: ${x.s250||0}o'q×${x.l250||0}d | 400k: ${x.s400||0}o'q×${x.l400||0}d | ${x.perc}%`:'O\'quvchi: '+(x.students||0)+' ta · Imtixon: '+x.perc+'%'}</span><span style="color:var(--ac);font-weight:700">${fmt(x.gross)} so\'m</span>${x.bonus?`<div style="font-size:10px;color:#34d399;padding:2px 0">+ <i class="fas fa-gift"></i> Bonus: ${fmt(x.bonus)} so'm</div>`:''}</div></div>`).join('')}<div class="resbox"><div style="font-size:10px;color:var(--tx2)">Jami (soliqsiz)</div><div style="font-size:22px;font-weight:800;color:var(--ac)">${fmt(r.total_gross)} so\'m</div><div style="font-size:11px;color:var(--tx2);margin:5px 0">Soliq (7.5%): ${fmt(r.tax)} so\'m</div><div style="font-size:28px;font-weight:800;color:#34d399">${fmt(r.net)} so\'m</div><div style="font-size:11px;color:#34d399"><i class="fas fa-money-bill-alt"></i> Qo'lga tegadi</div></div><button class="btn bpu bfull" style="margin-top:12px" onclick="dlSalE()"><i class="fas fa-download"></i> Excel yuklab olish</button></div>`;
 }
 async function dlSalE(){
-if(!_salRes){toast('<i class="fas fa-alert-triangle"></i> Avval hisoblang');return;}toast('⏳ Excel tayyorlanmoqda...',5000);
+if(!_salRes){toast('<i class="fas fa-exclamation-triangle"></i> Avval hisoblang');return;}toast('⏳ Excel tayyorlanmoqda...',5000);
 try{const r=await fetch('/admin/api/salary/excel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(_salRes)});if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`Oylik_${_salRes.teacher_name}.xlsx`;a.click();URL.revokeObjectURL(url);toast('<i class="fas fa-check"></i> Excel yuklab olindi');}
-catch(e){toast('<i class="fas fa-x"></i> '+e.message);}
+catch(e){toast('<i class="fas fa-times"></i> '+e.message);}
 }
-function rBrs(){const br=D.branches||[];document.getElementById('brcnt').textContent=br.length+' ta';document.getElementById('brlist').innerHTML=br.length?br.map((b,i)=>`<div class="brit"><div class="brnum">${i+1}</div><div style="flex:1"><div style="font-size:12px;font-weight:600">${b.name}</div><div style="font-size:10px;color:var(--tx2)"><i class="fas fa-map-pin"></i> ${b.lat?.toFixed(4)||'?'}, ${b.lon?.toFixed(4)||'?'}</div></div><div style="display:flex;gap:4px"><a href="https://yandex.com/maps/?pt=${b.lon},${b.lat}&z=17" target="_blank" class="btn bg" style="font-size:10px;padding:3px 8px"><i class="fas fa-map"></i></a><button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="delBr(${i})"><i class="fas fa-trash-2"></i></button></div></div>`).join(''):'<div class="empty"><div class="ei"><i class="fas fa-building-2"></i></div>Filiallar yo\u2019q</div>';}
-async function addBr(){const nm=document.getElementById('brnm').value.trim();const lt=parseFloat(document.getElementById('brlt').value);const ln=parseFloat(document.getElementById('brln').value);if(!nm||isNaN(lt)||isNaN(ln)){toast("<i class="fas fa-alert-triangle"></i> Barcha maydonlarni to'ldiring!");return;}const r=await api('/admin/api/branch/add',{name:nm,lat:lt,lon:ln});if(r?.ok){toast('<i class="fas fa-check"></i> '+tr("Filial qo'shildi"));['brnm','brlt','brln'].forEach(id=>document.getElementById(id).value='');await fetchAll();}else toast('<i class="fas fa-x"></i> Xatolik');}
-async function delBr(idx){const b=D.branches[idx];if(!confirm(`"${b?.name||idx}" o'chirilsinmi?`))return;const r=await api('/admin/api/branch/delete',{index:idx});if(r?.ok){toast('<i class="fas fa-check"></i> '+tr("Filial o'chirildi"));await fetchAll();}else toast('<i class="fas fa-x"></i> Xatolik');}
-async function dlMonthly(){const m=document.getElementById('rpmonth').value;if(!m){toast('<i class="fas fa-alert-triangle"></i> Oy tanlang');return;}const[y,mo]=m.split('-');toast('⏳ Excel tayyorlanmoqda...',7000);try{const r=await fetch(`/admin/api/report/monthly?year=${y}&month=${mo}`);if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`Davomat_${y}_${mo}.xlsx`;a.click();URL.revokeObjectURL(url);toast('<i class="fas fa-check"></i> Yuklab olindi');}catch(e){toast('<i class="fas fa-x"></i> '+e.message);}}
-async function dlSchedPdf(){toast('⏳ PDF tayyorlanmoqda...',7000);try{const r=await fetch('/admin/api/report/schedule_pdf');if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='jadval.pdf';a.click();URL.revokeObjectURL(url);toast('<i class="fas fa-check"></i> PDF yuklab olindi');}catch(e){toast('<i class="fas fa-x"></i> '+e.message);}}
+function rBrs(){const br=D.branches||[];document.getElementById('brcnt').textContent=br.length+' ta';document.getElementById('brlist').innerHTML=br.length?br.map((b,i)=>`<div class="brit"><div class="brnum">${i+1}</div><div style="flex:1"><div style="font-size:12px;font-weight:600">${b.name}</div><div style="font-size:10px;color:var(--tx2)"><i class="fas fa-map-marker-alt"></i> ${b.lat?.toFixed(4)||'?'}, ${b.lon?.toFixed(4)||'?'}</div></div><div style="display:flex;gap:4px"><a href="https://yandex.com/maps/?pt=${b.lon},${b.lat}&z=17" target="_blank" class="btn bg" style="font-size:10px;padding:3px 8px"><i class="fas fa-map"></i></a><button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="delBr(${i})"><i class="fas fa-trash"></i></button></div></div>`).join(''):'<div class="empty"><div class="ei"><i class="fas fa-building"></i></div>Filiallar yo\u2019q</div>';}
+async function addBr(){const nm=document.getElementById('brnm').value.trim();const lt=parseFloat(document.getElementById('brlt').value);const ln=parseFloat(document.getElementById('brln').value);if(!nm||isNaN(lt)||isNaN(ln)){toast("<i class='fas fa-exclamation-triangle'></i> Barcha maydonlarni to'ldiring!");return;}const r=await api('/admin/api/branch/add',{name:nm,lat:lt,lon:ln});if(r?.ok){toast('<i class="fas fa-check"></i> '+tr("Filial qo'shildi"));['brnm','brlt','brln'].forEach(id=>document.getElementById(id).value='');await fetchAll();}else toast('<i class="fas fa-times"></i> Xatolik');}
+async function delBr(idx){const b=D.branches[idx];if(!confirm(`"${b?.name||idx}" o'chirilsinmi?`))return;const r=await api('/admin/api/branch/delete',{index:idx});if(r?.ok){toast('<i class="fas fa-check"></i> '+tr("Filial o'chirildi"));await fetchAll();}else toast('<i class="fas fa-times"></i> Xatolik');}
+async function dlMonthly(){const m=document.getElementById('rpmonth').value;if(!m){toast('<i class="fas fa-exclamation-triangle"></i> Oy tanlang');return;}const[y,mo]=m.split('-');toast('⏳ Excel tayyorlanmoqda...',7000);try{const r=await fetch(`/admin/api/report/monthly?year=${y}&month=${mo}`);if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`Davomat_${y}_${mo}.xlsx`;a.click();URL.revokeObjectURL(url);toast('<i class="fas fa-check"></i> Yuklab olindi');}catch(e){toast('<i class="fas fa-times"></i> '+e.message);}}
+async function dlSchedPdf(){toast('⏳ PDF tayyorlanmoqda...',7000);try{const r=await fetch('/admin/api/report/schedule_pdf');if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='jadval.pdf';a.click();URL.revokeObjectURL(url);toast('<i class="fas fa-check"></i> PDF yuklab olindi');}catch(e){toast('<i class="fas fa-times"></i> '+e.message);}}
 function rCal(){document.getElementById('caltitle').textContent=MNS[_calM]+' '+_calY;const fd=new Date(_calY,_calM,1).getDay();const off=(fd+6)%7;const dim=new Date(_calY,_calM+1,0).getDate();const tn=new Date();const ts=`${tn.getFullYear()}-${String(tn.getMonth()+1).padStart(2,'0')}-${String(tn.getDate()).padStart(2,'0')}`;let h='';for(let i=0;i<off;i++)h+=`<div class="calday ot"></div>`;for(let d=1;d<=dim;d++){const ds=`${_calY}-${String(_calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;h+=`<div class="calday ${ds===ts?'tod':''} ${ds===_calSel?'sel':''}" onclick="calSel('${ds}')">${d}</div>`;}document.getElementById('caldays').innerHTML=h;}
 function calP(){_calM--;if(_calM<0){_calM=11;_calY--;}rCal();}
 function calN(){_calM++;if(_calM>11){_calM=0;_calY++;}rCal();}
@@ -1372,7 +1372,7 @@ async function loadDailyReport(){
 if(!_calSel)return;
 document.getElementById('pdfprev').innerHTML='<div class="ldr"><div class="spin"></div></div>';
 const r=await fetch(`/admin/api/attendance?date=${_calSel}`).then(x=>x.json()).catch(()=>null);
-if(!r){document.getElementById('pdfprev').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-x"></i></div>Xatolik</div>';return;}
+if(!r){document.getElementById('pdfprev').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-times"></i></div>Xatolik</div>';return;}
 const att=r.attendance||[];
 const act=USERS.filter(u=>u.status!=='blocked'&&u.status!=='deleted');
 const prs=new Set(att.map(a=>a.user_id));
@@ -1382,16 +1382,16 @@ if(att.length){
 html+=`<div class="tw" style="margin-bottom:10px"><div class="th"><span class="tt"><i class="fas fa-check"></i> Kelganlar</span></div><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Ism</th><th>Filial</th><th>Vaqt</th></tr></thead><tbody>${att.map((a,i)=>{const u=USERS.find(x=>x.user_id===a.user_id);return`<tr><td>${i+1}</td><td>${u?.name||a.user_id}</td><td style="font-size:11px">${a.branch}</td><td style="color:var(--ac);font-weight:700">${(a.time||'').slice(0,5)}</td></tr>`;}).join('')}</tbody></table></div></div>`;
 }
 if(abs.length){
-html+=`<div class="tw"><div class="th"><span class="tt"><i class="fas fa-x"></i> Kelmaganlar</span></div><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Ism</th><th>Soha</th></tr></thead><tbody>${abs.map((u,i)=>`<tr style="opacity:.5"><td>${i+1}</td><td>${u.name}</td><td><span class="b ${SBG[u.specialty]||'bno'}">${u.specialty||'—'}</span></td></tr>`).join('')}</tbody></table></div></div>`;
+html+=`<div class="tw"><div class="th"><span class="tt"><i class="fas fa-times"></i> Kelmaganlar</span></div><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Ism</th><th>Soha</th></tr></thead><tbody>${abs.map((u,i)=>`<tr style="opacity:.5"><td>${i+1}</td><td>${u.name}</td><td><span class="b ${SBG[u.specialty]||'bno'}">${u.specialty||'—'}</span></td></tr>`).join('')}</tbody></table></div></div>`;
 }
 if(!att.length&&!abs.length) html='<div class="empty"><div class="ei"><i class="fas fa-calendar"></i></div>Bu kunda davomat ma\'lumoti yo\'q</div>';
 document.getElementById('pdfprev').innerHTML=html;
 }
 async function dlDailyPdf(){
-if(!_calSel){toast('<i class="fas fa-alert-triangle"></i> Sana tanlang');return;}toast('⏳ PDF tayyorlanmoqda...',7000);
+if(!_calSel){toast('<i class="fas fa-exclamation-triangle"></i> Sana tanlang');return;}toast('⏳ PDF tayyorlanmoqda...',7000);
 const btn=document.getElementById('pdfbtn');btn.disabled=true;btn.textContent='⏳ Tayyorlanmoqda...';
-try{const r=await fetch(`/admin/api/report/daily_pdf?date=${_calSel}`);btn.disabled=false;btn.textContent='<i class="fas fa-file-text"></i> PDF ko\'rish / yuklash';if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);document.getElementById('pdfprev').innerHTML=`<div style="display:flex;gap:7px;margin-top:8px"><button class="btn bpu" onclick="window.open('${url}','_blank')" style="flex:1;justify-content:center"><i class="fas fa-eye"></i> Ko'rish</button><button class="btn bp" onclick="dlBlob('${url}','davomat_${_calSel}.pdf')" style="flex:1;justify-content:center"><i class="fas fa-download"></i> Yuklash</button></div>`;toast('<i class="fas fa-check"></i> PDF tayyor');}
-catch(e){btn.disabled=false;btn.textContent='<i class="fas fa-file-text"></i> PDF ko\'rish / yuklash';toast('<i class="fas fa-x"></i> '+e.message);}
+try{const r=await fetch(`/admin/api/report/daily_pdf?date=${_calSel}`);btn.disabled=false;btn.textContent='<i class="fas fa-file-pdf"></i> PDF ko\'rish / yuklash';if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);document.getElementById('pdfprev').innerHTML=`<div style="display:flex;gap:7px;margin-top:8px"><button class="btn bpu" onclick="window.open('${url}','_blank')" style="flex:1;justify-content:center"><i class="fas fa-eye"></i> Ko'rish</button><button class="btn bp" onclick="dlBlob('${url}','davomat_${_calSel}.pdf')" style="flex:1;justify-content:center"><i class="fas fa-download"></i> Yuklash</button></div>`;toast('<i class="fas fa-check"></i> PDF tayyor');}
+catch(e){btn.disabled=false;btn.textContent='<i class="fas fa-file-pdf"></i> PDF ko\'rish / yuklash';toast('<i class="fas fa-times"></i> '+e.message);}
 }
 function dlBlob(url,fn){const a=document.createElement('a');a.href=url;a.download=fn;a.click();}
 applyLang();
@@ -1400,13 +1400,13 @@ setInterval(fetchAll,120000);
 async function loadApps(){
 document.getElementById('apps-table').innerHTML='<div class="ldr"><div class="spin"></div></div>';
 const r=await fetch('/admin/api/applications',{credentials:'include'}).then(x=>x.json()).catch(()=>null);
-if(!r?.ok){document.getElementById('apps-table').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-x"></i></div>Yuklanmadi</div>';return;}
+if(!r?.ok){document.getElementById('apps-table').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-times"></i></div>Yuklanmadi</div>';return;}
 const apps=r.applications||[];
 document.getElementById('app-cnt').textContent=apps.length+' ta';
 const newCount=apps.filter(a=>a.status==='new').length;
 const badge=document.getElementById('nap');
 if(newCount>0){badge.textContent=newCount;badge.style.display='';}else{badge.style.display='none';}
-if(!apps.length){document.getElementById('apps-table').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-mail"></i></div>Hozircha ariza yo\u2019q</div>';return;}
+if(!apps.length){document.getElementById('apps-table').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-envelope"></i></div>Hozircha ariza yo\u2019q</div>';return;}
 const statusColor={'new':'#f59e0b','contacted':'#3b82f6','enrolled':'#10b981','cancelled':'#ef4444'};
 const statusLabel={'new':'Yangi','contacted':'Bog\u2019lanildi','enrolled':'Yozildi','cancelled':'Bekor'};
 document.getElementById('apps-table').innerHTML=`
@@ -1430,12 +1430,12 @@ document.getElementById('apps-table').innerHTML=`
 }
 async function updateAppStatus(id,status){
 const r=await fetch('/admin/api/application/status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,status}),credentials:'include'}).then(x=>x.json()).catch(()=>null);
-if(r?.ok)toast('<i class="fas fa-check"></i> Holat yangilandi');else toast('<i class="fas fa-x"></i> Xato');
+if(r?.ok)toast('<i class="fas fa-check"></i> Holat yangilandi');else toast('<i class="fas fa-times"></i> Xato');
 }
 async function loadNewsAdmin(){
 document.getElementById('news-admin-list').innerHTML='<div class="ldr"><div class="spin"></div></div>';
 const r=await fetch('/admin/api/news',{credentials:'include'}).then(x=>x.json()).catch(()=>null);
-if(!r?.ok){document.getElementById('news-admin-list').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-x"></i></div>Yuklanmadi</div>';return;}
+if(!r?.ok){document.getElementById('news-admin-list').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-times"></i></div>Yuklanmadi</div>';return;}
 const news=r.news||[];
 if(!news.length){document.getElementById('news-admin-list').innerHTML='<div class="empty"><div class="ei"><i class="fas fa-newspaper"></i></div>Hozircha yangilik yo\u2019q</div>';return;}
 document.getElementById('news-admin-list').innerHTML=news.map(n=>`
@@ -1447,8 +1447,8 @@ ${n.image_url?`<img src="${n.image_url}" style="width:80px;height:60px;object-fi
 <div style="font-size:11px;color:var(--tx2)"><i class="fas fa-calendar"></i> ${n.created_at} • ${n.is_published?'<span style="color:#10b981"><i class="fas fa-check"></i> Nashr</span>':'<span style="color:#f59e0b"><i class="fas fa-pause"></i> Yashirin</span>'}</div>
 </div>
 <div style="display:flex;gap:6px;flex-shrink:0">
-<button class="btn bp" style="padding:5px 10px;font-size:12px" onclick="openNewsForm(${JSON.stringify(n).replace(/"/g,'&quot;')})"><i class="fas fa-edit-3"></i></button>
-<button class="btn bd" style="padding:5px 10px;font-size:12px" onclick="deleteNews(${n.id})"><i class="fas fa-trash-2"></i></button>
+<button class="btn bp" style="padding:5px 10px;font-size:12px" onclick="openNewsForm(${JSON.stringify(n).replace(/"/g,'&quot;')})"><i class="fas fa-edit"></i></button>
+<button class="btn bd" style="padding:5px 10px;font-size:12px" onclick="deleteNews(${n.id})"><i class="fas fa-trash"></i></button>
 </div>
 </div>`).join('');
 }
@@ -1469,7 +1469,7 @@ document.getElementById('nf-title-kr').value=n?n.title_kr||'':'';
 document.getElementById('nf-body-kr').value=n?n.body_kr||'':'';
 document.getElementById('nf-img').value=n?n.image_url:'';
 document.getElementById('nf-pub').checked=n?n.is_published:true;
-document.getElementById('news-form-title').innerHTML=n?'<i class="fas fa-edit-3"></i> Yangilikni tahrirlash':'<i class="fas fa-plus"></i> Yangi yangilik';
+document.getElementById('news-form-title').innerHTML=n?'<i class="fas fa-edit"></i> Yangilikni tahrirlash':'<i class="fas fa-plus"></i> Yangi yangilik';
 nfTab('uz',document.querySelector('#news-form-wrap .tab'));
 document.getElementById('news-form-wrap').scrollIntoView({behavior:'smooth'});
 }
@@ -1483,15 +1483,15 @@ const title_kr=document.getElementById('nf-title-kr').value.trim();
 const body_kr=document.getElementById('nf-body-kr').value.trim();
 const image_url=document.getElementById('nf-img').value.trim();
 const is_published=document.getElementById('nf-pub').checked;
-if(!title||!body){toast('<i class="fas fa-x"></i> UZ sarlavha va matn kerak');return;}
+if(!title||!body){toast('<i class="fas fa-times"></i> UZ sarlavha va matn kerak');return;}
 const r=await fetch(_ap('/admin/api/news/save'),{method:'POST',headers:Object.assign({'Content-Type':'application/json'},_ah()),body:JSON.stringify({id:id||null,title,body,title_ru,body_ru,title_kr,body_kr,image_url,is_published})}).then(x=>x.json()).catch(()=>null);
 if(r?.ok){toast('<i class="fas fa-check"></i> Saqlandi');document.getElementById('news-form-wrap').style.display='none';loadNewsAdmin();}
-else toast('<i class="fas fa-x"></i> '+(r?.error||'Xato'));
+else toast('<i class="fas fa-times"></i> '+(r?.error||'Xato'));
 }
 async function deleteNews(id){
 if(!confirm('Yangilikni o\u2019chirasizmi?'))return;
 const r=await fetch('/admin/api/news/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id}),credentials:'include'}).then(x=>x.json()).catch(()=>null);
-if(r?.ok){toast('<i class="fas fa-check"></i> O\u2019chirildi');loadNewsAdmin();}else toast('<i class="fas fa-x"></i> Xato');
+if(r?.ok){toast('<i class="fas fa-check"></i> O\u2019chirildi');loadNewsAdmin();}else toast('<i class="fas fa-times"></i> Xato');
 }
 async function loadSiteConfig(){
 try{
@@ -1530,7 +1530,7 @@ for(const k of keys){const el=document.getElementById('sc-'+k);if(el)data[k]=el.
 const r=await fetch(_ap('/admin/api/site/config'),{method:'POST',headers:Object.assign({'Content-Type':'application/json'},_ah()),body:JSON.stringify(data)}).then(x=>x.json()).catch(()=>null);
 const msg=document.getElementById('site-save-msg');
 if(r?.ok){msg.innerHTML='<i class="fas fa-check"></i> Saqlandi!';msg.style.color='var(--gr)';toast('<i class="fas fa-check"></i> Sayt sozlamalari saqlandi');}
-else{msg.innerHTML='<i class="fas fa-x"></i> Xato';msg.style.color='#e53935';}
+else{msg.innerHTML='<i class="fas fa-times"></i> Xato';msg.style.color='#e53935';}
 setTimeout(()=>msg.textContent='',3000);
 }</script>
 
@@ -1548,7 +1548,7 @@ setTimeout(()=>msg.textContent='',3000);
 <div id="ep-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);align-items:flex-end;justify-content:center">
   <div style="background:var(--card);border-radius:16px 16px 0 0;padding:20px 18px 32px;width:100%;max-width:500px">
     <div style="display:flex;align-items:center;margin-bottom:16px">
-      <b style="flex:1;font-size:14px"><i class="fas fa-banknote"></i> <span id="ep-modal-title"></span></b>
+      <b style="flex:1;font-size:14px"><i class="fas fa-money-bill-wave"></i> <span id="ep-modal-title"></span></b>
       <button onclick="document.getElementById('ep-modal').style.display='none'" style="background:var(--bd2);border:none;border-radius:8px;padding:5px 12px;color:var(--tx);cursor:pointer;font-family:inherit">✕</button>
     </div>
     <input type="hidden" id="ep-gid"><input type="hidden" id="ep-name-h">
