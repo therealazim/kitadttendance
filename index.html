@@ -236,7 +236,7 @@ footer{background:var(--navy);padding:28px 5% 0;}
     <div class="hero-btns">
       <a href="#apply" class="btn-primary" data-i18n="btn_apply">Ariza qoldirish</a>
       <a href="tel:+998508182280" class="btn-secondary"><i class="lucide lucide-phone-alt"></i> Telefon qilish</a>
-      <a href="https://t.me/Hancom_A" class="btn-secondary" target="_blank" data-i18n="btn_telegram"><i class="fab fa-telegram"></i> Telegram</a>
+      <a href="https://t.me/Hancom_A" class="btn-secondary" target="_blank" data-i18n="btn_telegram"><i class="lucide lucide-send"></i> Telegram</a>
     </div>
   </div>
 </section>
@@ -750,7 +750,7 @@ async function loadBranchesMap() {
         const typeLabel = type === 'IT' ? '<i class="lucide lucide-laptop-code"></i> IT' : type === 'Koreys tili' ? '<i class="lucide lucide-language"></i> Koreys tili' : '<i class="lucide lucide-building"></i> Ofis';
         rows += `<div class="map-popup-item">
           <span class="map-popup-type ${cls}">${typeLabel}</span>
-          <span class="map-popup-time"><i class="far fa-clock"></i> ${schedule}</span>
+          <span class="map-popup-time"><i class="lucide lucide-clock"></i> ${schedule}</span>
         </div>`;
         const safeType = type.replace(/'/g, "\\'");
         const safeBranch = branch.name.replace(/'/g, "\\'");
