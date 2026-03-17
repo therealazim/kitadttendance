@@ -235,7 +235,7 @@ footer{background:var(--navy);padding:28px 5% 0;}
     <div class="hero-btns">
       <a href="#apply" class="btn-primary" data-i18n="btn_apply">Ariza qoldirish</a>
       <a href="tel:+998508182280" class="btn-secondary">fas fa-phone"></i> Telefon qilish</a>
-      <a href="https://t.me/Hancom_A" class="btn-secondary" target="_blank" data-i18n="btn_telegram">fas fa-send"></i> Telegram</a>
+      <a href="https://t.me/Hancom_A" class="btn-secondary" target="_blank" data-i18n="btn_telegram"><i class="fas fa-paper-plane"></i> Telegram</a>
     </div>
   </div>
 </section>
@@ -344,7 +344,7 @@ footer{background:var(--navy);padding:28px 5% 0;}
       </select>
     </div>
     <div class="fg"><label data-i18n="form_extra">Qo'shimcha</label><textarea id="apply-message" rows="3" placeholder="Savolingiz yoki izohingiz..."></textarea></div>
-    <button class="apply-btn" onclick="submitApply()" data-i18n="form_submit">fas fa-send"></i> Ariza yuborish</button>
+    <button class="apply-btn" onclick="submitApply()" data-i18n="form_submit"><i class="fas fa-paper-plane"></i> Ariza yuborish</button>
     <div class="apply-success" id="apply-success">Arizangiz qabul qilindi! Tez orada siz bilan bog'lanamiz.</div>
   </div>
 </section>
@@ -366,10 +366,10 @@ footer{background:var(--navy);padding:28px 5% 0;}
   <div class="section-tag" data-i18n="sec_contact">Aloqa</div>
   <h2 class="section-title" data-i18n="contact_title">Biz bilan bog'laning</h2>
   <div class="contact-items-wrap">
-      <div class="contact-item"><div class="contact-icon">fas fa-map-pin"></i></div><div><div class="contact-label" data-i18n="contact_address_lbl">Manzil</div><div class="contact-value" id="contact-address">Shota Rustaveli ko'chasi 156</div></div></div>
-      <div class="contact-item"><div class="contact-icon">fas fa-phone"></i></div><div><div class="contact-label" data-i18n="contact_phone_lbl">Telefon</div><div class="contact-value"><a id="contact-phone-link" href="tel:+998508182280">+998 50 818 22 80</a></div></div></div>
-      <div class="contact-item"><div class="contact-icon">fas fa-send"></i></div><div><div class="contact-label" data-i18n="contact_telegram_lbl">Telegram</div><div class="contact-value"><a id="contact-telegram-link" href="https://t.me/Hancom_A" target="_blank">@Hancom_A</a></div></div></div>
-      <div class="contact-item"><div class="contact-icon">fas fa-instagram"></i></div><div><div class="contact-label" data-i18n="contact_instagram_lbl">Instagram</div><div class="contact-value"><a id="contact-instagram-link" href="https://instagram.com/hancomacademy.uz" target="_blank">@hancomacademy.uz</a></div></div></div>
+      <div class="contact-item"><div class="contact-icon"><i class="fas fa-map-pin"></i></div><div><div class="contact-label" data-i18n="contact_address_lbl">Manzil</div><div class="contact-value" id="contact-address">Shota Rustaveli ko'chasi 156</div></div></div>
+      <div class="contact-item"><div class="contact-icon"><i class="fas fa-phone"></i></div><div><div class="contact-label" data-i18n="contact_phone_lbl">Telefon</div><div class="contact-value"><a id="contact-phone-link" href="tel:+998508182280">+998 50 818 22 80</a></div></div></div>
+      <div class="contact-item"><div class="contact-icon"><i class="fas fa-paper-plane"></i></div><div><div class="contact-label" data-i18n="contact_telegram_lbl">Telegram</div><div class="contact-value"><a id="contact-telegram-link" href="https://t.me/Hancom_A" target="_blank">@Hancom_A</a></div></div></div>
+      <div class="contact-item"><div class="contact-icon"><i class="fab fa-instagram"></i></div><div><div class="contact-label" data-i18n="contact_instagram_lbl">Instagram</div><div class="contact-value"><a id="contact-instagram-link" href="https://instagram.com/hancomacademy.uz" target="_blank">@hancomacademy.uz</a></div></div></div>
   </div>
 </section>
 
@@ -418,7 +418,7 @@ const LANGS = {
     contact_telegram_lbl:"Telegram", contact_instagram_lbl:"Instagram",
     form_name:"Ismingiz *", form_phone:"Telefon raqam *",
     form_course:"Kurs tanlang", form_extra:"Qo'shimcha",
-    form_submit:"<i class='fas fa-send'></i> Ariza yuborish",
+    form_submit:"<i class='fas fa-paper-plane'></i> Ariza yuborish",
     form_sending:"Yuborilmoqda...",
     form_success:"Arizangiz qabul qilindi! Tez orada siz bilan bog'lanamiz.",
     form_err_name:"Ismingizni kiriting", form_err_phone:"Telefon raqamingizni kiriting",
@@ -457,7 +457,7 @@ const LANGS = {
     contact_telegram_lbl:"Telegram", contact_instagram_lbl:"Instagram",
     form_name:"Ваше имя *", form_phone:"Номер телефона *",
     form_course:"Выбрать курс", form_extra:"Дополнительно",
-    form_submit:"<i class='fas fa-send'></i> Отправить заявку",
+    form_submit:"<i class='fas fa-paper-plane'></i> Отправить заявку",
     form_sending:"Отправляется...",
     form_success:"Ваша заявка принята! Мы свяжемся с вами в ближайшее время.",
     form_err_name:"Введите ваше имя", form_err_phone:"Введите номер телефона",
@@ -496,7 +496,7 @@ const LANGS = {
     contact_telegram_lbl:"텔레그램", contact_instagram_lbl:"인스타그램",
     form_name:"성함 *", form_phone:"전화번호 *",
     form_course:"강좌 선택", form_extra:"추가 사항",
-    form_submit:"<i class='fas fa-send'></i> 신청서 제출",
+    form_submit:"<i class='fas fa-paper-plane'></i> 신청서 제출",
     form_sending:"전송 중...",
     form_success:"신청서가 접수되었습니다! 곧 연락드리겠습니다.",
     form_err_name:"성함을 입력해 주세요", form_err_phone:"전화번호를 입력해 주세요",
@@ -764,7 +764,7 @@ async function loadBranchesMap() {
         <h4>fas fa-building"></i> ${branch.name}</h4>
         ${rows}
         <div style="margin-top:10px;display:flex;flex-direction:column;gap:5px">${enrollBtns}</div>
-        <a href="${yandexUrl}" target="_blank" rel="noopener" style="display:block;margin-top:8px;text-align:center;font-size:11px;color:#555;text-decoration:none;padding:5px 8px;border:1px solid #ddd;border-radius:7px;background:#f9f9f9">fas fa-map-pin"></i> Yandex Maps — marshrut</a>
+        <a href="${yandexUrl}" target="_blank" rel="noopener" style="display:block;margin-top:8px;text-align:center;font-size:11px;color:#555;text-decoration:none;padding:5px 8px;border:1px solid #ddd;border-radius:7px;background:#f9f9f9"><i class="fas fa-map-marker-alt"></i> Yandex Maps — marshrut</a>
       </div>`;
     }
 
@@ -772,7 +772,7 @@ async function loadBranchesMap() {
     const locBtn = L.control({ position: 'topright' });
     locBtn.onAdd = function() {
       const btn = L.DomUtil.create('button', '');
-      btn.innerHTML = 'fas fa-send"></i>';
+      btn.innerHTML = '<i class="fas fa-location-arrow"></i>';
       btn.title = 'Mening joylashuvim';
       btn.style.cssText = 'width:34px;height:34px;background:white;border:2px solid rgba(0,0,0,.2);border-radius:4px;cursor:pointer;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 5px rgba(0,0,0,.2)';
       L.DomEvent.on(btn, 'click', function() {
@@ -783,7 +783,7 @@ async function loadBranchesMap() {
           L.circleMarker(latlng, {
             radius: 10, fillColor: '#1565C0', color: 'white',
             weight: 3, opacity: 1, fillOpacity: 0.9
-          }).addTo(_map).bindPopup('fas fa-map-pin"></i> Siz shu yerdasiz').openPopup();
+          }).addTo(_map).bindPopup('<i class="fas fa-map-marker-alt"></i> Siz shu yerdasiz').openPopup();
         }, function() { alert("Joylashuv aniqlanmadi"); });
       });
       return btn;
