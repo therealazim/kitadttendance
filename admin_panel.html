@@ -499,6 +499,7 @@
 <script>let D=null,USERS=[],GROUPS=[],SALS=[];
 function _ap(p){const u=new URLSearchParams(window.location.search).get('p');return u?p+'?p='+u:p;}
 function _ah(){const u=new URLSearchParams(window.location.search).get('p');return u?{Authorization:'Bearer '+u}:{};}
+if(!new URLSearchParams(window.location.search).get('p')){location.href='/admin';}
 let _uF='',_gid=null,_gdat=null,_cgS=[],_calY,_calM,_calSel=null,_saBr=null,_saGid=null,_salRes=null;
 const TODAY=new Date().toISOString().slice(0,10);
 const DAYS=['Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba','Yakshanba'];
@@ -701,13 +702,13 @@ function ini(n){if(!n)return'?';const p=n.trim().split(' ');return p.length>=2?(
 function fmt(n){return Math.round(n).toLocaleString('uz-UZ');}
 async function logout(){
 if(!confirm('Chiqishni tasdiqlaysizmi?'))return;
-await fetch('/admin/logout',{method:'POST'});
-location.reload();
+localStorage.removeItem('admp');
+location.href='/admin';
 }
 async function fetchAll(){
 try{
 document.getElementById('updlbl').textContent=t('txt_loading');
-const r=await fetch('/admin/api/data');
+const r=await fetch(_ap('/admin/api/data'));
 if(r.status===401){document.getElementById('updlbl').textContent='<i class="fas fa-times"></i> Server xato 401';return;}
 if(!r.ok)throw new Error('HTTP '+r.status);
 const txt=await r.text();
