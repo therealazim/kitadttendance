@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>HANCOM</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0f1724;--card:#1a2332;--card2:#212f42;
+  --tx:#edf2ff;--tx2:#8899b0;--tx3:#3d4f65;
+  --ac:#4f8ef7;--gn:#10b981;--rd:#ef4444;--og:#f59e0b;--pu:#8b5cf6;
+  --bd:rgba(255,255,255,.08);--bd2:rgba(255,255,255,.13);
+}
+html,body{height:100%;background:var(--bg);color:var(--tx);font-family:'Inter',sans-serif;font-size:13px;}
+body{padding-bottom:calc(80px + env(safe-area-inset-bottom));overflow-x:hidden;}
+
+/* ── BOTTOM NAV ── */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--bd);display:flex;z-index:200;padding-bottom:env(safe-area-inset-bottom);}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:9px 4px 7px;cursor:pointer;border:none;background:none;color:var(--tx2);font-family:'Inter',sans-serif;transition:color .12s;font-size:9px;gap:3px;}
+.bn .bi{font-size:20px;}
+.bn.on{color:var(--ac);}
+
+/* ── SCREEN ── */
+.sc{display:none;padding:14px 14px calc(70px + env(safe-area-inset-bottom));}
+.sc.on{display:block;}
+@keyframes fin{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.sc.on{animation:fin .18s ease;}
+
+/* ── HEADER ── */
+.phdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.phdr-back{background:none;border:none;color:var(--ac);font-size:22px;cursor:pointer;padding:0 6px 0 0;}
+.phdr-title{font-size:16px;font-weight:800;flex:1;}
+
+/* ── CARDS ── */
+.card{background:var(--card);border:1px solid var(--bd);border-radius:13px;margin-bottom:11px;}
+.card-hdr{padding:12px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:8px;}
+.card-title{font-size:13px;font-weight:700;flex:1;}
+.card-body{padding:13px 14px;}
+
+/* ── STAT GRID ── */
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:11px;}
+.scard{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:13px;position:relative;overflow:hidden;}
+.scard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--cc,linear-gradient(90deg,var(--ac),var(--pu)));}
+.scard.gn::before{background:linear-gradient(90deg,var(--gn),#34d399);}
+.scard.og::before{background:linear-gradient(90deg,var(--og),#fbbf24);}
+.scard.rd::before{background:linear-gradient(90deg,var(--rd),#f87171);}
+.sv{font-size:26px;font-weight:800;line-height:1;margin-bottom:3px;}
+.sl{font-size:10px;color:var(--tx2);}
+.si{font-size:18px;margin-bottom:6px;}
+
+/* ── SCHEDULE ── */
+.sch-card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:13px;margin-bottom:9px;}
+.sch-card.today{border-color:rgba(79,142,247,.35);background:linear-gradient(135deg,rgba(79,142,247,.06),rgba(139,92,246,.04));}
+.sch-name{font-size:14px;font-weight:700;margin-bottom:5px;}
+.sch-meta{font-size:11px;color:var(--tx2);margin-bottom:7px;}
+.dtag{font-size:9px;padding:2px 8px;border-radius:20px;background:rgba(79,142,247,.1);color:var(--ac);border:1px solid rgba(79,142,247,.2);display:inline-block;margin:2px;}
+.dtag.act{background:rgba(16,185,129,.15);color:#34d399;border-color:rgba(16,185,129,.25);}
+
+/* ── GROUP LIST ── */
+.grp-item{display:flex;align-items:center;gap:11px;padding:12px 14px;border-bottom:1px solid var(--bd);cursor:pointer;transition:background .1s;}
+.grp-item:last-child{border-bottom:none;}
+.grp-item:active{background:rgba(255,255,255,.03);}
+.gi-av{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;}
+.gi-info{flex:1;min-width:0;}
+.gi-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.gi-meta{font-size:10px;color:var(--tx2);margin-top:2px;}
+.gi-arr{color:var(--tx3);font-size:18px;}
+
+/* ── BADGE ── */
+.b{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;white-space:nowrap;}
+.bit{background:rgba(79,142,247,.12);color:#4f8ef7;border:1px solid rgba(79,142,247,.25);}
+.bkr{background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.25);}
+.bok{background:rgba(16,185,129,.12);color:#34d399;border:1px solid rgba(16,185,129,.25);}
+.btd{background:rgba(79,142,247,.1);color:var(--ac);border:1px solid rgba(79,142,247,.2);}
+
+/* ── STUDENT LIST ── */
+.std-item{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--bd);}
+.std-item:last-child{border-bottom:none;}
+.std-num{width:26px;height:26px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--tx2);flex-shrink:0;}
+.std-info{flex:1;min-width:0;}
+.std-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.std-phone{font-size:10px;color:var(--tx2);}
+.std-acts{display:flex;gap:5px;flex-shrink:0;}
+
+/* ── PAYMENT ITEM ── */
+.pay-item{padding:13px 14px;border-bottom:1px solid var(--bd);cursor:pointer;transition:background .1s;}
+.pay-item:last-child{border-bottom:none;}
+.pay-item:active{background:rgba(255,255,255,.02);}
+.pay-item.paid{background:rgba(16,185,129,.04);}
+.pay-top{display:flex;align-items:center;gap:9px;margin-bottom:5px;}
+.pay-check{width:26px;height:26px;border-radius:50%;border:2px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;transition:.12s;}
+.pay-item.paid .pay-check{background:var(--gn);border-color:var(--gn);color:#fff;}
+.pay-name{font-size:13px;font-weight:600;flex:1;}
+.pay-amount{font-size:12px;font-weight:700;color:var(--gn);}
+.pay-note{font-size:10px;color:var(--tx2);margin-left:35px;}
+
+/* ── BUTTONS ── */
+.btn{padding:8px 14px;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:5px;transition:all .12s;white-space:nowrap;}
+.btn:active{transform:scale(.96);}
+.bp{background:var(--ac);color:#fff;}
+.bd{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.25);}
+.bs{background:rgba(16,185,129,.12);color:#34d399;border:1px solid rgba(16,185,129,.25);}
+.bg{background:var(--card2);color:var(--tx2);border:1px solid var(--bd2);}
+.bfull{width:100%;justify-content:center;padding:13px;font-size:13px;border-radius:12px;}
+
+/* ── FORM ── */
+.fg{margin-bottom:11px;}
+.lbl{display:block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--tx2);margin-bottom:5px;}
+.inp{width:100%;background:var(--card2);border:1px solid var(--bd2);border-radius:9px;padding:10px 12px;color:var(--tx);font-size:13px;font-family:'Inter',sans-serif;outline:none;}
+.inp:focus{border-color:var(--ac);}
+select.inp{cursor:pointer;}
+input[type=month].inp{color-scheme:dark;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--bd);}
+.toggle-row:last-child{border-bottom:none;}
+.toggle-lbl{font-size:12px;font-weight:600;}
+.toggle{position:relative;width:44px;height:24px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.tslider{position:absolute;inset:0;background:var(--card2);border-radius:12px;cursor:pointer;transition:.2s;border:1px solid var(--bd2);}
+.tslider:before{content:'';position:absolute;width:18px;height:18px;left:2px;top:2px;background:#fff;border-radius:50%;transition:.2s;}
+input:checked+.tslider{background:var(--gn);border-color:var(--gn);}
+input:checked+.tslider:before{transform:translateX(20px);}
+
+/* ── PROFILE ── */
+.prof-card{background:linear-gradient(135deg,rgba(79,142,247,.1),rgba(139,92,246,.08));border:1px solid rgba(79,142,247,.2);border-radius:16px;padding:20px;text-align:center;margin-bottom:13px;}
+.prof-av{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;margin:0 auto 10px;}
+.prof-name{font-size:18px;font-weight:800;margin-bottom:4px;}
+.prof-spec{font-size:12px;color:var(--tx2);}
+
+/* ── BRANCH ── */
+.br-item{display:flex;align-items:center;gap:11px;padding:12px 14px;border-bottom:1px solid var(--bd);}
+.br-item:last-child{border-bottom:none;}
+.br-num{width:32px;height:32px;background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--ac);flex-shrink:0;}
+.br-info{flex:1;}
+.br-name{font-size:12px;font-weight:700;}
+.br-coord{font-size:10px;color:var(--tx2);}
+
+/* ── MODAL ── */
+.overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);display:none;align-items:flex-end;justify-content:center;padding:0;}
+.overlay.open{display:flex;}
+.modal{background:var(--card);border-radius:20px 20px 0 0;padding:20px;width:100%;max-height:88vh;overflow-y:auto;animation:mup .2s ease;}
+@keyframes mup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.modal-title{font-size:15px;font-weight:800;}
+.modal-close{background:none;border:none;color:var(--tx2);font-size:22px;cursor:pointer;padding:0;}
+.drag-handle{width:36px;height:4px;background:var(--bd2);border-radius:2px;margin:0 auto 14px;}
+
+/* ── LOADER ── */
+.ldr{display:flex;align-items:center;justify-content:center;padding:40px;gap:10px;color:var(--tx2);}
+.spin{width:24px;height:24px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0;}
+@keyframes sp{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:32px 16px;color:var(--tx2);}
+.empty .ei{font-size:36px;margin-bottom:8px;}
+
+/* ── TOAST ── */
+.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%) translateY(-70px);background:#1e2d3d;border:1px solid var(--bd2);border-radius:10px;padding:9px 18px;font-size:12px;font-weight:500;z-index:9999;transition:.22s;max-width:90vw;text-align:center;pointer-events:none;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.err{border-color:rgba(239,68,68,.3);color:#f87171;}
+.toast.ok{border-color:rgba(16,185,129,.3);color:#34d399;}
+
+/* ── ATT HISTORY ── */
+.att-row{display:flex;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd);gap:8px;}
+.att-row:last-child{border-bottom:none;}
+.att-date{font-size:11px;color:var(--tx2);width:55px;flex-shrink:0;}
+.att-pct{font-size:11px;font-weight:700;margin-left:auto;}
+</style>
+</head>
+<body>
+
+<!-- ── SCREENS ── -->
+
+<!-- STATS -->
+<div class="sc on" id="sc-stats">
+  <div class="ldr" id="stats-ld"><div class="spin"></div></div>
+  <div id="stats-ct" style="display:none"></div>
+</div>
+
+<!-- SCHEDULE -->
+<div class="sc" id="sc-schedule">
+  <div class="ldr" id="sched-ld"><div class="spin"></div></div>
+  <div id="sched-ct" style="display:none"></div>
+</div>
+
+<!-- GROUPS LIST -->
+<div class="sc" id="sc-groups">
+  <div class="ldr" id="grps-ld"><div class="spin"></div></div>
+  <div id="grps-ct" style="display:none"></div>
+</div>
+
+<!-- GROUP DETAIL -->
+<div class="sc" id="sc-grpdet">
+  <div class="phdr">
+    <button class="phdr-back" onclick="backToGroups()">‹</button>
+    <div class="phdr-title" id="grpdet-title">Guruh</div>
+  </div>
+  <div id="grpdet-tabs" style="display:flex;gap:0;border-bottom:1px solid var(--bd);margin-bottom:13px;overflow-x:auto"></div>
+  <div id="grpdet-ct"></div>
+</div>
+
+<!-- PROFILE -->
+<div class="sc" id="sc-profile">
+  <div class="ldr" id="prof-ld"><div class="spin"></div></div>
+  <div id="prof-ct" style="display:none"></div>
+</div>
+
+<!-- BRANCHES -->
+<div class="sc" id="sc-branches">
+  <div class="ldr" id="br-ld"><div class="spin"></div></div>
+  <div id="br-ct" style="display:none"></div>
+</div>
+
+<!-- SETTINGS -->
+<div class="sc" id="sc-settings">
+  <div id="settings-ct"></div>
+</div>
+
+<!-- ── BOTTOM NAV ── -->
+<div class="bnav">
+  <button class="bn on" id="bn-stats" onclick="goSc('stats',this)"><span class="bi">📊</span>Statistika</button>
+  <button class="bn" id="bn-schedule" onclick="goSc('schedule',this)"><span class="bi">📅</span>Jadval</button>
+  <button class="bn" id="bn-groups" onclick="goSc('groups',this)"><span class="bi">📚</span>Guruhlar</button>
+  <button class="bn" id="bn-profile" onclick="goSc('profile',this)"><span class="bi">👤</span>Profil</button>
+  <button class="bn" id="bn-settings" onclick="goSc('settings',this)"><span class="bi">⚙️</span>Sozlamalar</button>
+</div>
+
+<!-- ── MODALS ── -->
+<!-- Add student -->
+<div class="overlay" id="mod-addstd">
+  <div class="modal">
+    <div class="drag-handle"></div>
+    <div class="modal-hdr"><span class="modal-title">➕ O'quvchi qo'shish</span><button class="modal-close" onclick="cMod('mod-addstd')">✕</button></div>
+    <input type="hidden" id="as-gid">
+    <div class="fg"><label class="lbl">Ism Familiya</label><input type="text" id="as-name" class="inp" placeholder="Abdullayev Sardor"></div>
+    <div class="fg"><label class="lbl">Telefon raqam</label><input type="tel" id="as-phone" class="inp" placeholder="+998901234567"></div>
+    <button class="btn bp bfull" onclick="doAddStd()" style="margin-top:4px">✅ Qo'shish</button>
+  </div>
+</div>
+
+<!-- Payment modal -->
+<div class="overlay" id="mod-pay">
+  <div class="modal">
+    <div class="drag-handle"></div>
+    <div class="modal-hdr"><span class="modal-title" id="pay-modal-title">💰 To'lov</span><button class="modal-close" onclick="cMod('mod-pay')">✕</button></div>
+    <input type="hidden" id="pm-gid">
+    <input type="hidden" id="pm-name">
+    <input type="hidden" id="pm-phone">
+    <input type="hidden" id="pm-month">
+    <div class="toggle-row">
+      <span class="toggle-lbl">✅ To'lov qilindi</span>
+      <label class="toggle"><input type="checkbox" id="pm-paid" onchange="pmToggle()"><span class="tslider"></span></label>
+    </div>
+    <div class="fg" id="pm-amount-row">
+      <label class="lbl">Summa (so'm)</label>
+      <input type="number" id="pm-amount" class="inp" placeholder="500000" min="0">
+    </div>
+    <div class="fg">
+      <label class="lbl">Izoh (ixtiyoriy)</label>
+      <input type="text" id="pm-note" class="inp" placeholder="Masalan: qisman to'ladi">
+    </div>
+    <button class="btn bp bfull" onclick="savePay()" style="margin-top:4px">💾 Saqlash</button>
+  </div>
+</div>
+
+<!-- Edit profile modal -->
+<div class="overlay" id="mod-editprof">
+  <div class="modal">
+    <div class="drag-handle"></div>
+    <div class="modal-hdr"><span class="modal-title">✏️ Profilni tahrirlash</span><button class="modal-close" onclick="cMod('mod-editprof')">✕</button></div>
+    <div class="fg"><label class="lbl">Ism Familiya</label><input type="text" id="ep-name" class="inp" placeholder="Abdullayev Sardor"></div>
+    <div class="fg">
+      <label class="lbl">Mutaxassislik</label>
+      <select id="ep-spec" class="inp">
+        <option value="IT">💻 IT</option>
+        <option value="Koreys tili">📚 Koreys tili</option>
+        <option value="Ofis xodimi">🏢 Ofis xodimi</option>
+      </select>
+    </div>
+    <button class="btn bp bfull" onclick="saveProfile()" style="margin-top:4px">💾 Saqlash</button>
+  </div>
+</div>
+
+<!-- Delete student confirm -->
+<div class="overlay" id="mod-delstd">
+  <div class="modal">
+    <div class="drag-handle"></div>
+    <div class="modal-hdr"><span class="modal-title">🗑 O'chirishni tasdiqlang</span><button class="modal-close" onclick="cMod('mod-delstd')">✕</button></div>
+    <p style="font-size:13px;color:var(--tx2);margin-bottom:16px">
+      <b id="del-std-name" style="color:var(--tx)"></b> o'quvchisi ro'yxatdan o'chiriladi. Davomat tarixi saqlanadi.
+    </p>
+    <div style="display:flex;gap:8px">
+      <button class="btn bg bfull" onclick="cMod('mod-delstd')">Bekor</button>
+      <button class="btn bd bfull" onclick="doDelStd()">🗑 O'chirish</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const tg = window.Telegram?.WebApp;
+if(tg){tg.ready();tg.expand();}
+
+// ── STATE ──
+let D=null, UID=null, CUR_GID=null, CUR_GRP=null, CUR_TAB='students', CUR_MONTH=null;
+let _delStdName='', _delStdGid=null;
+const BASE='';
+const MNS=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
+const AVC=['#4f8ef7','#8b5cf6','#10b981','#f59e0b','#ef4444','#0891b2','#db2777'];
+const now=new Date();
+CUR_MONTH=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+
+// ── INIT ──
+(async function(){
+  const p=new URLSearchParams(location.search);
+  UID=p.get('user_id')||tg?.initDataUnsafe?.user?.id;
+  const sec=p.get('section')||'stats';
+  if(!UID){showErr('Foydalanuvchi aniqlanmadi');return;}
+  try{
+    const r=await fetch(`${BASE}/teacher/api/data?user_id=${UID}`);
+    D=await r.json();
+    if(!D.ok)throw new Error(D.error);
+    renderStats();renderSched();renderGroups();renderProfile();renderBranches();renderSettings();
+    // Profil rasmini yuklash (background)
+    loadProfilePhoto().then(()=>{renderStats();renderProfile();});
+    // Kerakli bo'limga o'tish
+    const bn=document.getElementById('bn-'+sec);
+    if(bn)goSc(sec,bn);
+  }catch(e){showErr(e.message);}
+})();
+
+function showErr(msg){
+  document.getElementById('stats-ld').innerHTML=`<div class="empty"><div class="ei">❌</div>${msg}</div>`;
+}
+
+function toast(msg,type='',dur=2600){
+  const t=document.getElementById('toast');t.textContent=msg;t.className='toast show '+(type||'');
+  setTimeout(()=>t.className='toast',dur);
+}
+function ini(n){if(!n)return'?';const p=n.trim().split(' ');return p.length>=2?(p[0][0]+p[1][0]).toUpperCase():n[0].toUpperCase();}
+function fmtN(n){return(n||0).toLocaleString('uz-UZ');}
+function oMod(id){document.getElementById(id).classList.add('open');}
+function cMod(id){document.getElementById(id).classList.remove('open');}
+
+// ── NAVIGATION ──
+function goSc(name,el){
+  document.querySelectorAll('.sc').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.bn').forEach(b=>b.classList.remove('on'));
+  const sc=document.getElementById('sc-'+name);
+  if(sc)sc.classList.add('on');
+  if(el)el.classList.add('on');
+}
+function backToGroups(){
+  goSc('groups',document.getElementById('bn-groups'));
+  CUR_GID=null;CUR_GRP=null;
+}
+
+// ── STATS ──
+function renderStats(){
+  if(!D)return;
+  const s=D.stats,u=D.user;
+  const c=AVC[UID%AVC.length];
+  document.getElementById('stats-ld').style.display='none';
+  document.getElementById('stats-ct').style.display='block';
+  document.getElementById('stats-ct').innerHTML=`
+    <div class="prof-card" style="margin-bottom:13px;display:flex;align-items:center;gap:13px;text-align:left;padding:16px">
+      ${_profPhotoUrl?`<img src="${_profPhotoUrl}" style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid ${c}55;flex-shrink:0" onerror="this.style.display='none'">`:`<div class="prof-av" style="width:52px;height:52px;background:${c}22;color:${c};border:2px solid ${c}44;flex-shrink:0">${ini(u.name)}</div>`}
+      <div><div class="prof-name" style="font-size:16px;text-align:left">${u.name}</div><div class="prof-spec" style="text-align:left">${u.specialty||"O\'qituvchi"}</div></div>
+    </div>
+    <div class="sgrid">
+      <div class="scard gn"><div class="si">📅</div><div class="sv">${s.month}</div><div class="sl">Bu oy davomati</div></div>
+      <div class="scard"><div class="si">📊</div><div class="sv">${s.total}</div><div class="sl">Jami davomati</div></div>
+      <div class="scard og"><div class="si">📚</div><div class="sv">${s.groups}</div><div class="sl">Guruhlar</div></div>
+      <div class="scard rd"><div class="si">📍</div><div class="sv">${s.today?'✅':'—'}</div><div class="sl">Bugun davomat</div></div>
+    </div>
+    ${s.today?`<div class="card"><div class="card-body" style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:24px">✅</span>
+      <div><div style="font-size:12px;font-weight:700">Bugun davomat qilindingiz</div>
+      <div style="font-size:11px;color:var(--tx2)">${s.today_branch} · ⏰ ${s.today_time}</div></div>
+    </div></div>`:''}
+    <div class="card" style="cursor:pointer" onclick="goSc('groups',document.getElementById('bn-groups'))">
+      <div class="card-body" style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:24px">📚</span>
+        <div style="flex:1"><div style="font-size:12px;font-weight:700">Guruhlarimni ko'rish</div>
+        <div style="font-size:11px;color:var(--tx2)">${D.groups.length} ta guruh</div></div>
+        <span style="color:var(--ac)">›</span>
+      </div>
+    </div>`;
+}
+
+// ── SCHEDULE ──
+function renderSched(){
+  if(!D)return;
+  document.getElementById('sched-ld').style.display='none';
+  document.getElementById('sched-ct').style.display='block';
+  const today=D.today_day;
+  const gs=D.groups;
+  if(!gs.length){document.getElementById('sched-ct').innerHTML='<div class="empty"><div class="ei">📅</div>Hali guruh yo\'q</div>';return;}
+  const todayGs=gs.filter(g=>g.is_today);
+  const otherGs=gs.filter(g=>!g.is_today);
+  let h='';
+  if(todayGs.length){
+    h+=`<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--tx2);margin-bottom:9px">⚡ Bugungi darslar (${today})</div>`;
+    h+=todayGs.map(g=>schedCard(g,today,true)).join('');
+  }
+  if(otherGs.length){
+    h+=`<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--tx2);margin:${todayGs.length?'14px':0} 0 9px">📚 Barcha jadval</div>`;
+    h+=otherGs.map(g=>schedCard(g,today,false)).join('');
+  }
+  document.getElementById('sched-ct').innerHTML=h;
+}
+function schedCard(g,today,isT){
+  const tc=g.lesson_type==='IT'?'bit':'bkr';
+  const daysH=(g.days||[]).map(d=>`<span class="dtag ${d===today&&isT?'act':''}">${d.slice(0,3)} ${g.day_times?.[d]||''}</span>`).join('');
+  return`<div class="sch-card ${isT?'today':''}" onclick="openGrp(${g.id})">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:5px">
+      <div class="sch-name">${g.group_name}</div>
+      <span class="b ${tc}">${g.lesson_type}</span>
+    </div>
+    <div class="sch-meta">🏢 ${g.branch} &nbsp;·&nbsp; 🧑‍🎓 ${g.student_count} ta</div>
+    <div>${daysH}</div>
+  </div>`;
+}
+
+// ── GROUPS ──
+function renderGroups(){
+  if(!D)return;
+  document.getElementById('grps-ld').style.display='none';
+  document.getElementById('grps-ct').style.display='block';
+  const gs=D.groups;
+  if(!gs.length){document.getElementById('grps-ct').innerHTML='<div class="empty"><div class="ei">📚</div>Hali guruh yo\'q</div>';return;}
+  const h=`<div class="card">${gs.map(g=>{
+    const c=AVC[g.id%AVC.length];const tc=g.lesson_type==='IT'?'bit':'bkr';
+    return`<div class="grp-item" onclick="openGrp(${g.id})">
+      <div class="gi-av" style="background:${c}22;color:${c}">${ini(g.group_name)}</div>
+      <div class="gi-info">
+        <div class="gi-name">${g.group_name}</div>
+        <div class="gi-meta">🏢 ${g.branch} · 🧑‍🎓 ${g.student_count} ta · <span class="b ${tc}" style="font-size:9px">${g.lesson_type}</span></div>
+      </div>
+      ${g.is_today?`<span class="b btd" style="font-size:9px;margin-right:4px">Bugun</span>`:''}
+      <span class="gi-arr">›</span>
+    </div>`;}).join('')}</div>`;
+  document.getElementById('grps-ct').innerHTML=h;
+}
+
+// ── GROUP DETAIL ──
+async function openGrp(gid){
+  CUR_GID=gid;
+  goSc('grpdet',null);
+  document.querySelectorAll('.bn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('bn-groups').classList.add('on');
+  const g=D.groups.find(x=>x.id===gid)||{};
+  document.getElementById('grpdet-title').textContent=g.group_name||'Guruh';
+  renderGrpTabs(gid);
+  await loadGrpTab('students');
+}
+function renderGrpTabs(gid){
+  const tabs=[
+    {id:'students',label:"🧑‍🎓 O'quvchilar"},
+    {id:'payment',label:'💰 To\'lovlar'},
+    {id:'attendance',label:'📋 Davomat'},
+  ];
+  document.getElementById('grpdet-tabs').innerHTML=tabs.map(t=>`
+    <button onclick="loadGrpTab('${t.id}')" id="gtab-${t.id}" style="flex:1;padding:9px 4px;font-size:11px;font-weight:600;color:var(--tx2);cursor:pointer;border:none;background:none;font-family:'Inter',sans-serif;border-bottom:2px solid transparent;white-space:nowrap;transition:.1s" class="${t.id==='students'?'on':''}">
+      ${t.label}
+    </button>`).join('');
+}
+async function loadGrpTab(tab){
+  CUR_TAB=tab;
+  // Tab style
+  document.querySelectorAll('[id^="gtab-"]').forEach(b=>{
+    b.style.color='var(--tx2)';b.style.borderBottomColor='transparent';
+  });
+  const el=document.getElementById('gtab-'+tab);
+  if(el){el.style.color='var(--ac)';el.style.borderBottomColor='var(--ac)';}
+  
+  const ct=document.getElementById('grpdet-ct');
+  ct.innerHTML='<div class="ldr"><div class="spin"></div></div>';
+  
+  if(tab==='students'){
+    await renderGrpStudents();
+  } else if(tab==='payment'){
+    await renderGrpPayments();
+  } else if(tab==='attendance'){
+    await renderGrpAtt();
+  }
+}
+async function renderGrpStudents(){
+  const ct=document.getElementById('grpdet-ct');
+  try{
+    const r=await fetch(`${BASE}/teacher/api/group/students?group_id=${CUR_GID}&month=${CUR_MONTH}`);
+    const data=await r.json();CUR_GRP=data;
+    if(!data.ok)throw new Error(data.error);
+    const studs=data.students||[];
+    ct.innerHTML=`
+      <div style="display:flex;justify-content:flex-end;margin-bottom:11px">
+        <button class="btn bp" onclick="openAddStd(${CUR_GID})">➕ O'quvchi qo'shish</button>
+      </div>
+      <div class="card">
+        ${studs.length?studs.map((s,i)=>`
+          <div class="std-item">
+            <div class="std-num">${i+1}</div>
+            <div class="std-info"><div class="std-name">${s.name}</div><div class="std-phone">${s.phone}</div></div>
+            <div class="std-acts">
+              <button class="btn bd" style="padding:5px 9px;font-size:11px" onclick="confirmDel('${s.name.replace(/'/g,"\\'")}',${CUR_GID})">🗑</button>
+            </div>
+          </div>`).join(''):'<div class="empty"><div class="ei">🧑‍🎓</div>O\'quvchilar yo\'q</div>'}
+      </div>`;
+  }catch(e){ct.innerHTML=`<div class="empty"><div class="ei">❌</div>${e.message}</div>`;}
+}
+
+async function renderGrpPayments(){
+  const ct=document.getElementById('grpdet-ct');
+  try{
+    const r=await fetch(`${BASE}/teacher/api/group/students?group_id=${CUR_GID}&month=${CUR_MONTH}`);
+    const data=await r.json();CUR_GRP=data;
+    if(!data.ok)throw new Error(data.error);
+    const studs=data.students||[];
+    const paid=studs.filter(s=>s.paid).length;
+    const total=studs.reduce((a,s)=>a+(s.paid?s.amount:0),0);
+    ct.innerHTML=`
+      <div class="sgrid" style="margin-bottom:11px">
+        <div class="scard gn"><div class="si">✅</div><div class="sv">${paid}</div><div class="sl">To'ladi</div></div>
+        <div class="scard"><div class="si">💰</div><div class="sv" style="font-size:18px">${fmtN(total)}</div><div class="sl">Jami (so'm)</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:11px">
+        <label class="lbl" style="margin:0">Oy:</label>
+        <input type="month" id="pay-month-sel" class="inp" style="flex:1" value="${CUR_MONTH}" onchange="CUR_MONTH=this.value;loadGrpTab('payment')">
+      </div>
+      <div class="card">
+        ${studs.length?studs.map(s=>`
+          <div class="pay-item ${s.paid?'paid':''}" onclick="openPayMod('${s.name.replace(/'/g,"\\'")}','${s.phone}',${s.paid},${s.amount},'${s.note||''}')">
+            <div class="pay-top">
+              <div class="pay-check">${s.paid?'✓':''}</div>
+              <div style="flex:1"><div class="pay-name">${s.name}</div><div style="font-size:10px;color:var(--tx2)">${s.phone}</div></div>
+              ${s.paid?`<div class="pay-amount">${fmtN(s.amount)} so'm</div>`:'<div style="font-size:11px;color:var(--tx2)">To\'lamagan</div>'}
+            </div>
+            ${s.note?`<div class="pay-note">📝 ${s.note}</div>`:''}
+          </div>`).join(''):'<div class="empty"><div class="ei">💰</div>O\'quvchilar yo\'q</div>'}
+      </div>`;
+  }catch(e){ct.innerHTML=`<div class="empty"><div class="ei">❌</div>${e.message}</div>`;}
+}
+
+let ATT_VIEW='month'; // 'month' | 'day'
+let ATT_DAY=new Date().toISOString().slice(0,10);
+let ATT_CACHE=null;
+
+async function renderGrpAtt(){
+  const ct=document.getElementById('grpdet-ct');
+  try{
+    const r=await fetch(`${BASE}/teacher/api/group/attendance?group_id=${CUR_GID}&month=${CUR_MONTH}`);
+    const data=await r.json();
+    if(!data.ok)throw new Error(data.error);
+    ATT_CACHE=data.data||{};
+    // Oy input + kun input + ko'rinish tugmalari
+    const topBar=`
+      <div style="display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-bottom:11px">
+        <input type="month" id="att-month-sel" class="inp" style="flex:1;min-width:130px" value="${CUR_MONTH}" onchange="CUR_MONTH=this.value;loadGrpTab('attendance')">
+        <input type="date" id="att-day-sel" class="inp" style="flex:1;min-width:130px" value="${ATT_DAY}" onchange="ATT_DAY=this.value;renderAttView()">
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:12px">
+        <button class="btn ${ATT_VIEW==='month'?'bp':'bg'}" style="flex:1;font-size:11px;padding:7px" onclick="ATT_VIEW='month';renderAttView()">📅 Oylik jadval</button>
+        <button class="btn ${ATT_VIEW==='day'?'bp':'bg'}" style="flex:1;font-size:11px;padding:7px" onclick="ATT_VIEW='day';renderAttView()">📆 Kunlik ko'rinish</button>
+      </div>`;
+    ct.innerHTML=topBar+'<div id="att-view-ct"></div>';
+    renderAttView();
+  }catch(e){ct.innerHTML=`<div class="empty"><div class="ei">❌</div>${e.message}</div>`;}
+}
+
+function renderAttView(){
+  // Tugmalar rangini yangilaymiz
+  const btns=document.querySelectorAll('#grpdet-ct .btn');
+  if(btns[0])btns[0].className=`btn ${ATT_VIEW==='month'?'bp':'bg'}`;
+  if(btns[1])btns[1].className=`btn ${ATT_VIEW==='day'?'bp':'bg'}`;
+
+  const vct=document.getElementById('att-view-ct');
+  if(!vct)return;
+  const byS=ATT_CACHE||{};
+  const names=Object.keys(byS);
+  if(!names.length){vct.innerHTML='<div class="empty"><div class="ei">📋</div>Davomat yo\'q</div>';return;}
+
+  if(ATT_VIEW==='month'){
+    // ── OYLIK MATRITSA: o'quvchi × kunlar ──
+    const allDates=[...new Set(Object.values(byS).flat().map(d=>d.date))].sort();
+    const thDates=allDates.map(dt=>{
+      const dw=new Date(dt+'T00:00:00').getDay();
+      const dn=['Ya','Du','Se','Ch','Pa','Ju','Sh'][dw];
+      return`<th style="font-size:9px;text-align:center;padding:3px 1px;min-width:28px"><div style="font-weight:700">${dt.slice(8)}</div><div style="color:var(--tx2);font-size:8px">${dn}</div></th>`;
+    }).join('');
+    const tbRows=names.map((nm,i)=>{
+      const days=byS[nm];
+      const prs=days.filter(d=>d.status==='Kelgan'||d.status==='present').length;
+      const pct=days.length?Math.round(prs/days.length*100):0;
+      const col=pct>=80?'#34d399':pct>=50?'#fbbf24':'#f87171';
+      const dayMap={};days.forEach(d=>dayMap[d.date]=d.status);
+      const cells=allDates.map(dt=>{
+        const st=dayMap[dt];
+        if(!st)return`<td style="text-align:center;color:var(--tx3);font-size:10px">·</td>`;
+        const ok=st==='Kelgan'||st==='present';
+        return`<td style="text-align:center;font-size:13px">${ok?'✅':'❌'}</td>`;
+      }).join('');
+      return`<tr style="${i%2?'background:rgba(255,255,255,.02)':''}"><td style="font-size:11px;font-weight:700;white-space:nowrap;padding:6px 8px">${i+1}. ${nm}</td>${cells}<td style="font-weight:800;color:${col};white-space:nowrap;padding:6px 8px;text-align:center">${prs}/${days.length}<br><span style="font-size:9px">${pct}%</span></td></tr>`;
+    }).join('');
+    vct.innerHTML=`<div style="overflow-x:auto;border-radius:10px;border:1px solid var(--bd)"><table style="font-size:11px;width:100%;border-collapse:collapse"><thead style="background:var(--card2)"><tr><th style="text-align:left;padding:6px 8px;white-space:nowrap">O'quvchi</th>${thDates}<th style="padding:4px 6px;white-space:nowrap">Natija</th></tr></thead><tbody>${tbRows}</tbody></table></div>`;
+  } else {
+    // ── KUNLIK KO'RINISH: tanlangan kunda kim kelgan ──
+    const selDate=ATT_DAY;
+    // Tanlangan kun oy ichida ekanini tekshirish
+    const selMonth=selDate.slice(0,7);
+    if(selMonth!==CUR_MONTH){
+      // Oyni moslaymiz
+      CUR_MONTH=selMonth;
+    }
+    const dayOfWeek=['Yakshanba','Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba'][new Date(selDate+'T00:00:00').getDay()];
+    const present=[], absent=[], nodata=[];
+    names.forEach(nm=>{
+      const days=byS[nm];
+      const rec=days.find(d=>d.date===selDate);
+      if(!rec) nodata.push(nm);
+      else if(rec.status==='Kelgan'||rec.status==='present') present.push(nm);
+      else absent.push(nm);
+    });
+    const mkList=(arr,ic,col)=>arr.length
+      ?arr.map((nm,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--bd)"><span style="font-size:16px">${ic}</span><span style="font-size:12px;font-weight:600">${i+1}. ${nm}</span></div>`).join('')
+      :'';
+    vct.innerHTML=`
+      <div style="font-size:12px;font-weight:700;margin-bottom:10px;color:var(--ac)">📆 ${selDate} — ${dayOfWeek}</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <div style="flex:1;background:rgba(16,185,129,.1);border-radius:8px;padding:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:#34d399">${present.length}</div><div style="font-size:10px;color:var(--tx2)">Keldi</div></div>
+        <div style="flex:1;background:rgba(239,68,68,.1);border-radius:8px;padding:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:#f87171">${absent.length}</div><div style="font-size:10px;color:var(--tx2)">Kelmadi</div></div>
+        ${nodata.length?`<div style="flex:1;background:rgba(255,255,255,.05);border-radius:8px;padding:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:var(--tx3)">${nodata.length}</div><div style="font-size:10px;color:var(--tx2)">Belgilanmagan</div></div>`:''}
+      </div>
+      ${present.length?`<div style="border-radius:10px;border:1px solid rgba(16,185,129,.3);overflow:hidden;margin-bottom:10px"><div style="background:rgba(16,185,129,.1);padding:8px 10px;font-size:11px;font-weight:700;color:#34d399">✅ Keldi (${present.length} ta)</div>${mkList(present,'✅','#34d399')}</div>`:''}
+      ${absent.length?`<div style="border-radius:10px;border:1px solid rgba(239,68,68,.3);overflow:hidden;margin-bottom:10px"><div style="background:rgba(239,68,68,.1);padding:8px 10px;font-size:11px;font-weight:700;color:#f87171">❌ Kelmadi (${absent.length} ta)</div>${mkList(absent,'❌','#f87171')}</div>`:''}
+      ${nodata.length?`<div style="border-radius:10px;border:1px solid var(--bd);overflow:hidden"><div style="background:var(--card2);padding:8px 10px;font-size:11px;font-weight:700;color:var(--tx2)">— Belgilanmagan (${nodata.length} ta)</div>${mkList(nodata,'—','var(--tx2)')}</div>`:''}
+    `;
+  }
+}
+
+// ── ADD STUDENT ──
+function openAddStd(gid){
+  document.getElementById('as-gid').value=gid;
+  document.getElementById('as-name').value='';
+  document.getElementById('as-phone').value='';
+  oMod('mod-addstd');
+}
+async function doAddStd(){
+  const gid=parseInt(document.getElementById('as-gid').value);
+  const name=document.getElementById('as-name').value.trim();
+  const phone=document.getElementById('as-phone').value.trim();
+  if(!name||!phone){toast("⚠️ Ism va telefon kerak",'err');return;}
+  const r=await fetch(`${BASE}/teacher/api/student/add`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({group_id:gid,name,phone})}).then(x=>x.json()).catch(()=>null);
+  if(r?.ok){
+    toast("✅ O'quvchi qo'shildi",'ok');
+    cMod('mod-addstd');
+    // D dagi student_count yangilash
+    const g=D.groups.find(x=>x.id===gid);if(g)g.student_count++;
+    await renderGrpStudents();
+  }else toast('❌ '+(r?.error||'Xatolik'),'err');
+}
+
+// ── DELETE STUDENT ──
+function confirmDel(name,gid){
+  _delStdName=name;_delStdGid=gid;
+  document.getElementById('del-std-name').textContent=name;
+  oMod('mod-delstd');
+}
+async function doDelStd(){
+  const r=await fetch(`${BASE}/teacher/api/student/delete`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({group_id:_delStdGid,student_name:_delStdName})}).then(x=>x.json()).catch(()=>null);
+  if(r?.ok){
+    toast("✅ O'chirildi",'ok');cMod('mod-delstd');
+    const g=D.groups.find(x=>x.id===_delStdGid);if(g&&g.student_count>0)g.student_count--;
+    await renderGrpStudents();
+  }else toast('❌ '+(r?.error||'Xatolik'),'err');
+}
+
+// ── PAYMENT MODAL ──
+function openPayForStd(name,phone){
+  openPayMod(name,phone,false,0,'');
+}
+function openPayMod(name,phone,paid,amount,note){
+  document.getElementById('pm-gid').value=CUR_GID;
+  document.getElementById('pm-name').value=name;
+  document.getElementById('pm-phone').value=phone;
+  document.getElementById('pm-month').value=CUR_MONTH;
+  document.getElementById('pay-modal-title').textContent='💰 '+name;
+  document.getElementById('pm-paid').checked=paid;
+  document.getElementById('pm-amount').value=amount||'';
+  document.getElementById('pm-note').value=note||'';
+  document.getElementById('pm-amount-row').style.display=paid?'block':'none';
+  oMod('mod-pay');
+}
+function pmToggle(){
+  const paid=document.getElementById('pm-paid').checked;
+  document.getElementById('pm-amount-row').style.display=paid?'block':'none';
+}
+async function savePay(){
+  const gid=parseInt(document.getElementById('pm-gid').value);
+  const name=document.getElementById('pm-name').value;
+  const phone=document.getElementById('pm-phone').value;
+  const month=document.getElementById('pm-month').value;
+  const paid=document.getElementById('pm-paid').checked;
+  const amount=parseInt(document.getElementById('pm-amount').value||0);
+  const note=document.getElementById('pm-note').value.trim();
+  const r=await fetch(`${BASE}/teacher/api/payment/save`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({group_id:gid,student_name:name,student_phone:phone,month,paid,amount,note})}).then(x=>x.json()).catch(()=>null);
+  if(r?.ok){
+    toast('✅ Saqlandi','ok');cMod('mod-pay');
+    if(tg?.HapticFeedback)tg.HapticFeedback.notificationOccurred('success');
+    await loadGrpTab(CUR_TAB);
+  }else toast('❌ '+(r?.error||'Xatolik'),'err');
+}
+
+// ── PROFILE ──
+// ── PROFILE ──
+let _profPhotoUrl = null;
+
+async function loadProfilePhoto(){
+  try{
+    const r = await fetch(`${BASE}/teacher/api/profile/photo?user_id=${UID}`);
+    const data = await r.json();
+    if(data.ok && data.url) _profPhotoUrl = data.url;
+  }catch(e){}
+}
+
+function renderProfile(){
+  if(!D)return;
+  document.getElementById('prof-ld').style.display='none';
+  document.getElementById('prof-ct').style.display='block';
+  const u=D.user,s=D.stats;const c=AVC[UID%AVC.length];
+  const avHtml = _profPhotoUrl
+    ? `<img src="${_profPhotoUrl}" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid ${c}55;margin:0 auto 10px;display:block" onerror="this.style.display='none';document.getElementById('prof-av-fallback').style.display='flex'">`
+    : '';
+  const avFallback = `<div id="prof-av-fallback" class="prof-av" style="background:${c}22;color:${c};border:2px solid ${c}44;${_profPhotoUrl?'display:none':''}">${ini(u.name)}</div>`;
+  document.getElementById('prof-ct').innerHTML=`
+    <div class="prof-card" style="position:relative">
+      <button onclick="openEditProfile()" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.08);border:1px solid var(--bd2);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:600;color:var(--tx2);cursor:pointer;font-family:'Inter',sans-serif">✏️ Tahrirlash</button>
+      ${avHtml}${avFallback}
+      <div class="prof-name">${u.name}</div>
+      <div class="prof-spec">${u.specialty||'O\'qituvchi'}</div>
+      <div style="margin-top:8px"><span class="b bok">✅ Faol</span></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><span class="card-title">📊 Bu oylik statistika</span></div>
+      <div class="card-body">
+        <div class="toggle-row"><span class="toggle-lbl">📅 Bu oy davomati</span><span style="font-weight:800;color:var(--ac)">${s.month} kun</span></div>
+        <div class="toggle-row"><span class="toggle-lbl">📊 Jami davomati</span><span style="font-weight:800;color:var(--ac)">${s.total} kun</span></div>
+        <div class="toggle-row"><span class="toggle-lbl">📚 Guruhlar soni</span><span style="font-weight:800;color:var(--ac)">${s.groups} ta</span></div>
+      </div>
+    </div>`;
+}
+
+// ── SETTINGS ──
+function renderSettings(){
+  const u=D?.user||{};
+  document.getElementById('settings-ct').innerHTML=`
+    <div class="card" style="margin-bottom:11px">
+      <div class="card-hdr"><span class="card-title">❓ Yordam</span></div>
+      <div class="card-body" style="font-size:12px;color:var(--tx2);line-height:1.7">
+        <p style="margin-bottom:8px">📍 <b style="color:var(--tx)">Davomat qilish</b> — Botda "Kelganimni tasdiqlash" tugmasini bosib, joylashuvingizni yuboring.</p>
+        <p style="margin-bottom:8px">📚 <b style="color:var(--tx)">Guruhlar</b> — O'z guruhlaringizni ko'rish, o'quvchi qo'shish/o'chirish.</p>
+        <p style="margin-bottom:8px">💰 <b style="color:var(--tx)">To'lovlar</b> — Har oy o'quvchilarning to'lov holatini belgilang.</p>
+        <p style="margin-bottom:8px">🧑‍🎓 <b style="color:var(--tx)">O'quvchilar davomati</b> — Dars boshlanishida bot avtomatik eslatadi.</p>
+        <p>📞 <b style="color:var(--tx)">Muammo bo'lsa</b> — Admin bilan bog'laning.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><span class="card-title">📋 Filiallar</span></div>
+      <div style="max-height:300px;overflow-y:auto">
+        ${(D?.branches||[]).map((b,i)=>`
+          <div class="br-item">
+            <div class="br-num">${i+1}</div>
+            <div class="br-info"><div class="br-name">${b.name}</div></div>
+            <a href="https://yandex.com/maps/?pt=${b.lon},${b.lat}&z=17" target="_blank" class="btn bg" style="font-size:10px;padding:5px 10px">Xarita ↗</a>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ── PROFILE EDIT ──
+function openEditProfile(){
+  if(!D?.user)return;
+  document.getElementById('ep-name').value=D.user.name||'';
+  document.getElementById('ep-spec').value=D.user.specialty||'IT';
+  oMod('mod-editprof');
+}
+
+async function saveProfile(){
+  const name=document.getElementById('ep-name').value.trim();
+  const spec=document.getElementById('ep-spec').value;
+  if(!name||name.length<3){toast('⚠️ Ism kamida 3 harf','err');return;}
+  const r=await fetch(`${BASE}/teacher/api/profile/update`,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({user_id:UID,name,specialty:spec})
+  }).then(x=>x.json()).catch(()=>null);
+  if(r?.ok){
+    D.user.name=r.name;D.user.specialty=r.specialty;
+    toast('✅ Profil yangilandi','ok');
+    cMod('mod-editprof');
+    renderProfile();renderStats();
+    if(tg?.HapticFeedback)tg.HapticFeedback.notificationOccurred('success');
+  }else toast('❌ '+(r?.error||'Xatolik'),'err');
+}
+
+// ── BRANCHES ──
+function renderBranches(){
+  if(!D)return;
+  document.getElementById('br-ld').style.display='none';
+  document.getElementById('br-ct').style.display='block';
+  const brs=D.branches||[];
+  document.getElementById('br-ct').innerHTML=`<div class="card">
+    ${brs.map((b,i)=>`<div class="br-item">
+      <div class="br-num">${i+1}</div>
+      <div class="br-info"><div class="br-name">${b.name}</div><div class="br-coord">📍 ${b.lat?.toFixed(4)||'?'}, ${b.lon?.toFixed(4)||'?'}</div></div>
+      <a href="https://yandex.com/maps/?pt=${b.lon},${b.lat}&z=17" target="_blank" class="btn bg" style="font-size:10px;padding:5px 10px">Xarita ↗</a>
+    </div>`).join('')}
+  </div>`;
+}
+</script>
+</body>
+</html>
