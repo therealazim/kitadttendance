@@ -8426,8 +8426,9 @@ async def main():
     # Qo'shimcha routelar (health check, status)
     app.router.add_get('/static/{filename}', handle_static)
     app.router.add_get('/', handle)
-    app.router.add_static('/static', path='static', name='static')
     import os as _os
+    if _os.path.isdir('static'):
+        app.router.add_static('/static', path='static', name='static')
     if _os.path.isdir('docs'):
         app.router.add_static('/docs', path='docs', name='docs')
     app.router.add_get('/health', health_check)
