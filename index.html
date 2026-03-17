@@ -6,7 +6,7 @@
 <title>KITA | HANCOM Academy</title>
 <link rel="icon" href="/static/KITA_LOGO.svg" type="image/svg+xml">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 :root{--navy:#0D1B4B;--blue:#1565C0;--accent:#E53935;--gold:#FFB300;--white:#fff;--light:#F4F6FB;--text:#1a1a2e;--text2:#5a6a8a;}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
@@ -187,7 +187,6 @@ footer{background:var(--navy);padding:28px 5% 0;}
   #branches-map{height:300px;}
   .footer-top{gap:12px;}
 }
-.lucide{color:var(--blue);}
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 </head>
@@ -202,7 +201,7 @@ footer{background:var(--navy);padding:28px 5% 0;}
     <li><a href="#map" data-i18n="nav_map">Xarita</a></li>
     <li><a href="#history" data-i18n="nav_about">Biz haqimizda</a></li>
     <li><a href="#contact" data-i18n="nav_contact">Aloqa</a></li>
-    <li><a href="/admin" style="color:var(--gold)"><i class="lucide lucide-user-lock"></i> Admin</a></li>
+    <li><a href="/admin" style="color:var(--gold)">fas fa-user-lock"></i> Admin</a></li>
   </div>
   </ul>
   <div style="display:flex;align-items:center;gap:10px">
@@ -219,24 +218,24 @@ footer{background:var(--navy);padding:28px 5% 0;}
 </nav>
 
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#courses" onclick="toggleMenu()" data-i18n="m_courses"><i class="lucide lucide-book"></i> Kurslar</a>
-  <a href="#gallery" onclick="toggleMenu()" data-i18n="m_gallery"><i class="lucide lucide-images"></i> Galereya</a>
-  <a href="#news" onclick="toggleMenu()" data-i18n="m_news"><i class="lucide lucide-newspaper"></i> Yangiliklar</a>
-  <a href="#history" onclick="toggleMenu()" data-i18n="m_about"><i class="lucide lucide-info"></i> Biz haqimizda</a>
-  <a href="#contact" onclick="toggleMenu()" data-i18n="m_contact"><i class="lucide lucide-phone"></i> Aloqa</a>
-  <a href="#apply" onclick="toggleMenu()" style="color:var(--gold);font-weight:700;" data-i18n="m_apply"><i class="lucide lucide-edit"></i> Ariza qoldirish</a>
+  <a href="#courses" onclick="toggleMenu()" data-i18n="m_courses">fas fa-book"></i> Kurslar</a>
+  <a href="#gallery" onclick="toggleMenu()" data-i18n="m_gallery">fas fa-images"></i> Galereya</a>
+  <a href="#news" onclick="toggleMenu()" data-i18n="m_news">fas fa-newspaper"></i> Yangiliklar</a>
+  <a href="#history" onclick="toggleMenu()" data-i18n="m_about">fas fa-info"></i> Biz haqimizda</a>
+  <a href="#contact" onclick="toggleMenu()" data-i18n="m_contact">fas fa-phone"></i> Aloqa</a>
+  <a href="#apply" onclick="toggleMenu()" style="color:var(--gold);font-weight:700;" data-i18n="m_apply">fas fa-edit"></i> Ariza qoldirish</a>
 </div>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-content">
-    <div class="hero-badge" data-i18n="hero_badge"><i class="lucide lucide-graduation-cap"></i> Toshkentning yetakchi o'quv markazi</div>
+    <div class="hero-badge" data-i18n="hero_badge">fas fa-graduation-cap"></i> Toshkentning yetakchi o'quv markazi</div>
     <h1 id="hero-title">KITA <span>구</span> HANCOM<br>Academy</h1>
     <p id="hero-subtitle" data-i18n="hero_subtitle">IT texnologiyalari va Koreys tilini professional darajada o'rganing.</p>
     <div class="hero-btns">
       <a href="#apply" class="btn-primary" data-i18n="btn_apply">Ariza qoldirish</a>
-      <a href="tel:+998508182280" class="btn-secondary"><i class="lucide lucide-phone"></i> Telefon qilish</a>
-      <a href="https://t.me/Hancom_A" class="btn-secondary" target="_blank" data-i18n="btn_telegram"><i class="lucide lucide-send"></i> Telegram</a>
+      <a href="tel:+998508182280" class="btn-secondary">fas fa-phone"></i> Telefon qilish</a>
+      <a href="https://t.me/Hancom_A" class="btn-secondary" target="_blank" data-i18n="btn_telegram">fas fa-send"></i> Telegram</a>
     </div>
   </div>
 </section>
@@ -262,7 +261,7 @@ footer{background:var(--navy);padding:28px 5% 0;}
         <h3 class="course-title" id="course1-title">IT Texnologiyalari</h3>
         <p class="course-desc" id="course1-desc">Dasturlash, kompyuter savodxonligi, ofis dasturlari.</p>
         <div class="course-footer">
-          <span style="font-size:12px;color:var(--text2)"><i class="lucide lucide-laptop"></i> IT</span>
+          <span style="font-size:12px;color:var(--text2)">fas fa-laptop"></i> IT</span>
           <a href="#apply" class="course-btn" data-i18n="btn_enroll">Yozilish</a>
         </div>
       </div>
@@ -270,11 +269,11 @@ footer{background:var(--navy);padding:28px 5% 0;}
     <div class="course-card">
       <img id="course2-img" src="https://i.ibb.co/PzmMWXF1/2.jpg" alt="Koreys" class="course-img">
       <div class="course-body">
-        <span class="course-tag tag-kr"><i class="lucide lucide-language"></i> Koreys tili</span>
+        <span class="course-tag tag-kr">fas fa-language"></i> Koreys tili</span>
         <h3 class="course-title" id="course2-title">Koreys Tili</h3>
         <p class="course-desc" id="course2-desc">Hangeul (Koreys alifbosi) dan boshlab TOPIK imtihonigacha.</p>
         <div class="course-footer">
-          <span style="font-size:12px;color:var(--text2)"><i class="lucide lucide-language"></i> Koreys tili</span>
+          <span style="font-size:12px;color:var(--text2)">fas fa-language"></i> Koreys tili</span>
           <a href="#apply" class="course-btn" data-i18n="btn_enroll">Yozilish</a>
         </div>
       </div>
@@ -282,11 +281,11 @@ footer{background:var(--navy);padding:28px 5% 0;}
     <div class="course-card">
       <img id="course3-img" src="https://i.ibb.co/1f01hPHS/3.jpg" alt="Ofis" class="course-img">
       <div class="course-body">
-        <span class="course-tag tag-it"><i class="lucide lucide-building"></i> Ofis</span>
+        <span class="course-tag tag-it">fas fa-building"></i> Ofis</span>
         <h3 class="course-title" id="course3-title">Ofis Xizmati</h3>
         <p class="course-desc" id="course3-desc">Ish yuritish, hujjatlashtirish, ofis dasturlari.</p>
         <div class="course-footer">
-          <span style="font-size:12px;color:var(--text2)"><i class="lucide lucide-building"></i> Ofis</span>
+          <span style="font-size:12px;color:var(--text2)">fas fa-building"></i> Ofis</span>
           <a href="#apply" class="course-btn" data-i18n="btn_enroll">Yozilish</a>
         </div>
       </div>
@@ -338,14 +337,14 @@ footer{background:var(--navy);padding:28px 5% 0;}
       <label data-i18n="form_course">Kurs tanlang</label>
       <select id="apply-course">
         <option value="">Tanlang...</option>
-        <option value="IT Texnologiyalari"><i class="lucide lucide-laptop"></i> IT Texnologiyalari</option>
-        <option value="Koreys Tili"><i class="lucide lucide-language"></i> Koreys Tili</option>
-        <option value="IT O'qituvchisi"><i class="lucide lucide-user-graduate"></i> IT O'qituvchisi</option>
-        <option value="Koreys tili O'qituvchisi"><i class="lucide lucide-user-graduate"></i> Koreys tili O'qituvchisi</option>
+        <option value="IT Texnologiyalari">fas fa-laptop"></i> IT Texnologiyalari</option>
+        <option value="Koreys Tili">fas fa-language"></i> Koreys Tili</option>
+        <option value="IT O'qituvchisi">fas fa-user-graduate"></i> IT O'qituvchisi</option>
+        <option value="Koreys tili O'qituvchisi">fas fa-user-graduate"></i> Koreys tili O'qituvchisi</option>
       </select>
     </div>
     <div class="fg"><label data-i18n="form_extra">Qo'shimcha</label><textarea id="apply-message" rows="3" placeholder="Savolingiz yoki izohingiz..."></textarea></div>
-    <button class="apply-btn" onclick="submitApply()" data-i18n="form_submit"><i class="lucide lucide-send"></i> Ariza yuborish</button>
+    <button class="apply-btn" onclick="submitApply()" data-i18n="form_submit">fas fa-send"></i> Ariza yuborish</button>
     <div class="apply-success" id="apply-success">Arizangiz qabul qilindi! Tez orada siz bilan bog'lanamiz.</div>
   </div>
 </section>
@@ -358,7 +357,7 @@ footer{background:var(--navy);padding:28px 5% 0;}
     <div class="history-text">
       <p id="about-text">KITA (Korea IT Academy) — Toshkentda joylashgan zamonaviy o'quv markazi.</p>
     </div>
-    <a href="/docs/history.pdf" class="history-pdf-btn" target="_blank"><i class="lucide lucide-file-text"></i> To'liq tarix va yutuqlar (PDF)</a>
+    <a href="/docs/history.pdf" class="history-pdf-btn" target="_blank">fas fa-file-text"></i> To'liq tarix va yutuqlar (PDF)</a>
   </div>
 </section>
 
@@ -367,10 +366,10 @@ footer{background:var(--navy);padding:28px 5% 0;}
   <div class="section-tag" data-i18n="sec_contact">Aloqa</div>
   <h2 class="section-title" data-i18n="contact_title">Biz bilan bog'laning</h2>
   <div class="contact-items-wrap">
-      <div class="contact-item"><div class="contact-icon"><i class="lucide lucide-map-pin"></i></div><div><div class="contact-label" data-i18n="contact_address_lbl">Manzil</div><div class="contact-value" id="contact-address">Shota Rustaveli ko'chasi 156</div></div></div>
-      <div class="contact-item"><div class="contact-icon"><i class="lucide lucide-phone"></i></div><div><div class="contact-label" data-i18n="contact_phone_lbl">Telefon</div><div class="contact-value"><a id="contact-phone-link" href="tel:+998508182280">+998 50 818 22 80</a></div></div></div>
-      <div class="contact-item"><div class="contact-icon"><i class="lucide lucide-send"></i></div><div><div class="contact-label" data-i18n="contact_telegram_lbl">Telegram</div><div class="contact-value"><a id="contact-telegram-link" href="https://t.me/Hancom_A" target="_blank">@Hancom_A</a></div></div></div>
-      <div class="contact-item"><div class="contact-icon"><i class="lucide lucide-instagram"></i></div><div><div class="contact-label" data-i18n="contact_instagram_lbl">Instagram</div><div class="contact-value"><a id="contact-instagram-link" href="https://instagram.com/hancomacademy.uz" target="_blank">@hancomacademy.uz</a></div></div></div>
+      <div class="contact-item"><div class="contact-icon">fas fa-map-pin"></i></div><div><div class="contact-label" data-i18n="contact_address_lbl">Manzil</div><div class="contact-value" id="contact-address">Shota Rustaveli ko'chasi 156</div></div></div>
+      <div class="contact-item"><div class="contact-icon">fas fa-phone"></i></div><div><div class="contact-label" data-i18n="contact_phone_lbl">Telefon</div><div class="contact-value"><a id="contact-phone-link" href="tel:+998508182280">+998 50 818 22 80</a></div></div></div>
+      <div class="contact-item"><div class="contact-icon">fas fa-send"></i></div><div><div class="contact-label" data-i18n="contact_telegram_lbl">Telegram</div><div class="contact-value"><a id="contact-telegram-link" href="https://t.me/Hancom_A" target="_blank">@Hancom_A</a></div></div></div>
+      <div class="contact-item"><div class="contact-icon">fas fa-instagram"></i></div><div><div class="contact-label" data-i18n="contact_instagram_lbl">Instagram</div><div class="contact-value"><a id="contact-instagram-link" href="https://instagram.com/hancomacademy.uz" target="_blank">@hancomacademy.uz</a></div></div></div>
   </div>
 </section>
 
@@ -419,16 +418,16 @@ const LANGS = {
     contact_telegram_lbl:"Telegram", contact_instagram_lbl:"Instagram",
     form_name:"Ismingiz *", form_phone:"Telefon raqam *",
     form_course:"Kurs tanlang", form_extra:"Qo'shimcha",
-    form_submit:"<i class='lucide lucide-send'></i> Ariza yuborish",
+    form_submit:"<i class='fas fa-send'></i> Ariza yuborish",
     form_sending:"Yuborilmoqda...",
     form_success:"Arizangiz qabul qilindi! Tez orada siz bilan bog'lanamiz.",
     form_err_name:"Ismingizni kiriting", form_err_phone:"Telefon raqamingizni kiriting",
     footer_copy:"© 2026 KITA HANCOM Academy. Barcha huquqlar himoyalangan.",
-    m_courses:"<i class='lucide lucide-book'></i> Kurslar", m_gallery:"<i class='lucide lucide-images'></i> Galereya", m_news:"<i class='lucide lucide-newspaper'></i> Yangiliklar",
+    m_courses:"<i class='fas fa-book'></i> Kurslar", m_gallery:"<i class='fas fa-images'></i> Galereya", m_news:"<i class='fas fa-newspaper'></i> Yangiliklar",
     m_about:"Biz haqimizda", m_contact:"Aloqa", m_apply:"Ariza qoldirish",
     faq_title:"Ko'p so'raladigan savollar",
     faq_sub:"Bizga eng ko'p beriladigan savollarga javoblar.",
-    course_opt_it:"<i class='lucide lucide-laptop'></i> IT Texnologiyalari", course_opt_kr:"<i class='lucide lucide-language'></i> Koreys Tili",
+    course_opt_it:"<i class='fas fa-laptop'></i> IT Texnologiyalari", course_opt_kr:"<i class='fas fa-language'></i> Koreys Tili",
     placeholder_name:"Ism va familiya", placeholder_phone:"+998 XX XXX XX XX", placeholder_extra:"Savolingiz yoki izohingiz...",
   },
   ru: {
@@ -458,16 +457,16 @@ const LANGS = {
     contact_telegram_lbl:"Telegram", contact_instagram_lbl:"Instagram",
     form_name:"Ваше имя *", form_phone:"Номер телефона *",
     form_course:"Выбрать курс", form_extra:"Дополнительно",
-    form_submit:"<i class='lucide lucide-send'></i> Отправить заявку",
+    form_submit:"<i class='fas fa-send'></i> Отправить заявку",
     form_sending:"Отправляется...",
     form_success:"Ваша заявка принята! Мы свяжемся с вами в ближайшее время.",
     form_err_name:"Введите ваше имя", form_err_phone:"Введите номер телефона",
     footer_copy:"© 2026 KITA HANCOM Academy. Все права защищены.",
-    m_courses:"<i class='lucide lucide-book'></i> Курсы", m_gallery:"<i class='lucide lucide-images'></i> Галерея", m_news:"<i class='lucide lucide-newspaper'></i> Новости",
+    m_courses:"<i class='fas fa-book'></i> Курсы", m_gallery:"<i class='fas fa-images'></i> Галерея", m_news:"<i class='fas fa-newspaper'></i> Новости",
     m_about:"О нас", m_contact:"Контакты", m_apply:"Подать заявку",
     faq_title:"Часто задаваемые вопросы",
     faq_sub:"Ответы на самые частые вопросы.",
-    course_opt_it:"<i class='lucide lucide-laptop'></i> IT Технологии", course_opt_kr:"<i class='lucide lucide-language'></i> Корейский язык",
+    course_opt_it:"<i class='fas fa-laptop'></i> IT Технологии", course_opt_kr:"<i class='fas fa-language'></i> Корейский язык",
     placeholder_name:"Имя и фамилия", placeholder_phone:"+998 XX XXX XX XX", placeholder_extra:"Ваш вопрос или комментарий...",
   },
   kr: {
@@ -497,16 +496,16 @@ const LANGS = {
     contact_telegram_lbl:"텔레그램", contact_instagram_lbl:"인스타그램",
     form_name:"성함 *", form_phone:"전화번호 *",
     form_course:"강좌 선택", form_extra:"추가 사항",
-    form_submit:"<i class='lucide lucide-send'></i> 신청서 제출",
+    form_submit:"<i class='fas fa-send'></i> 신청서 제출",
     form_sending:"전송 중...",
     form_success:"신청서가 접수되었습니다! 곧 연락드리겠습니다.",
     form_err_name:"성함을 입력해 주세요", form_err_phone:"전화번호를 입력해 주세요",
     footer_copy:"© 2026 KITA HANCOM Academy. 모든 권리 보유.",
-    m_courses:"<i class='lucide lucide-book'></i> 강좌", m_gallery:"<i class='lucide lucide-images'></i> 갤러리", m_news:"<i class='lucide lucide-newspaper'></i> 뉴스",
+    m_courses:"<i class='fas fa-book'></i> 강좌", m_gallery:"<i class='fas fa-images'></i> 갤러리", m_news:"<i class='fas fa-newspaper'></i> 뉴스",
     m_about:"정보", m_contact:"연락처", m_apply:"신청하기",
     faq_title:"자주 묻는 질문",
     faq_sub:"가장 많이 받는 질문에 대한 답변입니다.",
-    course_opt_it:"<i class='lucide lucide-laptop'></i> IT 기술", course_opt_kr:"<i class='lucide lucide-language'></i> 한국어",
+    course_opt_it:"<i class='fas fa-laptop'></i> IT 기술", course_opt_kr:"<i class='fas fa-language'></i> 한국어",
     placeholder_name:"성명", placeholder_phone:"+998 XX XXX XX XX", placeholder_extra:"질문이나 의견을 남겨 주세요...",
   }
 };
@@ -531,8 +530,8 @@ function setLang(l) {
   // Course select options
   const sel = document.getElementById('apply-course');
   if (sel) {
-    sel.options[0].innerHTML = T.course_opt_it||'<i class="lucide lucide-laptop"></i> IT Texnologiyalari';
-    sel.options[1].innerHTML = T.course_opt_kr||'<i class="lucide lucide-language"></i> Koreys Tili';
+    sel.options[0].innerHTML = T.course_opt_it||'fas fa-laptop"></i> IT Texnologiyalari';
+    sel.options[1].innerHTML = T.course_opt_kr||'fas fa-language"></i> Koreys Tili';
   }
   // Add new options for teacher positions
   if(sel && sel.options.length < 5){
@@ -611,9 +610,9 @@ async function loadNews(){
       const title = n['title_'+_lang]||n.title||'';
       const body = n['body_'+_lang]||n.body||'';
       return `<div class="news-card" onclick="showNewsModal('${(n.image_url||'').replace(/'/g,"\\'")}','${title.replace(/'/g,"\\'")}','${body.replace(/'/g,"\\'")}','${n.created_at||''}')" style="cursor:pointer">
-        ${n.image_url?`<img src="${n.image_url}" alt="${title}" class="news-img">`:'<div class="news-img" style="display:flex;align-items:center;justify-content:center;font-size:40px;"><i class="lucide lucide-newspaper"></i></div>'}
+        ${n.image_url?`<img src="${n.image_url}" alt="${title}" class="news-img">`:'<div class="news-img" style="display:flex;align-items:center;justify-content:center;font-size:40px;">fas fa-newspaper"></i></div>'}
         <div class="news-body">
-          <div class="news-date"><i class="lucide lucide-calendar"></i> ${n.created_at}</div>
+          <div class="news-date">fas fa-calendar"></i> ${n.created_at}</div>
           <div class="news-title">${title}</div>
           <div class="news-text">${body.substring(0,120)}${body.length>120?'...':''}</div>
         </div>
@@ -625,7 +624,7 @@ function showNewsModal(imgUrl,title,body,date){
   const m=document.getElementById('news-modal');
   document.getElementById('nm-img').innerHTML=imgUrl?'<img src="'+imgUrl+'" style="width:100%;max-height:300px;object-fit:cover;border-radius:10px;">':'';
   document.getElementById('nm-title').textContent=title;
-  document.getElementById('nm-date').innerHTML='<i class="lucide lucide-calendar"></i> '+date;
+  document.getElementById('nm-date').innerHTML='fas fa-calendar"></i> '+date;
   document.getElementById('nm-body').innerText=body;
   m.style.display='flex';
 }
@@ -701,7 +700,7 @@ async function loadBranchesMap() {
     }).addTo(_map);
 
     const TYPE_COLOR = { 'IT': '#1565C0', 'Koreys tili': '#E53935', 'Ofis xodimi': '#2E7D32' };
-    const TYPE_ICON  = { 'IT': '<i class="lucide lucide-laptop"></i>', 'Koreys tili': '<i class="lucide lucide-language"></i>', 'Ofis xodimi': '<i class="lucide lucide-building"></i>' };
+    const TYPE_ICON  = { 'IT': 'fas fa-laptop"></i>', 'Koreys tili': 'fas fa-language"></i>', 'Ofis xodimi': 'fas fa-building"></i>' };
 
     // Turlar bo'yicha marker rangi — agar bir necha tur bo'lsa ko'k
     function markerColor(lessons) {
@@ -747,10 +746,10 @@ async function loadBranchesMap() {
       for (const [type, times] of Object.entries(byType)) {
         const cls = type === 'IT' ? 'it' : type === 'Koreys tili' ? 'kr' : 'of';
         const schedule = times.map(t => `${dayShort[t.day]||t.day.slice(0,2)} ${t.time}`).join(' · ');
-        const typeLabel = type === 'IT' ? '<i class="lucide lucide-laptop"></i> IT' : type === 'Koreys tili' ? '<i class="lucide lucide-language"></i> Koreys tili' : '<i class="lucide lucide-building"></i> Ofis';
+        const typeLabel = type === 'IT' ? 'fas fa-laptop"></i> IT' : type === 'Koreys tili' ? 'fas fa-language"></i> Koreys tili' : 'fas fa-building"></i> Ofis';
         rows += `<div class="map-popup-item">
           <span class="map-popup-type ${cls}">${typeLabel}</span>
-          <span class="map-popup-time"><i class="lucide lucide-clock"></i> ${schedule}</span>
+          <span class="map-popup-time">fas fa-clock"></i> ${schedule}</span>
         </div>`;
         const safeType = type.replace(/'/g, "\\'");
         const safeBranch = branch.name.replace(/'/g, "\\'");
@@ -762,10 +761,10 @@ async function loadBranchesMap() {
       const yandexUrl = `https://yandex.uz/maps/?rtext=~${branch.lat},${branch.lon}&rtt=pd`;
 
       return `<div class="map-popup">
-        <h4><i class="lucide lucide-building"></i> ${branch.name}</h4>
+        <h4>fas fa-building"></i> ${branch.name}</h4>
         ${rows}
         <div style="margin-top:10px;display:flex;flex-direction:column;gap:5px">${enrollBtns}</div>
-        <a href="${yandexUrl}" target="_blank" rel="noopener" style="display:block;margin-top:8px;text-align:center;font-size:11px;color:#555;text-decoration:none;padding:5px 8px;border:1px solid #ddd;border-radius:7px;background:#f9f9f9"><i class="lucide lucide-map-pin"></i> Yandex Maps — marshrut</a>
+        <a href="${yandexUrl}" target="_blank" rel="noopener" style="display:block;margin-top:8px;text-align:center;font-size:11px;color:#555;text-decoration:none;padding:5px 8px;border:1px solid #ddd;border-radius:7px;background:#f9f9f9">fas fa-map-pin"></i> Yandex Maps — marshrut</a>
       </div>`;
     }
 
@@ -773,7 +772,7 @@ async function loadBranchesMap() {
     const locBtn = L.control({ position: 'topright' });
     locBtn.onAdd = function() {
       const btn = L.DomUtil.create('button', '');
-      btn.innerHTML = '<i class="lucide lucide-send"></i>';
+      btn.innerHTML = 'fas fa-send"></i>';
       btn.title = 'Mening joylashuvim';
       btn.style.cssText = 'width:34px;height:34px;background:white;border:2px solid rgba(0,0,0,.2);border-radius:4px;cursor:pointer;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 5px rgba(0,0,0,.2)';
       L.DomEvent.on(btn, 'click', function() {
@@ -784,7 +783,7 @@ async function loadBranchesMap() {
           L.circleMarker(latlng, {
             radius: 10, fillColor: '#1565C0', color: 'white',
             weight: 3, opacity: 1, fillOpacity: 0.9
-          }).addTo(_map).bindPopup('<i class="lucide lucide-map-pin"></i> Siz shu yerdasiz').openPopup();
+          }).addTo(_map).bindPopup('fas fa-map-pin"></i> Siz shu yerdasiz').openPopup();
         }, function() { alert("Joylashuv aniqlanmadi"); });
       });
       return btn;
@@ -877,6 +876,5 @@ window.addEventListener('load', loadBranchesMap);
     </div>
   </div>
 </div>
-<script>lucide.createIcons();</script>
 </body>
 </html>
