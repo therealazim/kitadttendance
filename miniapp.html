@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>O'quvchilar Davomati</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:var(--tg-theme-bg-color,#0f1724);
+  --card:var(--tg-theme-secondary-bg-color,#1a2332);
+  --tx:var(--tg-theme-text-color,#edf2ff);
+  --tx2:#8899b0;
+  --ac:var(--tg-theme-button-color,#4f8ef7);
+  --gn:#10b981;--rd:#ef4444;--og:#f59e0b;
+  --bd:rgba(255,255,255,.08);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding-bottom:90px;}
+
+/* HEADER */
+.hdr{background:var(--card);padding:14px 16px;border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:50;}
+.hdr-top{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.back-btn{background:none;border:none;color:var(--ac);font-size:22px;cursor:pointer;padding:0 4px;display:none;}
+.hdr-title{font-size:16px;font-weight:800;flex:1;}
+.hdr-sub{font-size:11px;color:var(--tx2);}
+.hdr-date{font-size:11px;color:var(--ac);font-weight:600;text-align:right;}
+
+/* SCREENS */
+.screen{display:none;padding:14px 14px calc(80px + env(safe-area-inset-bottom));}
+.screen.on{display:block;}
+
+/* LOADER */
+.loader{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:14px;}
+.spin{width:36px;height:36px;border:3px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:sp .7s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg)}}
+.load-txt{font-size:13px;color:var(--tx2);}
+
+/* PROFILE CARD */
+.prof{background:var(--card);border-radius:14px;padding:14px;margin-bottom:14px;display:flex;align-items:center;gap:12px;border:1px solid var(--bd);}
+.av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0;}
+.prof-name{font-size:14px;font-weight:700;}
+.prof-spec{font-size:11px;color:var(--tx2);margin-top:2px;}
+
+/* SECTION TITLES */
+.sec-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--tx2);margin:4px 0 9px;padding:0 2px;}
+
+/* GROUP CARDS */
+.grp-card{background:var(--card);border-radius:13px;padding:14px;margin-bottom:10px;border:1px solid var(--bd);cursor:pointer;transition:all .15s;active:scale(.98);}
+.grp-card:active{transform:scale(.97);opacity:.85;}
+.grp-card.today-grp{border-color:rgba(79,142,247,.35);background:linear-gradient(135deg,rgba(79,142,247,.06),rgba(139,92,246,.04));}
+.grp-card.done{border-color:rgba(16,185,129,.25);background:rgba(16,185,129,.04);}
+.gc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;}
+.gc-name{font-size:14px;font-weight:700;}
+.gc-badge{font-size:9px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.gc-badge.today{background:rgba(79,142,247,.15);color:#4f8ef7;border:1px solid rgba(79,142,247,.25);}
+.gc-badge.done{background:rgba(16,185,129,.15);color:#34d399;border:1px solid rgba(16,185,129,.25);}
+.gc-badge.it{background:rgba(79,142,247,.1);color:#4f8ef7;}
+.gc-badge.kr{background:rgba(139,92,246,.1);color:#a78bfa;}
+.gc-meta{display:flex;flex-wrap:wrap;gap:6px;}
+.gc-info{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--tx2);}
+.gc-days{display:flex;flex-wrap:wrap;gap:3px;margin-top:7px;}
+.day-chip{font-size:9px;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid var(--bd);color:var(--tx2);}
+.day-chip.active{background:rgba(79,142,247,.1);border-color:rgba(79,142,247,.2);color:var(--ac);}
+.empty-grp{text-align:center;padding:40px 20px;color:var(--tx2);}
+.empty-grp .ei{font-size:40px;margin-bottom:10px;}
+
+/* STUDENT LIST */
+.att-hdr{background:var(--card);border-radius:13px;padding:13px;margin-bottom:12px;border:1px solid var(--bd);}
+.att-hdr-name{font-size:15px;font-weight:800;margin-bottom:4px;}
+.att-hdr-meta{font-size:11px;color:var(--tx2);}
+.att-stats{display:flex;gap:8px;margin-bottom:12px;}
+.ast{flex:1;background:var(--card);border-radius:10px;padding:10px;text-align:center;border:1px solid var(--bd);}
+.asv{font-size:20px;font-weight:800;}
+.asl{font-size:10px;color:var(--tx2);margin-top:2px;}
+.std-item{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:12px;padding:13px 14px;margin-bottom:8px;border:2px solid var(--bd);cursor:pointer;transition:all .12s;user-select:none;}
+.std-item:active{transform:scale(.97);}
+.std-item.present{border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.06);}
+.std-item.absent{border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.04);opacity:.65;}
+.std-num{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--tx2);flex-shrink:0;}
+.std-info{flex:1;min-width:0;}
+.std-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.std-phone{font-size:11px;color:var(--tx2);margin-top:2px;}
+.std-check{width:28px;height:28px;border-radius:50%;border:2px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s;font-size:14px;}
+.std-item.present .std-check{background:var(--gn);border-color:var(--gn);color:#fff;}
+.std-item.absent .std-check{border-color:rgba(239,68,68,.4);}
+
+/* BULK ACTIONS */
+.bulk{display:flex;gap:8px;margin-bottom:12px;}
+.bulk-btn{flex:1;padding:9px;border-radius:10px;border:none;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .12s;}
+.bulk-btn:active{transform:scale(.96);}
+.ba-all{background:rgba(16,185,129,.15);color:#34d399;border:1px solid rgba(16,185,129,.25);}
+.ba-none{background:rgba(255,255,255,.06);color:var(--tx2);border:1px solid var(--bd);}
+
+/* ALREADY DONE BANNER */
+.done-banner{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);border-radius:12px;padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;font-size:12px;color:#34d399;font-weight:500;}
+
+/* BOTTOM FIXED BAR */
+.btm{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--bd);padding:12px 14px calc(12px + env(safe-area-inset-bottom));z-index:100;}
+.submit-btn{width:100%;padding:14px;border-radius:12px;border:none;background:var(--ac);color:#fff;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.submit-btn:active{transform:scale(.97);}
+.submit-btn:disabled{opacity:.4;cursor:not-allowed;}
+.submit-btn.success{background:var(--gn);}
+
+/* SUCCESS SCREEN */
+.success-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center;padding:20px;}
+.success-ico{font-size:64px;margin-bottom:16px;animation:bounce .5s ease;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.success-title{font-size:20px;font-weight:800;margin-bottom:8px;}
+.success-sub{font-size:13px;color:var(--tx2);line-height:1.5;margin-bottom:20px;}
+.success-stats{display:flex;gap:10px;justify-content:center;}
+.ss-item{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px 20px;text-align:center;}
+.ss-v{font-size:24px;font-weight:800;}
+.ss-l{font-size:10px;color:var(--tx2);margin-top:3px;}
+
+/* TOAST */
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-80px);background:#1e2d3d;border:1px solid var(--bd);border-radius:10px;padding:10px 18px;font-size:12px;font-weight:500;z-index:9999;transition:.25s;white-space:nowrap;max-width:90vw;text-align:center;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.err{border-color:rgba(239,68,68,.3);color:#f87171;}
+.toast.ok{border-color:rgba(16,185,129,.3);color:#34d399;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-top">
+    <button class="back-btn" id="backBtn" onclick="goBack()">‹</button>
+    <div class="hdr-title" id="hdrTitle">📋 Davomat</div>
+    <div class="hdr-date" id="hdrDate"></div>
+  </div>
+  <div class="hdr-sub" id="hdrSub"></div>
+</div>
+
+<!-- LOADER -->
+<div class="screen on" id="scrLoad">
+  <div class="loader"><div class="spin"></div><div class="load-txt">Yuklanmoqda...</div></div>
+</div>
+
+<!-- GROUPS SCREEN -->
+<div class="screen" id="scrGroups">
+  <div class="prof" id="profCard"></div>
+  <div id="grpContent"></div>
+</div>
+
+<!-- STUDENTS SCREEN -->
+<div class="screen" id="scrStudents">
+  <div class="att-hdr" id="attHdr"></div>
+  <div class="att-stats" id="attStats"></div>
+  <div id="doneBanner"></div>
+  <div class="bulk">
+    <button class="bulk-btn ba-all" onclick="selAll()">✅ Barchasini belgilash</button>
+    <button class="bulk-btn ba-none" onclick="selNone()">❌ Barchasini olib tashlash</button>
+  </div>
+  <div id="stdList"></div>
+</div>
+
+<!-- SUCCESS SCREEN -->
+<div class="screen" id="scrSuccess">
+  <div class="success-wrap">
+    <div class="success-ico">✅</div>
+    <div class="success-title">Davomat saqlandi!</div>
+    <div class="success-sub" id="succSub"></div>
+    <div class="success-stats" id="succStats"></div>
+  </div>
+</div>
+
+<!-- BOTTOM BAR -->
+<div class="btm" id="btmBar" style="display:none">
+  <button class="submit-btn" id="submitBtn" onclick="submitAtt()">
+    <span id="submitTxt">💾 Davomatni saqlash</span>
+  </button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══ TELEGRAM WEBAPP INIT ═══
+const tg = window.Telegram?.WebApp;
+if(tg){tg.ready();tg.expand();tg.setHeaderColor?.('#0f1724');tg.setBackgroundColor?.('#0f1724');}
+
+// ═══ STATE ═══
+let USER = null, GROUPS = [], SEL_GID = null, GRP_DATA = null;
+let PRESENT = new Set();
+const BASE = '';
+const DAYS = ['Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba','Yakshanba'];
+const MNS = ['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
+const AVC = ['#4f8ef7','#8b5cf6','#10b981','#f59e0b','#ef4444','#0891b2','#db2777'];
+const now = new Date();
+const TODAY_STR = `${now.getDate()} ${MNS[now.getMonth()]} ${now.getFullYear()}`;
+const TODAY_WD = DAYS[now.getDay()===0?6:now.getDay()-1];
+
+document.getElementById('hdrDate').textContent = TODAY_STR;
+
+function toast(msg, type='', dur=2800){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast show '+(type||'');
+  setTimeout(()=>t.className='toast',dur);
+}
+function ini(n){if(!n)return'?';const p=n.trim().split(' ');return p.length>=2?(p[0][0]+p[1][0]).toUpperCase():n[0].toUpperCase();}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');}
+
+// ═══ INIT ═══
+async function init(){
+  // user_id va group_id URL dan
+  const params = new URLSearchParams(location.search);
+  let uid = params.get('user_id');
+  const autoGid = params.get('group_id') ? parseInt(params.get('group_id')) : null;
+
+  // Telegram WebApp init data dan ham olishga harakat
+  if(!uid && tg?.initDataUnsafe?.user?.id){
+    uid = tg.initDataUnsafe.user.id;
+  }
+
+  if(!uid){
+    show('scrGroups');
+    document.getElementById('grpContent').innerHTML=`<div class="empty-grp"><div class="ei">⚠️</div><div style="font-size:14px;font-weight:700">Foydalanuvchi aniqlanmadi</div><div style="font-size:12px;color:var(--tx2);margin-top:8px">Botdan qaytadan kiriting</div></div>`;
+    document.getElementById('profCard').style.display='none';
+    return;
+  }
+
+  try{
+    const r = await fetch(`${BASE}/miniapp/api/init?user_id=${uid}`);
+    const data = await r.json();
+    if(!data.ok){throw new Error(data.error||'Xatolik');}
+
+    USER = data.user;
+    GROUPS = data.groups;
+    renderProfile();
+
+    // Bot tugmasidan kelganda - to'g'ridan guruhni ochamiz
+    if(autoGid){
+      const grp = GROUPS.find(g=>g.id===autoGid);
+      // Guruh ro'yxatini ko'rsatmasdan darhol ochish
+      show('scrGroups');
+      renderGroups();
+      await openGroup(autoGid);
+    } else {
+      renderGroups();
+      show('scrGroups');
+    }
+  }catch(e){
+    document.getElementById('load-txt') && (document.getElementById('load-txt').textContent = '❌ '+e.message);
+    show('scrGroups');
+    document.getElementById('grpContent').innerHTML=`<div class="empty-grp"><div class="ei">❌</div><div>${e.message}</div></div>`;
+    document.getElementById('profCard').style.display='none';
+  }
+}
+
+function renderProfile(){
+  const c = AVC[USER.id % AVC.length];
+  document.getElementById('profCard').innerHTML=`
+    <div class="av" style="background:${c}22;color:${c};border:2px solid ${c}44">${ini(USER.name)}</div>
+    <div><div class="prof-name">${USER.name}</div><div class="prof-spec">${USER.specialty||'O\'qituvchi'}</div></div>`;
+  document.getElementById('hdrSub').textContent = TODAY_WD + " · " + TODAY_STR;
+}
+
+function renderGroups(){
+  const today = GROUPS.filter(g=>g.is_today);
+  const other = GROUPS.filter(g=>!g.is_today);
+  let h = '';
+  
+  if(GROUPS.length === 0){
+    h = `<div class="empty-grp"><div class="ei">📚</div><div style="font-size:14px;font-weight:700">Guruhlar yo'q</div><div style="font-size:12px;color:var(--tx2);margin-top:8px">Sizga hali guruh biriktirilmagan</div></div>`;
+    document.getElementById('grpContent').innerHTML = h;
+    return;
+  }
+
+  if(today.length){
+    h += `<div class="sec-title">📅 Bugungi darslar (${TODAY_WD})</div>`;
+    h += today.map(g=>grpCard(g)).join('');
+  }
+  if(other.length){
+    h += `<div class="sec-title" style="margin-top:${today.length?'16px':'0'}">📚 Barcha guruhlar</div>`;
+    h += other.map(g=>grpCard(g)).join('');
+  }
+  document.getElementById('grpContent').innerHTML = h;
+}
+
+function grpCard(g){
+  const isDone = g.already_done;
+  const isToday = g.is_today;
+  const badgeClass = isDone ? 'done' : isToday ? 'today' : '';
+  const badgeTxt = isDone ? '✅ Bajarildi' : isToday ? '⚡ Bugun' : '';
+  const typeC = g.lesson_type === 'IT' ? 'it' : 'kr';
+  
+  const daysH = (g.days||[]).map(d=>`<span class="day-chip ${d===TODAY_WD&&isToday?'active':''}">${d.slice(0,3)}</span>`).join('');
+  const timeH = g.today_time ? `<span class="gc-info">⏰ ${g.today_time}</span>` : '';
+  
+  return `<div class="grp-card ${isToday?'today-grp':''} ${isDone?'done':''}" onclick="openGroup(${g.id})">
+    <div class="gc-top">
+      <div class="gc-name">${g.group_name}</div>
+      <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
+        <span class="gc-badge ${typeC}">${g.lesson_type}</span>
+        ${badgeTxt?`<span class="gc-badge ${badgeClass}">${badgeTxt}</span>`:''}
+      </div>
+    </div>
+    <div class="gc-meta">
+      <span class="gc-info">🏢 ${g.branch}</span>
+      <span class="gc-info">🧑‍🎓 ${g.student_count} ta</span>
+      ${timeH}
+    </div>
+    <div class="gc-days">${daysH}</div>
+  </div>`;
+}
+
+// ═══ OPEN GROUP ═══
+async function openGroup(gid){
+  SEL_GID = gid;
+  PRESENT = new Set();
+  
+  document.getElementById('backBtn').style.display = 'block';
+  document.getElementById('hdrTitle').textContent = '⏳ Yuklanmoqda...';
+  document.getElementById('btmBar').style.display = 'block';
+  document.getElementById('submitBtn').disabled = true;
+  show('scrLoad');
+
+  try{
+    const r = await fetch(`${BASE}/miniapp/api/students?group_id=${gid}`);
+    const data = await r.json();
+    if(!data.ok) throw new Error(data.error||'Xatolik');
+    
+    GRP_DATA = data;
+    
+    // Oldingi davomat bor bo'lsa yuklab olish
+    data.students.forEach((s,i)=>{
+      if(s.prev_status === 'Kelgan') PRESENT.add(i);
+    });
+    
+    document.getElementById('hdrTitle').textContent = data.group_name;
+    document.getElementById('hdrSub').textContent = data.branch + ' · ' + data.lesson_type;
+    
+    renderStudents(data);
+    show('scrStudents');
+    document.getElementById('submitBtn').disabled = false;
+  }catch(e){
+    toast('❌ '+e.message,'err');
+    goBack();
+  }
+}
+
+function renderStudents(data){
+  // Header
+  document.getElementById('attHdr').innerHTML=`
+    <div class="att-hdr-name">${data.group_name}</div>
+    <div class="att-hdr-meta">🏢 ${data.branch} &nbsp;·&nbsp; 🧑‍🎓 ${data.students.length} ta o'quvchi &nbsp;·&nbsp; 📅 ${TODAY_STR}</div>`;
+  
+  // Done banner
+  document.getElementById('doneBanner').innerHTML = data.already_done
+    ? `<div class="done-banner">✅ Bugungi davomat avval belgilangan. Qayta belgilashingiz mumkin.</div>` : '';
+  
+  // Stats
+  updateStats();
+  
+  // Students
+  renderStdList();
+}
+
+function renderStdList(){
+  if(!GRP_DATA) return;
+  const h = GRP_DATA.students.map((s,i)=>{
+    const prs = PRESENT.has(i);
+    return`<div class="std-item ${prs?'present':'absent'}" onclick="togStd(${i})" id="std-${i}">
+      <div class="std-num">${i+1}</div>
+      <div class="std-info"><div class="std-name">${s.name}</div><div class="std-phone">${s.phone}</div></div>
+      <div class="std-check">${prs?'✓':''}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('stdList').innerHTML = h;
+  updateStats();
+}
+
+function togStd(i){
+  if(PRESENT.has(i)) PRESENT.delete(i);
+  else PRESENT.add(i);
+  
+  const el = document.getElementById('std-'+i);
+  const prs = PRESENT.has(i);
+  el.className = 'std-item ' + (prs?'present':'absent');
+  el.querySelector('.std-check').textContent = prs ? '✓' : '';
+  updateStats();
+  
+  // Haptic feedback
+  if(tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
+}
+
+function updateStats(){
+  const total = GRP_DATA?.students?.length || 0;
+  const prs = PRESENT.size;
+  const abs = total - prs;
+  const pct = total ? Math.round(prs/total*100) : 0;
+  document.getElementById('attStats').innerHTML=`
+    <div class="ast"><div class="asv" style="color:#34d399">${prs}</div><div class="asl">✅ Keldi</div></div>
+    <div class="ast"><div class="asv" style="color:#f87171">${abs}</div><div class="asl">❌ Kelmadi</div></div>
+    <div class="ast"><div class="asv" style="color:var(--ac)">${pct}%</div><div class="asl">📊 Foiz</div></div>`;
+  document.getElementById('submitTxt').textContent = `💾 Saqlash (${prs}/${total} keldi)`;
+}
+
+function selAll(){PRESENT=new Set(GRP_DATA.students.map((_,i)=>i));renderStdList();if(tg?.HapticFeedback)tg.HapticFeedback.notificationOccurred('success');}
+function selNone(){PRESENT=new Set();renderStdList();}
+
+// ═══ SUBMIT ═══
+async function submitAtt(){
+  if(!SEL_GID || !USER) return;
+  
+  const btn = document.getElementById('submitBtn');
+  const total = GRP_DATA?.students?.length || 0;
+  const prs = PRESENT.size;
+  
+  if(!confirm(`✅ ${prs} keldi, ❌ ${total-prs} kelmadi.\nDavomatni saqlaysizmi?`)) return;
+  
+  btn.disabled = true;
+  document.getElementById('submitTxt').textContent = '⏳ Saqlanmoqda...';
+  
+  try{
+    const r = await fetch(`${BASE}/miniapp/api/submit`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        user_id: USER.id,
+        group_id: SEL_GID,
+        present: [...PRESENT],
+      })
+    });
+    const data = await r.json();
+    if(!data.ok) throw new Error(data.error||'Xatolik');
+    
+    if(tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+    
+    // Success screen
+    const grpNm = GRP_DATA?.group_name || '';
+    document.getElementById('succSub').innerHTML = `<b>${grpNm}</b> guruhi davomati<br>admin guruhiga yuborildi`;
+    document.getElementById('succStats').innerHTML=`
+      <div class="ss-item"><div class="ss-v" style="color:#34d399">${data.kelgan}</div><div class="ss-l">✅ Keldi</div></div>
+      <div class="ss-item"><div class="ss-v" style="color:#f87171">${data.kelmagan}</div><div class="ss-l">❌ Kelmadi</div></div>
+      <div class="ss-item"><div class="ss-v" style="color:var(--ac)">${data.total}</div><div class="ss-l">👥 Jami</div></div>`;
+    
+    document.getElementById('btmBar').style.display='none';
+    document.getElementById('backBtn').style.display='none';
+    document.getElementById('hdrTitle').textContent='✅ Bajarildi!';
+    document.getElementById('hdrSub').textContent='';
+    show('scrSuccess');
+    
+    // Guruhni done qilib ko'rsatish
+    const grp = GROUPS.find(g=>g.id===SEL_GID);
+    if(grp) grp.already_done = true;
+    
+    // 2.5 soniyadan so'ng guruhlar ro'yxatiga qaytish
+    setTimeout(()=>{
+      goToGroups();
+    }, 2800);
+    
+  }catch(e){
+    toast('❌ '+e.message,'err');
+    btn.disabled=false;
+    document.getElementById('submitTxt').textContent=`💾 Saqlash (${prs}/${total} keldi)`;
+  }
+}
+
+// ═══ NAVIGATION ═══
+function goBack(){
+  if(document.getElementById('scrStudents').classList.contains('on')){
+    goToGroups();
+  } else {
+    goToGroups();
+  }
+}
+
+function goToGroups(){
+  document.getElementById('backBtn').style.display='none';
+  document.getElementById('btmBar').style.display='none';
+  document.getElementById('hdrTitle').textContent='📋 Davomat';
+  document.getElementById('hdrSub').textContent=TODAY_WD+' · '+TODAY_STR;
+  renderGroups();
+  show('scrGroups');
+  SEL_GID=null;GRP_DATA=null;PRESENT=new Set();
+}
+
+init();
+</script>
+</body>
+</html>
