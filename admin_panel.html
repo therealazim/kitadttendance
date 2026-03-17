@@ -783,7 +783,7 @@ async function unblk(uid){const r=await api('/admin/api/user/status',{user_id:ui
 async function delU(uid){const u=USERS.find(x=>x.user_id===uid);if(!confirm(`"${u?.name||uid}" arxivlansinmi?\nDavomat tarixi saqlanadi.`))return;const r=await api('/admin/api/user/delete',{user_id:uid});if(r?.ok){toast('✅ '+tr('Arxivlandi'));cM('um');await fetchAll();}else toast('❌ '+(r?.error||'Xatolik'));}
 async function shUS(uid){
 const r=await fetch(`/admin/api/user/stats?user_id=${uid}`).then(x=>x.json()).catch(()=>null);if(!r?.ok){toast('❌ Yuklanmadi');return;}
-document.getElementById('usmt').textContent='📊 '+r.name;
+document.getElementById('usmt').innerHTML='<i class="fas fa-chart-bar"></i> '+r.name;
 document.getElementById('usmb').innerHTML=`<div class="mr"><span class="mk">Jami davomatlar</span><span class="mv" style="color:var(--ac);font-size:16px;font-weight:800">${r.total} ta</span></div><div class="mr"><span class="mk">Mutaxassislik</span><span class="mv">${r.specialty||'—'}</span></div>${r.groups?.length?`<div class="msec">GURUHLAR</div>${r.groups.map(g=>`<div class="mr"><span class="mk">${g.name}</span><span class="mv">${g.branch}</span></div>`).join('')}`:''}${r.branch_stats?.length?`<div class="msec">FILIALLAR</div>${r.branch_stats.map((b,i)=>`<div class="mr"><span class="mk">${MED[i]||i+1+'.'} ${b.branch}</span><span class="mv" style="color:var(--ac);font-weight:700">${b.count} ta</span></div>`).join('')}`:''}${r.month_stats?.length?`<div class="msec">OYLAR</div>${r.month_stats.slice(0,6).map(m=>`<div class="mr"><span class="mk">📅 ${m.month}</span><span class="mv">${m.count} ta</span></div>`).join('')}`:''}`;
 oM('usm');
 }
@@ -959,13 +959,13 @@ const brs=D?.branches||[];
 document.getElementById('sabrlist').innerHTML=brs.map((b,i)=>`<div onclick="saBr(${i},'${b.name.replace(/'/g,"\\'")}' )" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:border-color .1s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--bd)'"><span style="font-size:24px">🏢</span><div><div style="font-weight:700;font-size:13px">${b.name}</div><div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:3px">${GROUPS.filter(g=>g.branch===b.name).map(g=>{const cls=g.lesson_type==='Koreys tili'?'bkr':g.lesson_type==='IT'?'bit':'bno';return`<span class="b ${cls}" style="font-size:9px">${g.group_name}</span>`;}).join('')||'<span style="font-size:10px;color:var(--tx3)">Guruh yo\'q</span>'}</div></div><span style="margin-left:auto;color:var(--ac);font-size:16px">›</span></div>`).join('')||`<div class="empty"><div class="ei">🏢</div>Filiallar yo\'q</div>`;
 }
 async function saBr(idx,brNm){
-_saBr=brNm;document.getElementById('sabranches').style.display='none';document.getElementById('sagroups').style.display='block';document.getElementById('saatt').style.display='none';document.getElementById('sabrname').textContent='🏢 '+brNm;
+_saBr=brNm;document.getElementById('sabranches').style.display='none';document.getElementById('sagroups').style.display='block';document.getElementById('saatt').style.display='none';document.getElementById('sabrname').innerHTML='<i class="fas fa-building"></i> '+brNm;
 const r=await fetch(`/admin/api/branch/groups?branch=${encodeURIComponent(brNm)}`).then(x=>x.json()).catch(()=>null);
 const gs=r?.groups||[];
 document.getElementById('sagrplist').innerHTML=gs.length?gs.map(g=>`<div onclick="saGrp(${g.id},'${g.group_name.replace(/'/g,"\\'")}' )" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:13px;cursor:pointer;display:flex;align-items:center;gap:10px;margin-bottom:8px;transition:border-color .1s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--bd)'"><span class="b ${SBG[g.lesson_type]||'bno'}">${g.lesson_type}</span><div><div style="font-weight:700">${g.group_name}</div><div style="font-size:10px;color:var(--tx2)">👤 ${g.teacher_name} — ${Object.entries(g.day_times||{}).slice(0,2).map(([d,t])=>d.slice(0,2)+' '+t).join(', ')}</div></div><span style="margin-left:auto;color:var(--ac);font-size:16px">›</span></div>`).join(''):`<div class="empty"><div class="ei">📚</div>Bu filialda guruh yo\'q</div>`;
 }
 function saBack(){document.getElementById('sabranches').style.display='block';document.getElementById('sagroups').style.display='none';}
-async function saGrp(gid,gnm){_saGid=gid;document.getElementById('sagroups').style.display='none';document.getElementById('saatt').style.display='block';document.getElementById('sagrpname').textContent='📚 '+gnm;document.getElementById('saday').value='';await loadSaAtt();}
+async function saGrp(gid,gnm){_saGid=gid;document.getElementById('sagroups').style.display='none';document.getElementById('saatt').style.display='block';document.getElementById('sagrpname').innerHTML='<i class="fas fa-book"></i> '+gnm;document.getElementById('saday').value='';await loadSaAtt();}
 function saBackG(){document.getElementById('sagroups').style.display='block';document.getElementById('saatt').style.display='none';}
 async function loadSaAtt(){
 if(!_saGid)return;
@@ -1014,7 +1014,7 @@ function paySelBr(brNm){
 _payBr=brNm;
 document.getElementById('pay-branches').style.display='none';
 document.getElementById('pay-groups').style.display='block';
-document.getElementById('pay-brname').textContent='🏢 '+brNm;
+document.getElementById('pay-brname').innerHTML='<i class="fas fa-building"></i> '+brNm;
 const gs=GROUPS.filter(g=>g.branch===brNm);
 document.getElementById('pay-grplist').innerHTML=gs.length
 ? gs.map(g=>`<div onclick="paySelGrp(${g.id},'${g.group_name.replace(/'/g,"\\'")}' )" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:13px;cursor:pointer;display:flex;align-items:center;gap:10px;margin-bottom:8px;transition:border-color .1s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--bd)'">
@@ -1031,7 +1031,7 @@ async function paySelGrp(gid,gnm){
 _payGid=gid;_payGnm=gnm;
 document.getElementById('pay-groups').style.display='none';
 document.getElementById('pay-detail').style.display='block';
-document.getElementById('pay-grpname').textContent='📚 '+gnm;
+document.getElementById('pay-grpname').innerHTML='<i class="fas fa-book"></i> '+gnm;
 await loadPayments();
 }
 function payBackG(){
@@ -1231,7 +1231,7 @@ _payBr=branch;_payGid=gid;_payGnm=gnm;
 document.getElementById('pay-branches').style.display='none';
 document.getElementById('pay-groups').style.display='none';
 document.getElementById('pay-detail').style.display='block';
-document.getElementById('pay-grpname').textContent='📚 '+gnm;
+document.getElementById('pay-grpname').innerHTML='<i class="fas fa-book"></i> '+gnm;
 await loadPayments();
 }
 async function ldSched(){
@@ -1468,7 +1468,7 @@ document.getElementById('nf-title-kr').value=n?n.title_kr||'':'';
 document.getElementById('nf-body-kr').value=n?n.body_kr||'':'';
 document.getElementById('nf-img').value=n?n.image_url:'';
 document.getElementById('nf-pub').checked=n?n.is_published:true;
-document.getElementById('news-form-title').textContent=n?'✏️ Yangilikni tahrirlash':'➕ Yangi yangilik';
+document.getElementById('news-form-title').innerHTML=n?'<i class="fas fa-edit"></i> Yangilikni tahrirlash':'<i class="fas fa-plus"></i> Yangi yangilik';
 nfTab('uz',document.querySelector('#news-form-wrap .tab'));
 document.getElementById('news-form-wrap').scrollIntoView({behavior:'smooth'});
 }
