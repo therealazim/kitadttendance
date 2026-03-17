@@ -518,7 +518,10 @@ function setLang(l) {
   const T = LANGS[l] || LANGS.uz;
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const k = el.getAttribute('data-i18n');
-    if (T[k]) el.textContent = T[k];
+    if (T[k]) {
+      if (T[k].includes('<')) el.innerHTML = T[k];
+      else el.textContent = T[k];
+    }
   });
   // Course select options
   const sel = document.getElementById('apply-course');
