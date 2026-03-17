@@ -27,7 +27,7 @@
 @keyframes countUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
 /* Page transitions */
-.page{animation:slideIn 0.3s ease;}
+.page{animation:slideIn 0.3s ease;scroll-behavior:smooth;}
 .page.on{animation:slideIn 0.4s ease;}
 
 /* Live Stats Widget */
@@ -770,7 +770,7 @@ sched:()=>t('title_sched'), stats:()=>t('title_stats'), broadcast:()=>t('title_b
 salary:()=>t('title_sal'), branches:()=>t('title_br'), reports:()=>t('title_rep'),
 applies:'<i class="fas fa-envelope"></i> Arizalar', news_admin:'<i class="fas fa-newspaper"></i> Yangiliklar', site:'<i class="fas fa-globe"></i> Sayt sozlamalari'
 };
-function gp(n,el){document.querySelectorAll('.sbi').forEach(b=>b.classList.remove('on'));document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));el.classList.add('on');document.getElementById('pg-'+n).classList.add('on');window._curPage=n;const tf=TITLES[n];document.getElementById('pgtitle').innerHTML=(typeof tf==='function'?tf():tf)||n;if(n==='stats')ldSt();if(n==='sched')ldSched();if(n==='payments')renderPaymentsPage();if(n==='applies')loadApps();if(n==='news_admin')loadNewsAdmin();if(n==='site')loadSiteConfig();cSb();}
+function gp(n,el){document.querySelectorAll('.sbi').forEach(b=>b.classList.remove('on'));document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));el.classList.add('on');document.getElementById('pg-'+n).classList.add('on');document.querySelector('.main').scrollTop=0;window._curPage=n;const tf=TITLES[n];document.getElementById('pgtitle').innerHTML=(typeof tf==='function'?tf():tf)||n;if(n==='stats')ldSt();if(n==='sched')ldSched();if(n==='payments')renderPaymentsPage();if(n==='applies')loadApps();if(n==='news_admin')loadNewsAdmin();if(n==='site')loadSiteConfig();cSb();}
 function toast(msg,dur=3200){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
 function oM(id){document.getElementById(id).classList.add('open');}
 function cM(id){document.getElementById(id).classList.remove('open');}
