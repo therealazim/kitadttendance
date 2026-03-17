@@ -769,7 +769,7 @@ const acts=isDel?`<span style="color:var(--tx3);font-size:10px">Arxivlangan</spa
 const uAv=u.photo_url?`<img src="${u.photo_url}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:1.5px solid ${c}44;flex-shrink:0" onerror="this.style.display='none'">`:`<div class="avatar" style="background:${c}22;color:${c};border:1.5px solid ${c}44">${ini(u.name)}</div>`;return`<tr style="${(isB||isDel)?'opacity:.5':''}"><td><div style="display:flex;align-items:center;gap:8px">${uAv}<span>${u.name||'—'}</span></div></td><td><span class="b ${sb}">${u.specialty||'—'}</span></td><td><b>${u.attendance_count||0}</b></td><td>${stB}</td><td><div style="display:flex;gap:3px;flex-wrap:wrap">${acts}</div></td></tr>`;
 }).join('');
 }
-function suf(f,el){_uF=f;document.querySelectorAll('.fb2').forEach(b=>b.classList.remove('on')));el.classList.add('on');fusr();}
+function suf(f,el){_uF=f;document.querySelectorAll('.fb2').forEach(b=>b.classList.remove('on'));el.classList.add('on');fusr();}
 function fusr(){const q=document.getElementById('uq').value.toLowerCase();let r=USERS.filter(u=>(u.name||'').toLowerCase().includes(q));if(_uF==='blocked')r=r.filter(u=>u.status==='blocked');else if(_uF==='deleted')r=r.filter(u=>u.status==='deleted');else if(_uF==='active')r=r.filter(u=>u.status!=='blocked'&&u.status!=='deleted');else if(_uF)r=r.filter(u=>u.specialty===_uF&&u.status!=='deleted');else r=r.filter(u=>u.status!=='deleted');rUsers(r);}
 function oUM(uid){
 const u=USERS.find(x=>x.user_id===uid);if(!u)return;const gs=GROUPS.filter(g=>g.teacher_id===uid);const isB=u.status==='blocked';
