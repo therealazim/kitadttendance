@@ -1528,8 +1528,8 @@ const data={};
 for(const k of keys){const el=document.getElementById('sc-'+k);if(el)data[k]=el.value;}
 const r=await fetch(_ap('/admin/api/site/config'),{method:'POST',headers:Object.assign({'Content-Type':'application/json'},_ah()),body:JSON.stringify(data)}).then(x=>x.json()).catch(()=>null);
 const msg=document.getElementById('site-save-msg');
-if(r?.ok){msg.textContent='<i class="fas fa-check"></i> Saqlandi!';msg.style.color='var(--gr)';toast('<i class="fas fa-check"></i> Sayt sozlamalari saqlandi');}
-else{msg.textContent='<i class="fas fa-times"></i> Xato';msg.style.color='#e53935';}
+if(r?.ok){msg.innerHTML='<i class="fas fa-check"></i> Saqlandi!';msg.style.color='var(--gr)';toast('<i class="fas fa-check"></i> Sayt sozlamalari saqlandi');}
+else{msg.innerHTML='<i class="fas fa-times"></i> Xato';msg.style.color='#e53935';}
 setTimeout(()=>msg.textContent='',3000);
 }</script>
 
