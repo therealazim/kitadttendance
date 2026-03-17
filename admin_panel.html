@@ -38,7 +38,7 @@
 <div class="main">
   <div class="topbar">
     <button class="mbtn" onclick="tSb()">☰</button>
-    <div id="pgtitle">📊 Dashboard</div>
+    <div id="pgtitle">Dashboard</div>
     <div class="online"><div class="dot"></div><span id="updlbl">Yuklanmoqda...</span></div>
     <button class="rbtn" onclick="fetchAll()" data-i18n="btn_refresh">↻ Yangilash</button>
   
@@ -52,7 +52,7 @@
   <div class="g2">
     <div class="tw"><div class="th"><span class="tt">📈 Haftalik davomat</span></div><div id="wkch" style="padding:14px"></div></div>
 
-    <div class="tw"><div class="th"><span class="tt">🏆 Bugun kelganlar</span></div><div id="todtop"></div></div>
+    <div class="tw"><div class="th"><span class="tt">Bugun kelganlar</span></div><div id="todtop"></div></div>
   </div>
 </div>
 
@@ -61,12 +61,12 @@
   <div class="sr">🔍<input id="uq" placeholder="Ism bo'yicha..." oninput="fusr()"></div>
   <div class="frow">
     <button class="fb2 on" onclick="suf('',this)">Barchasi</button>
-    <button class="fb2" onclick="suf('active',this)">✅ Faol</button>
-    <button class="fb2" onclick="suf('IT',this)">💻 IT</button>
-    <button class="fb2" onclick="suf('Koreys tili',this)">🇰🇷 Koreys</button>
-    <button class="fb2" onclick="suf('Ofis xodimi',this)">💼 Ofis</button>
-    <button class="fb2" onclick="suf('blocked',this)">⛔ Bloklangan</button>
-    <button class="fb2" onclick="suf('deleted',this)">🗑 Arxiv</button>
+    <button class="fb2" onclick="suf('active',this)">Faol</button>
+    <button class="fb2" onclick="suf('IT',this)">IT</button>
+    <button class="fb2" onclick="suf('Koreys tili',this)">Koreys</button>
+    <button class="fb2" onclick="suf('Ofis xodimi',this)">Ofis</button>
+    <button class="fb2" onclick="suf('blocked',this)">Bloklangan</button>
+    <button class="fb2" onclick="suf('deleted',this)">Arxiv</button>
   </div>
   <div class="tw">
     <div class="th"><span class="tt">Foydalanuvchilar</span><span class="tm" id="ucnt"></span></div>
@@ -81,8 +81,8 @@
 <div class="page" id="pg-groups">
   <div style="display:flex;gap:9px;margin-bottom:10px;flex-wrap:wrap">
     <div class="sr" style="flex:1;min-width:160px;margin-bottom:0">🔍<input id="gq" placeholder="Guruh, filial..." oninput="fgrp()"></div>
-    <button class="btn bp" onclick="oCG()">➕ Yangi guruh</button>
-    <button class="btn bpu" onclick="dlSchedPdf()">📄 PDF Jadval</button>
+    <button class="btn bp" onclick="oCG()">Yangi guruh</button>
+    <button class="btn bpu" onclick="dlSchedPdf()">PDF Jadval</button>
   </div>
   <div class="tw">
     <div class="th"><span class="tt">Guruhlar</span><span class="tm" id="gcnt"></span></div>
@@ -113,7 +113,7 @@
 <!-- O'QUVCHI DAVOMAT - 3 bosqich -->
 <div class="page" id="pg-stuatt">
   <div id="sabranches">
-    <div style="font-size:14px;font-weight:700;margin-bottom:13px">🧑‍🎓 O'quvchilar davomati — Filial tanlang</div>
+    <div style="font-size:14px;font-weight:700;margin-bottom:13px">O'quvchilar davomati — Filial tanlang</div>
     <div id="sabrlist" class="g2"></div>
   </div>
   <div id="sagroups" style="display:none">
@@ -140,7 +140,7 @@
   <!-- UMUMIY DASHBOARD -->
   <div id="pay-summary" style="margin-bottom:16px">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px;margin-bottom:12px">
-      <span style="font-size:14px;font-weight:800">💰 O'quvchilar to'lovlari</span>
+      <span style="font-size:14px;font-weight:800">O'quvchilar to'lovlari</span>
       <div style="display:flex;align-items:center;gap:7px">
         <input type="month" id="pay-sum-month" class="inp" style="width:160px">
         <button class="btn bp" onclick="loadPaySummary()">Ko'rsatish</button>
@@ -151,7 +151,7 @@
   </div>
   <hr style="border:none;border-top:1px solid var(--bd);margin-bottom:14px">
   <div id="pay-branches">
-    <div style="font-size:13px;font-weight:700;margin-bottom:11px;color:var(--tx2)">📋 Guruh bo'yicha batafsil ko'rish:</div>
+    <div style="font-size:13px;font-weight:700;margin-bottom:11px;color:var(--tx2)">Guruh bo'yicha batafsil ko'rish:</div>
     <div id="pay-brlist" class="g2"></div>
   </div>
   <div id="pay-groups" style="display:none">
@@ -193,12 +193,12 @@
 <div class="page" id="pg-broadcast">
   <div class="g2">
     <div class="fb">
-      <div class="ft">📢 Yangi xabar yuborish</div>
+      <div class="ft">Yangi xabar yuborish</div>
       <div class="fg"><label>Kimga yuborish</label>
         <select id="bcto" class="inp">
-          <option value="">🌐 Barcha foydalanuvchilar</option>
-          <option value="IT">💻 IT o'qituvchilar</option>
-          <option value="Koreys tili">🇰🇷 Koreys tili o'qituvchilar</option>
+          <option value="">Barcha foydalanuvchilar</option>
+          <option value="IT">IT o'qituvchilar</option>
+          <option value="Koreys tili">Koreys tili o'qituvchilar</option>
           <option value="Ofis xodimi">💼 Ofis xodimlari</option>
         </select>
       </div>
