@@ -899,24 +899,71 @@ window.addEventListener('load', loadBranchesMap);
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const iconMap = {
-        'ti-clock': 'clock', 'ti-check': 'check', 'ti-times': 'x',
-        'ti-building': 'building', 'ti-arrow-left': 'arrow-left',
-        'ti-file-pdf': 'file-text', 'ti-briefcase': 'briefcase', 'ti-eye': 'eye',
-        'ti-paper-plane': 'send', 'ti-history': 'history', 'ti-calculator': 'calculator',
-        'ti-laptop-code': 'laptop', 'ti-language': 'languages', 'ti-envelope': 'mail',
-        'ti-sync': 'refresh-cw', 'ti-newspaper': 'newspaper', 'ti-plus': 'plus',
-        'ti-flag': 'flag', 'ti-save': 'save', 'ti-globe': 'globe', 'ti-pen': 'pen-tool',
-        'ti-edit': 'pencil', 'ti-chart-bar': 'bar-chart', 'ti-chart-line': 'line-chart',
-        'ti-phone': 'phone', 'ti-image': 'image', 'ti-images': 'images',
-        'ti-map-marker-alt': 'map-pin', 'ti-map': 'map', 'ti-trash': 'trash-2',
-        'ti-search': 'search', 'ti-users': 'users', 'ti-book': 'book',
-        'ti-user-graduate': 'graduation-cap', 'ti-money-bill-wave': 'banknote',
-        'ti-calendar-alt': 'calendar', 'ti-bullhorn': 'megaphone', 'ti-coins': 'coins',
-        'ti-clipboard-list': 'clipboard-list', 'ti-sign-out-alt': 'log-out',
-        'ti-exclamation-triangle': 'alert-triangle', 'ti-external-link-alt': 'external-link',
-        'ti-ban': 'ban', 'ti-user': 'user', 'ti-calendar': 'calendar',
-        'ti-calendar-day': 'sun', 'ti-download': 'download', 'ti-file-excel': 'file-spreadsheet',
-        'ti-phone-alt': 'phone', 'ti-map-marked-alt': 'map-pin', 'ti-location-arrow': 'navigation'
+        'map-marker-alt': 'map-pin',
+        'map-marked-alt': 'map',
+        'user-graduate': 'graduation-cap',
+        'money-bill-wave': 'banknote',
+        'calendar-alt': 'calendar',
+        'bullhorn': 'megaphone',
+        'envelope': 'mail',
+        'phone-alt': 'phone',
+        'sync': 'refresh-cw',
+        'times': 'x',
+        'edit': 'pencil',
+        'laptop-code': 'laptop',
+        'chart-line': 'line-chart',
+        'chart-bar': 'bar-chart',
+        'ti-clock': 'clock',
+        'ti-check': 'check',
+        'ti-plus': 'plus',
+        'ti-times': 'x',
+        'ti-building': 'building',
+        'ti-arrow-left': 'arrow-left',
+        'ti-file-pdf': 'file-text',
+        'ti-briefcase': 'briefcase',
+        'ti-eye': 'eye',
+        'ti-paper-plane': 'send',
+        'ti-history': 'history',
+        'ti-calculator': 'calculator',
+        'ti-laptop-code': 'laptop',
+        'ti-language': 'languages',
+        'ti-envelope': 'mail',
+        'ti-sync': 'refresh-cw',
+        'ti-newspaper': 'newspaper',
+        'ti-flag': 'flag',
+        'ti-save': 'save',
+        'ti-globe': 'globe',
+        'ti-pen': 'pen-tool',
+        'ti-edit': 'pencil',
+        'ti-chart-bar': 'bar-chart',
+        'ti-chart-line': 'line-chart',
+        'ti-phone': 'phone',
+        'ti-image': 'image',
+        'ti-images': 'images',
+        'ti-map-marker-alt': 'map-pin',
+        'ti-map': 'map',
+        'ti-trash': 'trash-2',
+        'ti-search': 'search',
+        'ti-users': 'users',
+        'ti-book': 'book',
+        'ti-user-graduate': 'graduation-cap',
+        'ti-money-bill-wave': 'banknote',
+        'ti-calendar-alt': 'calendar',
+        'ti-bullhorn': 'megaphone',
+        'ti-coins': 'coins',
+        'ti-clipboard-list': 'clipboard-list',
+        'ti-sign-out-alt': 'log-out',
+        'ti-exclamation-triangle': 'alert-triangle',
+        'ti-external-link-alt': 'external-link',
+        'ti-ban': 'ban',
+        'ti-user': 'user',
+        'ti-calendar': 'calendar',
+        'ti-calendar-day': 'sun',
+        'ti-download': 'download',
+        'ti-file-excel': 'file-spreadsheet',
+        'ti-phone-alt': 'phone',
+        'ti-map-marked-alt': 'map-pin',
+        'location-arrow': 'navigation'
     };
 
     let isRendering = false;
@@ -927,12 +974,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             document.querySelectorAll('i[class*="lucide-"]:not([data-lucide-processed])').forEach(el => {
-                let iconName = Array.from(el.classList)
-                    .find(cls => cls.startsWith('lucide-') && cls !== 'lucide')
-                    ?.replace('lucide-', '');
-
-                if (iconName) {
+                let classes = Array.from(el.classList);
+                let lucideClass = classes.find(c => c.startsWith('lucide-') && c !== 'lucide');
+                
+                if (lucideClass) {
+                    let iconName = lucideClass.replace('lucide-', '');
+                    
+                    if (iconName.startsWith('ti-')) iconName = iconName.replace('ti-', '');
                     if (iconMap[iconName]) iconName = iconMap[iconName];
+
                     el.setAttribute('data-lucide', iconName);
                     el.setAttribute('data-lucide-processed', 'true');
                 }
@@ -940,7 +990,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             lucide.createIcons();
         } catch (e) {
-            console.error("Lucide render xatosi:", e);
+            console.error("Ikonlarni chizishda xato:", e);
         }
 
         setTimeout(() => { isRendering = false; }, 100);
@@ -963,5 +1013,17 @@ document.addEventListener('DOMContentLoaded', function() {
     observer.observe(document.body, { childList: true, subtree: true });
 });
 </script>
+<style>
+.lucide, svg.lucide {
+    width: 1.2em;
+    height: 1.2em;
+    display: inline-block;
+    vertical-align: middle;
+    stroke-width: 2px;
+}
+.contact-icon .lucide {
+    color: var(--blue) !important;
+}
+</style>
 </body>
 </html>
