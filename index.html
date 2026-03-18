@@ -6,7 +6,7 @@
 <title>KITA | HANCOM Academy</title>
 <link rel="icon" href="/static/KITA_LOGO.svg" type="image/svg+xml">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.456.0/dist/umd/lucide.min.js"></script>
 <style>
 :root{--navy:#0D1B4B;--blue:#1565C0;--accent:#E53935;--gold:#FFB300;--white:#fff;--light:#F4F6FB;--text:#1a1a2e;--text2:#5a6a8a;}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
@@ -188,6 +188,23 @@ footer{background:var(--navy);padding:28px 5% 0;}
   .footer-top{gap:12px;}
 }
 .lucide{color:#fff;}
+.lucide-graduation-cap{color:#4f8ef7;}
+.lucide-book,.lucide-book-open{color:#10b981;}
+.lucide-images,.lucide-gallery-horizontal{color:#8b5cf6;}
+.lucide-newspaper{color:#f59e0b;}
+.lucide-info-circle,.lucide-help-circle{color:#4f8ef7;}
+.lucide-phone,.lucide-phone-call,.lucide-phone-alt{color:#10b981;}
+.lucide-edit,.lucide-pencil{color:#8b5cf6;}
+.lucide-user-lock{color:#f59e0b;}
+.lucide-send,.lucide-paper-plane{color:#10b981;}
+.lucide-laptop-code,.lucide-laptop{color:#4f8ef7;}
+.lucide-language{color:#8b5cf6;}
+.lucide-building{color:#f59e0b;}
+.lucide-map-marker-alt,.lucide-map-pin,.lucide-map-marked-alt{color:#ef4444;}
+.lucide-clock{color:#8899b0;}
+.lucide-calendar{color:#4f8ef7;}
+.lucide-file-pdf{color:#ef4444;}
+.lucide-location-arrow{color:#4f8ef7;}
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 </head>
@@ -877,6 +894,32 @@ window.addEventListener('load', loadBranchesMap);
     </div>
   </div>
 </div>
-<script>lucide.createIcons();</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.lucide) {
+      lucide.createIcons({
+        attrs: {
+          width: '1em',
+          height: '1em',
+          stroke: 'currentColor',
+          'stroke-width': 2,
+          'stroke-linecap': 'round',
+          'stroke-linejoin': 'round',
+          fill: 'none'
+        }
+      });
+      console.log('Lucide initialized');
+      
+      const observer = new MutationObserver(function(mutations) {
+        if (window.lucide) {
+          lucide.createIcons();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+    } else {
+      console.error('Lucide failed to load');
+    }
+  });
+</script>
 </body>
 </html>
