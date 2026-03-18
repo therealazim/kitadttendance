@@ -47,8 +47,20 @@
 .ti-user-graduate{color:var(--gn);}
 .ti-briefcase{color:var(--pu);}
 .ti-sign-out-alt{color:var(--rd);}
-svg.lucide{display:inline-block;vertical-align:middle;width:18px;height:18px;}
-.lucide{width:18px;height:18px;display:inline-block;}
+/* Ikonlar uchun umumiy sozlama */
+.lucide, svg.lucide {
+  width: 1.2em;
+  height: 1.2em;
+  display: inline-block;
+  vertical-align: middle;
+  stroke-width: 2px;
+}
+/* Kontakt qismidagi ikonalar rangi ko'rinishi uchun */
+.contact-icon .lucide { color: var(--blue) !important; }
+/* Sidebar ikonalar rangi (agar kerak bo'lsa) */
+.sidebar .lucide { color: var(--ac); }
+/* Tugmalar ichidagi ikonalar oq bo'lsin */
+.btn .lucide, .apply-btn .lucide, .nav-btn .lucide { color: #fff !important; }
 </style>
 </head>
 <body>
@@ -193,10 +205,7 @@ svg.lucide{display:inline-block;vertical-align:middle;width:18px;height:18px;}
     <div id="pay-sum-table"></div>
   </div>
   <hr style="border:none;border-top:1px solid var(--bd);margin-bottom:14px">
-  <div id="pay-branches">
-    <div style="font-size:13px;font-weight:700;margin-bottom:11px;color:var(--tx2)">Guruh bo'yicha batafsil ko'rish:</div>
-    <div id="pay-brlist" class="g2"></div>
-  </div>
+  <div id="pay-branches" style="display:none"></div>
   <div id="pay-groups" style="display:none">
     <div style="display:flex;align-items:center;gap:9px;margin-bottom:13px;flex-wrap:wrap">
       <button class="btn bg" onclick="payBack()"><i class="lucide lucide-arrow-left"></i> Orqaga</button>
@@ -394,11 +403,35 @@ svg.lucide{display:inline-block;vertical-align:middle;width:18px;height:18px;}
         <div class="fg"><label>Faol guruhlar</label><input class="inp" id="sc-stat_groups" placeholder="22"></div>
       </div>
       <div style="background:var(--bg2);border-radius:10px;padding:16px">
-        <div style="font-weight:700;font-size:13px;color:var(--ac);margin-bottom:12px"><i class="lucide lucide-phone"></i> Aloqa</div>
-        <div class="fg"><label>Telefon</label><input class="inp" id="sc-contact_phone"></div>
-        <div class="fg"><label>Manzil</label><input class="inp" id="sc-contact_address"></div>
-        <div class="fg"><label>Telegram</label><input class="inp" id="sc-contact_telegram"></div>
-        <div class="fg"><label>Instagram</label><input class="inp" id="sc-contact_instagram"></div>
+        <!-- CONTACT: Emoji/Icons replaced with Lucide icons -->
+        <div class="contact-item">
+          <div class="contact-icon"><i class="lucide lucide-map-pin"></i></div>
+          <div>
+            <div class="contact-label" data-i18n="contact_address_lbl">Manzil</div>
+            <div class="contact-value" id="sc-contact_address">Shota Rustaveli ko'chasi 156</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon"><i class="lucide lucide-phone"></i></div>
+          <div>
+            <div class="contact-label" data-i18n="contact_phone_lbl">Telefon</div>
+            <div class="contact-value"><a id="sc-contact_phone" href="tel:+998508182280">+998 50 818 22 80</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon"><i class="lucide lucide-send"></i></div> <!-- Telegram uchun -->
+          <div>
+            <div class="contact-label" data-i18n="contact_telegram_lbl">Telegram</div>
+            <div class="contact-value"><a id="sc-contact_telegram" href="https://t.me/Hancom_A" target="_blank">@Hancom_A</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon"><i class="lucide lucide-instagram"></i></div> <!-- Instagram uchun -->
+          <div>
+            <div class="contact-label" data-i18n="contact_instagram_lbl">Instagram</div>
+            <div class="contact-value"><a id="sc-contact_instagram" href="https://instagram.com/hancomacademy.uz" target="_blank">@hancomacademy.uz</a></div>
+          </div>
+        </div>
       </div>
       <div style="background:var(--bg2);border-radius:10px;padding:16px">
         <div style="font-weight:700;font-size:13px;color:var(--ac);margin-bottom:12px"><i class="lucide lucide-image"></i> Kurs rasmlari (URL)</div>
@@ -1197,15 +1230,23 @@ const MNS=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentab
 const [y,mo]=m.split('-');return MNS[parseInt(mo)-1]+' '+y;
 }
 function renderPaymentsPage(){
-renderPayBranches();
-document.getElementById('pay-branches').style.display='block';
-document.getElementById('pay-groups').style.display='none';
-document.getElementById('pay-detail').style.display='none';
-const sel=document.getElementById('pay-month');
-if(sel&&!sel.value) sel.innerHTML=`<option value="${TODAY.slice(0,7)}">${fmtMonth(TODAY.slice(0,7))}</option>`;
-const ms=document.getElementById('pay-sum-month');
-if(ms&&!ms.value) ms.value=TODAY.slice(0,7);
-loadPaySummary();
+    // Filial bo'limini yashirib, guruhlar bo'limini ko'rsatamiz
+    document.getElementById('pay-branches').style.display='none';
+    document.getElementById('pay-groups').style.display='block';
+    document.getElementById('pay-detail').style.display='none';
+    document.getElementById('pay-brname').innerHTML = '<i class="lucide lucide-book"></i> Barcha guruhlar';
+    const gs = GROUPS; // Barcha guruhlar
+    document.getElementById('pay-grplist').innerHTML = gs.length
+        ? gs.map(g => `<div onclick="paySelGrp(${g.id},'${g.group_name.replace(/'/g, "\\'")}')" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:13px;cursor:pointer;display:flex;align-items:center;gap:10px;margin-bottom:8px;transition:border-color .1s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--bd)'">
+            <span class="b ${SBG[g.lesson_type] || 'bno'}">${g.lesson_type}</span>
+            <div style="flex:1">
+                <div style="font-weight:700">${g.group_name}</div>
+                <div style="font-size:10px;color:var(--tx2)"><i class="lucide lucide-building"></i> ${g.branch} · <i class="lucide lucide-user"></i> ${g.teacher_name || '—'} · <i class="lucide lucide-graduation-cap"></i> ${g.student_count || 0} ta</div>
+            </div>
+            <span style="color:var(--ac)">›</span></div>`).join('')
+        : '<div class="empty">Guruhlar topilmadi</div>';
+
+    loadPaySummary();
 }
 async function loadPaySummary(){
 const m=document.getElementById('pay-sum-month')?.value||TODAY.slice(0,7);
@@ -1609,69 +1650,44 @@ setTimeout(()=>msg.textContent='',3000);
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const iconMap = {
+        // Lug'atda yo'q nomlarni Lucide standartiga moslash
         'map-marker-alt': 'map-pin',
+        'map-pin': 'map-pin',
         'map-marked-alt': 'map',
         'user-graduate': 'graduation-cap',
+        'graduation-cap': 'graduation-cap',
         'money-bill-wave': 'banknote',
+        'banknote': 'banknote',
         'calendar-alt': 'calendar',
         'bullhorn': 'megaphone',
         'envelope': 'mail',
         'phone-alt': 'phone',
+        'phone': 'phone',
         'sync': 'refresh-cw',
         'times': 'x',
         'edit': 'pencil',
+        'pencil': 'pencil',
         'laptop-code': 'laptop',
+        'laptop': 'laptop',
         'chart-line': 'line-chart',
         'chart-bar': 'bar-chart',
         'ti-clock': 'clock',
+        'clock': 'clock',
         'ti-check': 'check',
+        'check': 'check',
         'ti-plus': 'plus',
-        'ti-times': 'x',
-        'ti-building': 'building',
-        'ti-arrow-left': 'arrow-left',
-        'ti-file-pdf': 'file-text',
-        'ti-briefcase': 'briefcase',
-        'ti-eye': 'eye',
-        'ti-paper-plane': 'send',
-        'ti-history': 'history',
-        'ti-calculator': 'calculator',
-        'ti-laptop-code': 'laptop',
-        'ti-language': 'languages',
-        'ti-envelope': 'mail',
-        'ti-sync': 'refresh-cw',
-        'ti-newspaper': 'newspaper',
-        'ti-flag': 'flag',
-        'ti-save': 'save',
-        'ti-globe': 'globe',
-        'ti-pen': 'pen-tool',
-        'ti-edit': 'pencil',
-        'ti-chart-bar': 'bar-chart',
-        'ti-chart-line': 'line-chart',
-        'ti-phone': 'phone',
-        'ti-image': 'image',
-        'ti-images': 'images',
-        'ti-map-marker-alt': 'map-pin',
-        'ti-map': 'map',
-        'ti-trash': 'trash-2',
-        'ti-search': 'search',
-        'ti-users': 'users',
-        'ti-book': 'book',
-        'ti-user-graduate': 'graduation-cap',
-        'ti-money-bill-wave': 'banknote',
-        'ti-calendar-alt': 'calendar',
-        'ti-bullhorn': 'megaphone',
-        'ti-coins': 'coins',
-        'ti-clipboard-list': 'clipboard-list',
-        'ti-sign-out-alt': 'log-out',
-        'ti-exclamation-triangle': 'alert-triangle',
-        'ti-external-link-alt': 'external-link',
-        'ti-ban': 'ban',
-        'ti-user': 'user',
-        'ti-calendar': 'calendar',
-        'ti-calendar-day': 'sun',
-        'ti-download': 'download',
-        'ti-file-excel': 'file-spreadsheet',
-        'location-arrow': 'navigation'
+        'plus': 'plus',
+        'location-arrow': 'navigation',
+        'instagram': 'instagram',
+        'send': 'send',
+        'globe': 'globe',
+        'trash': 'trash-2',
+        'search': 'search',
+        'users': 'users',
+        'book': 'book',
+        'building': 'building',
+        'coins': 'coins',
+        'clipboard-list': 'clipboard-list'
     };
 
     let isRendering = false;
