@@ -1609,85 +1609,68 @@ setTimeout(()=>msg.textContent='',3000);
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const iconMap = {
-        'ti-clock': 'clock',
-        'ti-check': 'check',
-        'ti-times': 'x',
-        'ti-building': 'building',
-        'ti-arrow-left': 'arrow-left',
-        'ti-file-pdf': 'file-text',
-        'ti-briefcase': 'briefcase',
-        'ti-eye': 'eye',
-        'ti-paper-plane': 'send',
-        'ti-history': 'history',
-        'ti-calculator': 'calculator',
-        'ti-laptop-code': 'laptop',
-        'ti-language': 'languages',
-        'ti-envelope': 'mail',
-        'ti-sync': 'refresh-cw',
-        'ti-newspaper': 'newspaper',
-        'ti-plus': 'plus',
-        'ti-flag': 'flag',
-        'ti-save': 'save',
-        'ti-globe': 'globe',
-        'ti-pen': 'pen-tool',
-        'ti-edit': 'pencil',
-        'ti-chart-bar': 'bar-chart',
-        'ti-chart-line': 'line-chart',
-        'ti-phone': 'phone',
-        'ti-image': 'image',
-        'ti-images': 'images',
-        'ti-map-marker-alt': 'map-pin',
-        'ti-map': 'map',
-        'ti-trash': 'trash-2',
-        'ti-search': 'search',
-        'ti-users': 'users',
-        'ti-book': 'book',
-        'ti-user-graduate': 'graduation-cap',
-        'ti-money-bill-wave': 'banknote',
-        'ti-calendar-alt': 'calendar',
-        'ti-bullhorn': 'megaphone',
-        'ti-coins': 'coins',
-        'ti-clipboard-list': 'clipboard-list',
-        'ti-sign-out-alt': 'log-out',
-        'ti-exclamation-triangle': 'alert-triangle',
-        'ti-external-link-alt': 'external-link',
-        'ti-ban': 'ban',
-        'ti-user': 'user',
-        'ti-calendar': 'calendar',
-        'ti-calendar-day': 'sun',
-        'ti-download': 'download',
-        'ti-file-excel': 'file-spreadsheet'
+        'ti-clock': 'clock', 'ti-check': 'check', 'ti-times': 'x',
+        'ti-building': 'building', 'ti-arrow-left': 'arrow-left',
+        'ti-file-pdf': 'file-text', 'ti-briefcase': 'briefcase', 'ti-eye': 'eye',
+        'ti-paper-plane': 'send', 'ti-history': 'history', 'ti-calculator': 'calculator',
+        'ti-laptop-code': 'laptop', 'ti-language': 'languages', 'ti-envelope': 'mail',
+        'ti-sync': 'refresh-cw', 'ti-newspaper': 'newspaper', 'ti-plus': 'plus',
+        'ti-flag': 'flag', 'ti-save': 'save', 'ti-globe': 'globe', 'ti-pen': 'pen-tool',
+        'ti-edit': 'pencil', 'ti-chart-bar': 'bar-chart', 'ti-chart-line': 'line-chart',
+        'ti-phone': 'phone', 'ti-image': 'image', 'ti-images': 'images',
+        'ti-map-marker-alt': 'map-pin', 'ti-map': 'map', 'ti-trash': 'trash-2',
+        'ti-search': 'search', 'ti-users': 'users', 'ti-book': 'book',
+        'ti-user-graduate': 'graduation-cap', 'ti-money-bill-wave': 'banknote',
+        'ti-calendar-alt': 'calendar', 'ti-bullhorn': 'megaphone', 'ti-coins': 'coins',
+        'ti-clipboard-list': 'clipboard-list', 'ti-sign-out-alt': 'log-out',
+        'ti-exclamation-triangle': 'alert-triangle', 'ti-external-link-alt': 'external-link',
+        'ti-ban': 'ban', 'ti-user': 'user', 'ti-calendar': 'calendar',
+        'ti-calendar-day': 'sun', 'ti-download': 'download', 'ti-file-excel': 'file-spreadsheet'
     };
 
+    let isRendering = false;
+
     function renderIcons() {
-        if (window.lucide) {
-            document.querySelectorAll('i[class*="lucide-"]').forEach(el => {
+        if (isRendering || !window.lucide) return;
+        isRendering = true;
+
+        try {
+            document.querySelectorAll('i[class*="lucide-"]:not([data-lucide-processed])').forEach(el => {
                 let iconName = Array.from(el.classList)
                     .find(cls => cls.startsWith('lucide-') && cls !== 'lucide')
                     ?.replace('lucide-', '');
+
                 if (iconName) {
-                    if (iconMap[iconName]) {
-                        iconName = iconMap[iconName];
-                    }
+                    if (iconMap[iconName]) iconName = iconMap[iconName];
                     el.setAttribute('data-lucide', iconName);
+                    el.setAttribute('data-lucide-processed', 'true');
                 }
             });
+
             lucide.createIcons();
+        } catch (e) {
+            console.error("Lucide render xatosi:", e);
         }
+
+        setTimeout(() => { isRendering = false; }, 100);
     }
 
     renderIcons();
-    const observer = new MutationObserver(renderIcons);
+
+    const observer = new MutationObserver((mutations) => {
+        const hasNewIcons = mutations.some(m => 
+            Array.from(m.addedNodes).some(node => 
+                node.nodeType === 1 && (node.querySelector?.('i[class*="lucide-"]') || node.matches?.('i[class*="lucide-"]'))
+            )
+        );
+        
+        if (hasNewIcons) {
+            renderIcons();
+        }
+    });
+
     observer.observe(document.body, { childList: true, subtree: true });
 });
 </script>
-<style>
-i.lucide, svg.lucide {
-    width: 18px;
-    height: 18px;
-    display: inline-block;
-    vertical-align: middle;
-}
-</style>
 </body>
 </html>
