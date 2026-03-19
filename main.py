@@ -2403,7 +2403,7 @@ async def admin_api_reports_attendance(request):
     from datetime import datetime as dt, timedelta
     
     # Admin tekshiruvi
-    if not await _check_admin_session(request):
+    if not _check_admin_session(request):
         return web.json_response({'error': 'Unauthorized'}, status=401)
     
     start_date = request.rel_url.query.get('start_date')
@@ -2468,7 +2468,7 @@ async def admin_api_reports_groups(request):
     import json as _json
     
     # Admin tekshiruvi
-    if not await _check_admin_session(request):
+    if not _check_admin_session(request):
         return web.json_response({'error': 'Unauthorized'}, status=401)
     
     try:
@@ -2520,7 +2520,7 @@ async def admin_api_reports_students(request):
     import json as _json
     
     # Admin tekshiruvi
-    if not await _check_admin_session(request):
+    if not _check_admin_session(request):
         return web.json_response({'error': 'Unauthorized'}, status=401)
     
     month = request.rel_url.query.get('month')
@@ -2588,7 +2588,7 @@ async def admin_api_reports_payments(request):
     import json as _json
     
     # Admin tekshiruvi
-    if not await _check_admin_session(request):
+    if not _check_admin_session(request):
         return web.json_response({'error': 'Unauthorized'}, status=401)
     
     month = request.rel_url.query.get('month')
@@ -2654,7 +2654,7 @@ async def admin_api_reports_branches(request):
     import json as _json
     
     # Admin tekshiruvi
-    if not await _check_admin_session(request):
+    if not _check_admin_session(request):
         return web.json_response({'error': 'Unauthorized'}, status=401)
     
     try:
@@ -2730,7 +2730,7 @@ async def admin_api_reports_general(request):
     import json as _json
     
     # Admin tekshiruvi
-    if not await _check_admin_session(request):
+    if not _check_admin_session(request):
         return web.json_response({'error': 'Unauthorized'}, status=401)
     
     report_type = request.rel_url.query.get('type', 'monthly')
@@ -3409,14 +3409,14 @@ async def admin_api_group_delete(request):
     except Exception as e:
         return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
 
-async def _check_admin_session(request):
+def _check_admin_session(request):
     return _check_admin_request(request)
 
 async def admin_api_data(request):
     """Admin Mini App uchun JSON API — barcha ma'lumotlar"""
     import json as _json
     from datetime import date as _date, timedelta
-    if not await _check_admin_session(request):
+    if not _check_admin_session(request):
         return web.Response(text=_json.dumps({'ok': False, 'error': 'Ruxsat yoq'}), status=401, content_type='application/json')
     try:
         now_uzb = datetime.now(UZB_TZ)
