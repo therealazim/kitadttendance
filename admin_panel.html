@@ -192,7 +192,7 @@
 
 <!-- O'QUVCHILAR TO'LOVLARI -->
 <div class="page" id="pg-payments">
-  <!-- UMUMIY DASHBOARD -->
+  <!-- UMUMIY DASHBOARD (Statistika va Jadval) -->
   <div id="pay-summary" style="margin-bottom:16px">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px;margin-bottom:12px">
       <span style="font-size:14px;font-weight:800">O'quvchilar to'lovlari</span>
@@ -204,18 +204,11 @@
     <div class="g3" id="pay-sum-stats" style="margin-bottom:12px"></div>
     <div id="pay-sum-table"></div>
   </div>
-  <hr style="border:none;border-top:1px solid var(--bd);margin-bottom:14px">
-  <div id="pay-branches" style="display:none"></div>
-  <div id="pay-groups" style="display:none">
-    <div style="display:flex;align-items:center;gap:9px;margin-bottom:13px;flex-wrap:wrap">
-      <button class="btn bg" onclick="payBack()"><i class="lucide lucide-arrow-left"></i> Orqaga</button>
-      <span id="pay-brname" style="font-weight:700;font-size:14px"></span>
-    </div>
-    <div id="pay-grplist"></div>
-  </div>
+
+  <!-- BATAFSIL TO'LOV (Guruh ustiga bosganda ochiladi) -->
   <div id="pay-detail" style="display:none">
     <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:13px">
-      <button class="btn bg" onclick="payBackG()"><i class="lucide lucide-arrow-left"></i> Orqaga</button>
+      <button class="btn bg" onclick="payBackToMain()"><i class="lucide lucide-arrow-left"></i> Orqaga</button>
       <span id="pay-grpname" style="font-weight:700;font-size:14px"></span>
       <select id="pay-month" class="inp" style="width:auto;margin-left:auto" onchange="loadPayments()"></select>
     </div>
@@ -1082,39 +1075,12 @@ const title=day?`O'quvchilar davomati — ${day}`:`O'quvchilar davomati — ${to
 el.innerHTML=`<div class="tw"><div class="th"><span class="tt">${title}</span><span style="font-size:11px;color:var(--tx2);margin-left:auto">${allDates.length} kun</span></div><div style="overflow-x:auto"><table style="font-size:11px"><thead><tr><th style="white-space:nowrap">O'quvchi</th><th>Tel</th>${thDates}<th>Natija</th></tr></thead><tbody>${tbRows}</tbody></table></div></div>`;
 }
 let _payBr=null, _payGid=null, _payGnm=null;
-function renderPayBranches(){
-const brs = D?.branches || [];
-document.getElementById('pay-brlist').innerHTML = brs.length
-? brs.map((b,i)=>`<div onclick="paySelBr('${b.name.replace(/'/g,"\\'")}' )" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:13px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:border-color .1s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--bd)'"><span style="font-weight:600"><i class="lucide lucide-building"></i> ${b.name}</span><span style="color:var(--ac)">›</span></div>`).join('')
-: '<div class="empty"><div class="ei"><i class="lucide lucide-building"></i></div>Filiallar yo\'q</div>';
-}
-function paySelBr(brNm){
-_payBr=brNm;
-document.getElementById('pay-branches').style.display='none';
-document.getElementById('pay-groups').style.display='block';
-document.getElementById('pay-brname').innerHTML='<i class="lucide lucide-building"></i> '+brNm;
-const gs=GROUPS.filter(g=>g.branch===brNm);
-document.getElementById('pay-grplist').innerHTML=gs.length
-? gs.map(g=>`<div onclick="paySelGrp(${g.id},'${g.group_name.replace(/'/g,"\\'")}' )" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:13px;cursor:pointer;display:flex;align-items:center;gap:10px;margin-bottom:8px;transition:border-color .1s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--bd)'">
-<span class="b ${SBG[g.lesson_type]||'bno'}">${g.lesson_type}</span>
-<div style="flex:1"><div style="font-weight:700">${g.group_name}</div><div style="font-size:10px;color:var(--tx2)"><i class="lucide lucide-user"></i> ${g.teacher_name||'—'} · <i class="lucide lucide-user-graduate"></i> ${g.student_count||0} ta</div></div>
-<span style="color:var(--ac)">›</span></div>`).join('')
-: '<div class="empty"><div class="ei"><i class="lucide lucide-book"></i></div>Bu filialda guruh yo\'q</div>';
-}
-function payBack(){
-document.getElementById('pay-branches').style.display='block';
-document.getElementById('pay-groups').style.display='none';
-}
 async function paySelGrp(gid,gnm){
 _payGid=gid;_payGnm=gnm;
-document.getElementById('pay-groups').style.display='none';
+document.getElementById('pay-summary').style.display='none';
 document.getElementById('pay-detail').style.display='block';
 document.getElementById('pay-grpname').innerHTML='<i class="lucide lucide-book"></i> '+gnm;
 await loadPayments();
-}
-function payBackG(){
-document.getElementById('pay-groups').style.display='block';
-document.getElementById('pay-detail').style.display='none';
 }
 async function loadPayments(){
 if(!_payGid)return;
@@ -1230,22 +1196,16 @@ const MNS=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentab
 const [y,mo]=m.split('-');return MNS[parseInt(mo)-1]+' '+y;
 }
 function renderPaymentsPage(){
-    // Filial bo'limini yashirib, guruhlar bo'limini ko'rsatamiz
-    document.getElementById('pay-branches').style.display='none';
-    document.getElementById('pay-groups').style.display='block';
+    document.getElementById('pay-summary').style.display='block';
     document.getElementById('pay-detail').style.display='none';
-    document.getElementById('pay-brname').innerHTML = '<i class="lucide lucide-book"></i> Barcha guruhlar';
-    const gs = GROUPS; // Barcha guruhlar
-    document.getElementById('pay-grplist').innerHTML = gs.length
-        ? gs.map(g => `<div onclick="paySelGrp(${g.id},'${g.group_name.replace(/'/g, "\\'")}')" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:13px;cursor:pointer;display:flex;align-items:center;gap:10px;margin-bottom:8px;transition:border-color .1s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--bd)'">
-            <span class="b ${SBG[g.lesson_type] || 'bno'}">${g.lesson_type}</span>
-            <div style="flex:1">
-                <div style="font-weight:700">${g.group_name}</div>
-                <div style="font-size:10px;color:var(--tx2)"><i class="lucide lucide-building"></i> ${g.branch} · <i class="lucide lucide-user"></i> ${g.teacher_name || '—'} · <i class="lucide lucide-graduation-cap"></i> ${g.student_count || 0} ta</div>
-            </div>
-            <span style="color:var(--ac)">›</span></div>`).join('')
-        : '<div class="empty">Guruhlar topilmadi</div>';
+    const ms=document.getElementById('pay-sum-month');
+    if(ms&&!ms.value) ms.value=TODAY.slice(0,7);
+    loadPaySummary();
+}
 
+function payBackToMain(){
+    document.getElementById('pay-summary').style.display='block';
+    document.getElementById('pay-detail').style.display='none';
     loadPaySummary();
 }
 async function loadPaySummary(){
@@ -1314,8 +1274,7 @@ document.getElementById('pay-sum-table').innerHTML=totalAmtH+tableH;
 }
 async function paySelBrDirect(branch,gid,gnm){
 _payBr=branch;_payGid=gid;_payGnm=gnm;
-document.getElementById('pay-branches').style.display='none';
-document.getElementById('pay-groups').style.display='none';
+document.getElementById('pay-summary').style.display='none';
 document.getElementById('pay-detail').style.display='block';
 document.getElementById('pay-grpname').innerHTML='<i class="lucide lucide-book"></i> '+gnm;
 await loadPayments();
