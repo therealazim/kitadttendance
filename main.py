@@ -2388,6 +2388,406 @@ async def admin_api_schedule_view(request):
 
 
 
+# HISOBOT API FUNKSIYALARI
+async def admin_api_reports_attendance(request):
+    """O'qituvchi davomati hisoboti Excel formatda"""
+    import json as _json
+    from datetime import datetime as dt, timedelta
+    
+    # Admin tekshiruvi
+    if not await _check_admin_session(request):
+        return web.json_response({'error': 'Unauthorized'}, status=401)
+    
+    start_date = request.rel_url.query.get('start_date')
+    end_date = request.rel_url.query.get('end_date')
+    
+    if not start_date or not end_date:
+        return web.json_response({'error': 'start_date va end_date kerak'}, status=400)
+    
+    try:
+        # Excel fayl yaratish
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "O'qituvchi davomati"
+        
+        # Sarlavha
+        headers = ['#', 'O\'qituvchi', 'Mutaxassislik', 'Filial', 'Sana', 'Vaqt']
+        for col, header in enumerate(headers, 1):
+            ws.cell(row=1, column=col, value=header)
+            ws.cell(row=1, column=col).font = Font(bold=True)
+        
+        # Ma'lumotlar
+        async with db.pool.acquire() as conn:
+            records = await conn.fetch("""
+                SELECT a.*, u.full_name, u.specialty 
+                FROM attendance a 
+                JOIN users u ON a.user_id = u.user_id 
+                WHERE a.date BETWEEN $1 AND $2 
+                ORDER BY a.date DESC, a.time DESC
+            """, start_date, end_date)
+        
+        for row_idx, record in enumerate(records, 2):
+            ws.cell(row=row_idx, column=1, value=row_idx-1)
+            ws.cell(row=row_idx, column=2, value=record['full_name'] or 'Noma\'lum')
+            ws.cell(row=row_idx, column=3, value=record['specialty'] or '')
+            ws.cell(row=row_idx, column=4, value=record['branch'] or '')
+            ws.cell(row=row_idx, column=5, value=record['date'])
+            ws.cell(row=row_idx, column=6, value=str(record['time']))
+        
+        # Excel faylni bytes ga aylantirish
+        output = io.BytesIO()
+        wb.save(output)
+        output.seek(0)
+        
+        return web.Response(
+            body=output.read(),
+            headers={
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition': f'attachment; filename="davomat_hisoboti_{start_date}_{end_date}.xlsx"'
+            }
+        )
+        
+    except Exception as e:
+        return web.json_response({'error': str(e)}, status=500)
+
+async def admin_api_reports_groups(request):
+    """Guruhlar hisoboti Excel formatda"""
+    import json as _json
+    
+    # Admin tekshiruvi
+    if not await _check_admin_session(request):
+        return web.json_response({'error': 'Unauthorized'}, status=401)
+    
+    try:
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Guruhlar"
+        
+        # Sarlavha
+        headers = ['#', 'Guruh nomi', 'Filial', 'Fan turi', 'O\'qituvchi', 'O\'quvchilar soni', 'Dars kunlari']
+        for col, header in enumerate(headers, 1):
+            ws.cell(row=1, column=col, value=header)
+            ws.cell(row=1, column=col).font = Font(bold=True)
+        
+        # Ma'lumotlar
+        row_idx = 2
+        for group_id, group_data in groups.items():
+            teacher_name = user_names.get(group_data.get('teacher_id'), 'Noma\'lum')
+            students_count = len(group_students.get(group_id, []))
+            days = ', '.join(group_data.get('days', []))
+            
+            ws.cell(row=row_idx, column=1, value=row_idx-1)
+            ws.cell(row=row_idx, column=2, value=group_data.get('group_name', ''))
+            ws.cell(row=row_idx, column=3, value=group_data.get('branch', ''))
+            ws.cell(row=row_idx, column=4, value=group_data.get('lesson_type', ''))
+            ws.cell(row=row_idx, column=5, value=teacher_name)
+            ws.cell(row=row_idx, column=6, value=students_count)
+            ws.cell(row=row_idx, column=7, value=days)
+            
+            row_idx += 1
+        
+        # Excel faylni bytes ga aylantirish
+        output = io.BytesIO()
+        wb.save(output)
+        output.seek(0)
+        
+        return web.Response(
+            body=output.read(),
+            headers={
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition': f'attachment; filename="guruhlar_hisoboti_{datetime.now().strftime("%Y%m%d")}.xlsx"'
+            }
+        )
+        
+    except Exception as e:
+        return web.json_response({'error': str(e)}, status=500)
+
+async def admin_api_reports_students(request):
+    """O'quvchilar davomati hisoboti Excel formatda"""
+    import json as _json
+    
+    # Admin tekshiruvi
+    if not await _check_admin_session(request):
+        return web.json_response({'error': 'Unauthorized'}, status=401)
+    
+    month = request.rel_url.query.get('month')
+    if not month:
+        return web.json_response({'error': 'month parametri kerak'}, status=400)
+    
+    try:
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "O'quvchilar davomati"
+        
+        # Sarlavha
+        headers = ['#', 'Guruh', 'O\'quvchi', 'Telefon', 'Kelgan kunlar', 'Kelmagan kunlar', 'Foiz']
+        for col, header in enumerate(headers, 1):
+            ws.cell(row=1, column=col, value=header)
+            ws.cell(row=1, column=col).font = Font(bold=True)
+        
+        # Ma'lumotlar
+        async with db.pool.acquire() as conn:
+            records = await conn.fetch("""
+                SELECT gs.group_id, g.group_name, gs.student_name, gs.student_phone,
+                       COUNT(sa.id) FILTER (WHERE sa.status = 'Kelgan') as present_count,
+                       COUNT(sa.id) as total_count
+                FROM group_students gs
+                JOIN groups g ON gs.group_id = g.id
+                LEFT JOIN student_attendance sa ON gs.group_id = sa.group_id 
+                    AND gs.student_name = sa.student_name 
+                    AND DATE_PART('year', sa.lesson_date) = $1
+                    AND DATE_PART('month', sa.lesson_date) = $2
+                GROUP BY gs.group_id, g.group_name, gs.student_name, gs.student_phone
+                ORDER BY g.group_name, gs.student_name
+            """, int(month.split('-')[0]), int(month.split('-')[1]))
+        
+        for row_idx, record in enumerate(records, 2):
+            present = record['present_count'] or 0
+            total = record['total_count'] or 0
+            percentage = round((present / total * 100) if total > 0 else 0, 1)
+            
+            ws.cell(row=row_idx, column=1, value=row_idx-1)
+            ws.cell(row=row_idx, column=2, value=record['group_name'])
+            ws.cell(row=row_idx, column=3, value=record['student_name'])
+            ws.cell(row=row_idx, column=4, value=record['student_phone'])
+            ws.cell(row=row_idx, column=5, value=present)
+            ws.cell(row=row_idx, column=6, value=total - present)
+            ws.cell(row=row_idx, column=7, value=f"{percentage}%")
+        
+        # Excel faylni bytes ga aylantirish
+        output = io.BytesIO()
+        wb.save(output)
+        output.seek(0)
+        
+        return web.Response(
+            body=output.read(),
+            headers={
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition': f'attachment; filename="oquvchilar_hisoboti_{month}.xlsx"'
+            }
+        )
+        
+    except Exception as e:
+        return web.json_response({'error': str(e)}, status=500)
+
+async def admin_api_reports_payments(request):
+    """To'lovlar hisoboti Excel formatda"""
+    import json as _json
+    
+    # Admin tekshiruvi
+    if not await _check_admin_session(request):
+        return web.json_response({'error': 'Unauthorized'}, status=401)
+    
+    month = request.rel_url.query.get('month')
+    if not month:
+        return web.json_response({'error': 'month parametri kerak'}, status=400)
+    
+    try:
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "To'lovlar"
+        
+        # Sarlavha
+        headers = ['#', 'Guruh', 'O\'quvchi', 'Telefon', 'To\'lov holati', 'Summa', 'Izoh']
+        for col, header in enumerate(headers, 1):
+            ws.cell(row=1, column=col, value=header)
+            ws.cell(row=1, column=col).font = Font(bold=True)
+        
+        # Ma'lumotlar
+        async with db.pool.acquire() as conn:
+            records = await conn.fetch("""
+                SELECT g.group_name, gs.student_name, gs.student_phone,
+                       COALESCE(sp.paid, false) as paid,
+                       COALESCE(sp.amount, 0) as amount,
+                       sp.note
+                FROM group_students gs
+                JOIN groups g ON gs.group_id = g.id
+                LEFT JOIN student_payments sp ON gs.group_id = sp.group_id 
+                    AND gs.student_name = sp.student_name 
+                    AND sp.month = $1
+                ORDER BY g.group_name, gs.student_name
+            """, month)
+        
+        for row_idx, record in enumerate(records, 2):
+            status = "To'ladi" if record['paid'] else "To'lamadi"
+            amount = record['amount'] if record['paid'] else 0
+            
+            ws.cell(row=row_idx, column=1, value=row_idx-1)
+            ws.cell(row=row_idx, column=2, value=record['group_name'])
+            ws.cell(row=row_idx, column=3, value=record['student_name'])
+            ws.cell(row=row_idx, column=4, value=record['student_phone'])
+            ws.cell(row=row_idx, column=5, value=status)
+            ws.cell(row=row_idx, column=6, value=amount)
+            ws.cell(row=row_idx, column=7, value=record['note'] or '')
+        
+        # Excel faylni bytes ga aylantirish
+        output = io.BytesIO()
+        wb.save(output)
+        output.seek(0)
+        
+        return web.Response(
+            body=output.read(),
+            headers={
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition': f'attachment; filename="tolovlar_hisoboti_{month}.xlsx"'
+            }
+        )
+        
+    except Exception as e:
+        return web.json_response({'error': str(e)}, status=500)
+
+async def admin_api_reports_branches(request):
+    """Filiallar statistikasi hisoboti Excel formatda"""
+    import json as _json
+    
+    # Admin tekshiruvi
+    if not await _check_admin_session(request):
+        return web.json_response({'error': 'Unauthorized'}, status=401)
+    
+    try:
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Filiallar statistikasi"
+        
+        # Sarlavha
+        headers = ['#', 'Filial', 'Guruhlar soni', 'O\'quvchilar soni', 'O\'qituvchilar soni', 'IT guruhlar', 'Koreys guruhlar']
+        for col, header in enumerate(headers, 1):
+            ws.cell(row=1, column=col, value=header)
+            ws.cell(row=1, column=col).font = Font(bold=True)
+        
+        # Filiallar bo'yicha statistika hisoblash
+        branch_stats = {}
+        for loc in LOCATIONS:
+            branch_name = loc['name']
+            branch_stats[branch_name] = {
+                'groups': 0,
+                'students': 0,
+                'teachers': set(),
+                'it_groups': 0,
+                'korean_groups': 0
+            }
+        
+        # Guruhlar statistikasi
+        for group_id, group_data in groups.items():
+            branch = group_data.get('branch', '')
+            if branch in branch_stats:
+                branch_stats[branch]['groups'] += 1
+                branch_stats[branch]['students'] += len(group_students.get(group_id, []))
+                if group_data.get('teacher_id'):
+                    branch_stats[branch]['teachers'].add(group_data['teacher_id'])
+                
+                lesson_type = group_data.get('lesson_type', '')
+                if lesson_type == 'IT':
+                    branch_stats[branch]['it_groups'] += 1
+                elif lesson_type == 'Koreys tili':
+                    branch_stats[branch]['korean_groups'] += 1
+        
+        # Ma'lumotlarni Excel ga yozish
+        row_idx = 2
+        for branch_name, stats in branch_stats.items():
+            if stats['groups'] > 0:  # Faqat faol filiallar
+                ws.cell(row=row_idx, column=1, value=row_idx-1)
+                ws.cell(row=row_idx, column=2, value=branch_name)
+                ws.cell(row=row_idx, column=3, value=stats['groups'])
+                ws.cell(row=row_idx, column=4, value=stats['students'])
+                ws.cell(row=row_idx, column=5, value=len(stats['teachers']))
+                ws.cell(row=row_idx, column=6, value=stats['it_groups'])
+                ws.cell(row=row_idx, column=7, value=stats['korean_groups'])
+                
+                row_idx += 1
+        
+        # Excel faylni bytes ga aylantirish
+        output = io.BytesIO()
+        wb.save(output)
+        output.seek(0)
+        
+        return web.Response(
+            body=output.read(),
+            headers={
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition': f'attachment; filename="filiallar_hisoboti_{datetime.now().strftime("%Y%m%d")}.xlsx"'
+            }
+        )
+        
+    except Exception as e:
+        return web.json_response({'error': str(e)}, status=500)
+
+async def admin_api_reports_general(request):
+    """Umumiy hisobot Excel formatda"""
+    import json as _json
+    
+    # Admin tekshiruvi
+    if not await _check_admin_session(request):
+        return web.json_response({'error': 'Unauthorized'}, status=401)
+    
+    report_type = request.rel_url.query.get('type', 'monthly')
+    
+    try:
+        wb = Workbook()
+        
+        # 1. Umumiy statistika
+        ws1 = wb.active
+        ws1.title = "Umumiy statistika"
+        
+        # Asosiy ma'lumotlar
+        total_users = len(user_ids)
+        active_users = sum(1 for status in user_status.values() if status != 'blocked')
+        total_groups = len(groups)
+        total_students = sum(len(students) for students in group_students.values())
+        
+        stats_data = [
+            ['Ko\'rsatkichlar', 'Qiymat'],
+            ['Jami foydalanuvchilar', total_users],
+            ['Faol foydalanuvchilar', active_users],
+            ['Jami guruhlar', total_groups],
+            ['Jami o\'quvchilar', total_students],
+            ['IT o\'qituvchilari', sum(1 for spec in user_specialty.values() if spec == 'IT')],
+            ['Koreys tili o\'qituvchilari', sum(1 for spec in user_specialty.values() if spec == 'Koreys tili')],
+        ]
+        
+        for row_idx, (label, value) in enumerate(stats_data, 1):
+            ws1.cell(row=row_idx, column=1, value=label)
+            ws1.cell(row=row_idx, column=2, value=value)
+            if row_idx == 1:
+                ws1.cell(row=row_idx, column=1).font = Font(bold=True)
+                ws1.cell(row=row_idx, column=2).font = Font(bold=True)
+        
+        # 2. Guruhlar
+        ws2 = wb.create_sheet("Guruhlar")
+        headers = ['Guruh nomi', 'Filial', 'Fan turi', 'O\'qituvchi', 'O\'quvchilar']
+        for col, header in enumerate(headers, 1):
+            ws2.cell(row=1, column=col, value=header)
+            ws2.cell(row=1, column=col).font = Font(bold=True)
+        
+        row_idx = 2
+        for group_id, group_data in groups.items():
+            teacher_name = user_names.get(group_data.get('teacher_id'), 'Noma\'lum')
+            students_count = len(group_students.get(group_id, []))
+            
+            ws2.cell(row=row_idx, column=1, value=group_data.get('group_name', ''))
+            ws2.cell(row=row_idx, column=2, value=group_data.get('branch', ''))
+            ws2.cell(row=row_idx, column=3, value=group_data.get('lesson_type', ''))
+            ws2.cell(row=row_idx, column=4, value=teacher_name)
+            ws2.cell(row=row_idx, column=5, value=students_count)
+            
+            row_idx += 1
+        
+        # Excel faylni bytes ga aylantirish
+        output = io.BytesIO()
+        wb.save(output)
+        output.seek(0)
+        
+        return web.Response(
+            body=output.read(),
+            headers={
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition': f'attachment; filename="umumiy_hisobot_{report_type}_{datetime.now().strftime("%Y%m%d")}.xlsx"'
+            }
+        )
+        
+    except Exception as e:
+        return web.json_response({'error': str(e)}, status=500)
+
 async def _cache_all_photos():
     """Barcha foydalanuvchilar Telegram rasmini background da cache qilish"""
     import asyncio as _as
@@ -8503,6 +8903,14 @@ async def main():
     app.router.add_get('/admin/api/report/daily_pdf', admin_api_daily_pdf)
     app.router.add_get('/admin/api/branch/groups', admin_api_branch_groups)
     app.router.add_get('/admin/api/schedule/view', admin_api_schedule_view)
+    
+    # Hisobot API endpoint'lari
+    app.router.add_get('/admin/api/reports/attendance', admin_api_reports_attendance)
+    app.router.add_get('/admin/api/reports/groups', admin_api_reports_groups)
+    app.router.add_get('/admin/api/reports/students', admin_api_reports_students)
+    app.router.add_get('/admin/api/reports/payments', admin_api_reports_payments)
+    app.router.add_get('/admin/api/reports/branches', admin_api_reports_branches)
+    app.router.add_get('/admin/api/reports/general', admin_api_reports_general)
 
     port = int(os.environ.get("PORT", 10000))
     runner = web.AppRunner(app)
