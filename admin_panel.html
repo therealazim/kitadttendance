@@ -546,46 +546,19 @@
 function _ap(p){const u=new URLSearchParams(window.location.search).get('p');return u?p+'?p='+u:p;}
 function _ah(){const u=new URLSearchParams(window.location.search).get('p');return u?{Authorization:'Bearer '+u}:{};}
 if(!new URLSearchParams(window.location.search).get('p')){location.href='/admin';}
-let _uF='',_gid=null,_gdat=null,_cgS=[],_calY,_calM,_calSel=null,_saBr=null,_saGid=null,_salRes=null;
+let _uF='',_gid=null,_gdat=null,_cgS=[],_calY=new Date().getFullYear(),_calM=new Date().getMonth(),_calSel=null,_saBr=null,_saGid=null,_salRes=null;
 const TODAY=new Date().toISOString().slice(0,10);
 const DAYS=['Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba','Yakshanba'];
 const MNS=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
 const SBG={'IT':'bit','Koreys tili':'bkr','Ofis xodimi':'bof'};
 const AVC=['#4f8ef7','#8b5cf6','#10b981','#f59e0b','#ef4444','#0891b2','#db2777','#84cc16'];
 const MED=['1st','2nd','3rd'];
-document.getElementById('attd').value=TODAY;
-document.getElementById('rpmonth').value=TODAY.slice(0,7);
-(()=>{const n=new Date();_calY=n.getFullYear();_calM=n.getMonth();rCal();})();
+const el_attd = document.getElementById('attd');
+if(el_attd) el_attd.value=TODAY;
 (function tick(){const n=new Date();document.getElementById('clock').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');document.getElementById('cldate').textContent=n.toLocaleDateString('uz-UZ',{weekday:'short',day:'numeric',month:'short'});setTimeout(tick,9000);})();
 function tSb(){document.getElementById('sb').classList.toggle('mopen');document.getElementById('movov').classList.toggle('show');}
 function cSb(){document.getElementById('sb').classList.remove('mopen');document.getElementById('movov').classList.remove('show');}
 let LANG='uz';
-
-function setLang(lang){
-    LANG='uz';
-    localStorage.setItem('admin_lang','uz');
-    applyLang();
-    if(window.lucide)lucide.createIcons();
-}
-
-function t(k){
-    return (I18N[LANG]?.[k])||(I18N.uz?.[k])||k;
-}
-function tr(uzText){
-    if(LANG==='uz')return uzText;
-    const entry=Object.entries(I18N.uz).find(([k,v])=>v===uzText);
-    if(entry){const translated=I18N[LANG]?.[entry[0]];if(translated)return translated;}
-    return uzText;
-}
-function applyLang(){
-    document.querySelectorAll('[data-i18n]').forEach(el=>{
-    const k=el.getAttribute('data-i18n');
-    const v=t(k); if(v)el.textContent=v;
-    });
-    const cp=window._curPage||'dash';
-    const tf=TITLES[cp];
-    if(tf)document.getElementById('pgtitle').textContent=typeof tf==='function'?tf():tf;
-}
 
 const I18N={
 uz:{
@@ -652,6 +625,34 @@ lbl_came:'출석',lbl_absent:'결석',lbl_paid:'납부함',lbl_unpaid:'미납',
 usr_deleted:'보관됨',hali_yoq:'아직 없음',txt_no_one_came:'오늘 아직 아무도 오지 않았습니다'
 }
 };
+
+function setLang(lang){
+    LANG='uz';
+    localStorage.setItem('admin_lang','uz');
+    applyLang();
+    if(window.lucide)lucide.createIcons();
+}
+
+function t(k){
+    return (I18N[LANG]?.[k])||(I18N.uz?.[k])||k;
+}
+
+function tr(uzText){
+    if(LANG==='uz')return uzText;
+    const entry=Object.entries(I18N.uz).find(([k,v])=>v===uzText);
+    if(entry){const translated=I18N[LANG]?.[entry[0]];if(translated)return translated;}
+    return uzText;
+}
+
+function applyLang(){
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    const v=t(k); if(v)el.textContent=v;
+    });
+    const cp=window._curPage||'dash';
+    const tf=TITLES[cp];
+    if(tf)document.getElementById('pgtitle').textContent=typeof tf==='function'?tf():tf;
+}
 
 const TITLES={
 dash:()=>t('title_dash'),users:()=>t('title_users'),groups:()=>t('title_groups'),
