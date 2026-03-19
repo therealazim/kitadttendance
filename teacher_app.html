@@ -323,7 +323,9 @@ CUR_MONTH=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
     if(!D.ok)throw new Error(D.error);
     renderStats();renderSched();renderGroups();renderProfile();renderBranches();renderSettings();
     // Profil rasmini yuklash (background)
-    loadProfilePhoto().then(()=>{renderStats();renderProfile();});
+    await loadProfilePhoto();
+    renderStats();
+    renderProfile();
     // Kerakli bo'limga o'tish
     const bn=document.getElementById('bn-'+sec);
     if(bn)goSc(sec,bn);

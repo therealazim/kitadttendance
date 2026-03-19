@@ -458,9 +458,17 @@ class Database:
             """, message_text, sent_count, failed_count, specialty)
     
     async def load_to_ram(self):
+        """Ma'lumotlarni bazadan yangilash"""
         global user_names, user_specialty, user_status, user_languages, user_ids
         global daily_attendance_log, attendance_counter, schedules, user_schedules
         global groups, group_students
+        
+        # Global o'zgaruvchilarni tozalash
+        user_names.clear(); user_specialty.clear(); user_status.clear()
+        user_languages.clear(); user_ids.clear()
+        daily_attendance_log.clear(); attendance_counter.clear()
+        schedules.clear(); user_schedules.clear()
+        groups.clear(); group_students.clear()
         
         users = await self.get_all_users()
         for u in users:
@@ -498,7 +506,6 @@ class Database:
             for g in all_groups:
                 raw = json.loads(g['days_data'])
                 # Yangi format: {kun: vaqt} dict
-                # Eski format: [kun, kun] list
                 if isinstance(raw, dict):
                     day_times = raw
                     days_list = list(raw.keys())
@@ -531,7 +538,8 @@ class Database:
                 if excel_row and excel_row['file_data']:
                     group_attendance_files[g['id']] = bytes(excel_row['file_data'])
         
-        logging.info(f"✅ RAM ga yuklandi: {len(user_ids)} foydalanuvchi, {len(daily_attendance_log)} davomat, {len(groups)} guruh, {len(group_attendance_files)} excel fayl")
+        logging.info(f"✅ RAM ga yangilandi: {len(user_ids)} foydalanuvchi, {len(daily_attendance_log)} davomat, {len(groups)} guruh")
+
 
 db = Database(DATABASE_URL)
 
@@ -592,19 +600,12 @@ LESSON_TYPES = {
 }
 
 user_photo_cache = {}  # uid -> Telegram photo URL
-ADMIN_PASSWORD = "7117"
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "7117")
 
 def _check_admin_request(request) -> bool:
-    # URL dan parolni olish (?p=xxxx)
-    from yarl import URL
-    try:
-        url = URL(str(request.url))
-        password = url.query.get('p', '')
-        if password == ADMIN_PASSWORD:
-            return True
-    except:
-        pass
-    return False
+    # Cookie dan parolni olish
+    password = request.cookies.get('admin_token', '')
+    return password == ADMIN_PASSWORD
 
 WEEKDAYS_UZ =["Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba", "Yakshanba"]
 
@@ -1074,7 +1075,9 @@ async def admin_login(request):
         data = await request.json()
         pw = data.get('password', '')
         if pw == ADMIN_PASSWORD:
-            return web.Response(text=_json.dumps({'ok': True}), content_type='application/json')
+            resp = web.Response(text=_json.dumps({'ok': True}), content_type='application/json')
+            resp.set_cookie('admin_token', pw, path='/', httponly=True)
+            return resp
         return web.Response(text=_json.dumps({'ok': False}), content_type='application/json')
     except Exception as e:
         return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
