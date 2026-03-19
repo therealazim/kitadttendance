@@ -220,7 +220,8 @@ class Database:
                     updated_at TIMESTAMP DEFAULT NOW()
                 )
             """)
-            await conn.execute("""                CREATE TABLE IF NOT EXISTS group_students (
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS group_students (
                     id SERIAL PRIMARY KEY,
                     group_id INT REFERENCES groups(id) ON DELETE CASCADE,
                     student_name TEXT,

@@ -651,7 +651,8 @@ function applyLang(){
     });
     const cp=window._curPage||'dash';
     const tf=TITLES[cp];
-    if(tf)document.getElementById('pgtitle').textContent=typeof tf==='function'?tf():tf;
+    if(tf)document.getElementById('pgtitle').innerHTML=typeof tf==='function'?tf():tf;
+    if(window.lucide)lucide.createIcons();
 }
 
 const TITLES={
@@ -661,7 +662,7 @@ sched:()=>t('title_sched'),stats:()=>t('title_stats'),broadcast:()=>t('title_bc'
 salary:()=>t('title_sal'),branches:()=>t('title_br'),reports:()=>t('title_rep'),
 applies:()=>'<i class="lucide lucide-envelope"></i> '+t('nav_applies'),news_admin:()=>'<i class="lucide lucide-newspaper"></i> '+t('nav_news'),site:()=>'<i class="lucide lucide-globe"></i> '+t('nav_site')
 };
-function gp(n,el){document.querySelectorAll('.sbi').forEach(b=>b.classList.remove('on'));document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));el.classList.add('on');document.getElementById('pg-'+n).classList.add('on');window._curPage=n;const tf=TITLES[n];document.getElementById('pgtitle').textContent=(typeof tf==='function'?tf():tf)||n;if(n==='stats')ldSt();if(n==='sched')ldSched();if(n==='payments')renderPaymentsPage();if(n==='applies')loadApps();if(n==='news_admin')loadNewsAdmin();if(n==='site')loadSiteConfig();cSb();if(window.lucide)lucide.createIcons();}
+function gp(n,el){document.querySelectorAll('.sbi').forEach(b=>b.classList.remove('on'));document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));el.classList.add('on');document.getElementById('pg-'+n).classList.add('on');window._curPage=n;const tf=TITLES[n];document.getElementById('pgtitle').innerHTML=(typeof tf==='function'?tf():tf)||n;if(n==='stats')ldSt();if(n==='sched')ldSched();if(n==='payments')renderPaymentsPage();if(n==='applies')loadApps();if(n==='news_admin')loadNewsAdmin();if(n==='site')loadSiteConfig();cSb();if(window.lucide)lucide.createIcons();}
 function toast(msg,dur=3200){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
 function oM(id){document.getElementById(id).classList.add('open');}
 function cM(id){document.getElementById(id).classList.remove('open');}
