@@ -83,9 +83,9 @@
     <button class="sbi" onclick="gp('salary',this)"><span class="ico"><i class="lucide lucide-coins"></i></span><span class="lbl" data-i18n="nav_sal">Maosh hisoblash</span></button>
     <button class="sbi" onclick="gp('branches',this)"><span class="ico"><i class="lucide lucide-building"></i></span><span class="lbl" data-i18n="nav_br">Filiallar</span></button>
     <button class="sbi" onclick="gp('reports',this)"><span class="ico"><i class="lucide lucide-clipboard-list"></i></span><span class="lbl" data-i18n="nav_rep">Hisobotlar</span></button>
-    <button class="sbi" onclick="gp('applies',this)"><span class="ico"><i class="lucide lucide-envelope"></i></span><span class="lbl">Arizalar</span><span class="bdg" id="nap" style="display:none">0</span></button>
-    <button class="sbi" onclick="gp('news_admin',this)"><span class="ico"><i class="lucide lucide-newspaper"></i></span><span class="lbl">Yangiliklar</span></button>
-    <button class="sbi" onclick="gp('site',this)"><span class="ico"><i class="lucide lucide-globe"></i></span><span class="lbl">Sayt</span></button>
+    <button class="sbi" onclick="gp('applies',this)"><span class="ico"><i class="lucide lucide-envelope"></i></span><span class="lbl" data-i18n="nav_applies">Arizalar</span><span class="bdg" id="nap" style="display:none">0</span></button>
+    <button class="sbi" onclick="gp('news_admin',this)"><span class="ico"><i class="lucide lucide-newspaper"></i></span><span class="lbl" data-i18n="nav_news">Yangiliklar</span></button>
+    <button class="sbi" onclick="gp('site',this)"><span class="ico"><i class="lucide lucide-globe"></i></span><span class="lbl" data-i18n="nav_site">Sayt</span></button>
   </div>
   <div class="sbfoot"><div id="clock">--:--</div><div id="cldate"></div></div>
 </div>
@@ -109,9 +109,8 @@
 <div class="page on" id="pg-dash">
   <div class="sg" id="dashcards"><div class="ldr"><div class="spin"></div></div></div>
   <div class="g2">
-    <div class="tw"><div class="th"><span class="tt"><i class="lucide lucide-chart-line"></i> Haftalik davomat</span></div><div id="wkch" style="padding:14px"></div></div>
-
-    <div class="tw"><div class="th"><span class="tt">Bugun kelganlar</span></div><div id="todtop"></div></div>
+    <div class="tw"><div class="th"><span class="tt"><i class="lucide lucide-chart-line"></i> <span data-i18n="dash_weekly_att">Haftalik davomat</span></span></div><div id="wkch" style="padding:14px"></div></div>
+    <div class="tw"><div class="th"><span class="tt" data-i18n="dash_today_came">Bugun kelganlar</span></div><div id="todtop"></div></div>
   </div>
 </div>
 
@@ -601,8 +600,8 @@ function t(k){
 }
 function tr(uzText){
     if(LANG==='uz')return uzText;
-    const keys=Object.entries(I18N.uz).find(([k,v])=>v===uzText);
-    if(keys)return I18N[LANG]?.[keys[0]]||uzText;
+    const entry=Object.entries(I18N.uz).find(([k,v])=>v===uzText);
+    if(entry){const translated=I18N[LANG]?.[entry[0]];if(translated)return translated;}
     return uzText;
 }
 function applyLang(){
@@ -768,7 +767,62 @@ toast_error:'Xatolik',
 toast_blocked:'Bloklandi',
 toast_unblocked:'Faollashtirildi',
 toast_sent:'ta yuborildi',
-toast_no_group:'Guruh biriktirilmagan'
+toast_no_group:'Guruh biriktirilmagan',
+nav_applies:'Arizalar',
+nav_news:'Yangiliklar',
+nav_site:'Sayt',
+dash_weekly_att:'Haftalik davomat',
+dash_today_came:'Bugun kelganlar',
+txt_no_one_came:'Bugun hali kim kelmadi',
+pg_payments:'O\'quvchilar to\'lovlari',
+pg_students_att:'O\'quvchilar davomati — Filial tanlang',
+grp_choose:'Guruh tanlang:',
+att_loading:'Yuklanmoqda...',
+att_no_data:'Ma\'lumot yo\'q',
+news_form_add:'Yangilik qo\'shish',
+news_pub:'Nashr qilish',
+news_cancel:'Bekor qilish',
+sched_all:'Barcha filiallar',
+sched_show:'Ko\'rsatish',
+sched_no_data:'Jadval yo\'q',
+stats_loading:'Yuklanmoqda...',
+stats_active:'Faol',
+stats_blocked:'Bloklangan',
+stats_monthly:'Bu oy',
+stats_today:'Bugun',
+stats_top_branches:'Filiallar reytingi',
+stats_top_teachers:'O\'qituvchilar reytingi',
+br_list:'Filiallar ro\'yxati',
+br_add_new:'Yangi filial qo\'shish',
+br_name_lbl:'Filial nomi',
+br_lat_lbl:'Latitude',
+br_lon_lbl:'Longitude',
+br_add_btn:'Qo\'shish',
+news_list:'Yangiliklar ro\'yxati',
+news_no:'Yangilik topilmadi',
+sal_calc:'Maosh hisoblash',
+sal_spec:'Mutaxassislik',
+sal_teacher_sel:'O\'qituvchi tanlang',
+sal_btn:'Hisoblash',
+sal_select_teacher:'O\'qituvchi tanlang',
+sal_250k:'250,000 UZS guruh (8 dars/oy)',
+sal_400k:'400,000 UZS guruh (12 dars/oy)',
+sal_students:'O\'quvchi soni',
+sal_lessons:'Bu oy dars',
+sal_exam:'Imtixon ulushi',
+sal_penalty:'Jarima (%)',
+sal_bonus:'Bonus (so\'m)',
+sal_gross:'Jami (soliqsiz)',
+sal_tax:'Soliq (7.5%)',
+sal_net:'Qo\'lga tegadi',
+contact_address:'Manzil',
+contact_phone:'Telefon',
+contact_telegram:'Telegram',
+contact_instagram:'Instagram',
+contact_address_lbl:'Manzil',
+contact_phone_lbl:'Telefon',
+contact_telegram_lbl:'Telegram',
+contact_instagram_lbl:'Instagram'
 },
 ru:{
 sec_main:'Главная',
@@ -922,7 +976,62 @@ toast_error:'Ошибка',
 toast_blocked:'Заблокировано',
 toast_unblocked:'Разблокировано',
 toast_sent:'отправлено',
-toast_no_group:'Группа не привязана'
+toast_no_group:'Группа не привязана',
+nav_applies:'Заявки',
+nav_news:'Новости',
+nav_site:'Сайт',
+dash_weekly_att:'Недельная посещаемость',
+dash_today_came:'Пришли сегодня',
+txt_no_one_came:'Сегодня никто не пришёл',
+pg_payments:'Оплата учеников',
+pg_students_att:'Посещаемость учеников — Выберите филиал',
+grp_choose:'Выберите группу:',
+att_loading:'Загрузка...',
+att_no_data:'Нет данных',
+news_form_add:'Добавить новость',
+news_pub:'Опубликовать',
+news_cancel:'Отмена',
+sched_all:'Все филиалы',
+sched_show:'Показать',
+sched_no_data:'Расписание отсутствует',
+stats_loading:'Загрузка...',
+stats_active:'Активный',
+stats_blocked:'Заблокированный',
+stats_monthly:'Этот месяц',
+stats_today:'Сегодня',
+stats_top_branches:'Рейтинг филиалов',
+stats_top_teachers:'Рейтинг преподавателей',
+br_list:'Список филиалов',
+br_add_new:'Добавить новый филиал',
+br_name_lbl:'Название филиала',
+br_lat_lbl:'Широта',
+br_lon_lbl:'Долгота',
+br_add_btn:'Добавить',
+news_list:'Список новостей',
+news_no:'Новости не найдены',
+sal_calc:'Расчёт зарплаты',
+sal_spec:'Специальность',
+sal_teacher_sel:'Выбрать преподавателя',
+sal_btn:'Рассчитать',
+sal_select_teacher:'Выберите преподавателя',
+sal_250k:'250,000 UZS группа (8 уроков/мес)',
+sal_400k:'400,000 UZS группа (12 уроков/мес)',
+sal_students:'Количество учеников',
+sal_lessons:'Уроков в этом месяце',
+sal_exam:'Доля экзамена',
+sal_penalty:'Штраф (%)',
+sal_bonus:'Бонус (сум)',
+sal_gross:'Всего (без налога)',
+sal_tax:'Налог (7.5%)',
+sal_net:'На руки',
+contact_address:'Адрес',
+contact_phone:'Телефон',
+contact_telegram:'Телеграм',
+contact_instagram:'Инстаграм',
+contact_address_lbl:'Адрес',
+contact_phone_lbl:'Телефон',
+contact_telegram_lbl:'Телеграм',
+contact_instagram_lbl:'Инстаграм'
 },
 kr:{
 sec_main:'메인',
@@ -1076,7 +1185,62 @@ toast_error:'오류',
 toast_blocked:'차단됨',
 toast_unblocked:'차단 해제됨',
 toast_sent:'보냄',
-toast_no_group:'그룹 미연결'
+toast_no_group:'그룹 미연결',
+nav_applies:'지원서',
+nav_news:'뉴스',
+nav_site:'사이트',
+dash_weekly_att:'주간 출석',
+dash_today_came:'오늘 온 사람',
+txt_no_one_came:'오늘 아무도 오지 않음',
+pg_payments:'학생 납부',
+pg_students_att:'학생 출석 — 지점 선택',
+grp_choose:'그룹 선택:',
+att_loading:'로딩 중...',
+att_no_data:'데이터 없음',
+news_form_add:'뉴스 추가',
+news_pub:'발행',
+news_cancel:'취소',
+sched_all:'모든 지점',
+sched_show:'표시',
+sched_no_data:'시간표 없음',
+stats_loading:'로딩 중...',
+stats_active:'활성',
+stats_blocked:'차단됨',
+stats_monthly:'이번 달',
+stats_today:'오늘',
+stats_top_branches:'지점 순위',
+stats_top_teachers:'선생님 순위',
+br_list:'지점 목록',
+br_add_new:'새 지점 추가',
+br_name_lbl:'지점 이름',
+br_lat_lbl:'위도',
+br_lon_lbl:'경도',
+br_add_btn:'추가',
+news_list:'뉴스 목록',
+news_no:'뉴스 없음',
+sal_calc:'급여 계산',
+sal_spec:'전공',
+sal_teacher_sel:'선생님 선택',
+sal_btn:'계산',
+sal_select_teacher:'선생님 선택',
+sal_250k:'250,000 UZS 그룹 (8수업/월)',
+sal_400k:'400,000 UZS 그룹 (12수업/월)',
+sal_students:'학생 수',
+sal_lessons:'이번 달 수업',
+sal_exam:'시험 비중',
+sal_penalty:'벌칙 (%)',
+sal_bonus:'보너스 (소름)',
+sal_gross:'총액 (세금不含)',
+sal_tax:'세금 (7.5%)',
+sal_net:'실수령',
+contact_address:'주소',
+contact_phone:'전화',
+contact_telegram:'텔레그램',
+contact_instagram:'인스타그램',
+contact_address_lbl:'주소',
+contact_phone_lbl:'전화',
+contact_telegram_lbl:'텔레그램',
+contact_instagram_lbl:'인스타그램'
 }
 };
 const TITLES={
@@ -1084,7 +1248,7 @@ dash:()=>t('title_dash'), users:()=>t('title_users'), groups:()=>t('title_groups
 att:()=>t('title_att'), stuatt:()=>t('title_stuatt'), payments:()=>t('title_pay'),
 sched:()=>t('title_sched'), stats:()=>t('title_stats'), broadcast:()=>t('title_bc'),
 salary:()=>t('title_sal'), branches:()=>t('title_br'), reports:()=>t('title_rep'),
-applies:'<i class="lucide lucide-envelope"></i> Arizalar', news_admin:'<i class="lucide lucide-newspaper"></i> Yangiliklar', site:'<i class="lucide lucide-globe"></i> Sayt sozlamalari'
+applies:'<i class="lucide lucide-envelope"></i> '+tr('Arizalar'), news_admin:'<i class="lucide lucide-newspaper"></i> '+tr('Yangiliklar'), site:'<i class="lucide lucide-globe"></i> '+tr('Sayt')
 };
 function gp(n,el){document.querySelectorAll('.sbi').forEach(b=>b.classList.remove('on'));document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));el.classList.add('on');document.getElementById('pg-'+n).classList.add('on');window._curPage=n;const tf=TITLES[n];document.getElementById('pgtitle').textContent=(typeof tf==='function'?tf():tf)||n;if(n==='stats')ldSt();if(n==='sched')ldSched();if(n==='payments')renderPaymentsPage();if(n==='applies')loadApps();if(n==='news_admin')loadNewsAdmin();if(n==='site')loadSiteConfig();cSb();if(window.lucide)lucide.createIcons();}
 function toast(msg,dur=3200){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
