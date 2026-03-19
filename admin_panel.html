@@ -656,6 +656,9 @@ btn_block:'Bloklash',
 btn_unblock:'Faollashtirish',
 btn_excel:'Excel yuklab olish',
 btn_pdf:'PDF ko\'rish',
+btn_view:'Ko\'rish',
+btn_stat:'Stat',
+usr_deleted:'Arxivlangan',
 lbl_branch:'Filial',
 lbl_teacher:'O\'qituvchi',
 lbl_student:'O\'quvchi',
@@ -686,6 +689,7 @@ lbl_exam:'Imtixon ulushi',
 txt_loading:'Yuklanmoqda...',
 txt_updated:'Yangilandi',
 txt_no_data:'Ma\'lumot yo\'q',
+hali_yoq:'hali yo\'q',
 txt_error:'Xatolik',
 txt_today_att:'Bugun kelganlar',
 txt_weekly:'Haftalik davomat',
@@ -865,6 +869,9 @@ btn_block:'Заблокировать',
 btn_unblock:'Разблокировать',
 btn_excel:'Скачать Excel',
 btn_pdf:'Показать PDF',
+btn_view:'Смотреть',
+btn_stat:'Стат',
+usr_deleted:'Архивирован',
 lbl_branch:'Филиал',
 lbl_teacher:'Преподаватель',
 lbl_student:'Ученик',
@@ -895,6 +902,7 @@ lbl_exam:'Доля экзамена',
 txt_loading:'Загрузка...',
 txt_updated:'Обновлено',
 txt_no_data:'Нет данных',
+hali_yoq:'пока нет',
 txt_error:'Ошибка',
 txt_today_att:'Пришли сегодня',
 txt_weekly:'Недельная посещаемость',
@@ -1074,6 +1082,9 @@ btn_block:'차단',
 btn_unblock:'차단 해제',
 btn_excel:'Excel 다운로드',
 btn_pdf:'PDF 보기',
+btn_view:'보기',
+btn_stat:'통계',
+usr_deleted:'보관됨',
 lbl_branch:'지점',
 lbl_teacher:'선생님',
 lbl_student:'학생',
@@ -1104,6 +1115,7 @@ lbl_exam:'시험 비중',
 txt_loading:'로딩 중...',
 txt_updated:'업데이트됨',
 txt_no_data:'데이터 없음',
+hali_yoq:'아직 없음',
 txt_error:'오류',
 txt_today_att:'오늘 온 사람',
 txt_weekly:'주간 출석',
@@ -1308,23 +1320,23 @@ const attSpHtml=Object.entries(attSp).map(([k,v])=>{const sp=spMap[k]||{ic:'<i c
 const ps=D.pay_stats||{paid:0,total:0,amount:0};
 const payCol=ps.total?(ps.paid/ps.total>=0.8?'#34d399':ps.paid/ps.total>=0.5?'#fbbf24':'#f87171'):'#f87171';
 document.getElementById('dashcards').innerHTML=
-`<div class="sc"><div class="si"><i class="lucide lucide-users"></i></div><div class="sv">${act.length}</div><div class="sl">Faol foydalanuvchilar</div><div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:2px">${spHtml}</div></div>`+
-`<div class="sc cgn"><div class="si"><i class="lucide lucide-book"></i></div><div class="sv">${GROUPS.length}</div><div class="sl">Guruhlar</div><div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:2px">${grpSpHtml}</div></div>`+
-`<div class="sc cog"><div class="si"><i class="lucide lucide-map-marker-alt"></i></div><div class="sv">${att.length}</div><div class="sl">Bugun keldi</div><div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:2px">${attSpHtml||'<span style="font-size:10px;color:var(--tx3)">hali yo\'q</span>'}</div></div>`+
-`<div class="sc" style="cursor:pointer" onclick="gp('payments',document.querySelector('.sbi[onclick*=payments]'))"><div class="si"><i class="lucide lucide-money-bill-wave"></i></div><div class="sv" style="color:${payCol}">${ps.total}<span style="font-size:13px;color:var(--tx2)">/${ps.paid}</span></div><div class="sl">Bu oy to'lov</div><div style="font-size:11px;font-weight:700;color:#34d399;margin-top:3px">${fmt(ps.amount)} so'm</div></div>`;
+`<div class="sc"><div class="si"><i class="lucide lucide-users"></i></div><div class="sv">${act.length}</div><div class="sl">${t('dash_active')}</div><div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:2px">${spHtml}</div></div>`+
+`<div class="sc cgn"><div class="si"><i class="lucide lucide-book"></i></div><div class="sv">${GROUPS.length}</div><div class="sl">${t('dash_groups')}</div><div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:2px">${grpSpHtml}</div></div>`+
+`<div class="sc cog"><div class="si"><i class="lucide lucide-map-marker-alt"></i></div><div class="sv">${att.length}</div><div class="sl">${t('dash_today')}</div><div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:2px">${attSpHtml||'<span style="font-size:10px;color:var(--tx3)">'+tr('hali yoq')+'</span>'}</div></div>`+
+`<div class="sc" style="cursor:pointer" onclick="gp('payments',document.querySelector('.sbi[onclick*=payments]'))"><div class="si"><i class="lucide lucide-money-bill-wave"></i></div><div class="sv" style="color:${payCol}">${ps.total}<span style="font-size:13px;color:var(--tx2)">/${ps.paid}</span></div><div class="sl">${t('dash_pay')}</div><div style="font-size:11px;font-weight:700;color:#34d399;margin-top:3px">${fmt(ps.amount)} so'm</div></div>`;
 const wk=D.weekly_stats||[];const mx=Math.max(...wk.map(w=>w.count),1);
 document.getElementById('wkch').innerHTML=`<div style="display:flex;align-items:flex-end;gap:7px;height:90px">${wk.map(w=>{const h=Math.max(Math.round(w.count/mx*82),3);return`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="font-size:10px;color:var(--tx2)">${w.count}</div><div style="height:${h}px;width:100%;background:var(--ac);border-radius:4px 4px 0 0;opacity:.75"></div><div style="font-size:9px;color:var(--tx3)">${w.day}</div></div>`;}).join('')}</div>`;
 const ts=att.slice().sort((a,b)=>a.time>b.time?1:-1).slice(0,8);
-document.getElementById('todtop').innerHTML=ts.length?ts.map(a=>{const u=USERS.find(x=>x.user_id===a.user_id);const c=AVC[a.user_id%AVC.length];const tAv=u?.photo_url?`<img src="${u.photo_url}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:1.5px solid ${c}44;flex-shrink:0" onerror="this.style.display='none'">`:`<div class="avatar" style="background:${c}22;color:${c};border:1.5px solid ${c}44">${ini(u?.name||'?')}</div>`;return`<div class="rnk">${tAv}<div style="flex:1"><div style="font-size:12px">${u?.name||a.user_id}</div><div style="font-size:10px;color:var(--tx2)">${a.branch}</div></div><div style="font-size:11px;color:var(--ac);font-weight:700">${(a.time||'').slice(0,5)}</div></div>`;}).join(''):`<div class="empty"><div class="ei"><i class="lucide lucide-map-marker-alt"></i></div>Bugun hali kim kelmadi</div>`;
+document.getElementById('todtop').innerHTML=ts.length?ts.map(a=>{const u=USERS.find(x=>x.user_id===a.user_id);const c=AVC[a.user_id%AVC.length];const tAv=u?.photo_url?`<img src="${u.photo_url}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:1.5px solid ${c}44;flex-shrink:0" onerror="this.style.display='none'">`:`<div class="avatar" style="background:${c}22;color:${c};border:1.5px solid ${c}44">${ini(u?.name||'?')}</div>`;return`<div class="rnk">${tAv}<div style="flex:1"><div style="font-size:12px">${u?.name||a.user_id}</div><div style="font-size:10px;color:var(--tx2)">${a.branch}</div></div><div style="font-size:11px;color:var(--ac);font-weight:700">${(a.time||'').slice(0,5)}</div></div>`;}).join(''):`<div class="empty"><div class="ei"><i class="lucide lucide-map-marker-alt"></i></div>${t('txt_no_one_came')}</div>`;
 }
 function rUsers(list){
 document.getElementById('ucnt').textContent=list.length+' ta';const tb=document.getElementById('utb');
-if(!list.length){tb.innerHTML=`<tr><td colspan="5"><div class="empty"><div class="ei"><i class="lucide lucide-user"></i></div>Yo'q</div></td></tr>`;return;}
+if(!list.length){tb.innerHTML=`<tr><td colspan="5"><div class="empty"><div class="ei"><i class="lucide lucide-user"></i></div>${t('txt_no_data')}</div></td></tr>`;return;}
 tb.innerHTML=list.map(u=>{
 const c=AVC[u.user_id%AVC.length],sb=SBG[u.specialty]||'bno';
 const isB=u.status==='blocked',isDel=u.status==='deleted';
 const stB=isDel?'<span class="b bdel"><i class="lucide lucide-trash"></i></span>':isB?'<span class="b bbl"><i class="lucide lucide-ban"></i></span>':'<span class="b bok"><i class="lucide lucide-check"></i></span>';
-const acts=isDel?`<span style="color:var(--tx3);font-size:10px">Arxivlangan</span>`:`<button class="btn bg" style="font-size:10px;padding:4px 9px" onclick="oUM(${u.user_id})">Ko'rish</button><button class="btn ${isB?'bs':'bd'}" style="font-size:10px;padding:4px 9px" onclick="${isB?'unblk':'blk'}(${u.user_id})">${isB?'Faollashtirish':'Bloklash'}</button><button class="btn bw" style="font-size:10px;padding:4px 9px" onclick="shUS(${u.user_id})">Stat</button><button class="btn bd" style="font-size:10px;padding:4px 9px" onclick="delU(${u.user_id})"><i class="lucide lucide-trash"></i></button>`;
+const acts=isDel?`<span style="color:var(--tx3);font-size:10px">${t('usr_deleted')}</span>`:`<button class="btn bg" style="font-size:10px;padding:4px 9px" onclick="oUM(${u.user_id})">${t('btn_view')}</button><button class="btn ${isB?'bs':'bd'}" style="font-size:10px;padding:4px 9px" onclick="${isB?'unblk':'blk'}(${u.user_id})">${isB?t('btn_unblock'):t('btn_block')}</button><button class="btn bw" style="font-size:10px;padding:4px 9px" onclick="shUS(${u.user_id})">${t('btn_stat')}</button><button class="btn bd" style="font-size:10px;padding:4px 9px" onclick="delU(${u.user_id})"><i class="lucide lucide-trash"></i></button>`;
 const uAv=u.photo_url?`<img src="${u.photo_url}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:1.5px solid ${c}44;flex-shrink:0" onerror="this.style.display='none'">`:`<div class="avatar" style="background:${c}22;color:${c};border:1.5px solid ${c}44">${ini(u.name)}</div>`;return`<tr style="${(isB||isDel)?'opacity:.5':''}"><td><div style="display:flex;align-items:center;gap:8px">${uAv}<span>${u.name||'—'}</span></div></td><td><span class="b ${sb}">${u.specialty||'—'}</span></td><td><b>${u.attendance_count||0}</b></td><td>${stB}</td><td><div style="display:flex;gap:3px;flex-wrap:wrap">${acts}</div></td></tr>`;
 }).join('');
 }
