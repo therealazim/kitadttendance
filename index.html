@@ -188,24 +188,13 @@ footer{background:var(--navy);padding:28px 5% 0;}
   .footer-top{gap:12px;}
 }
 .lucide{color:#fff;}
-.lucide-graduation-cap{color:#4f8ef7;}
-.lucide-book,.lucide-book-open{color:#10b981;}
-.lucide-images,.lucide-gallery-horizontal{color:#8b5cf6;}
-.lucide-newspaper{color:#f59e0b;}
-.lucide-info-circle,.lucide-help-circle{color:#4f8ef7;}
-.lucide-phone,.lucide-phone-call,.lucide-phone-alt{color:#10b981;}
-.lucide-edit,.lucide-pencil{color:#8b5cf6;}
-.lucide-user-lock{color:#f59e0b;}
-.lucide-send,.lucide-paper-plane{color:#10b981;}
-.lucide-laptop-code,.lucide-laptop{color:#4f8ef7;}
-.lucide-language{color:#8b5cf6;}
-.lucide-building{color:#f59e0b;}
-.lucide-map-marker-alt,.lucide-map-pin,.lucide-map-marked-alt{color:#ef4444;}
-.lucide-clock{color:#8899b0;}
-.lucide-calendar{color:#4f8ef7;}
-.lucide-file-pdf{color:#ef4444;}
-.lucide-location-arrow{color:#4f8ef7;}
-svg.lucide{display:inline-block;vertical-align:middle;width:1em;height:1em;}
+/* Ikonalar o'lchami va tekislanishi */
+svg.lucide{display:inline-block;vertical-align:middle;width:1.2em;height:1.2em;stroke-width:2px;}
+/* Kontakt bo'limidagi ikonalar ko'k */
+.contact-icon .lucide{color:var(--blue) !important;}
+/* Tugma ichidagi ikonalar oq */
+.btn-primary .lucide,.apply-btn .lucide{color:#fff !important;}
+
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 </head>
@@ -385,10 +374,10 @@ svg.lucide{display:inline-block;vertical-align:middle;width:1em;height:1em;}
   <div class="section-tag" data-i18n="sec_contact">Aloqa</div>
   <h2 class="section-title" data-i18n="contact_title">Biz bilan bog'laning</h2>
   <div class="contact-items-wrap">
-      <div class="contact-item"><div class="contact-icon"><i class="lucide lucide-map-marker-alt"></i></div><div><div class="contact-label" data-i18n="contact_address_lbl">Manzil</div><div class="contact-value" id="contact-address">Shota Rustaveli ko'chasi 156</div></div></div>
-      <div class="contact-item"><div class="contact-icon"><i class="lucide lucide-phone-alt"></i></div><div><div class="contact-label" data-i18n="contact_phone_lbl">Telefon</div><div class="contact-value"><a id="contact-phone-link" href="tel:+998508182280">+998 50 818 22 80</a></div></div></div>
-      <div class="contact-item"><div class="contact-icon">✈️</div><div><div class="contact-label" data-i18n="contact_telegram_lbl">Telegram</div><div class="contact-value"><a id="contact-telegram-link" href="https://t.me/Hancom_A" target="_blank">@Hancom_A</a></div></div></div>
-      <div class="contact-item"><div class="contact-icon">📸</div><div><div class="contact-label" data-i18n="contact_instagram_lbl">Instagram</div><div class="contact-value"><a id="contact-instagram-link" href="https://instagram.com/hancomacademy.uz" target="_blank">@hancomacademy.uz</a></div></div></div>
+      <div class="contact-item"><div class="contact-icon"><i class="lucide lucide-map-pin"></i></div><div><div class="contact-label" data-i18n="contact_address_lbl">Manzil</div><div class="contact-value" id="contact-address">Shota Rustaveli ko'chasi 156</div></div></div>
+      <div class="contact-item"><div class="contact-icon"><i class="lucide lucide-phone"></i></div><div><div class="contact-label" data-i18n="contact_phone_lbl">Telefon</div><div class="contact-value"><a id="contact-phone-link" href="tel:+998508182280">+998 50 818 22 80</a></div></div></div>
+      <div class="contact-item"><div class="contact-icon"><i class="lucide lucide-send"></i></div><div><div class="contact-label" data-i18n="contact_telegram_lbl">Telegram</div><div class="contact-value"><a id="contact-telegram-link" href="https://t.me/Hancom_A" target="_blank">@Hancom_A</a></div></div></div>
+      <div class="contact-item"><div class="contact-icon"><i class="lucide lucide-instagram"></i></div><div><div class="contact-label" data-i18n="contact_instagram_lbl">Instagram</div><div class="contact-value"><a id="contact-instagram-link" href="https://instagram.com/hancomacademy.uz" target="_blank">@hancomacademy.uz</a></div></div></div>
   </div>
 </section>
 
@@ -963,7 +952,10 @@ document.addEventListener('DOMContentLoaded', function() {
         'ti-file-excel': 'file-spreadsheet',
         'ti-phone-alt': 'phone',
         'ti-map-marked-alt': 'map-pin',
-        'location-arrow': 'navigation'
+        'location-arrow': 'navigation',
+        'instagram': 'instagram',
+        'send': 'send',
+        'map-pin': 'map-pin'
     };
 
     let isRendering = false;
@@ -1023,6 +1015,12 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 .contact-icon .lucide {
     color: var(--blue) !important;
+}
+.hero-badge .lucide, .btn-secondary .lucide, .course-footer .lucide {
+    color: inherit;
+}
+.btn-primary .lucide, .apply-btn .lucide {
+    color: #fff !important;
 }
 </style>
 </body>
