@@ -645,9 +645,9 @@
 <div class="toast" id="toast"></div>
 
 <script>let D=null,USERS=[],GROUPS=[],SALS=[];
-function _ap(p){const u=new URLSearchParams(window.location.search).get('p');return u?p+'?p='+u:p;}
-function _ah(){const u=new URLSearchParams(window.location.search).get('p');return u?{Authorization:'Bearer '+u}:{};}
-if(!new URLSearchParams(window.location.search).get('p')){location.href='/admin';}
+function _ap(p){return p;}
+function _ah(){return {};}
+// Cookie tekshiruvi server tomonida amalga oshiriladi
 let _uF='',_gid=null,_gdat=null,_cgS=[],_calY=new Date().getFullYear(),_calM=new Date().getMonth(),_calSel=null,_saBr=null,_saGid=null,_salRes=null;
 const TODAY=new Date().toISOString().slice(0,10);
 const DAYS=['Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba','Yakshanba'];
