@@ -1724,9 +1724,7 @@ async function downloadAttendanceReport(){
   try {
     toast('<i class="lucide lucide-spinner"></i> Hisobot tayyorlanmoqda...', 4000);
     
-    const response = await fetch(`/admin/api/reports/attendance?start_date=${startDate}&end_date=${endDate}`, {
-      headers: _ah()
-    });
+    const response = await fetch(_ap(`/admin/api/reports/attendance?start_date=${startDate}&end_date=${endDate}`));
     
     if(!response.ok) throw new Error('Hisobot yuklanmadi');
     
@@ -1750,9 +1748,7 @@ async function downloadGroupsReport(){
   try {
     toast('<i class="lucide lucide-spinner"></i> Guruhlar hisoboti tayyorlanmoqda...', 4000);
     
-    const response = await fetch('/admin/api/reports/groups', {
-      headers: _ah()
-    });
+    const response = await fetch(_ap('/admin/api/reports/groups'));
     
     if(!response.ok) throw new Error('Hisobot yuklanmadi');
     
@@ -1783,9 +1779,7 @@ async function downloadStudentsReport(){
   try {
     toast('<i class="lucide lucide-spinner"></i> O\'quvchilar hisoboti tayyorlanmoqda...', 4000);
     
-    const response = await fetch(`/admin/api/reports/students?month=${month}`, {
-      headers: _ah()
-    });
+    const response = await fetch(_ap(`/admin/api/reports/students?month=${month}`));
     
     if(!response.ok) throw new Error('Hisobot yuklanmadi');
     
@@ -1816,9 +1810,7 @@ async function downloadPaymentsReport(){
   try {
     toast('<i class="lucide lucide-spinner"></i> To\'lovlar hisoboti tayyorlanmoqda...', 4000);
     
-    const response = await fetch(`/admin/api/reports/payments?month=${month}`, {
-      headers: _ah()
-    });
+    const response = await fetch(_ap(`/admin/api/reports/payments?month=${month}`));
     
     if(!response.ok) throw new Error('Hisobot yuklanmadi');
     
@@ -1842,9 +1834,7 @@ async function downloadBranchesReport(){
   try {
     toast('<i class="lucide lucide-spinner"></i> Filiallar hisoboti tayyorlanmoqda...', 4000);
     
-    const response = await fetch('/admin/api/reports/branches', {
-      headers: _ah()
-    });
+    const response = await fetch(_ap('/admin/api/reports/branches'));
     
     if(!response.ok) throw new Error('Hisobot yuklanmadi');
     
@@ -1890,9 +1880,7 @@ async function downloadGeneralReport(){
   try {
     toast('<i class="lucide lucide-spinner"></i> Umumiy hisobot tayyorlanmoqda...', 4000);
     
-    const response = await fetch(`/admin/api/reports/general?${params}`, {
-      headers: _ah()
-    });
+    const response = await fetch(_ap(`/admin/api/reports/general?${params}`));
     
     if(!response.ok) throw new Error('Hisobot yuklanmadi');
     
