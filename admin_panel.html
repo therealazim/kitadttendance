@@ -310,7 +310,7 @@
 <div class="tabrow" style="margin-bottom:14px">
         <button class="tab on" onclick="nfTab('uz',this)"><i class="lucide lucide-flag"></i> O'zbekcha</button>
         <button class="tab" onclick="nfTab('ru',this)"><i class="lucide lucide-flag"></i> Русский</button>
-        <button class="tab" onclick="nfTab('kr',this)">Koreyscha</button>
+        <button class="tab" onclick="nfTab('kr',this)"><i class="lucide lucide-flag"></i> 한국어</button>
       </div>
     <div id="nf-uz">
       <div class="fg"><label for="nf-title">Sarlavha (UZ) *</label><input class="inp" id="nf-title" placeholder="Yangilik sarlavhasi"></div>
@@ -347,7 +347,7 @@
       <div class="tabrow" style="margin-bottom:14px">
         <button class="tab on" onclick="scTab('uz',this)"><i class="lucide lucide-flag"></i> O'zbekcha</button>
         <button class="tab" onclick="scTab('ru',this)"><i class="lucide lucide-flag"></i> Русский</button>
-        <button class="tab" onclick="scTab('kr',this)">Koreyscha</button>
+        <button class="tab" onclick="scTab('kr',this)"><i class="lucide lucide-flag"></i> 한국어</button>
       </div>
       <div id="sc-lang-uz">
         <div class="fg"><label>Sahifa sarlavhasi (UZ)</label><input class="inp" id="sc-hero_title" placeholder="KITA구 HANCOM Academy"></div>
@@ -464,11 +464,113 @@
 
 <!-- HISOBOTLAR -->
 <div class="page" id="pg-reports">
-  <div class="g2">
-    <div>
-
+  <div class="tw">
+    <div class="th">
+      <span class="tt"><i class="lucide lucide-clipboard-list"></i> Excel hisobotlar</span>
     </div>
+    <div style="padding:20px">
+      <div class="g2">
+        <!-- Davomat hisoboti -->
+        <div class="card">
+          <div class="card-body">
+            <h3 style="margin-bottom:12px;color:var(--ac)"><i class="lucide lucide-users"></i> O'qituvchi davomati</h3>
+            <p style="font-size:12px;color:var(--tx2);margin-bottom:12px">Tanlangan vaqt oralig'ida o'qituvchilarning davomat ma'lumotlarini yuklab oling</p>
+            <div class="fg">
+              <label>Boshlanish sanasi</label>
+              <input type="date" id="rep-start-date" class="inp" value="">
+            </div>
+            <div class="fg">
+              <label>Tugash sanasi</label>
+              <input type="date" id="rep-end-date" class="inp" value="">
+            </div>
+            <button class="btn bp bfull" onclick="downloadAttendanceReport()">
+              <i class="lucide lucide-download"></i> Davomat hisobotini yuklab olish
+            </button>
+          </div>
+        </div>
 
+        <!-- Guruhlar hisoboti -->
+        <div class="card">
+          <div class="card-body">
+            <h3 style="margin-bottom:12px;color:var(--gn)"><i class="lucide lucide-book"></i> Guruhlar hisoboti</h3>
+            <p style="font-size:12px;color:var(--tx2);margin-bottom:12px">Barcha guruhlar va ularning ma'lumotlarini yuklab oling</p>
+            <button class="btn bs bfull" onclick="downloadGroupsReport()">
+              <i class="lucide lucide-download"></i> Guruhlar hisobotini yuklab olish
+            </button>
+          </div>
+        </div>
+
+        <!-- O'quvchilar hisoboti -->
+        <div class="card">
+          <div class="card-body">
+            <h3 style="margin-bottom:12px;color:var(--og)"><i class="lucide lucide-user-graduate"></i> O'quvchilar hisoboti</h3>
+            <p style="font-size:12px;color:var(--tx2);margin-bottom:12px">O'quvchilar ro'yxati va ularning davomat ma'lumotlari</p>
+            <div class="fg">
+              <label>Oy tanlang</label>
+              <input type="month" id="rep-student-month" class="inp" value="">
+            </div>
+            <button class="btn" style="background:rgba(245,158,11,.15);color:var(--og);border:1px solid rgba(245,158,11,.3);width:100%" onclick="downloadStudentsReport()">
+              <i class="lucide lucide-download"></i> O'quvchilar hisobotini yuklab olish
+            </button>
+          </div>
+        </div>
+
+        <!-- To'lovlar hisoboti -->
+        <div class="card">
+          <div class="card-body">
+            <h3 style="margin-bottom:12px;color:var(--pu)"><i class="lucide lucide-money-bill-wave"></i> To'lovlar hisoboti</h3>
+            <p style="font-size:12px;color:var(--tx2);margin-bottom:12px">O'quvchilarning to'lov ma'lumotlarini yuklab oling</p>
+            <div class="fg">
+              <label>Oy tanlang</label>
+              <input type="month" id="rep-payment-month" class="inp" value="">
+            </div>
+            <button class="btn" style="background:rgba(139,92,246,.15);color:var(--pu);border:1px solid rgba(139,92,246,.3);width:100%" onclick="downloadPaymentsReport()">
+              <i class="lucide lucide-download"></i> To'lovlar hisobotini yuklab olish
+            </button>
+          </div>
+        </div>
+
+        <!-- Filiallar statistikasi -->
+        <div class="card">
+          <div class="card-body">
+            <h3 style="margin-bottom:12px;color:var(--rd)"><i class="lucide lucide-building"></i> Filiallar statistikasi</h3>
+            <p style="font-size:12px;color:var(--tx2);margin-bottom:12px">Filiallar bo'yicha umumiy statistik ma'lumotlar</p>
+            <button class="btn bd bfull" onclick="downloadBranchesReport()">
+              <i class="lucide lucide-download"></i> Filiallar hisobotini yuklab olish
+            </button>
+          </div>
+        </div>
+
+        <!-- Umumiy hisobot -->
+        <div class="card">
+          <div class="card-body">
+            <h3 style="margin-bottom:12px;color:var(--gn)"><i class="lucide lucide-file-spreadsheet"></i> Umumiy hisobot</h3>
+            <p style="font-size:12px;color:var(--tx2);margin-bottom:12px">Barcha ma'lumotlar: davomatlar, guruhlar, to'lovlar</p>
+            <div class="fg">
+              <label>Hisobot turi</label>
+              <select id="rep-type" class="inp">
+                <option value="monthly">Oylik hisobot</option>
+                <option value="yearly">Yillik hisobot</option>
+                <option value="custom">Maxsus oraliq</option>
+              </select>
+            </div>
+            <div class="fg" id="rep-custom-dates" style="display:none">
+              <div class="fr2">
+                <div class="fg"><label>Dan</label><input type="date" id="rep-custom-start" class="inp"></div>
+                <div class="fg"><label>Gacha</label><input type="date" id="rep-custom-end" class="inp"></div>
+              </div>
+            </div>
+            <div class="fg" id="rep-month-select">
+              <label>Oy tanlang</label>
+              <input type="month" id="rep-general-month" class="inp" value="">
+            </div>
+            <button class="btn bs bfull" onclick="downloadGeneralReport()">
+              <i class="lucide lucide-file-excel"></i> Umumiy hisobotni yuklab olish
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -491,10 +593,10 @@
   <div class="modal mlg">
     <div class="mt" id="gmt"></div>
     <div class="tabrow">
-      <button class="tab on" onclick="gtab('info',this)">Ma'lumot</button>
-      <button class="tab" onclick="gtab('studs',this)">O'quvchilar</button>
-      <button class="tab" onclick="gtab('sched',this)">Jadval</button>
-      <button class="tab" onclick="gtab('teacher',this)">O'qituvchi</button><button class="tab" onclick="gtab('branch',this)">Filial</button><button class="tab" onclick="gtab('name',this)">Nom</button>
+      <button class="tab on" onclick="gtab('info',this)"><i class="lucide lucide-info"></i> Ma'lumot</button>
+      <button class="tab" onclick="gtab('studs',this)"><i class="lucide lucide-users"></i> O'quvchilar</button>
+      <button class="tab" onclick="gtab('sched',this)"><i class="lucide lucide-calendar"></i> Jadval</button>
+      <button class="tab" onclick="gtab('teacher',this)"><i class="lucide lucide-user"></i> O'qituvchi</button><button class="tab" onclick="gtab('branch',this)"><i class="lucide lucide-building"></i> Filial</button><button class="tab" onclick="gtab('name',this)"><i class="lucide lucide-edit-3"></i> Nom</button>
     </div>
     <div id="gminfo"></div><div id="gmstuds" style="display:none"></div>
     <div id="gmsched" style="display:none"></div><div id="gmteacher" style="display:none"></div><div id="gmbranch" style="display:none"></div><div id="gmname" style="display:none"></div>
@@ -506,7 +608,7 @@
 </div>
 <div class="overlay" id="cgm" onclick="if(event.target===this)cM('cgm')">
   <div class="modal mlg">
-    <div class="mt">Yangi guruh yaratish</div>
+     <div class="mt"><i class="lucide lucide-plus"></i> Yangi guruh yaratish</div>
     <div class="fr2">
       <div class="fg"><label>Guruh nomi</label><input type="text" id="cgnm" class="inp" placeholder="IT-A1"></div>
       <div class="fg"><label>Fan turi</label><select id="cgtp" class="inp"><option value="IT"><i class="lucide lucide-laptop-code"></i> IT</option><option value="Koreys tili"><i class="lucide lucide-language"></i> Koreys tili</option></select></div>
@@ -523,11 +625,11 @@
     <div class="fg">
       <label>O'quvchilar (ixtiyoriy)</label>
       <div id="cgstds"></div>
-      <button class="btn bg" style="margin-top:6px;font-size:11px" onclick="addCgS()">+ O'quvchi qo'shish</button>
+       <button class="btn bg" style="margin-top:6px;font-size:11px" onclick="addCgS()"><i class="lucide lucide-user-plus"></i> O'quvchi qo'shish</button>
     </div>
     <div class="mact">
-      <button class="btn bg" onclick="cM('cgm')">Bekor qilish</button>
-      <button class="btn bp" onclick="createG()">Guruh yaratish</button>
+       <button class="btn bg" onclick="cM('cgm')"><i class="lucide lucide-x"></i> Bekor qilish</button>
+       <button class="btn bp" onclick="createG()"><i class="lucide lucide-check"></i> Guruh yaratish</button>
     </div>
   </div>
 </div>
@@ -537,7 +639,7 @@
     <input type="hidden" id="esid"><input type="hidden" id="esgid">
     <div class="fg"><label>Ism</label><input type="text" id="esnm" class="inp"></div>
     <div class="fg"><label>Telefon</label><input type="text" id="esph" class="inp"></div>
-    <div class="mact"><button class="btn bg" onclick="cM('esm')">Bekor</button><button class="btn bp" onclick="saveS()">💾 Saqlash</button></div>
+     <div class="mact"><button class="btn bg" onclick="cM('esm')"><i class="lucide lucide-x"></i> Bekor</button><button class="btn bp" onclick="saveS()"><i class="lucide lucide-save"></i> Saqlash</button></div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -1574,6 +1676,247 @@ document.addEventListener('DOMContentLoaded', function() {
 
     observer.observe(document.body, { childList: true, subtree: true });
 });
+// HISOBOT FUNKSIYALARI
+function initReportDates(){
+  const today = new Date();
+  const currentMonth = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
+  const currentDate = today.toISOString().split('T')[0];
+  
+  // Default sanalarni o'rnatish
+  if(document.getElementById('rep-start-date')) document.getElementById('rep-start-date').value = currentDate;
+  if(document.getElementById('rep-end-date')) document.getElementById('rep-end-date').value = currentDate;
+  if(document.getElementById('rep-student-month')) document.getElementById('rep-student-month').value = currentMonth;
+  if(document.getElementById('rep-payment-month')) document.getElementById('rep-payment-month').value = currentMonth;
+  if(document.getElementById('rep-general-month')) document.getElementById('rep-general-month').value = currentMonth;
+  
+  // Hisobot turi o'zgarishini kuzatish
+  const repType = document.getElementById('rep-type');
+  if(repType) {
+    repType.addEventListener('change', function(){
+      const customDates = document.getElementById('rep-custom-dates');
+      const monthSelect = document.getElementById('rep-month-select');
+      
+      if(this.value === 'custom'){
+        if(customDates) customDates.style.display = 'block';
+        if(monthSelect) monthSelect.style.display = 'none';
+      } else {
+        if(customDates) customDates.style.display = 'none';
+        if(monthSelect) monthSelect.style.display = 'block';
+      }
+    });
+  }
+}
+
+async function downloadAttendanceReport(){
+  const startDate = document.getElementById('rep-start-date')?.value;
+  const endDate = document.getElementById('rep-end-date')?.value;
+  
+  if(!startDate || !endDate){
+    toast('<i class="lucide lucide-exclamation-triangle"></i> Sanalarni to\'ldiring');
+    return;
+  }
+  
+  if(new Date(startDate) > new Date(endDate)){
+    toast('<i class="lucide lucide-exclamation-triangle"></i> Boshlanish sanasi tugash sanasidan kichik bo\'lishi kerak');
+    return;
+  }
+  
+  try {
+    toast('<i class="lucide lucide-spinner"></i> Hisobot tayyorlanmoqda...', 4000);
+    
+    const response = await fetch(`/admin/api/reports/attendance?start_date=${startDate}&end_date=${endDate}`, {
+      headers: _ah()
+    });
+    
+    if(!response.ok) throw new Error('Hisobot yuklanmadi');
+    
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `davomat_hisoboti_${startDate}_${endDate}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    
+    toast('<i class="lucide lucide-check"></i> Hisobot yuklab olindi');
+  } catch(error) {
+    toast('<i class="lucide lucide-times"></i> Xatolik: ' + error.message);
+  }
+}
+
+async function downloadGroupsReport(){
+  try {
+    toast('<i class="lucide lucide-spinner"></i> Guruhlar hisoboti tayyorlanmoqda...', 4000);
+    
+    const response = await fetch('/admin/api/reports/groups', {
+      headers: _ah()
+    });
+    
+    if(!response.ok) throw new Error('Hisobot yuklanmadi');
+    
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `guruhlar_hisoboti_${new Date().toISOString().split('T')[0]}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    
+    toast('<i class="lucide lucide-check"></i> Guruhlar hisoboti yuklab olindi');
+  } catch(error) {
+    toast('<i class="lucide lucide-times"></i> Xatolik: ' + error.message);
+  }
+}
+
+async function downloadStudentsReport(){
+  const month = document.getElementById('rep-student-month')?.value;
+  
+  if(!month){
+    toast('<i class="lucide lucide-exclamation-triangle"></i> Oyni tanlang');
+    return;
+  }
+  
+  try {
+    toast('<i class="lucide lucide-spinner"></i> O\'quvchilar hisoboti tayyorlanmoqda...', 4000);
+    
+    const response = await fetch(`/admin/api/reports/students?month=${month}`, {
+      headers: _ah()
+    });
+    
+    if(!response.ok) throw new Error('Hisobot yuklanmadi');
+    
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `oquvchilar_hisoboti_${month}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    
+    toast('<i class="lucide lucide-check"></i> O\'quvchilar hisoboti yuklab olindi');
+  } catch(error) {
+    toast('<i class="lucide lucide-times"></i> Xatolik: ' + error.message);
+  }
+}
+
+async function downloadPaymentsReport(){
+  const month = document.getElementById('rep-payment-month')?.value;
+  
+  if(!month){
+    toast('<i class="lucide lucide-exclamation-triangle"></i> Oyni tanlang');
+    return;
+  }
+  
+  try {
+    toast('<i class="lucide lucide-spinner"></i> To\'lovlar hisoboti tayyorlanmoqda...', 4000);
+    
+    const response = await fetch(`/admin/api/reports/payments?month=${month}`, {
+      headers: _ah()
+    });
+    
+    if(!response.ok) throw new Error('Hisobot yuklanmadi');
+    
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `tolovlar_hisoboti_${month}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    
+    toast('<i class="lucide lucide-check"></i> To\'lovlar hisoboti yuklab olindi');
+  } catch(error) {
+    toast('<i class="lucide lucide-times"></i> Xatolik: ' + error.message);
+  }
+}
+
+async function downloadBranchesReport(){
+  try {
+    toast('<i class="lucide lucide-spinner"></i> Filiallar hisoboti tayyorlanmoqda...', 4000);
+    
+    const response = await fetch('/admin/api/reports/branches', {
+      headers: _ah()
+    });
+    
+    if(!response.ok) throw new Error('Hisobot yuklanmadi');
+    
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `filiallar_hisoboti_${new Date().toISOString().split('T')[0]}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    
+    toast('<i class="lucide lucide-check"></i> Filiallar hisoboti yuklab olindi');
+  } catch(error) {
+    toast('<i class="lucide lucide-times"></i> Xatolik: ' + error.message);
+  }
+}
+
+async function downloadGeneralReport(){
+  const reportType = document.getElementById('rep-type')?.value || 'monthly';
+  let params = `type=${reportType}`;
+  
+  if(reportType === 'custom'){
+    const startDate = document.getElementById('rep-custom-start')?.value;
+    const endDate = document.getElementById('rep-custom-end')?.value;
+    
+    if(!startDate || !endDate){
+      toast('<i class="lucide lucide-exclamation-triangle"></i> Sanalarni to\'ldiring');
+      return;
+    }
+    
+    params += `&start_date=${startDate}&end_date=${endDate}`;
+  } else if(reportType === 'monthly') {
+    const month = document.getElementById('rep-general-month')?.value;
+    if(!month){
+      toast('<i class="lucide lucide-exclamation-triangle"></i> Oyni tanlang');
+      return;
+    }
+    params += `&month=${month}`;
+  }
+  
+  try {
+    toast('<i class="lucide lucide-spinner"></i> Umumiy hisobot tayyorlanmoqda...', 4000);
+    
+    const response = await fetch(`/admin/api/reports/general?${params}`, {
+      headers: _ah()
+    });
+    
+    if(!response.ok) throw new Error('Hisobot yuklanmadi');
+    
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `umumiy_hisobot_${reportType}_${new Date().toISOString().split('T')[0]}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    
+    toast('<i class="lucide lucide-check"></i> Umumiy hisobot yuklab olindi');
+  } catch(error) {
+    toast('<i class="lucide lucide-times"></i> Xatolik: ' + error.message);
+  }
+}
+
+// Sahifa yuklanganda hisobot sanalarini sozlash
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(initReportDates, 100);
+});
+
 </script>
 <style>
 .lucide, svg.lucide {
