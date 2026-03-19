@@ -1400,7 +1400,7 @@ async def admin_api_payments_summary(request):
             gid = r['group_id']
             if gid not in pay_by_grp:
                 pay_by_grp[gid] = {'paid': 0, 'total_amt': 0, 'school_amt': 0, 'rows': []}
-            if r['student_name'] == '__school__' and r.get('note') == 'school':
+            if r['student_name'] == '__school__' and r['note'] == 'school':
                 # Maktab to'lovi — alohida
                 pay_by_grp[gid]['school_amt'] += r['amount']
                 pay_by_grp[gid]['total_amt'] += r['amount']
@@ -2413,6 +2413,11 @@ async def admin_api_reports_attendance(request):
         return web.json_response({'error': 'start_date va end_date kerak'}, status=400)
     
     try:
+        # Sanalarni date obyektiga aylantirish
+        from datetime import date as _date_cls
+        start_date_obj = _date_cls.fromisoformat(start_date)
+        end_date_obj = _date_cls.fromisoformat(end_date)
+        
         # Excel fayl yaratish
         wb = Workbook()
         ws = wb.active
@@ -2432,7 +2437,7 @@ async def admin_api_reports_attendance(request):
                 JOIN users u ON a.user_id = u.user_id 
                 WHERE a.date BETWEEN $1 AND $2 
                 ORDER BY a.date DESC, a.time DESC
-            """, start_date, end_date)
+            """, start_date_obj, end_date_obj)
         
         for row_idx, record in enumerate(records, 2):
             ws.cell(row=row_idx, column=1, value=row_idx-1)
@@ -2503,7 +2508,7 @@ async def admin_api_reports_groups(request):
             body=output.read(),
             headers={
                 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'Content-Disposition': f'attachment; filename="guruhlar_hisoboti_{datetime.now().strftime("%Y%m%d")}.xlsx"'
+                'Content-Disposition': f'attachment; filename="guruhlar_hisoboti_{datetime.now(UZB_TZ).strftime("%Y%m%d")}.xlsx"'
             }
         )
         
@@ -2713,7 +2718,7 @@ async def admin_api_reports_branches(request):
             body=output.read(),
             headers={
                 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'Content-Disposition': f'attachment; filename="filiallar_hisoboti_{datetime.now().strftime("%Y%m%d")}.xlsx"'
+                'Content-Disposition': f'attachment; filename="filiallar_hisoboti_{datetime.now(UZB_TZ).strftime("%Y%m%d")}.xlsx"'
             }
         )
         
@@ -7052,12 +7057,12 @@ async def admin_user_delete_confirm(callback: types.CallbackQuery):
         
         await asyncio.sleep(2)
         
-        active_users = [uid for uid in user_ids if user_status.get(uid) != 'blocked']
+        active_users = [u for u in user_ids if user_status.get(u) != 'blocked']
         if active_users:
             builder = InlineKeyboardBuilder()
-            for uid in sorted(active_users)[:15]:
-                name = user_names.get(uid, f"ID: {uid}")
-                specialty = user_specialty.get(uid, '')
+            for u in sorted(active_users)[:15]:
+                name = user_names.get(u, f"ID: {u}")
+                specialty = user_specialty.get(u, '')
                 spec_display = f" [{specialty}]" if specialty else ""
                 
                 if len(name) > 30:
@@ -7066,7 +7071,7 @@ async def admin_user_delete_confirm(callback: types.CallbackQuery):
                 builder.row(
                     InlineKeyboardButton(
                         text=f"👤 {name}{spec_display}", 
-                        callback_data=f"admin_user_info_{uid}"
+                        callback_data=f"admin_user_info_{u}"
                     )
                 )
             
@@ -8049,8 +8054,6 @@ async def grp_excel_download(callback: types.CallbackQuery, state: FSMContext):
         await callback.answer()
     except Exception as e:
         logging.error(f"grp_excel_download error: {e}")
-        await callback.answer(f"Xatolik: {e}", show_alert=True)
-
         await callback.answer(f"Xatolik: {e}", show_alert=True)
 
 # --- GURUH DARS VAQTI/KUNLARI O'ZGARTIRISH ---
