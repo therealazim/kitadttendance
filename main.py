@@ -603,9 +603,14 @@ user_photo_cache = {}  # uid -> Telegram photo URL
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "7117")
 
 def _check_admin_request(request) -> bool:
-    # Cookie dan parolni olish
+    # Cookie ni tekshirish (asosiy usul)
     password = request.cookies.get('admin_token', '')
-    return password == ADMIN_PASSWORD
+    if password == ADMIN_PASSWORD:
+        return True
+    
+    # URL parametrini tekshirish (fallback)
+    password_query = request.rel_url.query.get('p', '')
+    return password_query == ADMIN_PASSWORD
 
 WEEKDAYS_UZ =["Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba", "Yakshanba"]
 
