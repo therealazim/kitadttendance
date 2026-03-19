@@ -133,11 +133,10 @@
 
 <!-- GURUHLAR -->
 <div class="page" id="pg-groups">
-  <div style="display:flex;gap:9px;margin-bottom:10px;flex-wrap:wrap">
-    <div class="sr" style="flex:1;min-width:160px;margin-bottom:0"><i class="lucide lucide-search"></i><input id="gq" placeholder="Guruh, filial..." oninput="fgrp()"></div>
-    <button class="btn bp" onclick="oCG()">Yangi guruh</button>
-    <button class="btn bpu" onclick="dlSchedPdf()">PDF Jadval</button>
-  </div>
+   <div style="display:flex;gap:9px;margin-bottom:10px;flex-wrap:wrap">
+     <div class="sr" style="flex:1;min-width:160px;margin-bottom:0"><i class="lucide lucide-search"></i><input id="gq" placeholder="Guruh, filial..." oninput="fgrp()"></div>
+     <button class="btn bp" onclick="oCG()">Yangi guruh</button>
+   </div>
   <div class="tw">
     <div class="th"><span class="tt">Guruhlar</span><span class="tm" id="gcnt"></span></div>
     <div style="overflow-x:auto"><table>
@@ -220,10 +219,9 @@
 <!-- DARS JADVALI -->
 <div class="page" id="pg-sched">
   <div style="display:flex;gap:9px;margin-bottom:12px;flex-wrap:wrap">
-    <select id="schedbr" class="inp" style="max-width:220px" onchange="loadSched()"><option value="">Barcha filiallar</option></select>
-    <button class="btn bp" onclick="loadSched()">Ko'rsatish</button>
-    <button class="btn bpu" onclick="dlSchedPdf()"><i class="lucide lucide-file-pdf"></i> PDF yuklash</button>
-  </div>
+     <select id="schedbr" class="inp" style="max-width:220px" onchange="loadSched()"><option value="">Barcha filiallar</option></select>
+     <button class="btn bp" onclick="loadSched()">Ko'rsatish</button>
+   </div>
   <div id="schedct"><div class="ldr"><div class="spin"></div></div></div>
 </div>
 
@@ -468,29 +466,9 @@
 <div class="page" id="pg-reports">
   <div class="g2">
     <div>
-      <div class="fb">
-        <div class="ft"><i class="lucide lucide-file-excel"></i> Oylik Excel hisobot</div>
-        <div class="fg"><label>Oy tanlang</label><input type="month" id="rpmonth" class="inp"></div>
-        <button class="btn bp bfull" onclick="dlMonthly()"><i class="lucide lucide-download"></i> Excel yuklash</button>
-      </div>
-      <div class="fb">
-        <div class="ft"><i class="lucide lucide-calendar"></i> Dars jadvali PDF</div>
-        <button class="btn bpu bfull" onclick="dlSchedPdf()"><i class="lucide lucide-download"></i> PDF yuklash</button>
-      </div>
+
     </div>
-    <div class="fb">
-      <div class="ft"><i class="lucide lucide-calendar-day"></i> Kunlik hisobot</div>
-      <div class="fg">
-        <label for="rpmonth">Sana tanlang</label>
-        <div class="calnav"><button onclick="calP()">‹</button><span id="caltitle"></span><button onclick="calN()">›</button></div>
-        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:5px">
-          <div style="text-align:center;font-size:9px;color:var(--tx3);padding:4px">Du</div><div style="text-align:center;font-size:9px;color:var(--tx3);padding:4px">Se</div><div style="text-align:center;font-size:9px;color:var(--tx3);padding:4px">Ch</div><div style="text-align:center;font-size:9px;color:var(--tx3);padding:4px">Pa</div><div style="text-align:center;font-size:9px;color:var(--tx3);padding:4px">Ju</div><div style="text-align:center;font-size:9px;color:var(--tx3);padding:4px">Sh</div><div style="text-align:center;font-size:9px;color:var(--tx3);padding:4px">Ya</div>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px" id="caldays"></div>
-        <div style="margin-top:7px;font-size:11px;color:var(--tx2)">Tanlangan: <b id="calsel" style="color:var(--ac)">—</b></div>
-      </div>
-      <div id="pdfprev" style="margin-top:9px"></div>
-    </div>
+
   </div>
 </div>
 
@@ -1327,38 +1305,8 @@ catch(e){toast('<i class="lucide lucide-times"></i> '+e.message);}
 function rBrs(){const br=D.branches||[];document.getElementById('brcnt').textContent=br.length+' ta';document.getElementById('brlist').innerHTML=br.length?br.map((b,i)=>`<div class="brit"><div class="brnum">${i+1}</div><div style="flex:1"><div style="font-size:12px;font-weight:600">${b.name}</div><div style="font-size:10px;color:var(--tx2)"><i class="lucide lucide-map-marker-alt"></i> ${b.lat?.toFixed(4)||'?'}, ${b.lon?.toFixed(4)||'?'}</div></div><div style="display:flex;gap:4px"><a href="https://yandex.com/maps/?pt=${b.lon},${b.lat}&z=17" target="_blank" class="btn bg" style="font-size:10px;padding:3px 8px"><i class="lucide lucide-map"></i></a><button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="delBr(${i})"><i class="lucide lucide-trash"></i></button></div></div>`).join(''):'<div class="empty"><div class="ei"><i class="lucide lucide-building"></i></div>Filiallar yo\u2019q</div>';}
 async function addBr(){const nm=document.getElementById('brnm').value.trim();const lt=parseFloat(document.getElementById('brlt').value);const ln=parseFloat(document.getElementById('brln').value);if(!nm||isNaN(lt)||isNaN(ln)){toast("<i class='lucide ti-exclamation-triangle'></i> Barcha maydonlarni to'ldiring!");return;}const r=await api('/admin/api/branch/add',{name:nm,lat:lt,lon:ln});if(r?.ok){toast('<i class="lucide lucide-check"></i> '+tr("Filial qo'shildi"));['brnm','brlt','brln'].forEach(id=>document.getElementById(id).value='');await fetchAll();}else toast('<i class="lucide lucide-times"></i> Xatolik');}
 async function delBr(idx){const b=D.branches[idx];if(!confirm(`"${b?.name||idx}" o'chirilsinmi?`))return;const r=await api('/admin/api/branch/delete',{index:idx});if(r?.ok){toast('<i class="lucide lucide-check"></i> '+tr("Filial o'chirildi"));await fetchAll();}else toast('<i class="lucide lucide-times"></i> Xatolik');}
-async function dlMonthly(){const m=document.getElementById('rpmonth').value;if(!m){toast('<i class="lucide lucide-exclamation-triangle"></i> Oy tanlang');return;}const[y,mo]=m.split('-');toast('⏳ Excel tayyorlanmoqda...',7000);try{const r=await fetch(`/admin/api/report/monthly?year=${y}&month=${mo}`);if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`Davomat_${y}_${mo}.xlsx`;a.click();URL.revokeObjectURL(url);toast('<i class="lucide lucide-check"></i> Yuklab olindi');}catch(e){toast('<i class="lucide lucide-times"></i> '+e.message);}}
-async function dlSchedPdf(){toast('⏳ PDF tayyorlanmoqda...',7000);try{const r=await fetch('/admin/api/report/schedule_pdf');if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='jadval.pdf';a.click();URL.revokeObjectURL(url);toast('<i class="lucide lucide-check"></i> PDF yuklab olindi');}catch(e){toast('<i class="lucide lucide-times"></i> '+e.message);}}
-function rCal(){document.getElementById('caltitle').textContent=MNS[_calM]+' '+_calY;const fd=new Date(_calY,_calM,1).getDay();const off=(fd+6)%7;const dim=new Date(_calY,_calM+1,0).getDate();const tn=new Date();const ts=`${tn.getFullYear()}-${String(tn.getMonth()+1).padStart(2,'0')}-${String(tn.getDate()).padStart(2,'0')}`;let h='';for(let i=0;i<off;i++)h+=`<div class="calday ot"></div>`;for(let d=1;d<=dim;d++){const ds=`${_calY}-${String(_calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;h+=`<div class="calday ${ds===ts?'tod':''} ${ds===_calSel?'sel':''}" onclick="calSel('${ds}')">${d}</div>`;}document.getElementById('caldays').innerHTML=h;}
-function calP(){_calM--;if(_calM<0){_calM=11;_calY--;}rCal();}
-function calN(){_calM++;if(_calM>11){_calM=0;_calY++;}rCal();}
-function calSel(ds){_calSel=ds;rCal();document.getElementById('calsel').textContent=ds;document.getElementById('pdfprev').innerHTML='';loadDailyReport();}
-async function loadDailyReport(){
-if(!_calSel)return;
-document.getElementById('pdfprev').innerHTML='<div class="ldr"><div class="spin"></div></div>';
-const r=await fetch(`/admin/api/attendance?date=${_calSel}`).then(x=>x.json()).catch(()=>null);
-if(!r){document.getElementById('pdfprev').innerHTML='<div class="empty"><div class="ei"><i class="lucide lucide-times"></i></div>Xatolik</div>';return;}
-const att=r.attendance||[];
-const act=USERS.filter(u=>u.status!=='blocked'&&u.status!=='deleted');
-const prs=new Set(att.map(a=>a.user_id));
-const abs=act.filter(u=>!prs.has(u.user_id));
-let html=`<div style="font-size:11px;color:var(--tx2);margin-bottom:8px">Jami: <b style="color:#34d399">${att.length} ta keldi</b> · <b style="color:#f87171">${abs.length} ta kelmadi</b></div>`;
-if(att.length){
-html+=`<div class="tw" style="margin-bottom:10px"><div class="th"><span class="tt"><i class="lucide lucide-check"></i> Kelganlar</span></div><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Ism</th><th>Filial</th><th>Vaqt</th></tr></thead><tbody>${att.map((a,i)=>{const u=USERS.find(x=>x.user_id===a.user_id);return`<tr><td>${i+1}</td><td>${u?.name||a.user_id}</td><td style="font-size:11px">${a.branch}</td><td style="color:var(--ac);font-weight:700">${(a.time||'').slice(0,5)}</td></tr>`;}).join('')}</tbody></table></div></div>`;
-}
-if(abs.length){
-html+=`<div class="tw"><div class="th"><span class="tt"><i class="lucide lucide-times"></i> Kelmaganlar</span></div><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Ism</th><th>Soha</th></tr></thead><tbody>${abs.map((u,i)=>`<tr style="opacity:.5"><td>${i+1}</td><td>${u.name}</td><td><span class="b ${SBG[u.specialty]||'bno'}">${u.specialty||'—'}</span></td></tr>`).join('')}</tbody></table></div></div>`;
-}
-if(!att.length&&!abs.length) html='<div class="empty"><div class="ei"><i class="lucide lucide-calendar"></i></div>Bu kunda davomat ma\'lumoti yo\'q</div>';
-document.getElementById('pdfprev').innerHTML=html;
-}
-async function dlDailyPdf(){
-if(!_calSel){toast('<i class="lucide lucide-exclamation-triangle"></i> Sana tanlang');return;}toast('⏳ PDF tayyorlanmoqda...',7000);
-const btn=document.getElementById('pdfbtn');btn.disabled=true;btn.textContent='⏳ Tayyorlanmoqda...';
-try{const r=await fetch(`/admin/api/report/daily_pdf?date=${_calSel}`);btn.disabled=false;btn.textContent='<i class="lucide lucide-file-pdf"></i> PDF ko\'rish / yuklash';if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);document.getElementById('pdfprev').innerHTML=`<div style="display:flex;gap:7px;margin-top:8px"><button class="btn bpu" onclick="window.open('${url}','_blank')" style="flex:1;justify-content:center"><i class="lucide lucide-eye"></i> Ko'rish</button><button class="btn bp" onclick="dlBlob('${url}','davomat_${_calSel}.pdf')" style="flex:1;justify-content:center"><i class="lucide lucide-download"></i> Yuklash</button></div>`;toast('<i class="lucide lucide-check"></i> PDF tayyor');}
-catch(e){btn.disabled=false;btn.textContent='<i class="lucide lucide-file-pdf"></i> PDF ko\'rish / yuklash';toast('<i class="lucide lucide-times"></i> '+e.message);}
-}
-function dlBlob(url,fn){const a=document.createElement('a');a.href=url;a.download=fn;a.click();}
+
+
 LANG='uz';
 applyLang();
 fetchAll();
