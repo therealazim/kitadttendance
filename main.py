@@ -856,14 +856,9 @@ async def main_keyboard(user_id: int):
             text=app_btn_text,
             web_app=types.WebAppInfo(url=webapp_url)
         ),
-        KeyboardButton(text=get_button_text(user_id, 'profile')),
-        KeyboardButton(text=get_button_text(user_id, 'schedule')),
-        KeyboardButton(text=get_button_text(user_id, 'my_groups')),
-        KeyboardButton(text=get_button_text(user_id, 'stats')),
-        KeyboardButton(text=get_button_text(user_id, 'branches')),
     ]
     builder.add(*buttons)
-    builder.adjust(2, 2, 2, 1)
+    builder.adjust(2)
     return builder.as_markup(resize_keyboard=True)
 
 
