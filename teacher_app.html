@@ -430,21 +430,32 @@ function renderGroups(){
   if(!D)return;
   document.getElementById('grps-ld').style.display='none';
   document.getElementById('grps-ct').style.display='block';
-  const gs=D.groups;
-  if(!gs.length){document.getElementById('grps-ct').innerHTML='<div class="empty"><div class="ei">📚</div>Hali guruh yo\'q</div>';return;}
-  const h=`<div class="card">${gs.map(g=>{
-    const c=AVC[g.id%AVC.length];const tc=g.lesson_type==='IT'?'bit':'bkr';
-    return`<div class="grp-item" onclick="openGrp(${g.id})">
-      <div class="gi-av" style="background:${c}22;color:${c}">${ini(g.group_name)}</div>
-      <div class="gi-info">
-        <div class="gi-name">${g.group_name}</div>
-        <div class="gi-meta">🏢 ${g.branch} · 🧑‍🎓 ${g.student_count} ta · <span class="b ${tc}" style="font-size:9px">${g.lesson_type}</span></div>
-      </div>
-      ${g.is_today?`<span class="b btd" style="font-size:9px;margin-right:4px">Bugun</span>`:''}
-      <span class="gi-arr">›</span>
-    </div>`;}).join('')}</div>`;
+  const gs=D.groups||[];
+  
+  // Filter groups by CURRENT_BRANCH if selected
+  const filteredGs = CURRENT_BRANCH ? gs.filter(g => g.branch === CURRENT_BRANCH) : gs;
+
+  if(!filteredGs.length){
+    document.getElementById('grps-ct').innerHTML='<div class="empty"><div class="ei">📚</div>Guruh yo\'q</div>';
+    return;
+  }
+  
+  const h=`<div class="card">
+    ${filteredGs.map((g,i)=>{
+      const c=AVC[g.id%AVC.length];const tc=g.lesson_type==='IT'?'bit':'bkr';
+      return`<div class="grp-item" onclick="openGrp(${g.id})">
+        <div class="gi-av" style="background:${c}22;color:${c}">${ini(g.group_name)}</div>
+        <div class="gi-info">
+          <div class="gi-name">${g.group_name}</div>
+          <div class="gi-meta">🏢 ${g.branch} · 🧑‍🎓 ${g.student_count} ta · <span class="b ${tc}" style="font-size:9px">${g.lesson_type}</span></div>
+        </div>
+        ${g.is_today?`<span class="b btd" style="font-size:9px;margin-right:4px">Bugun</span>`:''}
+        <span class="gi-arr">›</span>
+      </div>`;}).join('')}
+  </div>`;
   document.getElementById('grps-ct').innerHTML=h;
 }
+
 
 // ── GROUP DETAIL ──
 async function openGrp(gid){
