@@ -1059,16 +1059,13 @@ async def admin_panel_page(request):
         '      body:JSON.stringify({password:pw})});',
         '    var d=await r.json();',
         '    if(d.ok){',
-        '      localStorage.setItem("admp",pw);',
-        '      location.href="/admin?p="+encodeURIComponent(pw);',
+        '      location.href="/admin";',
         '    } else {',
         '      document.getElementById("err").textContent="Noto\'g\'ri parol";',
         '      document.getElementById("pw").value="";',
         '    }',
         '  }catch(e){document.getElementById("err").textContent="Xatolik: "+e.message;}',
         '}',
-        'var sp=localStorage.getItem("admp");',
-        'if(sp){location.href="/admin?p="+encodeURIComponent(sp);}',
         '</script></body></html>',
     ]
     login_html = ''.join(parts)
