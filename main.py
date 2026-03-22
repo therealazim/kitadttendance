@@ -2445,7 +2445,7 @@ async def admin_api_reports_attendance(request):
             for col in range(1, 7):
                 ws.cell(row=row_idx, column=col).alignment = Alignment(horizontal="left", vertical="center")
         
-        // Ustun kengliklarini avtomatik sozlash
+        # Ustun kengliklarini avtomatik sozlash
         for column in ws.columns:
             max_length = 0
             column_letter = get_column_letter(column[0].column)
@@ -2458,16 +2458,16 @@ async def admin_api_reports_attendance(request):
             adjusted_width = min(max_length + 2, 50)
             ws.column_dimensions[column_letter].width = adjusted_width
         
-        // Qatilarni muzlatish (harakatlanmaydigan qatir)
+        # Qatilarni muzlatish (harakatlanmaydigan qatir)
         ws.freeze_panes = "A2"
         
-        // Qo'shimcha ma'lumot qo'shish (statistika)
+        # Qo'shimcha ma'lumot qo'shish (statistika)
         if records:
             summary_row = len(records) + 4
             ws.cell(row=summary_row, column=1, value="JAMI:").font = Font(bold=True)
             ws.cell(row=summary_row, column=2, value=len(records)).font = Font(bold=True)
         
-        // Excel faylni bytes ga aylantirish
+        # Excel faylni bytes ga aylantirish
         output = io.BytesIO()
         wb.save(output)
         output.seek(0)
