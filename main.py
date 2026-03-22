@@ -697,7 +697,7 @@ def get_text(user_id: int, key: str, **kwargs):
     if lang not in TRANSLATIONS:
         lang = 'uz'
         user_languages[user_id] = 'uz'
-    text = TRANSLATIONS['uz'].get(key, '')
+    text = TRANSLATIONS[lang].get(key, '')
     if kwargs:
         try:
             text = text.format(**kwargs)
