@@ -3501,7 +3501,7 @@ async def admin_api_data(request):
                     "SELECT "
                     "COALESCE(SUM(CASE WHEN paid THEN 1 ELSE 0 END),0) as paid, "
                     "COALESCE(SUM(CASE WHEN paid THEN amount ELSE 0 END),0) as amount "
-                    "FROM student_payments WHERE month=$1 AND student_name != '__school__'", this_month
+                    "FROM student_payments WHERE month=$1", this_month
                 )
                 if ps:
                     pay_stats = {
