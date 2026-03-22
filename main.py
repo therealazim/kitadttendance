@@ -2413,13 +2413,15 @@ async def admin_api_reports_attendance(request):
         # Excel fayl yaratish
         wb = Workbook()
         ws = wb.active
-        ws.title = "O'qituvchi davomati"
+        ws.title = "O'qituvchi Davomati Hisoboti"
         
         # Sarlavha
         headers = ['#', 'O\'qituvchi', 'Mutaxassislik', 'Filial', 'Sana', 'Vaqt']
         for col, header in enumerate(headers, 1):
-            ws.cell(row=1, column=col, value=header)
-            ws.cell(row=1, column=col).font = Font(bold=True)
+            cell = ws.cell(row=1, column=col, value=header)
+            cell.font = Font(bold=True, color="FFFFFF")
+            cell.fill = PatternFill(start_color="366092", end_color="366092", fill_type="solid")
+            cell.alignment = Alignment(horizontal="center", vertical="center")
         
         # Ma'lumotlar
         async with db.pool.acquire() as conn:
@@ -2438,8 +2440,34 @@ async def admin_api_reports_attendance(request):
             ws.cell(row=row_idx, column=4, value=record['branch'] or '')
             ws.cell(row=row_idx, column=5, value=record['date'])
             ws.cell(row=row_idx, column=6, value=str(record['time']))
+            
+            # Har bir qator uchun moslikni sozlash
+            for col in range(1, 7):
+                ws.cell(row=row_idx, column=col).alignment = Alignment(horizontal="left", vertical="center")
         
-        # Excel faylni bytes ga aylantirish
+        // Ustun kengliklarini avtomatik sozlash
+        for column in ws.columns:
+            max_length = 0
+            column_letter = get_column_letter(column[0].column)
+            for cell in column:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(str(cell.value))
+                except:
+                    pass
+            adjusted_width = min(max_length + 2, 50)
+            ws.column_dimensions[column_letter].width = adjusted_width
+        
+        // Qatilarni muzlatish (harakatlanmaydigan qatir)
+        ws.freeze_panes = "A2"
+        
+        // Qo'shimcha ma'lumot qo'shish (statistika)
+        if records:
+            summary_row = len(records) + 4
+            ws.cell(row=summary_row, column=1, value="JAMI:").font = Font(bold=True)
+            ws.cell(row=summary_row, column=2, value=len(records)).font = Font(bold=True)
+        
+        // Excel faylni bytes ga aylantirish
         output = io.BytesIO()
         wb.save(output)
         output.seek(0)
@@ -2449,58 +2477,6 @@ async def admin_api_reports_attendance(request):
             headers={
                 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 'Content-Disposition': f'attachment; filename="davomat_hisoboti_{start_date}_{end_date}.xlsx"'
-            }
-        )
-        
-    except Exception as e:
-        return web.json_response({'error': str(e)}, status=500)
-
-async def admin_api_reports_groups(request):
-    """Guruhlar hisoboti Excel formatda"""
-    import json as _json
-    
-    # Admin tekshiruvi
-    if not _check_admin_session(request):
-        return web.json_response({'error': 'Unauthorized'}, status=401)
-    
-    try:
-        wb = Workbook()
-        ws = wb.active
-        ws.title = "Guruhlar"
-        
-        # Sarlavha
-        headers = ['#', 'Guruh nomi', 'Filial', 'Fan turi', 'O\'qituvchi', 'O\'quvchilar soni', 'Dars kunlari']
-        for col, header in enumerate(headers, 1):
-            ws.cell(row=1, column=col, value=header)
-            ws.cell(row=1, column=col).font = Font(bold=True)
-        
-        # Ma'lumotlar
-        row_idx = 2
-        for group_id, group_data in groups.items():
-            teacher_name = user_names.get(group_data.get('teacher_id'), 'Noma\'lum')
-            students_count = len(group_students.get(group_id, []))
-            days = ', '.join(group_data.get('days', []))
-            
-            ws.cell(row=row_idx, column=1, value=row_idx-1)
-            ws.cell(row=row_idx, column=2, value=group_data.get('group_name', ''))
-            ws.cell(row=row_idx, column=3, value=group_data.get('branch', ''))
-            ws.cell(row=row_idx, column=4, value=group_data.get('lesson_type', ''))
-            ws.cell(row=row_idx, column=5, value=teacher_name)
-            ws.cell(row=row_idx, column=6, value=students_count)
-            ws.cell(row=row_idx, column=7, value=days)
-            
-            row_idx += 1
-        
-        # Excel faylni bytes ga aylantirish
-        output = io.BytesIO()
-        wb.save(output)
-        output.seek(0)
-        
-        return web.Response(
-            body=output.read(),
-            headers={
-                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'Content-Disposition': f'attachment; filename="guruhlar_hisoboti_{datetime.now(UZB_TZ).strftime("%Y%m%d")}.xlsx"'
             }
         )
         
@@ -2522,13 +2498,15 @@ async def admin_api_reports_students(request):
     try:
         wb = Workbook()
         ws = wb.active
-        ws.title = "O'quvchilar davomati"
+        ws.title = "O'quvchilar Davomati Hisoboti"
         
         # Sarlavha
         headers = ['#', 'Guruh', 'O\'quvchi', 'Telefon', 'Kelgan kunlar', 'Kelmagan kunlar', 'Foiz']
         for col, header in enumerate(headers, 1):
-            ws.cell(row=1, column=col, value=header)
-            ws.cell(row=1, column=col).font = Font(bold=True)
+            cell = ws.cell(row=1, column=col, value=header)
+            cell.font = Font(bold=True, color="FFFFFF")
+            cell.fill = PatternFill(start_color="366092", end_color="366092", fill_type="solid")
+            cell.alignment = Alignment(horizontal="center", vertical="center")
         
         # Ma'lumotlar
         async with db.pool.acquire() as conn:
@@ -2558,6 +2536,32 @@ async def admin_api_reports_students(request):
             ws.cell(row=row_idx, column=5, value=present)
             ws.cell(row=row_idx, column=6, value=total - present)
             ws.cell(row=row_idx, column=7, value=f"{percentage}%")
+            
+            # Har bir qator uchun moslikni sozlash
+            for col in range(1, 8):
+                ws.cell(row=row_idx, column=col).alignment = Alignment(horizontal="left", vertical="center")
+        
+        # Ustun kengliklarini avtomatik sozlash
+        for column in ws.columns:
+            max_length = 0
+            column_letter = get_column_letter(column[0].column)
+            for cell in column:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(str(cell.value))
+                except:
+                    pass
+            adjusted_width = min(max_length + 2, 50)
+            ws.column_dimensions[column_letter].width = adjusted_width
+        
+        # Qatilarni muzlatish (harakatlanmaydigan qatir)
+        ws.freeze_panes = "A2"
+        
+        # Qo'shimcha ma'lumot qo'shish (statistika)
+        if records:
+            summary_row = len(records) + 4
+            ws.cell(row=summary_row, column=1, value="JAMI:").font = Font(bold=True)
+            ws.cell(row=summary_row, column=2, value=len(records)).font = Font(bold=True)
         
         # Excel faylni bytes ga aylantirish
         output = io.BytesIO()
@@ -2569,6 +2573,91 @@ async def admin_api_reports_students(request):
             headers={
                 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 'Content-Disposition': f'attachment; filename="oquvchilar_hisoboti_{month}.xlsx"'
+            }
+        )
+        
+    except Exception as e:
+        return web.json_response({'error': str(e)}, status=500)
+
+async def admin_api_reports_groups(request):
+    """Guruhlar hisoboti Excel formatda"""
+    import json as _json
+    
+    # Admin tekshiruvi
+    if not _check_admin_session(request):
+        return web.json_response({'error': 'Unauthorized'}, status=401)
+    
+    try:
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Guruhlar Hisoboti"
+        
+        # Sarlavha
+        headers = ['#', 'Guruh nomi', 'Filial', 'Fan turi', 'O\'qituvchi', 'O\'quvchilar soni', 'Dars kunlari', 'Dars vaqti']
+        for col, header in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col, value=header)
+            cell.font = Font(bold=True, color="FFFFFF")
+            cell.fill = PatternFill(start_color="366092", end_color="366092", fill_type="solid")
+            cell.alignment = Alignment(horizontal="center", vertical="center")
+        
+        # Ma'lumotlar
+        row_idx = 2
+        for group_id, group_data in groups.items():
+            teacher_name = user_names.get(group_data.get('teacher_id'), 'Noma\'lum')
+            students_count = len(group_students.get(group_id, []))
+            days = ', '.join(group_data.get('days', []))
+            day_times = group_data.get('day_times', {})
+            times_str = ', '.join([f"{day}: {time}" for day, time in day_times.items()]) if day_times else ''
+            
+            ws.cell(row=row_idx, column=1, value=row_idx-1)
+            ws.cell(row=row_idx, column=2, value=group_data.get('group_name', ''))
+            ws.cell(row=row_idx, column=3, value=group_data.get('branch', ''))
+            ws.cell(row=row_idx, column=4, value=group_data.get('lesson_type', ''))
+            ws.cell(row=row_idx, column=5, value=teacher_name)
+            ws.cell(row=row_idx, column=6, value=students_count)
+            ws.cell(row=row_idx, column=7, value=days)
+            ws.cell(row=row_idx, column=8, value=times_str)
+            
+            # Har bir qator uchun moslikni sozlash
+            for col in range(1, 9):
+                ws.cell(row=row_idx, column=col).alignment = Alignment(horizontal="left", vertical="center")
+            
+            row_idx += 1
+        
+        # Ustun kengliklarini avtomatik sozlash
+        for column in ws.columns:
+            max_length = 0
+            column_letter = get_column_letter(column[0].column)
+            for cell in column:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(str(cell.value))
+                except:
+                    pass
+            adjusted_width = min(max_length + 2, 50)
+            ws.column_dimensions[column_letter].width = adjusted_width
+        
+        # Qatilarni muzlatish (harakatlanmaydigan qatir)
+        ws.freeze_panes = "A2"
+        
+        # Qo'shimcha ma'lumot qo'shish (statistika)
+        if len(groups) > 0:
+            summary_row = len(list(groups.items())) + 4
+            ws.cell(row=summary_row, column=1, value="JAMI GURUHLAR:").font = Font(bold=True)
+            ws.cell(row=summary_row, column=2, value=len(groups)).font = Font(bold=True)
+            total_students = sum(len(group_students.get(gid, [])) for gid in groups)
+            ws.cell(row=summary_row, column=6, value=f"JAMI O'QUVCHILAR: {total_students}").font = Font(bold=True)
+        
+        # Excel faylni bytes ga aylantirish
+        output = io.BytesIO()
+        wb.save(output)
+        output.seek(0)
+        
+        return web.Response(
+            body=output.read(),
+            headers={
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition': f'attachment; filename="guruhlar_hisoboti_{datetime.now(UZB_TZ).strftime("%Y%m%d")}.xlsx"'
             }
         )
         
