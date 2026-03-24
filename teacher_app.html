@@ -498,11 +498,6 @@ function renderNav(){
     D=await r.json();
     if(!D.ok)throw new Error(D.error||'Server xatosi');
     
-    // Set Telegram WebApp title based on language
-    if(tg){
-      tg.setHeaderParams({title: t('hancomTitle')});
-    }
-    
     renderNav();
     renderStats();renderSched();renderGroups();renderProfile();renderBranches();renderSettings();
     await loadProfilePhoto();
