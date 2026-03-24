@@ -307,9 +307,152 @@ let D=null, UID=null, CUR_GID=null, CUR_GRP=null, CUR_TAB='students', CUR_MONTH=
 let _delStdName='', _delStdGid=null;
 const BASE='';
 const MNS=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
+const MNS_RU=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
 const AVC=['#4f8ef7','#8b5cf6','#10b981','#f59e0b','#ef4444','#0891b2','#db2777'];
 const now=new Date();
 CUR_MONTH=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+
+// ── TRANSLATIONS ──
+const T = {
+  uz: {
+    monthNames: MNS,
+    teacher: "O'qituvchi",
+    monthlyAtt: "Bu oy davomati",
+    totalAtt: "Jami davomati",
+    groupsCount: "Guruhlar",
+    todayAtt: "Bugun davomat",
+    todayAttended: "Bugun davomat qilindingiz",
+    viewGroups: "Guruhlarimni ko'rish",
+    groups: "guruh",
+    noGroups: "Hali guruh yo'q",
+    todayLessons: "Bugungi darslar",
+    allSchedule: "Barcha jadval",
+    students: "o'quvchi",
+    active: "Faol",
+    edit: "Tahrirlash",
+    thisMonthStats: "Bu oylik statistika",
+    name: "Ism Familiya",
+    specialty: "Mutaxassislik",
+    save: "Saqlash",
+    cancel: "Bekor",
+    delete: "O'chirish",
+    confirmDelete: "O'chirishni tasdiqlang",
+    willBeDeleted: "o'quvchisi ro'yxatdan o'chiriladi. Davomat tarixi saqlanadi.",
+    addStudent: "O'quvchi qo'shish",
+    phone: "Telefon raqam",
+    payment: "To'lov",
+    paymentDone: "To'lov qilindi",
+    amount: "Summa (so'm)",
+    note: "Izoh (ixtiyoriy)",
+    savePayment: "Saqlash",
+    help: "Yordam",
+    helpText1: "Davomat qilish — Botda \"Kelganimni tasdiqlash\" tugmasini bosib, joylashuvingizni yuboring.",
+    helpText2: "Guruhlar — O'z guruhlaringizni ko'rish, o'quvchi qo'shish/o'chirish.",
+    helpText3: "To'lovlar — Har oy o'quvchilarning to'lov holatini belgilang.",
+    helpText4: "O'quvchilar davomati — Dars boshlanishida bot avtomatik eslatadi.",
+    helpText5: "Muammo bo'lsa — Admin bilan bog'laning.",
+    branches: "Filiallar",
+    map: "Xarita ↗",
+    settings: "Sozlamalar",
+    language: "Til",
+    profile: "Profil",
+    schedule: "Jadval",
+    stats: "Statistika",
+    groupsTab: "Guruhlar",
+    add: "Qo'shish",
+    close: "Yopish",
+    editProfile: "Profilni tahrirlash",
+    saveProfile: "Saqlash",
+    changed: "yangilandi!",
+    selectBranch: "Filialni tanlang",
+    selectDays: "Kunlarni tanlang",
+    enterTime: "Vaqtni kiriting (HH:MM)",
+    noData: "Ma'lumot yo'q",
+    loading: "Yuklanmoqda...",
+    error: "Xatolik",
+    success: "Muvaffaqiyatli",
+    dayMon: "Du", dayTue: "Se", dayWed: "Ch", dayThu: "Pa", dayFri: "Ju", daySat: "Sh", daySun: "Ya",
+    days: ['Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba','Yakshanba']
+  },
+  ru: {
+    monthNames: MNS_RU,
+    teacher: "Преподаватель",
+    monthlyAtt: "Посещений в этом месяце",
+    totalAtt: "Всего посещений",
+    groupsCount: "Группы",
+    todayAtt: "Сегодня",
+    todayAttended: "Вы отметились сегодня",
+    viewGroups: "Мои группы",
+    groups: "групп",
+    noGroups: "Групп пока нет",
+    todayLessons: "Сегодняшние занятия",
+    allSchedule: "Всё расписание",
+    students: "учащихся",
+    active: "Активный",
+    edit: "Редактировать",
+    thisMonthStats: "Статистика за месяц",
+    name: "Имя и фамилия",
+    specialty: "Специальность",
+    save: "Сохранить",
+    cancel: "Отмена",
+    delete: "Удалить",
+    confirmDelete: "Подтвердите удаление",
+    willBeDeleted: "будет удалён из списка. История посещений сохранится.",
+    addStudent: "Добавить ученика",
+    phone: "Телефон",
+    payment: "Оплата",
+    paymentDone: "Оплата произведена",
+    amount: "Сумма (сум)",
+    note: "Примечание (необязательно)",
+    savePayment: "Сохранить",
+    help: "Помощь",
+    helpText1: "Отметка присутствия — Нажмите «Подтвердить приход» и отправьте местоположение.",
+    helpText2: "Группы — Просмотр ваших групп, добавление/удаление учеников.",
+    helpText3: "Платежи — Ежемесячно отмечайте статус оплаты учеников.",
+    helpText4: "Посещаемость — Бот напоминает в начале занятия.",
+    helpText5: "Проблемы — Свяжитесь с администратором.",
+    branches: "Филиалы",
+    map: "Карта ↗",
+    settings: "Настройки",
+    language: "Язык",
+    profile: "Профиль",
+    schedule: "Расписание",
+    stats: "Статистика",
+    groupsTab: "Группы",
+    add: "Добавить",
+    close: "Закрыть",
+    editProfile: "Редактировать профиль",
+    saveProfile: "Сохранить",
+    changed: "обновлен!",
+    selectBranch: "Выберите филиал",
+    selectDays: "Выберите дни",
+    enterTime: "Введите время (HH:MM)",
+    noData: "Нет данных",
+    loading: "Загрузка...",
+    error: "Ошибка",
+    success: "Успешно",
+    dayMon: "Пн", dayTue: "Вт", dayWed: "Ср", dayThu: "Чт", dayFri: "Пт", daySat: "Сб", daySun: "Вс",
+    days: ['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье']
+  }
+};
+
+// Get current language
+function getLang(){return D?.user?.language||'uz';}
+// Get translation
+function t(key){return T[getLang()]?.[key]||T.uz[key]||key;}
+
+// ── NAVIGATION RENDER ──
+function renderNav(){
+  const nav=document.getElementById('bottom-nav');
+  if(!nav)return;
+  nav.innerHTML=`
+    <button class="bn on" id="bn-stats" onclick="goSc('stats',this)"><span class="bi">📊</span>${t('stats')}</button>
+    <button class="bn" id="bn-schedule" onclick="goSc('schedule',this)"><span class="bi">📅</span>${t('schedule')}</button>
+    <button class="bn" id="bn-groups" onclick="goSc('groups',this)"><span class="bi">📚</span>${t('groupsTab')}</button>
+    <button class="bn" id="bn-profile" onclick="goSc('profile',this)"><span class="bi">👤</span>${t('profile')}</button>
+    <button class="bn" id="bn-settings" onclick="goSc('settings',this)"><span class="bi">⚙️</span>${t('settings')}</button>
+  `;
+}
 
 // ── INIT ──
 (async function(){
@@ -323,6 +466,7 @@ CUR_MONTH=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
     D=await r.json();
     if(!D.ok)throw new Error(D.error||'Server xatosi');
     
+    renderNav();
     renderStats();renderSched();renderGroups();renderProfile();renderBranches();renderSettings();
     await loadProfilePhoto();
     renderStats();renderProfile();
@@ -375,24 +519,24 @@ function renderStats(){
     ctEl.innerHTML=`
     <div class="prof-card" style="margin-bottom:13px;display:flex;align-items:center;gap:13px;text-align:left;padding:16px">
       ${_profPhotoUrl?`<img src="${_profPhotoUrl}" style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid ${c}55;flex-shrink:0" onerror="this.style.display='none'">`:`<div class="prof-av" style="width:52px;height:52px;background:${c}22;color:${c};border:2px solid ${c}44;flex-shrink:0">${ini(u.name)}</div>`}
-      <div><div class="prof-name" style="font-size:16px;text-align:left">${u.name}</div><div class="prof-spec" style="text-align:left">${u.specialty||"O\'qituvchi"}</div></div>
+      <div><div class="prof-name" style="font-size:16px;text-align:left">${u.name}</div><div class="prof-spec" style="text-align:left">${u.specialty||t('teacher')}</div></div>
     </div>
     <div class="sgrid">
-      <div class="scard gn"><div class="si">📅</div><div class="sv">${s.month}</div><div class="sl">Bu oy davomati</div></div>
-      <div class="scard"><div class="si">📊</div><div class="sv">${s.total}</div><div class="sl">Jami davomati</div></div>
-      <div class="scard og"><div class="si">📚</div><div class="sv">${s.groups}</div><div class="sl">Guruhlar</div></div>
-      <div class="scard rd"><div class="si">📍</div><div class="sv">${s.today?'✅':'—'}</div><div class="sl">Bugun davomat</div></div>
+      <div class="scard gn"><div class="si">📅</div><div class="sv">${s.month}</div><div class="sl">${t('monthlyAtt')}</div></div>
+      <div class="scard"><div class="si">📊</div><div class="sv">${s.total}</div><div class="sl">${t('totalAtt')}</div></div>
+      <div class="scard og"><div class="si">📚</div><div class="sv">${s.groups}</div><div class="sl">${t('groupsCount')}</div></div>
+      <div class="scard rd"><div class="si">📍</div><div class="sv">${s.today?'✅':'—'}</div><div class="sl">${t('todayAtt')}</div></div>
     </div>
     ${s.today?`<div class="card"><div class="card-body" style="display:flex;align-items:center;gap:10px">
       <span style="font-size:24px">✅</span>
-      <div><div style="font-size:12px;font-weight:700">Bugun davomat qilindingiz</div>
+      <div><div style="font-size:12px;font-weight:700">${t('todayAttended')}</div>
       <div style="font-size:11px;color:var(--tx2)">${s.today_branch} · ⏰ ${s.today_time}</div></div>
     </div></div>`:''}
     <div class="card" style="cursor:pointer" onclick="goSc('groups',document.getElementById('bn-groups'))">
       <div class="card-body" style="display:flex;align-items:center;gap:10px">
         <span style="font-size:24px">📚</span>
-        <div style="flex:1"><div style="font-size:12px;font-weight:700">Guruhlarimni ko'rish</div>
-        <div style="font-size:11px;color:var(--tx2)">${D.groups?.length||0} ta guruh</div></div>
+        <div style="flex:1"><div style="font-size:12px;font-weight:700">${t('viewGroups')}</div>
+        <div style="font-size:11px;color:var(--tx2)">${D.groups?.length||0} ${t('groups')}</div></div>
         <span style="color:var(--ac)">›</span>
       </div>
     </div>`;
@@ -451,7 +595,7 @@ function renderGroups(){
       const gs=D.groups||[];
       const filteredGs = CURRENT_BRANCH ? gs.filter(g => g.branch === CURRENT_BRANCH) : gs;
       if(!filteredGs.length){
-        grpsCt.innerHTML='<div class="empty"><div class="ei">📚</div>Guruh yo\'q</div>';
+        grpsCt.innerHTML=`<div class="empty"><div class="ei">📚</div>${t('noGroups')}</div>`;
         return;
       }
       const h=`<div class="card">
@@ -461,9 +605,9 @@ function renderGroups(){
             <div class="gi-av" style="background:${c}22;color:${c}">${ini(g?.group_name)}</div>
             <div class="gi-info">
               <div class="gi-name">${g?.group_name||''}</div>
-              <div class="gi-meta">🏢 ${g?.branch||''} · 🧑‍🎓 ${g?.student_count||0} ta · <span class="b ${tc}" style="font-size:9px">${g?.lesson_type||''}</span></div>
+              <div class="gi-meta">🏢 ${g?.branch||''} · 🧑‍🎓 ${g?.student_count||0} ${t('students')} · <span class="b ${tc}" style="font-size:9px">${g?.lesson_type||''}</span></div>
             </div>
-            ${g?.is_today?`<span class="b btd" style="font-size:9px;margin-right:4px">Bugun</span>`:''}
+            ${g?.is_today?`<span class="b btd" style="font-size:9px;margin-right:4px">${getLang()==='ru'?'Сегодня':'Bugun'}</span>`:''}
             <span class="gi-arr">›</span>
           </div>`;}).join('')}
       </div>`;
@@ -768,18 +912,18 @@ function renderProfile(){
     const avFallback = `<div id="prof-av-fallback" class="prof-av" style="background:${c}22;color:${c};border:2px solid ${c}44;${_profPhotoUrl?'display:none':''}">${ini(u?.name)}</div>`;
     profCt.innerHTML=`
       <div class="prof-card" style="position:relative">
-        <button onclick="openEditProfile()" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.08);border:1px solid var(--bd2);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:600;color:var(--tx2);cursor:pointer;font-family:'Inter',sans-serif">✏️ Tahrirlash</button>
+        <button onclick="openEditProfile()" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.08);border:1px solid var(--bd2);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:600;color:var(--tx2);cursor:pointer;font-family:'Inter',sans-serif">✏️ ${t('edit')}</button>
         ${avHtml}${avFallback}
         <div class="prof-name">${u?.name||'—'}</div>
-        <div class="prof-spec">${u?.specialty||'O\'qituvchi'}</div>
-        <div style="margin-top:8px"><span class="b bok">✅ Faol</span></div>
+        <div class="prof-spec">${u?.specialty||t('teacher')}</div>
+        <div style="margin-top:8px"><span class="b bok">✅ ${t('active')}</span></div>
       </div>
       <div class="card">
-        <div class="card-hdr"><span class="card-title">📊 Bu oylik statistika</span></div>
+        <div class="card-hdr"><span class="card-title">📊 ${t('thisMonthStats')}</span></div>
         <div class="card-body">
-          <div class="toggle-row"><span class="toggle-lbl">📅 Bu oy davomati</span><span style="font-weight:800;color:var(--ac)">${s?.month||0} kun</span></div>
-          <div class="toggle-row"><span class="toggle-lbl">📊 Jami davomati</span><span style="font-weight:800;color:var(--ac)">${s?.total||0} kun</span></div>
-          <div class="toggle-row"><span class="toggle-lbl">📚 Guruhlar soni</span><span style="font-weight:800;color:var(--ac)">${s?.groups||0} ta</span></div>
+          <div class="toggle-row"><span class="toggle-lbl">📅 ${t('monthlyAtt')}</span><span style="font-weight:800;color:var(--ac)">${s?.month||0}</span></div>
+          <div class="toggle-row"><span class="toggle-lbl">📊 ${t('totalAtt')}</span><span style="font-weight:800;color:var(--ac)">${s?.total||0}</span></div>
+          <div class="toggle-row"><span class="toggle-lbl">📚 ${t('groupsCount')}</span><span style="font-weight:800;color:var(--ac)">${s?.groups||0}</span></div>
         </div>
       </div>`;
   }catch(e){console.error('renderProfile error:',e);}
@@ -846,7 +990,7 @@ async function changeLang(lang){
     if(r?.ok){
       if(D?.user)D.user.language=lang;
       toast(lang==='ru'?'✅ Язык изменен':'✅ Til o\'zgartirildi','ok');
-      renderSettings();renderProfile();renderStats();
+      renderNav();renderSettings();renderProfile();renderStats();renderSched();renderGroups();
       if(tg?.HapticFeedback)tg.HapticFeedback.notificationOccurred('success');
     }else{
       toast('❌ '+(r?.error||'Xatolik'),'err');
