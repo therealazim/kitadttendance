@@ -509,63 +509,6 @@ function renderNav(){
   }
 })();
 
-// ── EVENT DELEGATION (Telegram WebApp uchun) ──
-document.addEventListener('click', function(e){
-  const target = e.target;
-  // Profile edit button
-  if(target.closest('[data-action="edit-profile"]')){
-    e.preventDefault();
-    console.log('Edit profile clicked via delegation');
-    openEditProfile();
-    return;
-  }
-  // Language buttons
-  if(target.closest('[data-action="change-lang-uz"]')){
-    e.preventDefault();
-    console.log('Lang UZ clicked via delegation');
-    changeLang('uz');
-    return;
-  }
-  if(target.closest('[data-action="change-lang-ru"]')){
-    e.preventDefault();
-    console.log('Lang RU clicked via delegation');
-    changeLang('ru');
-    return;
-  }
-}, true);
-
-function attachEventListeners(){
-  // Profile edit button
-  const editBtn = document.getElementById('edit-profile-btn');
-  if(editBtn){
-    editBtn.onclick = function(e){
-      e.preventDefault();
-      e.stopPropagation();
-      console.log('[Edit button] Clicked!');
-      openEditProfile();
-    };
-    console.log('[attachEventListeners] Edit button attached');
-  }
-  // Language buttons
-  const langUzBtn = document.getElementById('lang-uz-btn');
-  const langRuBtn = document.getElementById('lang-ru-btn');
-  if(langUzBtn){
-    langUzBtn.onclick = function(e){
-      e.preventDefault();
-      console.log('[Lang button] UZ clicked');
-      changeLang('uz');
-    };
-  }
-  if(langRuBtn){
-    langRuBtn.onclick = function(e){
-      e.preventDefault();
-      console.log('[Lang button] RU clicked');
-      changeLang('ru');
-    };
-  }
-  console.log('[attachEventListeners] All buttons attached');
-}
-
 function showErr(msg){
   const el=document.getElementById('stats-ld');
   if(el)el.innerHTML=`<div class="empty"><div class="ei">❌</div>${msg}</div>`;
@@ -1002,12 +945,20 @@ function renderProfile(){
     const avFallback = `<div id="prof-av-fallback" class="prof-av" style="background:${c}22;color:${c};border:2px solid ${c}44;${_profPhotoUrl?'display:none':''}">${ini(u?.name)}</div>`;
     profCt.innerHTML=`
       <div class="prof-card" style="position:relative">
-        <button type="button" data-action="edit-profile" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.08);border:1px solid var(--bd2);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:600;color:var(--tx2);cursor:pointer;font-family:'Inter',sans-serif;z-index:10">✏️ ${t('edit')}</button>
+        <button type="button" id="edit-profile-btn" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.08);border:1px solid var(--bd2);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:600;color:var(--tx2);cursor:pointer;font-family:'Inter',sans-serif;z-index:10">✏️ ${t('edit')}</button>
         ${avHtml}${avFallback}
         <div class="prof-name">${u?.name||'—'}</div>
         <div class="prof-spec">${u?.specialty||t('teacher')}</div>
         <div style="margin-top:8px"><span class="b bok">✅ ${t('active')}</span></div>
-      </div>
+      </div>`;
+    // Telegram WebApp uchun - kechiktirilgan event listener
+    setTimeout(function(){
+      var btn = document.getElementById('edit-profile-btn');
+      if(btn){
+        btn.addEventListener('click', function(e){ e.preventDefault(); openEditProfile(); });
+        btn.addEventListener('touchstart', function(e){ e.preventDefault(); openEditProfile(); }, {passive: false});
+      }
+    }, 100);
       <div class="card">
         <div class="card-hdr"><span class="card-title">📊 ${t('thisMonthStats')}</span></div>
         <div class="card-body">
@@ -1031,30 +982,13 @@ function renderSettings(){
         <div class="card-hdr"><span class="card-title">🌐 Til / Язык</span></div>
         <div class="card-body">
           <div style="display:flex;gap:8px">
-            <button type="button" data-action="change-lang-uz" style="flex:1;padding:12px;border-radius:10px;border:2px solid ${lang==='uz'?'var(--ac)':'var(--bd)'};background:${lang==='uz'?'rgba(79,142,247,.15)':'var(--card2)'};color:var(--tx);font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer">
+            <button type="button" id="lang-uz-btn" style="flex:1;padding:12px;border-radius:10px;border:2px solid ${lang==='uz'?'var(--ac)':'var(--bd)'};background:${lang==='uz'?'rgba(79,142,247,.15)':'var(--card2)'};color:var(--tx);font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer">
               🇺🇿 O'zbekcha
             </button>
-            <button type="button" data-action="change-lang-ru" style="flex:1;padding:12px;border-radius:10px;border:2px solid ${lang==='ru'?'var(--ac)':'var(--bd)'};background:${lang==='ru'?'rgba(79,142,247,.15)':'var(--card2)'};color:var(--tx);font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer">
+            <button type="button" id="lang-ru-btn" style="flex:1;padding:12px;border-radius:10px;border:2px solid ${lang==='ru'?'var(--ac)':'var(--bd)'};background:${lang==='ru'?'rgba(79,142,247,.15)':'var(--card2)'};color:var(--tx);font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer">
               🇷🇺 Русский
             </button>
           </div>
-        </div>
-      </div>
-      <div class="card" style="margin-bottom:11px">
-        <div class="card-hdr"><span class="card-title">❓ ${lang==='ru'?'Помощь':'Yordam'}</span></div>
-        <div class="card-body" style="font-size:12px;color:var(--tx2);line-height:1.7">
-          ${lang==='ru'?
-            `<p style="margin-bottom:8px">📍 <b style="color:var(--tx)">Отметка присутствия</b> — Нажмите кнопку "Подтвердить приход" в боте и отправьте местоположение.</p>
-            <p style="margin-bottom:8px">📚 <b style="color:var(--tx)">Группы</b> — Просмотр ваших групп, добавление/удаление учеников.</p>
-            <p style="margin-bottom:8px">💰 <b style="color:var(--tx)">Платежи</b> — Ежемесячно отмечайте статус оплаты учеников.</p>
-            <p style="margin-bottom:8px">🧑‍🎓 <b style="color:var(--tx)">Посещаемость учеников</b> — Бот автоматически напоминает в начале занятия.</p>
-            <p>📞 <b style="color:var(--tx)">Проблемы</b> — Свяжитесь с администратором.</p>`:
-            `<p style="margin-bottom:8px">📍 <b style="color:var(--tx)">Davomat qilish</b> — Botda "Kelganimni tasdiqlash" tugmasini bosib, joylashuvingizni yuboring.</p>
-            <p style="margin-bottom:8px">📚 <b style="color:var(--tx)">Guruhlar</b> — O'z guruhlaringizni ko'rish, o'quvchi qo'shish/o'chirish.</p>
-            <p style="margin-bottom:8px">💰 <b style="color:var(--tx)">To'lovlar</b> — Har oy o'quvchilarning to'lov holatini belgilang.</p>
-            <p style="margin-bottom:8px">🧑‍🎓 <b style="color:var(--tx)">O'quvchilar davomati</b> — Dars boshlanishida bot avtomatik eslatadi.</p>
-            <p>📞 <b style="color:var(--tx)">Muammo bo'lsa</b> — Admin bilan bog'laning.</p>`
-          }
         </div>
       </div>
       <div class="card">
@@ -1068,24 +1002,19 @@ function renderSettings(){
             </div>`).join('')}
         </div>
       </div>`;
-    // Add event listeners for language buttons
-    const langUzBtn = document.getElementById('lang-uz-btn');
-    const langRuBtn = document.getElementById('lang-ru-btn');
-    if(langUzBtn){
-      langUzBtn.addEventListener('click', function(e){
-        e.preventDefault();
-        console.log('[Lang button] UZ clicked');
-        changeLang('uz');
-      });
-    }
-    if(langRuBtn){
-      langRuBtn.addEventListener('click', function(e){
-        e.preventDefault();
-        console.log('[Lang button] RU clicked');
-        changeLang('ru');
-      });
-    }
-    console.log('[renderSettings] Language buttons event listeners added');
+    // Telegram WebApp uchun - kechiktirilgan event listener
+    setTimeout(function(){
+      var uzBtn = document.getElementById('lang-uz-btn');
+      var ruBtn = document.getElementById('lang-ru-btn');
+      if(uzBtn){
+        uzBtn.addEventListener('click', function(e){ e.preventDefault(); changeLang('uz'); });
+        uzBtn.addEventListener('touchstart', function(e){ e.preventDefault(); changeLang('uz'); }, {passive: false});
+      }
+      if(ruBtn){
+        ruBtn.addEventListener('click', function(e){ e.preventDefault(); changeLang('ru'); });
+        ruBtn.addEventListener('touchstart', function(e){ e.preventDefault(); changeLang('ru'); }, {passive: false});
+      }
+    }, 100);
   }catch(e){console.error('renderSettings error:',e);}
 }
 
