@@ -313,14 +313,22 @@ CUR_MONTH=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
 
 // ── INIT ──
 (async function(){
+  console.log('Teacher App initializing...');
   const p=new URLSearchParams(location.search);
   UID=p.get('user_id')||tg?.initDataUnsafe?.user?.id;
   const sec=p.get('section')||'stats';
+  console.log('UID:', UID, 'Section:', sec);
+  
   if(!UID){showErr('Foydalanuvchi aniqlanmadi');return;}
   try{
+    console.log('Fetching data...');
     const r=await fetch(`${BASE}/teacher/api/data?user_id=${UID}`);
+    console.log('Response status:', r.status);
     D=await r.json();
-    if(!D.ok)throw new Error(D.error);
+    console.log('Data received:', D);
+    if(!D.ok)throw new Error(D.error||'Server xatosi');
+    
+    console.log('Rendering...');
     renderStats();renderSched();renderGroups();renderProfile();renderBranches();renderSettings();
     // Profil rasmini yuklash (background)
     await loadProfilePhoto();
@@ -329,7 +337,11 @@ CUR_MONTH=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
     // Kerakli bo'limga o'tish
     const bn=document.getElementById('bn-'+sec);
     if(bn)goSc(sec,bn);
-  }catch(e){showErr(e.message);}
+    console.log('Teacher App loaded successfully');
+  }catch(e){
+    console.error('Teacher App error:', e);
+    showErr(e.message);
+  }
 })();
 
 function showErr(msg){
@@ -362,10 +374,14 @@ function backToGroups(){
 function renderStats(){
   if(!D)return;
   const s=D.stats,u=D.user;
-  const c=AVC[UID%AVC.length];
-  document.getElementById('stats-ld').style.display='none';
-  document.getElementById('stats-ct').style.display='block';
-  document.getElementById('stats-ct').innerHTML=`
+  if(!s||!u)return;
+  const c=AVC[(UID||0)%AVC.length];
+  const ldEl=document.getElementById('stats-ld');
+  const ctEl=document.getElementById('stats-ct');
+  if(ldEl)ldEl.style.display='none';
+  if(ctEl){
+    ctEl.style.display='block';
+    ctEl.innerHTML=`
     <div class="prof-card" style="margin-bottom:13px;display:flex;align-items:center;gap:13px;text-align:left;padding:16px">
       ${_profPhotoUrl?`<img src="${_profPhotoUrl}" style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid ${c}55;flex-shrink:0" onerror="this.style.display='none'">`:`<div class="prof-av" style="width:52px;height:52px;background:${c}22;color:${c};border:2px solid ${c}44;flex-shrink:0">${ini(u.name)}</div>`}
       <div><div class="prof-name" style="font-size:16px;text-align:left">${u.name}</div><div class="prof-spec" style="text-align:left">${u.specialty||"O\'qituvchi"}</div></div>
@@ -385,10 +401,11 @@ function renderStats(){
       <div class="card-body" style="display:flex;align-items:center;gap:10px">
         <span style="font-size:24px">📚</span>
         <div style="flex:1"><div style="font-size:12px;font-weight:700">Guruhlarimni ko'rish</div>
-        <div style="font-size:11px;color:var(--tx2)">${D.groups.length} ta guruh</div></div>
+        <div style="font-size:11px;color:var(--tx2)">${D.groups?.length||0} ta guruh</div></div>
         <span style="color:var(--ac)">›</span>
       </div>
     </div>`;
+  }
 }
 
 // ── SCHEDULE ──
