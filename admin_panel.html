@@ -315,6 +315,7 @@
     <button class="sbi" onclick="gp('salary',this)"><span class="ico"><i class="lucide lucide-coins"></i></span><span class="lbl" data-i18n="nav_sal">Maosh hisoblash</span></button>
     <button class="sbi" onclick="gp('branches',this)"><span class="ico"><i class="lucide lucide-building"></i></span><span class="lbl" data-i18n="nav_br">Filiallar</span></button>
     <button class="sbi" onclick="gp('reports',this)"><span class="ico"><i class="lucide lucide-clipboard-list"></i></span><span class="lbl" data-i18n="nav_rep">Hisobotlar</span></button>
+    <button class="sbi" onclick="gp('bizreport',this)"><span class="ico"><i class="lucide lucide-trending-up"></i></span><span class="lbl">Biznes hisobot</span></button>
     <button class="sbi" onclick="gp('applies',this)"><span class="ico"><i class="lucide lucide-envelope"></i></span><span class="lbl" data-i18n="nav_applies">Arizalar</span><span class="bdg" id="nap" style="display:none">0</span></button>
     <button class="sbi" onclick="gp('news_admin',this)"><span class="ico"><i class="lucide lucide-newspaper"></i></span><span class="lbl" data-i18n="nav_news">Yangiliklar</span></button>
     <button class="sbi" onclick="gp('site',this)"><span class="ico"><i class="lucide lucide-globe"></i></span><span class="lbl" data-i18n="nav_site">Sayt</span></button>
@@ -949,6 +950,121 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- BIZNES HISOBOT -->
+<div class="page" id="pg-bizreport">
+  <div class="sg">
+    <div class="sc" style="grid-column:span 4">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <span class="card-title">📅 Oy tanlang</span>
+        <input type="month" id="biz-month" class="inp" style="max-width:160px" onchange="loadBizReport()">
+      </div>
+    </div>
+  </div>
+  
+  <!-- Summary cards -->
+  <div class="sg" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px">
+    <div class="sc">
+      <div class="si" style="background:rgba(16,185,129,.15);color:#34d399"><i class="lucide lucide-trending-up"></i></div>
+      <div class="sv" id="biz-revenue" style="color:#34d399">0</div>
+      <div class="sl">Daromad (so'm)</div>
+    </div>
+    <div class="sc">
+      <div class="si" style="background:rgba(239,68,68,.15);color:#f87171"><i class="lucide lucide-trending-down"></i></div>
+      <div class="sv" id="biz-expenses" style="color:#f87171">0</div>
+      <div class="sl">Xarajat (so'm)</div>
+    </div>
+    <div class="sc">
+      <div class="si" style="background:rgba(79,142,247,.15);color:var(--ac)"><i class="lucide lucide-bar-chart"></i></div>
+      <div class="sv" id="biz-profit">0</div>
+      <div class="sl">Foyda (so'm)</div>
+    </div>
+  </div>
+  
+  <!-- Student counts by branch -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hdr">
+      <span class="card-title"><i class="lucide lucide-users"></i> O'quvchilar soni (filial bo'yicha)</span>
+    </div>
+    <div class="card-body" style="overflow-x:auto">
+      <table style="width:100%;font-size:12px">
+        <thead>
+          <tr style="background:var(--card2)">
+            <th style="padding:8px;text-align:left">Filial</th>
+            <th style="padding:8px;text-align:center">Koreys tili</th>
+            <th style="padding:8px;text-align:center">IT</th>
+            <th style="padding:8px;text-align:center;font-weight:800">Jami</th>
+          </tr>
+        </thead>
+        <tbody id="biz-students-tb"></tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Expenses breakdown -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hdr">
+      <span class="card-title"><i class="lucide lucide-receipt"></i> Xarajatlar</span>
+      <button class="btn bg" style="font-size:10px" onclick="oM('biz-exp-modal')"><i class="lucide lucide-edit"></i> Tahrirlash</button>
+    </div>
+    <div class="card-body" style="overflow-x:auto">
+      <table style="width:100%;font-size:12px">
+        <thead>
+          <tr style="background:var(--card2)">
+            <th style="padding:8px;text-align:left">Tur</th>
+            <th style="padding:8px;text-align:right">Miqdor (so'm)</th>
+          </tr>
+        </thead>
+        <tbody id="biz-expenses-tb"></tbody>
+        <tfoot>
+          <tr style="background:var(--card2);font-weight:800">
+            <td style="padding:8px">Jami</td>
+            <td style="padding:8px;text-align:right" id="biz-exp-total">0</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Excel export -->
+  <button class="btn bp bfull" onclick="exportBizReport()">
+    <i class="lucide lucide-file-excel"></i> Excelga yuklab olish
+  </button>
+</div>
+
+<!-- Expense Edit Modal -->
+<div class="overlay" id="biz-exp-modal">
+  <div class="modal">
+    <div class="drag-handle"></div>
+    <div class="modal-hdr">
+      <span class="modal-title">📝 Xarajatlar tahrirlash</span>
+      <button class="modal-close" onclick="cM('biz-exp-modal')">✕</button>
+    </div>
+    <div class="fg">
+      <label>Ijara</label>
+      <input type="number" id="biz-exp-rent" class="inp" placeholder="0">
+    </div>
+    <div class="fg">
+      <label>Kommunal</label>
+      <input type="number" id="biz-exp-utilities" class="inp" placeholder="0">
+    </div>
+    <div class="fg">
+      <label>Buxgalteriya</label>
+      <input type="number" id="biz-exp-accounting" class="inp" placeholder="0">
+    </div>
+    <div class="fg">
+      <label>Reklama</label>
+      <input type="number" id="biz-exp-marketing" class="inp" placeholder="0">
+    </div>
+    <div class="fg">
+      <label>Boshqa</label>
+      <input type="number" id="biz-exp-other" class="inp" placeholder="0">
+    </div>
+    <button class="btn bp bfull" onclick="saveBizExpenses()">
+      <i class="lucide lucide-save"></i> Saqlash
+    </button>
   </div>
 </div>
 
@@ -2705,7 +2821,151 @@ async function downloadGeneralReport(){
 // Sahifa yuklanganda hisobot sanalarini sozlash
 document.addEventListener('DOMContentLoaded', function() {
     setTimeout(initReportDates, 100);
+    // Set business report month
+    const bizMonth = document.getElementById('biz-month');
+    if(bizMonth) bizMonth.value = new Date().toISOString().slice(0,7);
 });
+
+// ── BIZNES HISOBOT ──
+async function loadBizReport(){
+  const month = document.getElementById('biz-month')?.value;
+  if(!month) return;
+  
+  try {
+    const r = await fetch(`/admin/api/business/report?month=${month}`).then(x=>x.json());
+    if(!r?.ok) { toast('❌ Xatolik'); return; }
+    
+    // Update summary cards
+    document.getElementById('biz-revenue').textContent = fmt(r.summary.total_revenue);
+    document.getElementById('biz-expenses').textContent = fmt(r.summary.total_expenses);
+    document.getElementById('biz-profit').textContent = fmt(r.summary.operating_profit);
+    document.getElementById('biz-profit').style.color = r.summary.operating_profit >= 0 ? '#34d399' : '#f87171';
+    
+    // Update student table
+    const branches = r.branches || {};
+    let studentsHtml = '';
+    let totalKorean = 0, totalIT = 0, totalAll = 0;
+    Object.entries(branches).forEach(([branch, data]) => {
+      totalKorean += data['Koreys tili'] || 0;
+      totalIT += data['IT'] || 0;
+      totalAll += data.total || 0;
+      studentsHtml += `<tr>
+        <td style="padding:8px">${branch}</td>
+        <td style="padding:8px;text-align:center">${data['Koreys tili'] || 0}</td>
+        <td style="padding:8px;text-align:center">${data['IT'] || 0}</td>
+        <td style="padding:8px;text-align:center;font-weight:800;color:var(--ac)">${data.total || 0}</td>
+      </tr>`;
+    });
+    studentsHtml += `<tr style="background:var(--card2);font-weight:800">
+      <td style="padding:8px">JAMI</td>
+      <td style="padding:8px;text-align:center">${totalKorean}</td>
+      <td style="padding:8px;text-align:center">${totalIT}</td>
+      <td style="padding:8px;text-align:center;color:var(--ac)">${totalAll}</td>
+    </tr>`;
+    document.getElementById('biz-students-tb').innerHTML = studentsHtml;
+    
+    // Update expenses table
+    const exp = r.manual_expenses || {};
+    const salaries = r.salaries || {};
+    let expHtml = `
+      <tr><td style="padding:8px">O'qituvchi maoshi (Koreys)</td><td style="padding:8px;text-align:right">${fmt(salaries.teacher_kr || 0)}</td></tr>
+      <tr><td style="padding:8px">O'qituvchi maoshi (IT)</td><td style="padding:8px;text-align:right">${fmt(salaries.teacher_it || 0)}</td></tr>
+      <tr><td style="padding:8px">Office xodimlar</td><td style="padding:8px;text-align:right">${fmt(salaries.office || 0)}</td></tr>
+      <tr style="background:rgba(255,255,255,.03)"><td colspan="2" style="padding:4px"></td></tr>
+      <tr><td style="padding:8px">Ijara</td><td style="padding:8px;text-align:right">${fmt(exp.rent || 0)}</td></tr>
+      <tr><td style="padding:8px">Kommunal</td><td style="padding:8px;text-align:right">${fmt(exp.utilities || 0)}</td></tr>
+      <tr><td style="padding:8px">Buxgalteriya</td><td style="padding:8px;text-align:right">${fmt(exp.accounting || 0)}</td></tr>
+      <tr><td style="padding:8px">Reklama</td><td style="padding:8px;text-align:right">${fmt(exp.marketing || 0)}</td></tr>
+      <tr><td style="padding:8px">Boshqa</td><td style="padding:8px;text-align:right">${fmt(exp.other || 0)}</td></tr>
+    `;
+    document.getElementById('biz-expenses-tb').innerHTML = expHtml;
+    document.getElementById('biz-exp-total').textContent = fmt(r.summary.total_expenses);
+    
+    // Fill expense edit modal
+    document.getElementById('biz-exp-rent').value = exp.rent || 0;
+    document.getElementById('biz-exp-utilities').value = exp.utilities || 0;
+    document.getElementById('biz-exp-accounting').value = exp.accounting || 0;
+    document.getElementById('biz-exp-marketing').value = exp.marketing || 0;
+    document.getElementById('biz-exp-other').value = exp.other || 0;
+    
+  } catch(e) {
+    console.error('loadBizReport error:', e);
+    toast('❌ Yuklashda xatolik');
+  }
+}
+
+async function saveBizExpenses(){
+  const month = document.getElementById('biz-month')?.value;
+  const expenses = {
+    rent: parseInt(document.getElementById('biz-exp-rent')?.value || 0),
+    utilities: parseInt(document.getElementById('biz-exp-utilities')?.value || 0),
+    accounting: parseInt(document.getElementById('biz-exp-accounting')?.value || 0),
+    marketing: parseInt(document.getElementById('biz-exp-marketing')?.value || 0),
+    other: parseInt(document.getElementById('biz-exp-other')?.value || 0)
+  };
+  
+  try {
+    const r = await fetch('/admin/api/business/expenses', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({month, expenses})
+    }).then(x=>x.json());
+    
+    if(r?.ok){
+      toast('<i class="lucide lucide-check"></i> Saqlandi');
+      cM('biz-exp-modal');
+      loadBizReport();
+    } else {
+      toast('<i class="lucide lucide-times"></i> Xatolik');
+    }
+  } catch(e) {
+    toast('<i class="lucide lucide-times"></i> ' + e.message);
+  }
+}
+
+async function exportBizReport(){
+  const month = document.getElementById('biz-month')?.value;
+  if(!month){ toast('❌ Oyni tanlang'); return; }
+  
+  try {
+    toast('<i class="lucide lucide-spinner"></i> Excel tayyorlanmoqda...', 5000);
+    // For now, just download the report data as JSON - can be enhanced to Excel later
+    const r = await fetch(`/admin/api/business/report?month=${month}`).then(x=>x.json());
+    if(!r?.ok) throw new Error('Xatolik');
+    
+    // Create simple CSV
+    let csv = 'BIZNES HISOBOT - ' + month + '\n\n';
+    csv += 'O\'quvchilar soni\nFilial,Koreys tili,IT,Jami\n';
+    Object.entries(r.branches || {}).forEach(([br, d]) => {
+      csv += `${br},${d['Koreys tili']||0},${d['IT']||0},${d.total||0}\n`;
+    });
+    csv += `\nJAMI,,,' + Object.values(r.branches||{}).reduce((s,d)=>s+d.total,0) + '\n';
+    csv += '\nDaromad\nTo\'lovlar,Jami\n' + r.payments.total + ',' + fmt(r.summary.total_revenue) + ' so\'m\n';
+    csv += '\nXarajatlar\nTur,Miqdor\n';
+    csv += `O'qituvchi maoshi KR,${fmt(r.salaries.teacher_kr)}\n`;
+    csv += `O'qituvchi maoshi IT,${fmt(r.salaries.teacher_it)}\n`;
+    csv += `Office,${fmt(r.salaries.office)}\n`;
+    csv += `Ijara,${fmt(r.manual_expenses.rent)}\n`;
+    csv += `Kommunal,${fmt(r.manual_expenses.utilities)}\n`;
+    csv += `Buxgalteriya,${fmt(r.manual_expenses.accounting)}\n`;
+    csv += `Reklama,${fmt(r.manual_expenses.marketing)}\n`;
+    csv += `Boshqa,${fmt(r.manual_expenses.other)}\n`;
+    csv += `\nJAMI xarajat,${fmt(r.summary.total_expenses)} so'm\n`;
+    csv += `FOYDA,${fmt(r.summary.operating_profit)} so'm\n`;
+    
+    const blob = new Blob([csv], {type: 'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `biznes_hisobot_${month}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    toast('<i class="lucide lucide-check"></i> Yuklab olindi');
+  } catch(e) {
+    toast('<i class="lucide lucide-times"></i> ' + e.message);
+  }
+}
 
 </script>
 <style>

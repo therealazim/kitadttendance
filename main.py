@@ -265,94 +265,19 @@ class Database:
                 )
             """)
             
+            # Business expenses table (Korean style)
             await conn.execute("""
-                CREATE TABLE IF NOT EXISTS attendance (
+                CREATE TABLE IF NOT EXISTS business_expenses (
                     id SERIAL PRIMARY KEY,
-                    user_id BIGINT REFERENCES users(user_id),
-                    branch TEXT,
-                    date DATE,
-                    time TIME,
-                    UNIQUE(user_id, branch, date)
-                )
-            """)
-            
-            await conn.execute("""
-                CREATE TABLE IF NOT EXISTS schedules (
-                    schedule_id TEXT PRIMARY KEY,
-                    user_id BIGINT REFERENCES users(user_id),
-                    branch TEXT,
-                    lesson_type TEXT,
-                    days_data JSONB,
-                    created_at TIMESTAMP DEFAULT NOW()
-                )
-            """)
-            
-            await conn.execute("""
-                CREATE TABLE IF NOT EXISTS broadcast_history (
-                    id SERIAL PRIMARY KEY,
-                    message_text TEXT,
-                    sent_count INT,
-                    failed_count INT,
-                    specialty TEXT,
-                    created_at TIMESTAMP DEFAULT NOW()
-                )
-            """)
-            
-            # Guruhlar va o'quvchilar uchun yangi jadvallar
-            await conn.execute("""
-                CREATE TABLE IF NOT EXISTS groups (
-                    id SERIAL PRIMARY KEY,
-                    group_name TEXT,
-                    branch TEXT,
-                    lesson_type TEXT,
-                    teacher_id BIGINT REFERENCES users(user_id),
-                    days_data JSONB,
-                    time_text TEXT,
-                    created_at TIMESTAMP DEFAULT NOW()
-                )
-            """)
-            
-            await conn.execute("""
-                CREATE TABLE IF NOT EXISTS group_excel_files (
-                    group_id INTEGER PRIMARY KEY REFERENCES groups(id) ON DELETE CASCADE,
-                    file_data BYTEA,
-                    updated_at TIMESTAMP DEFAULT NOW()
-                )
-            """)
-            await conn.execute("""
-                CREATE TABLE IF NOT EXISTS group_students (
-                    id SERIAL PRIMARY KEY,
-                    group_id INT REFERENCES groups(id) ON DELETE CASCADE,
-                    student_name TEXT,
-                    student_phone TEXT
-                )
-            """)
-            await conn.execute("""
-                CREATE TABLE IF NOT EXISTS student_attendance (
-                    id SERIAL PRIMARY KEY,
-                    group_id INT REFERENCES groups(id) ON DELETE CASCADE,
-                    student_name TEXT,
-                    student_phone TEXT,
-                    lesson_date DATE NOT NULL,
-                    status TEXT NOT NULL DEFAULT 'Kelmagan',
-                    created_at TIMESTAMP DEFAULT NOW()
-                )
-            """)
-            
-            await conn.execute("""
-                CREATE TABLE IF NOT EXISTS student_payments (
-                    id SERIAL PRIMARY KEY,
-                    group_id INT REFERENCES groups(id) ON DELETE CASCADE,
-                    student_name TEXT NOT NULL,
-                    student_phone TEXT,
                     month TEXT NOT NULL,
-                    paid BOOLEAN DEFAULT FALSE,
+                    expense_type TEXT NOT NULL,
                     amount INT DEFAULT 0,
                     note TEXT DEFAULT '',
-                    updated_at TIMESTAMP DEFAULT NOW(),
-                    UNIQUE(group_id, student_name, month)
+                    created_at TIMESTAMP DEFAULT NOW(),
+                    UNIQUE(month, expense_type)
                 )
             """)
+            
             await conn.execute("""
                 CREATE TABLE IF NOT EXISTS applications (
                     id SERIAL PRIMARY KEY,
@@ -3334,6 +3259,144 @@ async def admin_api_reports_general(request):
         
     except Exception as e:
         return web.json_response({'error': str(e)}, status=500)
+
+async def admin_api_business_report(request):
+    """Korean style business report - students, revenue, expenses, profit"""
+    import json as _json
+    try:
+        month = request.query.get('month', datetime.now(UZB_TZ).strftime('%Y-%m'))
+        
+        # Get branches from groups
+        branch_data = {}
+        async with db.pool.acquire() as conn:
+            # Get all groups with their branch and lesson type
+            groups_data = await conn.fetch("""
+                SELECT g.branch, g.lesson_type, g.id, g.group_name
+                FROM groups g
+                WHERE g.branch IS NOT NULL AND g.branch != ''
+            """)
+            
+            # Get student counts by branch and type
+            for g in groups_data:
+                branch = g['branch']
+                lesson_type = g['lesson_type'] or 'Boshqa'
+                if branch not in branch_data:
+                    branch_data[branch] = {'IT': 0, 'Koreys tili': 0, 'total': 0}
+                
+                # Count students in this group
+                student_count = await conn.fetchval(
+                    "SELECT COUNT(*) FROM group_students WHERE group_id=$1",
+                    g['id']
+                )
+                student_count = student_count or 0
+                
+                if lesson_type in ['IT', 'Koreys tili']:
+                    branch_data[branch][lesson_type] += student_count
+                branch_data[branch]['total'] += student_count
+        
+        # Get payment data for this month
+        payment_data = {'total': 0, 'paid': 0, 'unpaid': 0, 'amount': 0}
+        async with db.pool.acquire() as conn:
+            payments = await conn.fetch("""
+                SELECT sp.paid, sp.amount, sp.group_id, g.branch, g.lesson_type
+                FROM student_payments sp
+                JOIN groups g ON sp.group_id = g.id
+                WHERE sp.month = $1
+            """, month)
+            
+            for p in payments:
+                payment_data['total'] += 1
+                if p['paid']:
+                    payment_data['paid'] += 1
+                    payment_data['amount'] += p['amount'] or 0
+                else:
+                    payment_data['unpaid'] += 1
+        
+        # Get salary data for this month
+        salary_data = {'teacher_kr': 0, 'teacher_it': 0, 'office': 0, 'total': 0}
+        
+        # Calculate teacher salaries
+        for uid in user_ids:
+            spec = user_specialty.get(uid, '')
+            status = user_status.get(uid, 'active')
+            if status == 'deleted' or status == 'blocked':
+                continue
+            
+            # Count attendance for this month
+            month_att = sum(1 for a in daily_attendance_log 
+                          if a[0] == uid and a[2].startswith(month))
+            
+            if spec == 'Koreys tili':
+                # KR teacher salary: base 1,800,000 + per student
+                salary_data['teacher_kr'] += 1800000
+            elif spec == 'IT':
+                # IT teacher salary calculation
+                salary_data['teacher_it'] += 1500000
+        
+        # Get manual expenses from database
+        manual_expenses = {'rent': 0, 'utilities': 0, 'accounting': 0, 'marketing': 0, 'other': 0}
+        try:
+            async with db.pool.acquire() as conn:
+                expenses = await conn.fetch(
+                    "SELECT expense_type, amount FROM business_expenses WHERE month=$1",
+                    month
+                )
+                for e in expenses:
+                    if e['expense_type'] in manual_expenses:
+                        manual_expenses[e['expense_type']] = e['amount'] or 0
+        except:
+            pass
+        
+        salary_data['total'] = salary_data['teacher_kr'] + salary_data['teacher_it'] + salary_data['office']
+        
+        # Calculate totals
+        total_revenue = payment_data['amount']
+        total_expenses = salary_data['total'] + sum(manual_expenses.values())
+        operating_profit = total_revenue - total_expenses
+        
+        return web.Response(
+            text=_json.dumps({
+                'ok': True,
+                'month': month,
+                'branches': branch_data,
+                'payments': payment_data,
+                'salaries': salary_data,
+                'manual_expenses': manual_expenses,
+                'summary': {
+                    'total_revenue': total_revenue,
+                    'total_expenses': total_expenses,
+                    'operating_profit': operating_profit
+                }
+            }, ensure_ascii=False, default=str),
+            content_type='application/json', charset='utf-8'
+        )
+    except Exception as e:
+        logging.error(f"business_report error: {e}")
+        return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
+
+async def admin_api_business_expenses_save(request):
+    """Save manual expenses for business report"""
+    import json as _json
+    try:
+        data = await request.json()
+        month = data.get('month', datetime.now(UZB_TZ).strftime('%Y-%m'))
+        expenses = data.get('expenses', {})
+        
+        async with db.pool.acquire() as conn:
+            for expense_type, amount in expenses.items():
+                await conn.execute("""
+                    INSERT INTO business_expenses (month, expense_type, amount)
+                    VALUES ($1, $2, $3)
+                    ON CONFLICT (month, expense_type) 
+                    DO UPDATE SET amount = EXCLUDED.amount
+                """, month, expense_type, int(amount))
+        
+        return web.Response(
+            text=_json.dumps({'ok': True}),
+            content_type='application/json'
+        )
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
 
 async def _cache_all_photos():
     """Barcha foydalanuvchilar Telegram rasmini background da cache qilish"""
@@ -9585,6 +9648,10 @@ async def main():
     app.router.add_get('/admin/api/reports/payments', admin_api_reports_payments)
     app.router.add_get('/admin/api/reports/branches', admin_api_reports_branches)
     app.router.add_get('/admin/api/reports/general', admin_api_reports_general)
+    
+    # Business Report API (Korean style)
+    app.router.add_get('/admin/api/business/report', admin_api_business_report)
+    app.router.add_post('/admin/api/business/expenses', admin_api_business_expenses_save)
 
     port = int(os.environ.get("PORT", 10000))
     runner = web.AppRunner(app)
