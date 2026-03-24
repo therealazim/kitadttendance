@@ -499,9 +499,11 @@ function renderNav(){
     if(!D.ok)throw new Error(D.error||'Server xatosi');
     
     renderNav();
-    renderStats();renderSched();renderGroups();renderProfile();renderBranches();renderSettings();
     await loadProfilePhoto();
-    renderStats();renderProfile();
+    // Render all sections
+    renderStats();renderSched();renderGroups();renderProfile();renderBranches();renderSettings();
+    // Attach event listeners after all rendering is done
+    attachEventListeners();
     
     const bn=document.getElementById('bn-'+sec);
     if(bn)goSc(sec,bn);
@@ -509,6 +511,38 @@ function renderNav(){
     showErr(e.message);
   }
 })();
+
+function attachEventListeners(){
+  // Profile edit button
+  const editBtn = document.getElementById('edit-profile-btn');
+  if(editBtn){
+    editBtn.onclick = function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('[Edit button] Clicked!');
+      openEditProfile();
+    };
+    console.log('[attachEventListeners] Edit button attached');
+  }
+  // Language buttons
+  const langUzBtn = document.getElementById('lang-uz-btn');
+  const langRuBtn = document.getElementById('lang-ru-btn');
+  if(langUzBtn){
+    langUzBtn.onclick = function(e){
+      e.preventDefault();
+      console.log('[Lang button] UZ clicked');
+      changeLang('uz');
+    };
+  }
+  if(langRuBtn){
+    langRuBtn.onclick = function(e){
+      e.preventDefault();
+      console.log('[Lang button] RU clicked');
+      changeLang('ru');
+    };
+  }
+  console.log('[attachEventListeners] All buttons attached');
+}
 
 function showErr(msg){
   const el=document.getElementById('stats-ld');
