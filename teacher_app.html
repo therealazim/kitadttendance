@@ -754,57 +754,67 @@ async function loadProfilePhoto(){
 }
 
 function renderProfile(){
-  if(!D)return;
-  document.getElementById('prof-ld').style.display='none';
-  document.getElementById('prof-ct').style.display='block';
-  const u=D.user,s=D.stats;const c=AVC[UID%AVC.length];
-  const avHtml = _profPhotoUrl
-    ? `<img src="${_profPhotoUrl}" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid ${c}55;margin:0 auto 10px;display:block" onerror="this.style.display='none';document.getElementById('prof-av-fallback').style.display='flex'">`
-    : '';
-  const avFallback = `<div id="prof-av-fallback" class="prof-av" style="background:${c}22;color:${c};border:2px solid ${c}44;${_profPhotoUrl?'display:none':''}">${ini(u.name)}</div>`;
-  document.getElementById('prof-ct').innerHTML=`
-    <div class="prof-card" style="position:relative">
-      <button onclick="openEditProfile()" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.08);border:1px solid var(--bd2);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:600;color:var(--tx2);cursor:pointer;font-family:'Inter',sans-serif">✏️ Tahrirlash</button>
-      ${avHtml}${avFallback}
-      <div class="prof-name">${u.name}</div>
-      <div class="prof-spec">${u.specialty||'O\'qituvchi'}</div>
-      <div style="margin-top:8px"><span class="b bok">✅ Faol</span></div>
-    </div>
-    <div class="card">
-      <div class="card-hdr"><span class="card-title">📊 Bu oylik statistika</span></div>
-      <div class="card-body">
-        <div class="toggle-row"><span class="toggle-lbl">📅 Bu oy davomati</span><span style="font-weight:800;color:var(--ac)">${s.month} kun</span></div>
-        <div class="toggle-row"><span class="toggle-lbl">📊 Jami davomati</span><span style="font-weight:800;color:var(--ac)">${s.total} kun</span></div>
-        <div class="toggle-row"><span class="toggle-lbl">📚 Guruhlar soni</span><span style="font-weight:800;color:var(--ac)">${s.groups} ta</span></div>
+  try{
+    if(!D)return;
+    const u=D.user,s=D.stats;
+    const profLd=document.getElementById('prof-ld');
+    const profCt=document.getElementById('prof-ct');
+    if(profLd)profLd.style.display='none';
+    if(!profCt)return;
+    profCt.style.display='block';
+    const c=AVC[(UID||0)%AVC.length];
+    const avHtml = _profPhotoUrl
+      ? `<img src="${_profPhotoUrl}" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid ${c}55;margin:0 auto 10px;display:block" onerror="this.style.display='none';document.getElementById('prof-av-fallback').style.display='flex'">`
+      : '';
+    const avFallback = `<div id="prof-av-fallback" class="prof-av" style="background:${c}22;color:${c};border:2px solid ${c}44;${_profPhotoUrl?'display:none':''}">${ini(u?.name)}</div>`;
+    profCt.innerHTML=`
+      <div class="prof-card" style="position:relative">
+        <button onclick="openEditProfile()" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.08);border:1px solid var(--bd2);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:600;color:var(--tx2);cursor:pointer;font-family:'Inter',sans-serif">✏️ Tahrirlash</button>
+        ${avHtml}${avFallback}
+        <div class="prof-name">${u?.name||'—'}</div>
+        <div class="prof-spec">${u?.specialty||'O\'qituvchi'}</div>
+        <div style="margin-top:8px"><span class="b bok">✅ Faol</span></div>
       </div>
-    </div>`;
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">📊 Bu oylik statistika</span></div>
+        <div class="card-body">
+          <div class="toggle-row"><span class="toggle-lbl">📅 Bu oy davomati</span><span style="font-weight:800;color:var(--ac)">${s?.month||0} kun</span></div>
+          <div class="toggle-row"><span class="toggle-lbl">📊 Jami davomati</span><span style="font-weight:800;color:var(--ac)">${s?.total||0} kun</span></div>
+          <div class="toggle-row"><span class="toggle-lbl">📚 Guruhlar soni</span><span style="font-weight:800;color:var(--ac)">${s?.groups||0} ta</span></div>
+        </div>
+      </div>`;
+  }catch(e){console.error('renderProfile error:',e);}
 }
 
 // ── SETTINGS ──
 function renderSettings(){
-  const u=D?.user||{};
-  document.getElementById('settings-ct').innerHTML=`
-    <div class="card" style="margin-bottom:11px">
-      <div class="card-hdr"><span class="card-title">❓ Yordam</span></div>
-      <div class="card-body" style="font-size:12px;color:var(--tx2);line-height:1.7">
-        <p style="margin-bottom:8px">📍 <b style="color:var(--tx)">Davomat qilish</b> — Botda "Kelganimni tasdiqlash" tugmasini bosib, joylashuvingizni yuboring.</p>
-        <p style="margin-bottom:8px">📚 <b style="color:var(--tx)">Guruhlar</b> — O'z guruhlaringizni ko'rish, o'quvchi qo'shish/o'chirish.</p>
-        <p style="margin-bottom:8px">💰 <b style="color:var(--tx)">To'lovlar</b> — Har oy o'quvchilarning to'lov holatini belgilang.</p>
-        <p style="margin-bottom:8px">🧑‍🎓 <b style="color:var(--tx)">O'quvchilar davomati</b> — Dars boshlanishida bot avtomatik eslatadi.</p>
-        <p>📞 <b style="color:var(--tx)">Muammo bo'lsa</b> — Admin bilan bog'laning.</p>
+  try{
+    const settingsCt=document.getElementById('settings-ct');
+    if(!settingsCt)return;
+    const u=D?.user||{};
+    settingsCt.innerHTML=`
+      <div class="card" style="margin-bottom:11px">
+        <div class="card-hdr"><span class="card-title">❓ Yordam</span></div>
+        <div class="card-body" style="font-size:12px;color:var(--tx2);line-height:1.7">
+          <p style="margin-bottom:8px">📍 <b style="color:var(--tx)">Davomat qilish</b> — Botda "Kelganimni tasdiqlash" tugmasini bosib, joylashuvingizni yuboring.</p>
+          <p style="margin-bottom:8px">📚 <b style="color:var(--tx)">Guruhlar</b> — O'z guruhlaringizni ko'rish, o'quvchi qo'shish/o'chirish.</p>
+          <p style="margin-bottom:8px">💰 <b style="color:var(--tx)">To'lovlar</b> — Har oy o'quvchilarning to'lov holatini belgilang.</p>
+          <p style="margin-bottom:8px">🧑‍🎓 <b style="color:var(--tx)">O'quvchilar davomati</b> — Dars boshlanishida bot avtomatik eslatadi.</p>
+          <p>📞 <b style="color:var(--tx)">Muammo bo'lsa</b> — Admin bilan bog'laning.</p>
+        </div>
       </div>
-    </div>
-    <div class="card">
-      <div class="card-hdr"><span class="card-title">📋 Filiallar</span></div>
-      <div style="max-height:300px;overflow-y:auto">
-        ${(D?.branches||[]).map((b,i)=>`
-          <div class="br-item">
-            <div class="br-num">${i+1}</div>
-            <div class="br-info"><div class="br-name">${b.name}</div></div>
-            <a href="https://yandex.com/maps/?pt=${b.lon},${b.lat}&z=17" target="_blank" class="btn bg" style="font-size:10px;padding:5px 10px">Xarita ↗</a>
-          </div>`).join('')}
-      </div>
-    </div>`;
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">📋 Filiallar</span></div>
+        <div style="max-height:300px;overflow-y:auto">
+          ${(D?.branches||[]).map((b,i)=>`
+            <div class="br-item">
+              <div class="br-num">${i+1}</div>
+              <div class="br-info"><div class="br-name">${b?.name||''}</div></div>
+              <a href="https://yandex.com/maps/?pt=${b?.lon||0},${b?.lat||0}&z=17" target="_blank" class="btn bg" style="font-size:10px;padding:5px 10px">Xarita ↗</a>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  }catch(e){console.error('renderSettings error:',e);}
 }
 
 // ── PROFILE EDIT ──
