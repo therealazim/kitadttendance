@@ -217,7 +217,7 @@ input:checked+.tslider:before{transform:translateX(20px);}
 </div>
 
 <!-- ── BOTTOM NAV ── -->
-<div class="bnav" id="bottom-nav">
+<div class="bnav" id="bottom-nav"></div>
 
 <!-- ── MODALS ── -->
 <!-- Add student -->
@@ -624,13 +624,12 @@ function renderGroups(){
     if(grpsCt){
       grpsCt.style.display='block';
       const gs=D.groups||[];
-      const filteredGs = CURRENT_BRANCH ? gs.filter(g => g.branch === CURRENT_BRANCH) : gs;
-      if(!filteredGs.length){
+      if(!gs.length){
         grpsCt.innerHTML=`<div class="empty"><div class="ei">📚</div>${t('noGroups')}</div>`;
         return;
       }
       const h=`<div class="card">
-        ${filteredGs.map((g,i)=>{
+        ${gs.map((g,i)=>{
           const c=AVC[(g?.id||0)%AVC.length];const tc=g?.lesson_type==='IT'?'bit':'bkr';
           return`<div class="grp-item" onclick="openGrp(${g?.id||0})">
             <div class="gi-av" style="background:${c}22;color:${c}">${ini(g?.group_name)}</div>
