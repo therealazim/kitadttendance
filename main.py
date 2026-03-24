@@ -1567,8 +1567,8 @@ async def admin_api_office_salary_calc(request):
                     'amount': penalty_amount
                 })
         
-        # Calculate salary
-        gross_salary = base_salary - total_penalty - expenses
+        # Calculate salary (expenses ADDED - reimbursement for employee)
+        gross_salary = base_salary - total_penalty + expenses
         tax_amount = gross_salary * TAX_RATE / 100
         net_salary = gross_salary - tax_amount
         
