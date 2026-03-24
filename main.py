@@ -3045,7 +3045,7 @@ async def miniapp_change_lang(request):
         data = await request.json()
         uid = int(data['user_id'])
         lang = data.get('lang', 'uz')
-        if lang not in ['uz']:
+        if lang not in ['uz', 'ru']:
             lang = 'uz'
         user_languages[uid] = lang
         try:
@@ -3116,11 +3116,12 @@ async def miniapp_teacher_data(request):
         name = user_names.get(uid,'')
         specialty = user_specialty.get(uid,'')
         status = user_status.get(uid,'active')
+        language = user_languages.get(uid,'uz')
         
         return web.Response(
             text=_json.dumps({
                 'ok': True,
-                'user': {'id': uid, 'name': name, 'specialty': specialty, 'status': status},
+                'user': {'id': uid, 'name': name, 'specialty': specialty, 'status': status, 'language': language},
                 'stats': {
                     'today': len(today_att),
                     'today_branch': today_att[0][0] if today_att else '',

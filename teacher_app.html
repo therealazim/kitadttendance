@@ -791,29 +791,70 @@ function renderSettings(){
     const settingsCt=document.getElementById('settings-ct');
     if(!settingsCt)return;
     const u=D?.user||{};
+    const lang=D?.user?.language||'uz';
     settingsCt.innerHTML=`
       <div class="card" style="margin-bottom:11px">
-        <div class="card-hdr"><span class="card-title">❓ Yordam</span></div>
+        <div class="card-hdr"><span class="card-title">🌐 Til / Язык</span></div>
+        <div class="card-body">
+          <div style="display:flex;gap:8px">
+            <button onclick="changeLang('uz')" style="flex:1;padding:12px;border-radius:10px;border:2px solid ${lang==='uz'?'var(--ac)':'var(--bd)'};background:${lang==='uz'?'rgba(79,142,247,.15)':'var(--card2)'};color:var(--tx);font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer">
+              🇺🇿 O'zbekcha
+            </button>
+            <button onclick="changeLang('ru')" style="flex:1;padding:12px;border-radius:10px;border:2px solid ${lang==='ru'?'var(--ac)':'var(--bd)'};background:${lang==='ru'?'rgba(79,142,247,.15)':'var(--card2)'};color:var(--tx);font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer">
+              🇷🇺 Русский
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:11px">
+        <div class="card-hdr"><span class="card-title">❓ ${lang==='ru'?'Помощь':'Yordam'}</span></div>
         <div class="card-body" style="font-size:12px;color:var(--tx2);line-height:1.7">
-          <p style="margin-bottom:8px">📍 <b style="color:var(--tx)">Davomat qilish</b> — Botda "Kelganimni tasdiqlash" tugmasini bosib, joylashuvingizni yuboring.</p>
-          <p style="margin-bottom:8px">📚 <b style="color:var(--tx)">Guruhlar</b> — O'z guruhlaringizni ko'rish, o'quvchi qo'shish/o'chirish.</p>
-          <p style="margin-bottom:8px">💰 <b style="color:var(--tx)">To'lovlar</b> — Har oy o'quvchilarning to'lov holatini belgilang.</p>
-          <p style="margin-bottom:8px">🧑‍🎓 <b style="color:var(--tx)">O'quvchilar davomati</b> — Dars boshlanishida bot avtomatik eslatadi.</p>
-          <p>📞 <b style="color:var(--tx)">Muammo bo'lsa</b> — Admin bilan bog'laning.</p>
+          ${lang==='ru'?
+            `<p style="margin-bottom:8px">📍 <b style="color:var(--tx)">Отметка присутствия</b> — Нажмите кнопку "Подтвердить приход" в боте и отправьте местоположение.</p>
+            <p style="margin-bottom:8px">📚 <b style="color:var(--tx)">Группы</b> — Просмотр ваших групп, добавление/удаление учеников.</p>
+            <p style="margin-bottom:8px">💰 <b style="color:var(--tx)">Платежи</b> — Ежемесячно отмечайте статус оплаты учеников.</p>
+            <p style="margin-bottom:8px">🧑‍🎓 <b style="color:var(--tx)">Посещаемость учеников</b> — Бот автоматически напоминает в начале занятия.</p>
+            <p>📞 <b style="color:var(--tx)">Проблемы</b> — Свяжитесь с администратором.</p>`:
+            `<p style="margin-bottom:8px">📍 <b style="color:var(--tx)">Davomat qilish</b> — Botda "Kelganimni tasdiqlash" tugmasini bosib, joylashuvingizni yuboring.</p>
+            <p style="margin-bottom:8px">📚 <b style="color:var(--tx)">Guruhlar</b> — O'z guruhlaringizni ko'rish, o'quvchi qo'shish/o'chirish.</p>
+            <p style="margin-bottom:8px">💰 <b style="color:var(--tx)">To'lovlar</b> — Har oy o'quvchilarning to'lov holatini belgilang.</p>
+            <p style="margin-bottom:8px">🧑‍🎓 <b style="color:var(--tx)">O'quvchilar davomati</b> — Dars boshlanishida bot avtomatik eslatadi.</p>
+            <p>📞 <b style="color:var(--tx)">Muammo bo'lsa</b> — Admin bilan bog'laning.</p>`
+          }
         </div>
       </div>
       <div class="card">
-        <div class="card-hdr"><span class="card-title">📋 Filiallar</span></div>
+        <div class="card-hdr"><span class="card-title">📋 ${lang==='ru'?'Филиалы':'Filiallar'}</span></div>
         <div style="max-height:300px;overflow-y:auto">
           ${(D?.branches||[]).map((b,i)=>`
             <div class="br-item">
               <div class="br-num">${i+1}</div>
               <div class="br-info"><div class="br-name">${b?.name||''}</div></div>
-              <a href="https://yandex.com/maps/?pt=${b?.lon||0},${b?.lat||0}&z=17" target="_blank" class="btn bg" style="font-size:10px;padding:5px 10px">Xarita ↗</a>
+              <a href="https://yandex.com/maps/?pt=${b?.lon||0},${b?.lat||0}&z=17" target="_blank" class="btn bg" style="font-size:10px;padding:5px 10px">${lang==='ru'?'Карта ↗':'Xarita ↗'}</a>
             </div>`).join('')}
         </div>
       </div>`;
   }catch(e){console.error('renderSettings error:',e);}
+}
+
+async function changeLang(lang){
+  try{
+    const r=await fetch(`${BASE}/teacher/api/lang/change`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({user_id:UID,lang})
+    }).then(x=>x.json()).catch(()=>null);
+    if(r?.ok){
+      if(D?.user)D.user.language=lang;
+      toast(lang==='ru'?'✅ Язык изменен':'✅ Til o\'zgartirildi','ok');
+      renderSettings();renderProfile();renderStats();
+      if(tg?.HapticFeedback)tg.HapticFeedback.notificationOccurred('success');
+    }else{
+      toast('❌ '+(r?.error||'Xatolik'),'err');
+    }
+  }catch(e){
+    console.error('changeLang error:',e);
+    toast('❌ Xatolik','err');
+  }
 }
 
 // ── PROFILE EDIT ──
