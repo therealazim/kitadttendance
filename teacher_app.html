@@ -335,7 +335,8 @@ CUR_MONTH=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
 })();
 
 function showErr(msg){
-  document.getElementById('stats-ld').innerHTML=`<div class="empty"><div class="ei">❌</div>${msg}</div>`;
+  const el=document.getElementById('stats-ld');
+  if(el)el.innerHTML=`<div class="empty"><div class="ei">❌</div>${msg}</div>`;
 }
 
 function toast(msg,type='',dur=2600){
