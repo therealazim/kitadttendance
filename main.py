@@ -1563,6 +1563,7 @@ async def admin_api_office_salary_calc(request):
                     'type': penalty_type,
                     'name': penalty_info['name'],
                     'count': count,
+                    'percent': penalty_info['percent'],
                     'base_amount': fixed_amount,
                     'amount': penalty_amount
                 })
