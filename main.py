@@ -1792,18 +1792,31 @@ async def admin_api_group_edit_teacher(request):
         # Eski o'qituvchiga xabar
         if old_tid and old_tid != new_tid:
             try:
-                await bot.send_message(old_tid, f"ℹ️ *{grp.get('group_name','Guruh')}* guruhi sizdan boshqa o'qituvchiga o'tkazildi.", parse_mode="Markdown")
+                old_lang = user_languages.get(old_tid, 'uz')
+                if old_lang == 'ru':
+                    old_msg = f"ℹ️ Группа *{grp.get('group_name','Guruh')}* передана другому преподавателю."
+                else:
+                    old_msg = f"ℹ️ *{grp.get('group_name','Guruh')}* guruhi sizdan boshqa o'qituvchiga o'tkazildi."
+                await bot.send_message(old_tid, old_msg, parse_mode="Markdown")
             except: pass
         # Yangi o'qituvchiga xabar
         try:
-            await bot.send_message(
-                new_tid,
-                f"🎉 Siz *{grp.get('group_name','Guruh')}* guruhining yangi o'qituvchisi sifatida tayinlandingiz!\n\n"
-                f"🏢 Filial: {grp.get('branch','—')}\n"
-                f"📆 Kunlar: {', '.join(grp.get('days',[]))}\n"
-                f"⏰ Vaqt: {grp.get('time_text','—')}",
-                parse_mode="Markdown"
-            )
+            new_lang = user_languages.get(new_tid, 'uz')
+            if new_lang == 'ru':
+                new_msg = (
+                    f"🎉 Вы назначены новым преподавателем группы *{grp.get('group_name','Guruh')}*!\n\n"
+                    f"🏢 Филиал: {grp.get('branch','—')}\n"
+                    f"📆 Дни: {', '.join(grp.get('days',[]))}\n"
+                    f"⏰ Время: {grp.get('time_text','—')}"
+                )
+            else:
+                new_msg = (
+                    f"🎉 Siz *{grp.get('group_name','Guruh')}* guruhining yangi o'qituvchisi sifatida tayinlandingiz!\n\n"
+                    f"🏢 Filial: {grp.get('branch','—')}\n"
+                    f"📆 Kunlar: {', '.join(grp.get('days',[]))}\n"
+                    f"⏰ Vaqt: {grp.get('time_text','—')}"
+                )
+            await bot.send_message(new_tid, new_msg, parse_mode="Markdown")
         except: pass
         return web.Response(text=_json.dumps({'ok': True, 'teacher_name': new_name}), content_type='application/json')
     except Exception as e:
@@ -2131,16 +2144,26 @@ async def admin_api_group_create(request):
         # O'qituvchiga xabar
         try:
             time_disp = ", ".join([f"{d}: {t}" for d, t in day_times.items()])
-            await bot.send_message(
-                teacher_id,
-                f"🎉 Sizga yangi guruh biriktirildi!\n\n"
-                f"👥 Guruh: *{group_name}*\n"
-                f"🏢 Filial: {branch}\n"
-                f"📚 Fan: {lesson_type}\n"
-                f"📆 Jadval: {time_disp}\n"
-                f"🧑\u200d🎓 O'quvchilar: {len(students)} ta",
-                parse_mode="Markdown"
-            )
+            lang = user_languages.get(teacher_id, 'uz')
+            if lang == 'ru':
+                msg = (
+                    f"🎉 Вам назначена новая группа!\n\n"
+                    f"👥 Группа: *{group_name}*\n"
+                    f"🏢 Филиал: {branch}\n"
+                    f"📚 Предмет: {lesson_type}\n"
+                    f"📆 Расписание: {time_disp}\n"
+                    f"🧑\u200d🎓 Учеников: {len(students)}"
+                )
+            else:
+                msg = (
+                    f"🎉 Sizga yangi guruh biriktirildi!\n\n"
+                    f"👥 Guruh: *{group_name}*\n"
+                    f"🏢 Filial: {branch}\n"
+                    f"📚 Fan: {lesson_type}\n"
+                    f"📆 Jadval: {time_disp}\n"
+                    f"🧑\u200d🎓 O'quvchilar: {len(students)} ta"
+                )
+            await bot.send_message(teacher_id, msg, parse_mode="Markdown")
         except: pass
         return web.Response(text=_json.dumps({'ok': True, 'group_id': gid}), content_type='application/json')
     except Exception as e:
