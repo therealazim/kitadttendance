@@ -2902,7 +2902,7 @@ async def miniapp_get_profile_photo(request):
     """Foydalanuvchi Telegram profil rasmini URL qaytarish"""
     import json as _json
     try:
-        uid = int(request.rel_url.query.get('user_id', 0))
+        uid = int(request.query.get('user_id', 0))
         if not uid:
             return web.Response(text=_json.dumps({'ok': False, 'url': None}), content_type='application/json')
         try:
@@ -2992,7 +2992,7 @@ async def miniapp_teacher_data(request):
     """O'qituvchi asosiy ma'lumotlari - statistika, jadval, guruhlar"""
     import json as _json
     try:
-        uid = int(request.rel_url.query.get('user_id', 0))
+        uid = int(request.query.get('user_id', 0))
         if not uid:
             return web.Response(text=_json.dumps({'ok': False, 'error': 'user_id kerak'}), content_type='application/json')
         
@@ -3060,8 +3060,8 @@ async def miniapp_group_students(request):
     """Guruh o'quvchilari + to'lov ma'lumotlari"""
     import json as _json
     try:
-        gid = int(request.rel_url.query.get('group_id', 0))
-        month = request.rel_url.query.get('month', datetime.now(UZB_TZ).strftime('%Y-%m'))
+        gid = int(request.query.get('group_id', 0))
+        month = request.query.get('month', datetime.now(UZB_TZ).strftime('%Y-%m'))
         if not gid or gid not in groups:
             return web.Response(text=_json.dumps({'ok': False, 'error': 'Guruh topilmadi'}), content_type='application/json')
         studs = group_students.get(gid, [])
