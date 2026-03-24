@@ -943,6 +943,7 @@ function renderProfile(){
       ? `<img src="${_profPhotoUrl}" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid ${c}55;margin:0 auto 10px;display:block" onerror="this.style.display='none';document.getElementById('prof-av-fallback').style.display='flex'">`
       : '';
     const avFallback = `<div id="prof-av-fallback" class="prof-av" style="background:${c}22;color:${c};border:2px solid ${c}44;${_profPhotoUrl?'display:none':''}">${ini(u?.name)}</div>`;
+    
     profCt.innerHTML=`
       <div class="prof-card" style="position:relative">
         <button type="button" id="edit-profile-btn" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.08);border:1px solid var(--bd2);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:600;color:var(--tx2);cursor:pointer;font-family:'Inter',sans-serif;z-index:10">✏️ ${t('edit')}</button>
@@ -950,15 +951,7 @@ function renderProfile(){
         <div class="prof-name">${u?.name||'—'}</div>
         <div class="prof-spec">${u?.specialty||t('teacher')}</div>
         <div style="margin-top:8px"><span class="b bok">✅ ${t('active')}</span></div>
-      </div>`;
-    // Telegram WebApp uchun - kechiktirilgan event listener
-    setTimeout(function(){
-      var btn = document.getElementById('edit-profile-btn');
-      if(btn){
-        btn.addEventListener('click', function(e){ e.preventDefault(); openEditProfile(); });
-        btn.addEventListener('touchstart', function(e){ e.preventDefault(); openEditProfile(); }, {passive: false});
-      }
-    }, 100);
+      </div>
       <div class="card">
         <div class="card-hdr"><span class="card-title">📊 ${t('thisMonthStats')}</span></div>
         <div class="card-body">
@@ -967,6 +960,15 @@ function renderProfile(){
           <div class="toggle-row"><span class="toggle-lbl">📚 ${t('groupsCount')}</span><span style="font-weight:800;color:var(--ac)">${s?.groups||0}</span></div>
         </div>
       </div>`;
+    
+    // Telegram WebApp uchun - kechiktirilgan event listener
+    setTimeout(function(){
+      var btn = document.getElementById('edit-profile-btn');
+      if(btn){
+        btn.addEventListener('click', function(e){ e.preventDefault(); openEditProfile(); });
+        btn.addEventListener('touchstart', function(e){ e.preventDefault(); openEditProfile(); }, {passive: false});
+      }
+    }, 100);
   }catch(e){console.error('renderProfile error:',e);}
 }
 
