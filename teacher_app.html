@@ -1044,20 +1044,36 @@ function openEditProfile(){
 }
 
 async function saveProfile(){
-  const name=document.getElementById('ep-name').value.trim();
-  const spec=document.getElementById('ep-spec').value;
-  if(!name||name.length<3){toast('⚠️ Ism kamida 3 harf','err');return;}
-  const r=await fetch(`${BASE}/teacher/api/profile/update`,{
-    method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({user_id:UID,name,specialty:spec})
-  }).then(x=>x.json()).catch(()=>null);
-  if(r?.ok){
-    D.user.name=r.name;D.user.specialty=r.specialty;
-    toast('✅ Profil yangilandi','ok');
-    cMod('mod-editprof');
-    renderProfile();renderStats();
-    if(tg?.HapticFeedback)tg.HapticFeedback.notificationOccurred('success');
-  }else toast('❌ '+(r?.error||'Xatolik'),'err');
+  try {
+    console.log('[saveProfile] Starting...', {UID});
+    const name=document.getElementById('ep-name').value.trim();
+    const spec=document.getElementById('ep-spec').value;
+    console.log('[saveProfile] Values:', {name, spec});
+    
+    if(!name||name.length<3){toast('⚠️ Ism kamida 3 harf','err');return;}
+    if(!UID){toast('⚠️ Foydalanuvchi aniqlanmadi','err');console.error('[saveProfile] UID is null');return;}
+    
+    console.log('[saveProfile] Sending request...');
+    const r=await fetch(`${BASE}/teacher/api/profile/update`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({user_id:UID,name,specialty:spec})
+    }).then(x=>x.json()).catch(e=>{console.error('[saveProfile] Fetch error:',e);return null;});
+    
+    console.log('[saveProfile] Response:', r);
+    if(r?.ok){
+      D.user.name=r.name;D.user.specialty=r.specialty;
+      toast('✅ Profil yangilandi','ok');
+      cMod('mod-editprof');
+      renderProfile();renderStats();
+      if(tg?.HapticFeedback)tg.HapticFeedback.notificationOccurred('success');
+    }else{
+      console.error('[saveProfile] Error response:', r);
+      toast('❌ '+(r?.error||'Xatolik'),'err');
+    }
+  } catch(e) {
+    console.error('[saveProfile] Exception:', e);
+    toast('❌ Xatolik: '+e.message,'err');
+  }
 }
 
 // ── BRANCHES ──

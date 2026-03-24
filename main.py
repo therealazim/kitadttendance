@@ -3378,11 +3378,14 @@ async def miniapp_update_profile(request):
         uid = int(data['user_id'])
         new_name = data.get('name', '').strip()
         new_specialty = data.get('specialty', '').strip()
+        logging.info(f"miniapp_update_profile: uid={uid}, name={new_name}, specialty={new_specialty}")
         
         if new_name and len(new_name) >= 3:
             user_names[uid] = new_name
+            logging.info(f"miniapp_update_profile: updated user_names[{uid}] = {new_name}")
         if new_specialty in ['IT', 'Koreys tili', 'Ofis xodimi']:
             user_specialty[uid] = new_specialty
+            logging.info(f"miniapp_update_profile: updated user_specialty[{uid}] = {new_specialty}")
         
         try:
             user = await db.get_user(uid)
@@ -3393,6 +3396,7 @@ async def miniapp_update_profile(request):
                     specialty=user_specialty.get(uid, user['specialty']),
                     language=user.get('language', 'uz')
                 )
+                logging.info(f"miniapp_update_profile: saved to database")
         except Exception as e:
             logging.error(f"profile update db error: {e}")
         
@@ -3401,6 +3405,7 @@ async def miniapp_update_profile(request):
             content_type='application/json'
         )
     except Exception as e:
+        logging.error(f"miniapp_update_profile error: {e}")
         return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
 
 async def miniapp_change_lang(request):
@@ -3956,9 +3961,11 @@ async def admin_api_data(request):
 
         # Foydalanuvchilar
         users_data = []
+        logging.info(f"admin_api_data: user_ids count = {len(user_ids)}")
         for uid in user_ids:
             name = user_names.get(uid, '')
             if not name or '[ARXIV]' in name:
+                logging.debug(f"admin_api_data: skipping user {uid} - name empty or archived")
                 continue
             month_att = len([
                 a for a in daily_attendance_log
@@ -3973,6 +3980,7 @@ async def admin_api_data(request):
                 'attendance_count': month_att,
                 'photo_url': user_photo_cache.get(uid),
             })
+        logging.info(f"admin_api_data: returning {len(users_data)} users")
         users_data.sort(key=lambda x: x['name'])
 
         # Guruhlar
@@ -4254,6 +4262,7 @@ async def process_name(message: types.Message, state: FSMContext):
     
     user_names[user_id] = full_name
     user_ids.add(user_id)
+    logging.info(f"process_name: added user {user_id} ({full_name}) to user_ids. Total: {len(user_ids)}")
     
     lang = user_languages.get(user_id, 'uz')
     await db.save_user(user_id, full_name, None, lang)
