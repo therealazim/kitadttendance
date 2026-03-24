@@ -1276,7 +1276,12 @@ function gp(n,el){
   if(n==='applies')loadApps();
   if(n==='news_admin')loadNewsAdmin();
   if(n==='site')loadSiteConfig();
-  if(n==='bizreport')loadBizReport();
+  if(n==='bizreport'){
+    setTimeout(function(){
+      console.log('Loading bizreport...');
+      loadBizReport();
+    }, 200);
+  }
   cSb();
   if(window.lucide)lucide.createIcons();
 }
@@ -2838,10 +2843,18 @@ async function downloadGeneralReport(){
 
 // Sahifa yuklanganda hisobot sanalarini sozlash
 document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(initReportDates, 100);
-    // Set business report month
-    const bizMonth = document.getElementById('biz-month');
-    if(bizMonth) bizMonth.value = new Date().toISOString().slice(0,7);
+    setTimeout(function(){
+        initReportDates();
+        // Set business report month and load data
+        const bizMonth = document.getElementById('biz-month');
+        if(bizMonth){
+            bizMonth.value = new Date().toISOString().slice(0,7);
+            // If bizreport page is visible, load data
+            if(document.getElementById('pg-bizreport')?.classList.contains('on')){
+                loadBizReport();
+            }
+        }
+    }, 500);
 });
 
 // ── BIZNES HISOBOT ──
