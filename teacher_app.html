@@ -313,33 +313,23 @@ CUR_MONTH=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
 
 // ── INIT ──
 (async function(){
-  console.log('Teacher App initializing...');
   const p=new URLSearchParams(location.search);
   UID=p.get('user_id')||tg?.initDataUnsafe?.user?.id;
   const sec=p.get('section')||'stats';
-  console.log('UID:', UID, 'Section:', sec);
   
   if(!UID){showErr('Foydalanuvchi aniqlanmadi');return;}
   try{
-    console.log('Fetching data...');
     const r=await fetch(`${BASE}/teacher/api/data?user_id=${UID}`);
-    console.log('Response status:', r.status);
     D=await r.json();
-    console.log('Data received:', D);
     if(!D.ok)throw new Error(D.error||'Server xatosi');
     
-    console.log('Rendering...');
     renderStats();renderSched();renderGroups();renderProfile();renderBranches();renderSettings();
-    // Profil rasmini yuklash (background)
     await loadProfilePhoto();
-    renderStats();
-    renderProfile();
-    // Kerakli bo'limga o'tish
+    renderStats();renderProfile();
+    
     const bn=document.getElementById('bn-'+sec);
     if(bn)goSc(sec,bn);
-    console.log('Teacher App loaded successfully');
   }catch(e){
-    console.error('Teacher App error:', e);
     showErr(e.message);
   }
 })();
