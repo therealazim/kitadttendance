@@ -3315,23 +3315,43 @@ async def admin_api_business_report(request):
         # Get salary data for this month
         salary_data = {'teacher_kr': 0, 'teacher_it': 0, 'office': 0, 'total': 0}
         
-        # Calculate teacher salaries
+        # Teacher attendance data for this month
+        teacher_attendance = []
+        
+        # Calculate teacher salaries and collect attendance
         for uid in user_ids:
             spec = user_specialty.get(uid, '')
             status = user_status.get(uid, 'active')
+            name = user_names.get(uid, '')
             if status == 'deleted' or status == 'blocked':
                 continue
             
             # Count attendance for this month
-            month_att = sum(1 for a in daily_attendance_log 
-                          if a[0] == uid and a[2].startswith(month))
+            month_atts = [a for a in daily_attendance_log 
+                         if a[0] == uid and a[2].startswith(month)]
+            month_att_count = len(month_atts)
+            
+            # Calculate late minutes for this month
+            total_late_minutes = 0
+            for a in month_atts:
+                # a = (uid, branch, date, time, late_minutes)
+                if len(a) > 4:
+                    total_late_minutes += a[4] or 0
+            
+            if spec in ['Koreys tili', 'IT', 'Ofis xodimi']:
+                teacher_attendance.append({
+                    'name': name,
+                    'specialty': spec,
+                    'attendance_count': month_att_count,
+                    'late_minutes': total_late_minutes
+                })
             
             if spec == 'Koreys tili':
-                # KR teacher salary: base 1,800,000 + per student
                 salary_data['teacher_kr'] += 1800000
             elif spec == 'IT':
-                # IT teacher salary calculation
                 salary_data['teacher_it'] += 1500000
+            elif spec == 'Ofis xodimi':
+                salary_data['office'] += 1000000
         
         # Get manual expenses from database
         manual_expenses = {'rent': 0, 'utilities': 0, 'accounting': 0, 'marketing': 0, 'other': 0}
@@ -3361,6 +3381,7 @@ async def admin_api_business_report(request):
                 'branches': branch_data,
                 'payments': payment_data,
                 'salaries': salary_data,
+                'teacher_attendance': teacher_attendance,
                 'manual_expenses': manual_expenses,
                 'summary': {
                     'total_revenue': total_revenue,

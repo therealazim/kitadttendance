@@ -2895,6 +2895,24 @@ async function loadBizReport(){
     </tr>`;
     document.getElementById('biz-students-tb').innerHTML = studentsHtml;
     
+    // Update teacher attendance table
+    const teacherAtt = r.teacher_attendance || [];
+    let attHtml = '';
+    teacherAtt.forEach(t => {
+      const statusColor = t.late_minutes > 30 ? '#f87171' : t.late_minutes > 15 ? '#fbbf24' : t.late_minutes > 0 ? '#fcd34d' : '#34d399';
+      const statusText = t.attendance_count === 0 ? 'Kelmadi' : t.late_minutes > 30 ? 'Juda kech' : t.late_minutes > 15 ? 'Kech' : t.late_minutes > 0 ? 'Kechikdi' : 'O\'z vaqtida';
+      const specBadge = t.specialty === 'IT' ? 'bit' : t.specialty === 'Koreys tili' ? 'bkr' : 'bof';
+      attHtml += `<tr>
+        <td style="padding:8px">${t.name || '—'}</td>
+        <td style="padding:8px;text-align:center"><span class="b ${specBadge}">${t.specialty || '—'}</span></td>
+        <td style="padding:8px;text-align:center">${t.attendance_count} kun</td>
+        <td style="padding:8px;text-align:center;color:${statusColor};font-weight:700">${t.late_minutes} daq</td>
+        <td style="padding:8px;text-align:center"><span style="color:${statusColor};font-weight:600">${statusText}</span></td>
+      </tr>`;
+    });
+    if(!attHtml) attHtml = '<tr><td colspan="5" style="padding:8px;text-align:center;color:var(--tx3)">Ma\'lumot yo\'q</td></tr>';
+    document.getElementById('biz-att-tb').innerHTML = attHtml;
+    
     // Update expenses table
     const exp = r.manual_expenses || {};
     const salaries = r.salaries || {};
