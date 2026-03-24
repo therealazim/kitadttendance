@@ -590,25 +590,79 @@
 
 <!-- MAOSH HISOBLASH -->
 <div class="page" id="pg-salary">
-  <div class="gsal">
-    <div>
-      <div class="fb">
-        <div class="ft"><i class="lucide lucide-calculator"></i> Maosh hisoblash</div>
-        <div class="fg"><label>Mutaxassislik</label>
-          <select id="salsp" class="inp" onchange="loadSalT()">
-            <option value="">Tanlang...</option>
-            <option value="IT"><i class="lucide lucide-laptop-code"></i> IT</option>
-            <option value="Koreys tili"><i class="lucide lucide-language"></i> Koreys tili</option>
-          </select>
+  <!-- Tabs for Teachers and Office -->
+  <div class="tabrow" style="margin-bottom:16px">
+    <button class="tab on" onclick="showSalaryTab('teacher',this)"><i class="lucide lucide-user"></i> O'qituvchilar</button>
+    <button class="tab" onclick="showSalaryTab('office',this)"><i class="lucide lucide-briefcase"></i> Ofis xodimlari</button>
+  </div>
+  
+  <!-- Teacher Salary Section -->
+  <div id="salary-tab-teacher" class="salary-tab">
+    <div class="gsal">
+      <div>
+        <div class="fb">
+          <div class="ft"><i class="lucide lucide-calculator"></i> O'qituvchi maoshini hisoblash</div>
+          <div class="fg"><label>Mutaxassislik</label>
+            <select id="salsp" class="inp" onchange="loadSalT()">
+              <option value="">Tanlang...</option>
+              <option value="IT"><i class="lucide lucide-laptop-code"></i> IT</option>
+              <option value="Koreys tili"><i class="lucide lucide-language"></i> Koreys tili</option>
+            </select>
+          </div>
+          <div class="fg"><label>O'qituvchi</label>
+            <select id="salte" class="inp" onchange="loadSalBr()"><option value="">Avval fan tanlang</option></select>
+          </div>
         </div>
-        <div class="fg"><label>O'qituvchi</label>
-          <select id="salte" class="inp" onchange="loadSalBr()"><option value="">Avval fan tanlang</option></select>
-        </div>
+        <div id="salbrs"></div>
+        <button class="btn bp bfull" id="salbtn" onclick="calcSal()" style="display:none"><i class="lucide lucide-calculator"></i> Hisoblash</button>
       </div>
-      <div id="salbrs"></div>
-      <button class="btn bp bfull" id="salbtn" onclick="calcSal()" style="display:none"><i class="lucide lucide-calculator"></i> Hisoblash</button>
+      <div id="salres"><div class="empty"><div class="ei"><i class="lucide lucide-calculator"></i></div>O'qituvchi tanlang</div></div>
     </div>
-    <div id="salres"><div class="empty"><div class="ei"><i class="lucide lucide-calculator"></i></div>O'qituvchi tanlang</div></div>
+  </div>
+  
+  <!-- Office Salary Section -->
+  <div id="salary-tab-office" class="salary-tab" style="display:none">
+    <div class="gsal">
+      <div>
+        <div class="fb">
+          <div class="ft"><i class="lucide lucide-briefcase"></i> Ofis xodimi oylik hisoblash</div>
+          <div class="fg"><label>Xodim</label>
+            <select id="off-emp" class="inp" onchange="loadOfficeData()">
+              <option value="">Tanlang...</option>
+            </select>
+          </div>
+          <div class="fg"><label>Lavozim</label>
+            <select id="off-pos" class="inp" onchange="loadOfficeBuildings()">
+              <option value="">Tanlang...</option>
+            </select>
+          </div>
+          <div class="fg"><label>Hovli</label>
+            <select id="off-bld" class="inp">
+              <option value="">Avval lavozim tanlang</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Penalties Section -->
+        <div class="fb" id="off-penalties-section" style="display:none">
+          <div class="ft"><i class="lucide lucide-alert-triangle"></i> Jarimalar</div>
+          <div id="off-penalties-list"></div>
+        </div>
+        
+        <!-- Expenses Section -->
+        <div class="fb" id="off-expenses-section" style="display:none">
+          <div class="ft"><i class="lucide lucide-receipt"></i> Xarajat cheklari</div>
+          <div class="fg"><label>Cheklar summasi (so'm)</label>
+            <input type="number" id="off-expenses" class="inp" placeholder="0" value="0">
+          </div>
+        </div>
+        
+        <button class="btn bp bfull" id="off-calc-btn" onclick="calcOfficeSalary()" style="display:none">
+          <i class="lucide lucide-calculator"></i> Hisoblash
+        </button>
+      </div>
+      <div id="off-sal-res"><div class="empty"><div class="ei"><i class="lucide lucide-briefcase"></i></div>Xodim tanlang</div></div>
+    </div>
   </div>
 </div>
 
@@ -1940,6 +1994,219 @@ if(!_salRes){toast('<i class="lucide lucide-exclamation-triangle"></i> Avval his
 try{const r=await fetch('/admin/api/salary/excel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(_salRes)});if(!r.ok)throw new Error('HTTP '+r.status);const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`Oylik_${_salRes.teacher_name}.xlsx`;a.click();URL.revokeObjectURL(url);toast('<i class="lucide lucide-check"></i> Excel yuklab olindi');}
 catch(e){toast('<i class="lucide lucide-times"></i> '+e.message);}
 }
+
+// --- OFFICE SALARY FUNCTIONS ---
+let OFF_SALARY_STRUCTURE = null;
+
+function showSalaryTab(tab, btn) {
+  document.querySelectorAll('.salary-tab').forEach(t => t.style.display = 'none');
+  document.querySelectorAll('.tabrow .tab').forEach(b => b.classList.remove('on'));
+  document.getElementById('salary-tab-' + tab).style.display = 'block';
+  if (btn) btn.classList.add('on');
+  
+  if (tab === 'office' && !OFF_SALARY_STRUCTURE) {
+    loadSalaryStructure();
+  }
+}
+
+async function loadSalaryStructure() {
+  const r = await api('/admin/api/salary/structure');
+  if (r?.ok) {
+    OFF_SALARY_STRUCTURE = r;
+    // Populate position dropdown
+    const posSelect = document.getElementById('off-pos');
+    posSelect.innerHTML = '<option value="">Tanlang...</option>';
+    for (const [key, pos] of Object.entries(r.salary_structures)) {
+      posSelect.innerHTML += `<option value="${key}">${pos.name}</option>`;
+    }
+    // Load office employees
+    loadOfficeEmployees();
+  }
+}
+
+async function loadOfficeEmployees() {
+  const r = await api('/admin/api/office/employees');
+  if (r?.ok) {
+    const empSelect = document.getElementById('off-emp');
+    empSelect.innerHTML = '<option value="">Tanlang...</option>';
+    r.employees.forEach(emp => {
+      empSelect.innerHTML += `<option value="${emp.user_id}">${emp.name}</option>`;
+    });
+  }
+}
+
+function loadOfficeBuildings() {
+  const pos = document.getElementById('off-pos').value;
+  const bldSelect = document.getElementById('off-bld');
+  
+  if (!pos || !OFF_SALARY_STRUCTURE) {
+    bldSelect.innerHTML = '<option value="">Avval lavozim tanlang</option>';
+    document.getElementById('off-penalties-section').style.display = 'none';
+    document.getElementById('off-expenses-section').style.display = 'none';
+    document.getElementById('off-calc-btn').style.display = 'none';
+    return;
+  }
+  
+  const posData = OFF_SALARY_STRUCTURE.salary_structures[pos];
+  bldSelect.innerHTML = '<option value="">Tanlang...</option>';
+  
+  for (const [key, name] of Object.entries(OFF_SALARY_STRUCTURE.buildings)) {
+    if (posData.salaries[key]) {
+      const salary = fmt(posData.salaries[key]);
+      bldSelect.innerHTML += `<option value="${key}">${name} - ${salary} so'm</option>`;
+    }
+  }
+  
+  // Show penalties section
+  loadPenaltiesList();
+  document.getElementById('off-penalties-section').style.display = 'block';
+  document.getElementById('off-expenses-section').style.display = 'block';
+  document.getElementById('off-calc-btn').style.display = 'block';
+}
+
+function loadPenaltiesList() {
+  if (!OFF_SALARY_STRUCTURE) return;
+  
+  const container = document.getElementById('off-penalties-list');
+  let html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px">';
+  
+  for (const [key, penalty] of Object.entries(OFF_SALARY_STRUCTURE.penalty_types)) {
+    html += `
+      <div class="fg" style="margin:0">
+        <label style="font-size:11px">${penalty.icon} ${penalty.name} (${penalty.percent}%)</label>
+        <input type="number" id="pen-${key}" class="inp" value="0" min="0" placeholder="0">
+      </div>
+    `;
+  }
+  
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function loadOfficeData() {
+  // Reset when employee changes
+  document.getElementById('off-pos').value = '';
+  document.getElementById('off-bld').innerHTML = '<option value="">Avval lavozim tanlang</option>';
+  document.getElementById('off-penalties-section').style.display = 'none';
+  document.getElementById('off-expenses-section').style.display = 'none';
+  document.getElementById('off-calc-btn').style.display = 'none';
+  document.getElementById('off-sal-res').innerHTML = '<div class="empty"><div class="ei"><i class="lucide lucide-briefcase"></i></div>Lavozim tanlang</div>';
+}
+
+async function calcOfficeSalary() {
+  const empId = parseInt(document.getElementById('off-emp').value);
+  const position = document.getElementById('off-pos').value;
+  const building = document.getElementById('off-bld').value;
+  const expenses = parseFloat(document.getElementById('off-expenses').value) || 0;
+  
+  if (!empId || !position || !building) {
+    toast('<i class="lucide lucide-exclamation-triangle"></i> Barcha maydonlarni to\'ldiring');
+    return;
+  }
+  
+  // Collect penalties
+  const penalties = {};
+  for (const key of Object.keys(OFF_SALARY_STRUCTURE.penalty_types)) {
+    const val = parseInt(document.getElementById('pen-' + key)?.value) || 0;
+    if (val > 0) penalties[key] = val;
+  }
+  
+  const btn = document.getElementById('off-calc-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="lucide lucide-loader spin"></i> Hisoblanmoqda...';
+  
+  try {
+    const r = await api('/admin/api/office/salary', {
+      employee_id: empId,
+      position: position,
+      building: building,
+      penalties: penalties,
+      expenses: expenses
+    });
+    
+    if (!r?.ok) {
+      toast('<i class="lucide lucide-times"></i> ' + (r?.error || 'Xatolik'));
+      return;
+    }
+    
+    // Display results
+    let penaltiesHtml = '';
+    if (r.penalties && r.penalties.length > 0) {
+      penaltiesHtml = r.penalties.map(p => `
+        <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--bd)">
+          <span>${p.icon} ${p.name} (${p.count} × ${p.percent}%)</span>
+          <span style="color:var(--rd);font-weight:600">-${fmt(p.amount)} so'm</span>
+        </div>
+      `).join('');
+    }
+    
+    document.getElementById('off-sal-res').innerHTML = `
+      <div class="fb">
+        <div class="ft"><i class="lucide lucide-user"></i> ${r.employee_name}</div>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <span class="b bkr">${r.position}</span>
+          <span class="b bbk">${r.building}</span>
+        </div>
+        
+        <div class="toggle-row">
+          <span class="toggle-lbl">📊 Asosiy oylik</span>
+          <span style="font-weight:600">${fmt(r.base_salary)} so'm</span>
+        </div>
+        
+        ${penaltiesHtml ? `
+          <div style="margin:12px 0">
+            <div style="font-size:12px;font-weight:600;color:var(--rd);margin-bottom:8px">
+              <i class="lucide lucide-alert-triangle"></i> Jarimalar (-${r.total_penalty_percent}%)
+            </div>
+            ${penaltiesHtml}
+            <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;margin-top:8px;font-weight:600">
+              <span>Jami jarima</span>
+              <span style="color:var(--rd)">-${fmt(r.penalty_amount)} so'm</span>
+            </div>
+          </div>
+        ` : ''}
+        
+        ${r.expenses > 0 ? `
+          <div class="toggle-row">
+            <span class="toggle-lbl">🧾 Xarajat cheklari</span>
+            <span style="color:var(--rd);font-weight:600">-${fmt(r.expenses)} so'm</span>
+          </div>
+        ` : ''}
+        
+        <div class="resbox" style="margin-top:16px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0">
+            <span style="color:var(--tx2)">Jami (soliqsiz)</span>
+            <span style="font-weight:600">${fmt(r.gross_salary)} so'm</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--bd)">
+            <span style="color:var(--tx2)">Soliq (${r.tax_rate}%)</span>
+            <span style="color:var(--rd)">-${fmt(r.tax_amount)} so'm</span>
+          </div>
+          <div style="margin-top:12px;text-align:center">
+            <div style="font-size:14px;color:var(--tx2)">Qo'lda beriladigan oylik</div>
+            <div style="font-size:32px;font-weight:800;color:#34d399">${fmt(r.net_salary)} so'm</div>
+            <div style="font-size:12px;color:#34d399"><i class="lucide lucide-money-bill-alt"></i> To'lov</div>
+          </div>
+        </div>
+        
+        <button class="btn bp bfull" style="margin-top:16px" onclick="printOfficeSalary()">
+          <i class="lucide lucide-printer"></i> Chop etish
+        </button>
+      </div>
+    `;
+    
+  } catch(e) {
+    toast('<i class="lucide lucide-times"></i> ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="lucide lucide-calculator"></i> Hisoblash';
+  }
+}
+
+function printOfficeSalary() {
+  window.print();
+}
+
 function rBrs(){const br=D.branches||[];document.getElementById('brcnt').textContent=br.length+' ta';document.getElementById('brlist').innerHTML=br.length?br.map((b,i)=>`<div class="brit"><div class="brnum">${i+1}</div><div style="flex:1"><div style="font-size:12px;font-weight:600">${b.name}</div><div style="font-size:10px;color:var(--tx2)"><i class="lucide lucide-map-marker-alt"></i> ${b.lat?.toFixed(4)||'?'}, ${b.lon?.toFixed(4)||'?'}</div></div><div style="display:flex;gap:4px"><a href="https://yandex.com/maps/?pt=${b.lon},${b.lat}&z=17" target="_blank" class="btn bg" style="font-size:10px;padding:3px 8px"><i class="lucide lucide-map"></i></a><button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="delBr(${i})"><i class="lucide lucide-trash"></i></button></div></div>`).join(''):'<div class="empty"><div class="ei"><i class="lucide lucide-building"></i></div>Filiallar yo\u2019q</div>';}
 async function addBr(){const nm=document.getElementById('brnm').value.trim();const lt=parseFloat(document.getElementById('brlt').value);const ln=parseFloat(document.getElementById('brln').value);if(!nm||isNaN(lt)||isNaN(ln)){toast("<i class='lucide ti-exclamation-triangle'></i> Barcha maydonlarni to'ldiring!");return;}const r=await api('/admin/api/branch/add',{name:nm,lat:lt,lon:ln});if(r?.ok){toast('<i class="lucide lucide-check"></i> '+tr("Filial qo'shildi"));['brnm','brlt','brln'].forEach(id=>document.getElementById(id).value='');await fetchAll();}else toast('<i class="lucide lucide-times"></i> Xatolik');}
 async function delBr(idx){const b=D.branches[idx];if(!confirm(`"${b?.name||idx}" o'chirilsinmi?`))return;const r=await api('/admin/api/branch/delete',{index:idx});if(r?.ok){toast('<i class="lucide lucide-check"></i> '+tr("Filial o'chirildi"));await fetchAll();}else toast('<i class="lucide lucide-times"></i> Xatolik');}

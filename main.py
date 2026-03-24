@@ -102,6 +102,119 @@ LOCATIONS =[
 
 ALLOWED_DISTANCE = 500
 
+# --- OFFICE SALARY STRUCTURES (Korean system) ---
+# Base salaries by position and building (in sums)
+SALARY_STRUCTURES = {
+    'stazher': {  # 수습 - Trainee/Stazher (only Building 2)
+        'name': 'Стажер',
+        'name_ru': 'Стажер',
+        'salaries': {
+            'bin_2': 7500000,  # 2-hovli
+        }
+    },
+    'xodim': {  # 사원 - Staff/Xodim
+        'name': 'Xodim',
+        'name_ru': 'Сотрудник',
+        'salaries': {
+            'bin_1': 8500000,   # 1-hovli
+            'bin_2': 9500000,   # 2-hovli
+            'bin_3': 10500000,  # 3-hovli
+        }
+    },
+    'katta_xodim': {  # 대리 - Deputy/Katta xodim
+        'name': 'Katta xodim',
+        'name_ru': 'Старший сотрудник',
+        'salaries': {
+            'bin_1': 11500000,  # 1-hovli
+            'bin_2': 13000000,  # 2-hovli
+            'bin_3': 14500000,  # 3-hovli
+        }
+    },
+    'boshliq': {  # 관리자 - Manager/Boshliq
+        'name': 'Bo\'lim boshlig\'i',
+        'name_ru': 'Руководитель отдела',
+        'salaries': {
+            'bin_1': 16000000,  # 1-hovli
+            'bin_2': 17500000,  # 2-hovli
+            'bin_3': 19000000,  # 3-hovli
+        }
+    }
+}
+
+# Buildings list
+BUILDINGS = {
+    'bin_1': '1-hovli',
+    'bin_2': '2-hovli',
+    'bin_3': '3-hovli'
+}
+
+# Penalty/Deduction types (percentage of base salary per occurrence)
+PENALTY_TYPES = {
+    'late': {  # 지각 - Lateness
+        'name': 'Kechikish',
+        'name_ru': 'Опоздание',
+        'percent': 1.0,
+        'icon': '⏰'
+    },
+    'unexcused_late': {  # 무단지각 - Unexcused lateness
+        'name': 'Sababsiz kechikish',
+        'name_ru': 'Необоснованное опоздание',
+        'percent': 3.0,
+        'icon': '⚠️'
+    },
+    'early_leave': {  # 조퇴 - Early departure
+        'name': 'Erta ketish',
+        'name_ru': 'Ранний уход',
+        'percent': 2.5,
+        'icon': '🚪'
+    },
+    'absent': {  # 결근 - Absent (excused)
+        'name': 'Kelmagan (sababli)',
+        'name_ru': 'Отсутствие (по причине)',
+        'percent': 5.5,
+        'icon': '📵'
+    },
+    'unexcused_absent': {  # 무단결근 - Unexcused absence
+        'name': 'Sababsiz qoldirish',
+        'name_ru': 'Необоснованное отсутствие',
+        'percent': 12.0,
+        'icon': '❌'
+    },
+    'no_daily_report': {  # 일일업무보고 - Daily work report not submitted
+        'name': 'Kunlik hisobot yo\'q',
+        'name_ru': 'Нет ежедневного отчета',
+        'percent': 1.0,
+        'icon': '📝'
+    },
+    'false_report': {  # 거짓보고 - False report
+        'name': 'Yolg\'on hisobot',
+        'name_ru': 'Ложный отчет',
+        'percent': 2.0,
+        'icon': '🚫'
+    },
+    'unauthorized_leave': {  # 무단이탈 - Unauthorized leave
+        'name': 'Ruxsatsiz chiqish',
+        'name_ru': 'Самовольный уход',
+        'percent': 5.0,
+        'icon': '🏃'
+    },
+    'disobedience': {  # 지시불이행 - Disobedience
+        'name': 'Buyruqni bajarish',
+        'name_ru': 'Неподчинение',
+        'percent': 8.0,
+        'icon': '⛔'
+    },
+    'no_report': {  # 미보고 - Not reported
+        'name': 'Xabar bermagan',
+        'name_ru': 'Не сообщено',
+        'percent': 2.0,
+        'icon': '📢'
+    }
+}
+
+# Tax rate (7.5%)
+TAX_RATE = 7.5
+
 # --- OYLIK HISOBOT UCHUN STATE ---
 class MonthlyReport(StatesGroup):
     waiting_for_date_range = State()
@@ -1425,6 +1538,118 @@ async def admin_api_salary_calc(request):
         )
     except Exception as e:
         return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
+
+async def admin_api_office_salary_calc(request):
+    """Office xodimi oylik hisoblash"""
+    import json as _json
+    try:
+        data = await request.json()
+        employee_id = int(data['employee_id'])
+        position = data['position']  # stazher, xodim, katta_xodim, boshliq
+        building = data['building']  # bin_1, bin_2, bin_3
+        penalties = data.get('penalties', {})  # {penalty_type: count}
+        expenses = data.get('expenses', 0)  # Xarajat cheklari summasi
+        
+        # Get base salary
+        if position not in SALARY_STRUCTURES:
+            return web.Response(text=_json.dumps({'ok': False, 'error': 'Noto\'g\'ri lavozim'}), content_type='application/json')
+        
+        pos_data = SALARY_STRUCTURES[position]
+        
+        # Check if position has this building
+        if building not in pos_data['salaries']:
+            return web.Response(text=_json.dumps({'ok': False, 'error': f'{pos_data["name"]} uchun {BUILDINGS.get(building, building)} mavjud emas'}), content_type='application/json')
+        
+        base_salary = pos_data['salaries'][building]
+        
+        # Calculate penalties
+        total_penalty_percent = 0
+        penalty_details = []
+        
+        for penalty_type, count in penalties.items():
+            if penalty_type in PENALTY_TYPES and count > 0:
+                penalty_info = PENALTY_TYPES[penalty_type]
+                penalty_percent = penalty_info['percent'] * count
+                total_penalty_percent += penalty_percent
+                penalty_amount = base_salary * penalty_percent / 100
+                penalty_details.append({
+                    'type': penalty_type,
+                    'name': penalty_info['name'],
+                    'icon': penalty_info['icon'],
+                    'count': count,
+                    'percent': penalty_info['percent'],
+                    'total_percent': penalty_percent,
+                    'amount': penalty_amount
+                })
+        
+        # Calculate salary
+        penalty_amount = base_salary * total_penalty_percent / 100
+        gross_salary = base_salary - penalty_amount - expenses
+        tax_amount = gross_salary * TAX_RATE / 100
+        net_salary = gross_salary - tax_amount
+        
+        employee_name = user_names.get(employee_id, str(employee_id))
+        
+        return web.Response(
+            text=_json.dumps({
+                'ok': True,
+                'employee_name': employee_name,
+                'position': pos_data['name'],
+                'position_key': position,
+                'building': BUILDINGS.get(building, building),
+                'base_salary': base_salary,
+                'penalties': penalty_details,
+                'total_penalty_percent': total_penalty_percent,
+                'penalty_amount': penalty_amount,
+                'expenses': expenses,
+                'gross_salary': gross_salary,
+                'tax_rate': TAX_RATE,
+                'tax_amount': tax_amount,
+                'net_salary': net_salary
+            }, ensure_ascii=False, default=str),
+            content_type='application/json', charset='utf-8'
+        )
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
+
+
+async def admin_api_office_employees_list(request):
+    """Office xodimlar ro'yxati"""
+    import json as _json
+    try:
+        # Get office workers (Ofis xodimi specialty)
+        result = []
+        for uid in user_ids:
+            spec = user_specialty.get(uid, '')
+            if spec == 'Ofis xodimi' or spec == 'Office':
+                result.append({
+                    'user_id': uid,
+                    'name': user_names.get(uid, 'Noma\'lum'),
+                    'specialty': spec
+                })
+        
+        return web.Response(
+            text=_json.dumps({'ok': True, 'employees': result}, ensure_ascii=False),
+            content_type='application/json', charset='utf-8'
+        )
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
+
+
+async def admin_api_salary_structure(request):
+    """Oylik tuzilmasi va jarima turlarini qaytarish"""
+    import json as _json
+    return web.Response(
+        text=_json.dumps({
+            'ok': True,
+            'salary_structures': SALARY_STRUCTURES,
+            'buildings': BUILDINGS,
+            'penalty_types': PENALTY_TYPES,
+            'tax_rate': TAX_RATE
+        }, ensure_ascii=False),
+        content_type='application/json', charset='utf-8'
+    )
+
 
 async def admin_api_teachers_list(request):
     """O'qituvchilar ro'yxati (maosh uchun) — guruhlar bilan"""
@@ -9304,6 +9529,9 @@ async def main():
     app.router.add_get('/admin/api/student_payments', admin_api_student_payments)
     app.router.add_post('/admin/api/payment/save', miniapp_save_payment)
     app.router.add_post('/admin/api/salary', admin_api_salary_calc)
+    app.router.add_post('/admin/api/office/salary', admin_api_office_salary_calc)
+    app.router.add_get('/admin/api/office/employees', admin_api_office_employees_list)
+    app.router.add_get('/admin/api/salary/structure', admin_api_salary_structure)
     app.router.add_post('/admin/api/group/delete', admin_api_group_delete)
     app.router.add_post('/admin/api/user/delete', admin_api_user_delete)
     app.router.add_get('/admin/api/user/stats', admin_api_user_stats)
