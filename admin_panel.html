@@ -2134,7 +2134,7 @@ async function calcOfficeSalary() {
     if (r.penalties && r.penalties.length > 0) {
       penaltiesHtml = r.penalties.map(p => `
         <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--bd)">
-          <span>${p.icon} ${p.name} (${p.count} × ${p.percent}%)</span>
+          <span>${p.name} (${p.count} × ${p.percent}%)</span>
           <span style="color:var(--rd);font-weight:600">-${fmt(p.amount)} so'm</span>
         </div>
       `).join('');
@@ -2156,12 +2156,12 @@ async function calcOfficeSalary() {
         ${penaltiesHtml ? `
           <div style="margin:12px 0">
             <div style="font-size:12px;font-weight:600;color:var(--rd);margin-bottom:8px">
-              <i class="lucide lucide-alert-triangle"></i> Jarimalar (-${r.total_penalty_percent}%)
+              <i class="lucide lucide-alert-triangle"></i> Jarimalar
             </div>
             ${penaltiesHtml}
             <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;margin-top:8px;font-weight:600">
               <span>Jami jarima</span>
-              <span style="color:var(--rd)">-${fmt(r.penalty_amount)} so'm</span>
+              <span style="color:var(--rd)">-${fmt(r.total_penalty)} so'm</span>
             </div>
           </div>
         ` : ''}
