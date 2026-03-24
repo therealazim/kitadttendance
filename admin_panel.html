@@ -1146,7 +1146,7 @@ salary:()=>t('title_sal'),branches:()=>t('title_br'),reports:()=>t('title_rep'),
 applies:()=>'<i class="lucide lucide-envelope"></i> '+t('nav_applies'),news_admin:()=>'<i class="lucide lucide-newspaper"></i> '+t('nav_news'),site:()=>'<i class="lucide lucide-globe"></i> '+t('nav_site')
 };
 function gp(n,el){document.querySelectorAll('.sbi').forEach(b=>b.classList.remove('on'));document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));el.classList.add('on');document.getElementById('pg-'+n).classList.add('on');window._curPage=n;const tf=TITLES[n];document.getElementById('pgtitle').innerHTML=(typeof tf==='function'?tf():tf)||n;if(n==='stats')ldSt();if(n==='sched')ldSched();if(n==='payments')renderPaymentsPage();if(n==='applies')loadApps();if(n==='news_admin')loadNewsAdmin();if(n==='site')loadSiteConfig();cSb();if(window.lucide)lucide.createIcons();}
-function toast(msg,dur=3200){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
+function toast(msg,dur=3200){const t=document.getElementById('toast');t.innerHTML=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);if(window.lucide)lucide.createIcons();}
 function oM(id){document.getElementById(id).classList.add('open');}
 function cM(id){document.getElementById(id).classList.remove('open');}
 async function api(path,data){try{const r=await fetch(path,data?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}:{});return await r.json();}catch(e){toast('<i class="lucide lucide-times"></i> '+e.message);return null;}}
@@ -1984,10 +1984,11 @@ bonus:parseInt(document.getElementById(`sbbonus${i}`)?.value||0)};
 });
 const btn=document.getElementById('salbtn');btn.disabled=true;btn.textContent='⏳...';
 const r=await api('/admin/api/salary',{teacher_id:uid,specialty:sp,branches});
-btn.disabled=false;btn.textContent='<i class="lucide lucide-money-bill-wave"></i> Hisoblash';
-if(!r?.ok){toast('<i class="lucide lucide-times"></i> '+(r?.error||'Xatolik'));return;}
+btn.disabled=false;btn.innerHTML='<i class="lucide lucide-money-bill-wave"></i> Hisoblash';
+if(!r?.ok){toast('<i class="lucide lucide-times"></i> '+(r?.error||'Xatolik'));if(window.lucide)lucide.createIcons();return;}
 _salRes=r;
 document.getElementById('salres').innerHTML=`<div class="fb"><div class="ft"><i class="lucide lucide-money-bill-wave"></i> ${r.teacher_name}</div><span class="b ${SBG[r.specialty]||'bno'}" style="margin-bottom:12px;display:inline-block">${r.specialty}</span>${r.results.map(x=>`<div class="salbr"><div class="salbrt"><i class="lucide lucide-book"></i> ${x.group_name||x.branch} <span style="font-size:10px;color:var(--tx3)">· <i class="lucide lucide-building"></i> ${x.branch}</span></div><div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0"><span style="color:var(--tx2)">${sp==='IT'?`250k: ${x.s250||0}o'q×${x.l250||0}d | 400k: ${x.s400||0}o'q×${x.l400||0}d | ${x.perc}%`:'O\'quvchi: '+(x.students||0)+' ta · Imtixon: '+x.perc+'%'}</span><span style="color:var(--ac);font-weight:700">${fmt(x.gross)} so\'m</span>${x.bonus?`<div style="font-size:10px;color:#34d399;padding:2px 0">+ <i class="lucide lucide-gift"></i> Bonus: ${fmt(x.bonus)} so'm</div>`:''}</div></div>`).join('')}<div class="resbox"><div style="font-size:10px;color:var(--tx2)">Jami (soliqsiz)</div><div style="font-size:22px;font-weight:800;color:var(--ac)">${fmt(r.total_gross)} so\'m</div><div style="font-size:11px;color:var(--tx2);margin:5px 0">Soliq (7.5%): ${fmt(r.tax)} so\'m</div><div style="font-size:28px;font-weight:800;color:#34d399">${fmt(r.net)} so\'m</div><div style="font-size:11px;color:#34d399"><i class="lucide lucide-money-bill-alt"></i> Qo'lga tegadi</div></div><button class="btn bpu bfull" style="margin-top:12px" onclick="dlSalE()"><i class="lucide lucide-download"></i> Excel yuklab olish</button></div>`;
+if(window.lucide)lucide.createIcons();
 }
 async function dlSalE(){
 if(!_salRes){toast('<i class="lucide lucide-exclamation-triangle"></i> Avval hisoblang');return;}toast('⏳ Excel tayyorlanmoqda...',5000);
