@@ -3962,11 +3962,12 @@ async def admin_api_data(request):
 
         # Foydalanuvchilar
         users_data = []
+        skipped_users = []
         logging.info(f"admin_api_data: user_ids count = {len(user_ids)}")
         for uid in user_ids:
             name = user_names.get(uid, '')
             if not name or '[ARXIV]' in name:
-                logging.debug(f"admin_api_data: skipping user {uid} - name empty or archived")
+                skipped_users.append({'uid': uid, 'name': name, 'reason': 'no name' if not name else 'archived'})
                 continue
             month_att = len([
                 a for a in daily_attendance_log
@@ -3981,7 +3982,9 @@ async def admin_api_data(request):
                 'attendance_count': month_att,
                 'photo_url': user_photo_cache.get(uid),
             })
-        logging.info(f"admin_api_data: returning {len(users_data)} users")
+        logging.info(f"admin_api_data: returning {len(users_data)} users, skipped {len(skipped_users)} users")
+        if skipped_users:
+            logging.info(f"admin_api_data: skipped users: {skipped_users}")
         users_data.sort(key=lambda x: x['name'])
 
         # Guruhlar
