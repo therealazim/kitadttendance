@@ -4602,7 +4602,6 @@ async def handle_location(message: types.Message, state: FSMContext):
                 today_groups.append((g_id, g_data, grp_time_str, is_current))
 
             if today_groups:
-                from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
                 # Joriy (vaqtga mos) guruhlar ustuvor
                 current_groups = [g for g in today_groups if g[3]]
                 show_groups = current_groups if current_groups else today_groups
