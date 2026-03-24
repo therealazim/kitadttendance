@@ -3487,6 +3487,7 @@ async def miniapp_teacher_data(request):
         specialty = user_specialty.get(uid,'')
         status = user_status.get(uid,'active')
         language = user_languages.get(uid,'uz')
+        logging.info(f"miniapp_teacher_data: uid={uid}, name='{name}', specialty='{specialty}', in_user_ids={uid in user_ids}")
         
         return web.Response(
             text=_json.dumps({
