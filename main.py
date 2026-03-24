@@ -2526,7 +2526,7 @@ async def admin_api_reports_attendance(request):
         ws.title = "O'qituvchi Davomati Hisoboti"
         
         # Sarlavha
-        headers = ['#', 'O\'qituvchi', 'Mutaxassislik', 'Filial', 'Sana', 'Vaqt']
+        headers = ['#', 'O\'qituvchi', 'Mutaxassislik', 'Filial', 'Sana', 'Vaqt', 'Holat']
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
             cell.font = Font(bold=True, color="FFFFFF")
@@ -2543,6 +2543,9 @@ async def admin_api_reports_attendance(request):
                 ORDER BY a.date DESC, a.time DESC
             """, start_date_obj, end_date_obj)
         
+        # Guruh jadvalini yuklash
+        all_groups = dict(groups)
+        
         for row_idx, record in enumerate(records, 2):
             ws.cell(row=row_idx, column=1, value=row_idx-1)
             ws.cell(row=row_idx, column=2, value=record['full_name'] or 'Noma\'lum')
@@ -2551,8 +2554,59 @@ async def admin_api_reports_attendance(request):
             ws.cell(row=row_idx, column=5, value=record['date'])
             ws.cell(row=row_idx, column=6, value=str(record['time']))
             
+            # Kechikish/Erta kelishni hisoblash
+            lateness_text = ''
+            try:
+                user_id = record['user_id']
+                branch = record['branch']
+                att_time = str(record['time'])
+                att_date = record['date']
+                
+                # O'qituvchining guruhini topish va dars vaqtini olish
+                for gid, gdata in all_groups.items():
+                    if gdata.get('teacher_id') == user_id and gdata.get('branch') == branch:
+                        day_times = gdata.get('day_times', {})
+                        # Hafta kuni nomini olish
+                        day_names = ['Dushanba', 'Seshanba', 'Chorshanba', 'Payshanba', 'Juma', 'Shanba', 'Yakshanba']
+                        day_name = day_names[att_date.weekday()]
+                        
+                        if day_name in day_times:
+                            lesson_time = day_times[day_name]
+                            # Vaqtni solishtirish
+                            att_parts = list(map(int, att_time.split(':')[:2]))
+                            les_parts = list(map(int, lesson_time.split(':')))
+                            
+                            att_minutes = att_parts[0] * 60 + att_parts[1]
+                            les_minutes = les_parts[0] * 60 + les_parts[1]
+                            
+                            diff = att_minutes - les_minutes
+                            
+                            if diff <= 0:
+                                # Eta yoki vaqtida
+                                if diff == 0:
+                                    lateness_text = '✅ Vaqtida'
+                                else:
+                                    lateness_text = f'🟢 {abs(diff)} daqiqa erta'
+                            else:
+                                # Kechikdi
+                                lateness_text = f'🔴 +{diff} daqiqa kech'
+                            break
+            except Exception as e:
+                logging.error(f"Lateness calculation error: {e}")
+                lateness_text = ''
+            
+            lateness_cell = ws.cell(row=row_idx, column=7, value=lateness_text)
+            
+            # Rang berish
+            if 'erta' in lateness_text:
+                lateness_cell.font = Font(color="228B22")  # Yashil
+            elif 'kech' in lateness_text:
+                lateness_cell.font = Font(color="FF0000")  # Qizil
+            elif 'Vaqtida' in lateness_text:
+                lateness_cell.font = Font(color="0066CC")  # Ko'k
+            
             # Har bir qator uchun moslikni sozlash
-            for col in range(1, 7):
+            for col in range(1, 8):
                 ws.cell(row=row_idx, column=col).alignment = Alignment(horizontal="left", vertical="center")
         
         # Ustun kengliklarini avtomatik sozlash
