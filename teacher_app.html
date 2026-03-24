@@ -138,7 +138,7 @@ input:checked+.tslider:before{transform:translateX(20px);}
 .br-coord{font-size:10px;color:var(--tx2);}
 
 /* ── MODAL ── */
-.overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);display:none;align-items:flex-end;justify-content:center;padding:0;}
+.overlay{position:fixed;inset:0;z-index:9999 !important;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);display:none;align-items:flex-end;justify-content:center;padding:0;}
 .overlay.open{display:flex;}
 .modal{background:var(--card);border-radius:20px 20px 0 0;padding:20px;width:100%;max-height:88vh;overflow-y:auto;animation:mup .2s ease;}
 @keyframes mup{from{transform:translateY(100%)}to{transform:translateY(0)}}
@@ -1086,25 +1086,22 @@ async function changeLang(lang){
 
 // ── PROFILE EDIT ──
 function openEditProfile(){
-  console.log('[openEditProfile] Called, D:', D);
-  console.log('[openEditProfile] D.user:', D?.user);
-  if(!D?.user){
-    console.error('[openEditProfile] D.user is null/undefined');
+  console.log('Open Edit Profile called');
+  if(!D || !D.user){
     toast('❌ Ma\'lumot yuklanmadi','err');
     return;
   }
+  
   const nameInput = document.getElementById('ep-name');
   const specInput = document.getElementById('ep-spec');
-  console.log('[openEditProfile] nameInput:', nameInput, 'specInput:', specInput);
-  if(!nameInput || !specInput){
-    console.error('[openEditProfile] Input elements not found');
-    return;
+  
+  if(nameInput && specInput){
+    nameInput.value = D.user.name || '';
+    specInput.value = D.user.specialty || 'IT';
+    oMod('mod-editprof');
+  } else {
+    console.error('Inputs not found in DOM');
   }
-  nameInput.value=D.user.name||'';
-  specInput.value=D.user.specialty||'IT';
-  console.log('[openEditProfile] Opening modal...');
-  oMod('mod-editprof');
-  console.log('[openEditProfile] Modal opened');
 }
 
 async function saveProfile(){
