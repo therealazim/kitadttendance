@@ -2973,7 +2973,7 @@ async function exportBizReport(){
     Object.entries(r.branches || {}).forEach(([br, d]) => {
       csv += `${br},${d['Koreys tili']||0},${d['IT']||0},${d.total||0}\n`;
     });
-    csv += `\nJAMI,,,' + Object.values(r.branches||{}).reduce((s,d)=>s+d.total,0) + '\n';
+    csv += '\nJAMI,,,' + Object.values(r.branches||{}).reduce((s,d)=>s+d.total,0) + '\n';
     csv += '\nDaromad\nTo\'lovlar,Jami\n' + r.payments.total + ',' + fmt(r.summary.total_revenue) + ' so\'m\n';
     csv += '\nXarajatlar\nTur,Miqdor\n';
     csv += `O'qituvchi maoshi KR,${fmt(r.salaries.teacher_kr)}\n`;
