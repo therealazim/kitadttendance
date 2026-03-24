@@ -2013,9 +2013,9 @@ async function loadSalaryStructure() {
   const r = await api('/admin/api/salary/structure');
   if (r?.ok) {
     OFF_SALARY_STRUCTURE = r;
-    // Populate position dropdown
+    // Populate position dropdown with Korean names
     const posSelect = document.getElementById('off-pos');
-    posSelect.innerHTML = '<option value="">Tanlang...</option>';
+    posSelect.innerHTML = '<option value="">Танланг...</option>';
     for (const [key, pos] of Object.entries(r.salary_structures)) {
       posSelect.innerHTML += `<option value="${key}">${pos.name}</option>`;
     }
@@ -2028,7 +2028,7 @@ async function loadOfficeEmployees() {
   const r = await api('/admin/api/office/employees');
   if (r?.ok) {
     const empSelect = document.getElementById('off-emp');
-    empSelect.innerHTML = '<option value="">Tanlang...</option>';
+    empSelect.innerHTML = '<option value="">Танланг...</option>';
     r.employees.forEach(emp => {
       empSelect.innerHTML += `<option value="${emp.user_id}">${emp.name}</option>`;
     });
