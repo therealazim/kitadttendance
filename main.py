@@ -1490,13 +1490,17 @@ async def admin_api_salary_calc(request):
                 gross += bonus
                 pen_disp = f"{int(penalty_pct)}%"
             else:
-                # KR formula
+                # KR formula - 1 ta dars narxini hisoblab, real darslar soniga ko'paytiramiz
                 base = 1800000 + (students * 100000 if students > 10 else 0)
                 ep_table = {(0,10):900000,(10,20):800000,(20,30):700000,(30,40):600000,(40,50):500000,(50,60):400000,(60,70):300000,(70,80):200000,(80,90):100000,(90,101):0}
                 exam_pen = next((v for (lo,hi),v in ep_table.items() if lo<=perc<hi), 0)
                 mid = base - exam_pen
+                # 1 ta dars narxi = mid / 12 (standart 12 ta dars uchun)
+                per_lesson_rate = mid / 12
+                # Real darslar soniga ko'paytiramiz
+                gross_before_penalty = per_lesson_rate * lessons
                 bonus = float(br.get('bonus', 0))
-                gross = (mid/12*lessons if lessons < 12 else mid) - penalty + bonus
+                gross = gross_before_penalty - penalty + bonus
                 pen_disp = f"{int(penalty):,} so'm".replace(',', ' ')
 
             results.append({
