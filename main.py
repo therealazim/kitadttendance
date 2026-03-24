@@ -3562,6 +3562,116 @@ async def admin_api_data(request):
             dow = (now_uzb - timedelta(days=i)).weekday()
             weekly.append({'day': weekday_names[dow], 'count': count, 'date': d})
 
+        # Live class data - dars jadvali va hozirgi darslar
+        live_classes = {'classes_now': [], 'today_classes': [], 'teachers_status': [], 'upcoming_classes': []}
+        try:
+            current_time = now_uzb.time()
+            current_hour = now_uzb.hour
+            current_minute = now_uzb.minute
+            current_day_name = now_uzb.strftime('%A')
+            
+            # Convert English day names to Uzbek
+            day_map = {
+                'Monday': 'Dushanba', 'Tuesday': 'Seshanba', 'Wednesday': 'Chorshanba',
+                'Thursday': 'Payshanba', 'Friday': 'Juma', 'Saturday': 'Shanba', 'Sunday': 'Yakshanba'
+            }
+            uz_day = day_map.get(current_day_name, current_day_name)
+            
+            # Jami darslar (bugun uchun)
+            all_classes = []
+            for gid, gdata in groups.items():
+                day_times = gdata.get('day_times', {})
+                if uz_day in day_times:
+                    time_str = day_times[uz_day]
+                    teacher_id = gdata.get('teacher_id')
+                    teacher_name = user_names.get(teacher_id, '—') if teacher_id else '—'
+                    
+                    # O'qituvchi davomat tekshirish
+                    teacher_attended = False
+                    teacher_attend_time = ''
+                    for a in today_att:
+                        if a['user_id'] == teacher_id:
+                            teacher_attended = True
+                            teacher_attend_time = a.get('time', '')
+                            break
+                    
+                    class_info = {
+                        'group_id': gid,
+                        'group_name': gdata.get('group_name', ''),
+                        'branch': gdata.get('branch', ''),
+                        'lesson_type': gdata.get('lesson_type', ''),
+                        'teacher_id': teacher_id,
+                        'teacher_name': teacher_name,
+                        'time': time_str,
+                        'student_count': len(group_students.get(gid, [])),
+                        'teacher_attended': teacher_attended,
+                        'teacher_attend_time': teacher_attend_time
+                    }
+                    all_classes.append(class_info)
+            
+            # Vaqt bo'yicha tartiblash
+            all_classes.sort(key=lambda x: x['time'])
+            
+            # Hozirgi darslar (hozir vaqt + - 30 daqiqa)
+            for cls in all_classes:
+                try:
+                    cls_hour, cls_minute = map(int, cls['time'].split(':'))
+                    cls_minutes = cls_hour * 60 + cls_minute
+                    now_minutes = current_hour * 60 + current_minute
+                    
+                    # 30 daqiqa oldin yoki keyin
+                    if abs(cls_minutes - now_minutes) <= 30:
+                        live_classes['classes_now'].append(cls)
+                except:
+                    pass
+            
+            # Barcha bugungi darslar
+            live_classes['today_classes'] = all_classes
+            
+            # O'qituvchilar holati
+            teachers_status = {}
+            for cls in all_classes:
+                tid = cls['teacher_id']
+                if tid and tid not in teachers_status:
+                    teachers_status[tid] = {
+                        'teacher_id': tid,
+                        'teacher_name': cls['teacher_name'],
+                        'specialty': user_specialty.get(tid, ''),
+                        'classes_count': 0,
+                        'attended_count': 0,
+                        'classes': []
+                    }
+                if tid:
+                    teachers_status[tid]['classes_count'] += 1
+                    teachers_status[tid]['classes'].append({
+                        'group_name': cls['group_name'],
+                        'time': cls['time'],
+                        'attended': cls['teacher_attended']
+                    })
+                    if cls['teacher_attended']:
+                        teachers_status[tid]['attended_count'] += 1
+            
+            live_classes['teachers_status'] = list(teachers_status.values())
+            
+            # Keyingi darslar (keyingi 2 soat ichida)
+            upcoming = []
+            for cls in all_classes:
+                try:
+                    cls_hour, cls_minute = map(int, cls['time'].split(':'))
+                    cls_minutes = cls_hour * 60 + cls_minute
+                    now_minutes = current_hour * 60 + current_minute
+                    
+                    # Hozir va keyingi 120 daqiqa ichida
+                    if cls_minutes > now_minutes and cls_minutes - now_minutes <= 120:
+                        upcoming.append(cls)
+                except:
+                    pass
+            
+            live_classes['upcoming_classes'] = upcoming
+            
+        except Exception as e:
+            logging.error(f"live_classes error: {e}")
+
         # Broadcast tarixi
         bc_hist = []
         try:
@@ -3610,6 +3720,7 @@ async def admin_api_data(request):
                 'branches': LOCATIONS,
                 'broadcast_history': bc_hist,
                 'pay_stats': pay_stats,
+                'live_classes': live_classes,
                 'meta': {
                     'total_users': len(users_data),
                     'total_groups': len(groups_data),

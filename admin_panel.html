@@ -22,6 +22,277 @@
 .sidebar .lucide { color: var(--ac); }
 /* Tugmalar ichidagi ikonalar oq bo'lsin */
 .btn .lucide, .apply-btn .lucide, .nav-btn .lucide { color: #fff !important; }
+
+/* Live Statistics Animations */
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes glow {
+  0% { box-shadow: 0 0 5px rgba(79, 142, 247, 0.3); }
+  50% { box-shadow: 0 0 20px rgba(79, 142, 247, 0.6); }
+  100% { box-shadow: 0 0 5px rgba(79, 142, 247, 0.3); }
+}
+
+@keyframes slideRight {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.live-card {
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(30, 41, 59, 0.9));
+  border: 1px solid rgba(79, 142, 247, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  animation: slideIn 0.5s ease-out;
+  transition: all 0.3s ease;
+}
+
+.live-card:hover {
+  border-color: rgba(79, 142, 247, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  animation: pulse 2s infinite;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+.class-now {
+  background: linear-gradient(135deg, rgba(79, 142, 247, 0.1), rgba(139, 92, 246, 0.1));
+  border: 1px solid rgba(79, 142, 247, 0.4);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+  animation: slideRight 0.6s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.class-now::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, #4f8ef7, #8b5cf6);
+  border-radius: 4px 0 0 4px;
+}
+
+.class-now:hover {
+  background: linear-gradient(135deg, rgba(79, 142, 247, 0.15), rgba(139, 92, 246, 0.15));
+  transform: translateX(4px);
+  transition: all 0.3s ease;
+}
+
+.teacher-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: var(--card2);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  animation: fadeIn 0.4s ease-out;
+  transition: all 0.2s ease;
+}
+
+.teacher-status:hover {
+  background: rgba(21, 30, 48, 0.8);
+  transform: scale(1.02);
+}
+
+.teacher-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.progress-ring {
+  width: 60px;
+  height: 60px;
+  position: relative;
+}
+
+.progress-ring svg {
+  transform: rotate(-90deg);
+}
+
+.progress-ring circle {
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.progress-ring .bg {
+  stroke: rgba(255, 255, 255, 0.1);
+}
+
+.progress-ring .progress {
+  stroke: var(--ac);
+  transition: stroke-dashoffset 1s ease;
+}
+
+.progress-ring .text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--tx);
+}
+
+.upcoming-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: rgba(245, 158, 11, 0.1);
+  border-left: 3px solid #f59e0b;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 8px;
+  animation: bounce 2s infinite;
+}
+
+.live-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.live-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.live-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ac);
+}
+
+.refresh-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--tx2);
+}
+
+.refresh-indicator .dot {
+  width: 6px;
+  height: 6px;
+  background: #10b981;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+/* Responsive adjustments for large displays */
+@media (min-width: 1200px) {
+  .live-stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .live-card {
+    padding: 20px;
+  }
+}
+
+@media (min-width: 1600px) {
+  .live-stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Animation for real-time updates */
+.update-flash {
+  animation: glow 1s ease-in-out;
+}
+
+.class-time {
+  font-size: 12px;
+  color: var(--ac);
+  font-weight: 600;
+  background: rgba(79, 142, 247, 0.1);
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.attended-badge {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.not-attended-badge {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
 </style>
 </head>
 <body>
@@ -65,6 +336,98 @@
 <!-- DASHBOARD -->
 <div class="page on" id="pg-dash">
   <div class="sg" id="dashcards"><div class="ldr"><div class="spin"></div></div></div>
+  
+  <!-- LIVE STATISTICS SECTION -->
+  <div class="live-header">
+    <div class="live-title">
+      <i class="lucide lucide-activity"></i>
+      <span>Live Statistics</span>
+      <div class="live-badge">
+        <div class="live-dot"></div>
+        LIVE
+      </div>
+    </div>
+    <div class="refresh-indicator">
+      <div class="dot"></div>
+      <span id="live-update-time">—</span>
+    </div>
+  </div>
+  
+  <div class="live-stats-grid" id="live-stats-grid">
+    <!-- Live classes now -->
+    <div class="live-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div style="font-weight:700;font-size:14px;color:var(--ac)">
+          <i class="lucide lucide-play-circle"></i> Hozirgi darslar
+        </div>
+        <div class="live-badge" style="font-size:10px;padding:3px 8px">
+          <div class="live-dot"></div>
+          <span id="classes-now-count">0</span>
+        </div>
+      </div>
+      <div id="classes-now-list" style="max-height:200px;overflow-y:auto">
+        <div style="text-align:center;color:var(--tx3);padding:20px">
+          <i class="lucide lucide-loader" style="font-size:20px;animation:spin 2s linear infinite"></i>
+          <div style="margin-top:8px">Yuklanmoqda...</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Teachers status -->
+    <div class="live-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div style="font-weight:700;font-size:14px;color:var(--gn)">
+          <i class="lucide lucide-users"></i> O'qituvchilar holati
+        </div>
+        <div style="font-size:11px;color:var(--tx2)">
+          <span id="teachers-attended-count">0</span>/<span id="teachers-total-count">0</span>
+        </div>
+      </div>
+      <div id="teachers-status-list" style="max-height:200px;overflow-y:auto">
+        <div style="text-align:center;color:var(--tx3);padding:20px">
+          <i class="lucide lucide-loader" style="font-size:20px;animation:spin 2s linear infinite"></i>
+          <div style="margin-top:8px">Yuklanmoqda...</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Upcoming classes -->
+    <div class="live-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div style="font-weight:700;font-size:14px;color:var(--og)">
+          <i class="lucide lucide-clock"></i> Keyingi darslar
+        </div>
+        <div style="font-size:11px;color:var(--tx2)">
+          <span id="upcoming-count">0</span> ta
+        </div>
+      </div>
+      <div id="upcoming-classes-list" style="max-height:200px;overflow-y:auto">
+        <div style="text-align:center;color:var(--tx3);padding:20px">
+          <i class="lucide lucide-loader" style="font-size:20px;animation:spin 2s linear infinite"></i>
+          <div style="margin-top:8px">Yuklanmoqda...</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Today's schedule summary -->
+    <div class="live-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div style="font-weight:700;font-size:14px;color:var(--pu)">
+          <i class="lucide lucide-calendar"></i> Bugungi dars jadvali
+        </div>
+        <div style="font-size:11px;color:var(--tx2)">
+          <span id="today-classes-count">0</span> ta dars
+        </div>
+      </div>
+      <div id="today-schedule-list" style="max-height:200px;overflow-y:auto">
+        <div style="text-align:center;color:var(--tx3);padding:20px">
+          <i class="lucide lucide-loader" style="font-size:20px;animation:spin 2s linear infinite"></i>
+          <div style="margin-top:8px">Yuklanmoqda...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <div class="g2">
     <div class="tw"><div class="th"><span class="tt"><i class="lucide lucide-chart-line"></i> <span data-i18n="dash_weekly_att">Haftalik davomat</span></span></div><div id="wkch" style="padding:14px"></div></div>
     <div class="tw"><div class="th"><span class="tt" data-i18n="dash_today_came">Bugun kelganlar</span></div><div id="todtop"></div></div>
@@ -793,7 +1156,215 @@ const wk=D.weekly_stats||[];const mx=Math.max(...wk.map(w=>w.count),1);
 document.getElementById('wkch').innerHTML=`<div style="display:flex;align-items:flex-end;gap:7px;height:90px">${wk.map(w=>{const h=Math.max(Math.round(w.count/mx*82),3);return`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="font-size:10px;color:var(--tx2)">${w.count}</div><div style="height:${h}px;width:100%;background:var(--ac);border-radius:4px 4px 0 0;opacity:.75"></div><div style="font-size:9px;color:var(--tx3)">${w.day}</div></div>`;}).join('')}</div>`;
 const ts=att.slice().sort((a,b)=>a.time>b.time?1:-1).slice(0,8);
 document.getElementById('todtop').innerHTML=ts.length?ts.map(a=>{const u=USERS.find(x=>x.user_id===a.user_id);const c=AVC[a.user_id%AVC.length];const tAv=u?.photo_url?`<img src="${u.photo_url}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:1.5px solid ${c}44;flex-shrink:0" onerror="this.style.display='none'">`:`<div class="avatar" style="background:${c}22;color:${c};border:1.5px solid ${c}44">${ini(u?.name||'?')}</div>`;return`<div class="rnk">${tAv}<div style="flex:1"><div style="font-size:12px">${u?.name||a.user_id}</div><div style="font-size:10px;color:var(--tx2)">${a.branch}</div></div><div style="font-size:11px;color:var(--ac);font-weight:700">${(a.time||'').slice(0,5)}</div></div>`;}).join(''):`<div class="empty"><div class="ei"><i class="lucide lucide-map-marker-alt"></i></div>${t('txt_no_one_came')}</div>`;
+
+// Render live statistics
+rLiveStats();
 }
+
+function rLiveStats() {
+  const liveData = D.live_classes || {
+    classes_now: [],
+    today_classes: [],
+    teachers_status: [],
+    upcoming_classes: []
+  };
+  
+  // Update live update time
+  document.getElementById('live-update-time').textContent = new Date().toLocaleTimeString('uz-UZ', {hour: '2-digit', minute: '2-digit', second: '2-digit'});
+  
+  // Render classes now
+  const classesNow = liveData.classes_now || [];
+  document.getElementById('classes-now-count').textContent = classesNow.length;
+  const classesNowList = document.getElementById('classes-now-list');
+  
+  if (classesNow.length === 0) {
+    classesNowList.innerHTML = `
+      <div style="text-align:center;color:var(--tx3);padding:20px">
+        <i class="lucide lucide-x-circle" style="font-size:24px;color:var(--tx3)"></i>
+        <div style="margin-top:8px">Hozir dars yo'q</div>
+      </div>
+    `;
+  } else {
+    classesNowList.innerHTML = classesNow.map(cls => `
+      <div class="class-now" style="animation-delay:${Math.random() * 0.5}s">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div style="font-weight:700;font-size:13px">${cls.group_name}</div>
+          <div class="class-time">${cls.time}</div>
+        </div>
+        <div style="font-size:11px;color:var(--tx2);display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <i class="lucide lucide-user" style="font-size:10px"></i> ${cls.teacher_name}
+          </div>
+          <div>
+            <i class="lucide lucide-map-pin" style="font-size:10px"></i> ${cls.branch}
+          </div>
+        </div>
+        <div style="margin-top:6px;display:flex;justify-content:space-between;align-items:center">
+          <div style="font-size:10px;color:var(--tx2)">
+            <i class="lucide lucide-users" style="font-size:10px"></i> ${cls.student_count} o'quvchi
+          </div>
+          ${cls.teacher_attended ? 
+            `<div class="attended-badge"><i class="lucide lucide-check" style="font-size:10px"></i> Keldi</div>` : 
+            `<div class="not-attended-badge"><i class="lucide lucide-x" style="font-size:10px"></i> Kelmadi</div>`
+          }
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  // Render teachers status
+  const teachersStatus = liveData.teachers_status || [];
+  document.getElementById('teachers-total-count').textContent = teachersStatus.length;
+  document.getElementById('teachers-attended-count').textContent = teachersStatus.filter(t => t.attended_count > 0).length;
+  const teachersStatusList = document.getElementById('teachers-status-list');
+  
+  if (teachersStatus.length === 0) {
+    teachersStatusList.innerHTML = `
+      <div style="text-align:center;color:var(--tx3);padding:20px">
+        <i class="lucide lucide-user-x" style="font-size:24px;color:var(--tx3)"></i>
+        <div style="margin-top:8px">O'qituvchilar yo'q</div>
+      </div>
+    `;
+  } else {
+    teachersStatusList.innerHTML = teachersStatus.map(teacher => {
+      const progress = teacher.classes_count > 0 ? (teacher.attended_count / teacher.classes_count * 100) : 0;
+      const progressColor = progress >= 80 ? '#10b981' : progress >= 50 ? '#f59e0b' : '#ef4444';
+      const avatarColor = AVC[teacher.teacher_id % AVC.length];
+      
+      return `
+        <div class="teacher-status" style="animation-delay:${Math.random() * 0.3}s">
+          <div class="teacher-avatar" style="background:${avatarColor}22;color:${avatarColor};border:2px solid ${avatarColor}44">
+            ${ini(teacher.teacher_name)}
+          </div>
+          <div style="flex:1">
+            <div style="font-weight:600;font-size:12px;margin-bottom:2px">${teacher.teacher_name}</div>
+            <div style="font-size:10px;color:var(--tx2)">${teacher.specialty || '—'}</div>
+          </div>
+          <div class="progress-ring">
+            <svg width="60" height="60" viewBox="0 0 60 60">
+              <circle class="bg" cx="30" cy="30" r="24"></circle>
+              <circle class="progress" cx="30" cy="30" r="24" 
+                style="stroke-dasharray:150.8;stroke-dashoffset:${150.8 - (150.8 * progress / 100)};stroke:${progressColor}"></circle>
+            </svg>
+            <div class="text">${Math.round(progress)}%</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+  
+  // Render upcoming classes
+  const upcomingClasses = liveData.upcoming_classes || [];
+  document.getElementById('upcoming-count').textContent = upcomingClasses.length;
+  const upcomingClassesList = document.getElementById('upcoming-classes-list');
+  
+  if (upcomingClasses.length === 0) {
+    upcomingClassesList.innerHTML = `
+      <div style="text-align:center;color:var(--tx3);padding:20px">
+        <i class="lucide lucide-clock" style="font-size:24px;color:var(--tx3)"></i>
+        <div style="margin-top:8px">Keyingi 2 soat ichida dars yo'q</div>
+      </div>
+    `;
+  } else {
+    upcomingClassesList.innerHTML = upcomingClasses.map((cls, i) => `
+      <div class="upcoming-item" style="animation-delay:${i * 0.1}s">
+        <div style="font-weight:700;font-size:14px;color:var(--og);min-width:50px">${cls.time}</div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:12px">${cls.group_name}</div>
+          <div style="font-size:10px;color:var(--tx2)">${cls.teacher_name} • ${cls.branch}</div>
+        </div>
+        <div style="font-size:10px;color:var(--tx2)">${cls.student_count} o'quvchi</div>
+      </div>
+    `).join('');
+  }
+  
+  // Render today's schedule
+  const todayClasses = liveData.today_classes || [];
+  document.getElementById('today-classes-count').textContent = todayClasses.length;
+  const todayScheduleList = document.getElementById('today-schedule-list');
+  
+  if (todayClasses.length === 0) {
+    todayScheduleList.innerHTML = `
+      <div style="text-align:center;color:var(--tx3);padding:20px">
+        <i class="lucide lucide-calendar-x" style="font-size:24px;color:var(--tx3)"></i>
+        <div style="margin-top:8px">Bugun dars yo'q</div>
+      </div>
+    `;
+  } else {
+    // Group by time
+    const groupedByTime = {};
+    todayClasses.forEach(cls => {
+      if (!groupedByTime[cls.time]) {
+        groupedByTime[cls.time] = [];
+      }
+      groupedByTime[cls.time].push(cls);
+    });
+    
+    const timeSlots = Object.keys(groupedByTime).sort();
+    todayScheduleList.innerHTML = timeSlots.map((time, i) => `
+      <div style="margin-bottom:12px;animation:fadeIn 0.4s ease-out;animation-delay:${i * 0.1}s">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <div class="class-time">${time}</div>
+          <div style="height:1px;flex:1;background:var(--bd)"></div>
+        </div>
+        ${groupedByTime[time].map(cls => `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 12px;background:var(--card2);border-radius:6px;margin-bottom:4px;font-size:11px">
+            <div>
+              <span style="font-weight:600">${cls.group_name}</span>
+              <span style="color:var(--tx2);margin-left:8px">${cls.branch}</span>
+            </div>
+            <div style="color:var(--tx2)">${cls.teacher_name}</div>
+          </div>
+        `).join('')}
+      </div>
+    `).join('');
+  }
+  
+  // Add flash animation to updated elements
+  document.querySelectorAll('.live-card').forEach(card => {
+    card.classList.add('update-flash');
+    setTimeout(() => card.classList.remove('update-flash'), 1000);
+  });
+  
+  // Refresh lucide icons
+  if (window.lucide) lucide.createIcons();
+}
+
+// Auto-refresh live statistics every 30 seconds
+let liveRefreshInterval = null;
+
+function startLiveRefresh() {
+  if (liveRefreshInterval) clearInterval(liveRefreshInterval);
+  liveRefreshInterval = setInterval(async () => {
+    // Only refresh if dashboard is active
+    if (window._curPage === 'dash') {
+      try {
+        const r = await fetch(_ap('/admin/api/data'));
+        if (r.ok) {
+          const txt = await r.text();
+          const newData = JSON.parse(txt);
+          D = { ...D, ...newData };
+          rLiveStats();
+        }
+      } catch (e) {
+        console.error('Live refresh error:', e);
+      }
+    }
+  }, 30000); // Refresh every 30 seconds
+}
+
+function stopLiveRefresh() {
+  if (liveRefreshInterval) {
+    clearInterval(liveRefreshInterval);
+    liveRefreshInterval = null;
+  }
+}
+
+// Start live refresh when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  startLiveRefresh();
+});
+
 function rUsers(list){
 document.getElementById('ucnt').textContent=list.length+' ta';const tb=document.getElementById('utb');
 if(!list.length){tb.innerHTML=`<tr><td colspan="5"><div class="empty"><div class="ei"><i class="lucide lucide-user"></i></div>${t('txt_no_data')}</div></td></tr>`;return;}
