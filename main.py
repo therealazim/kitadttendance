@@ -2630,6 +2630,82 @@ async def admin_api_reports_attendance(request):
             summary_row = len(records) + 4
             ws.cell(row=summary_row, column=1, value="JAMI:").font = Font(bold=True)
             ws.cell(row=summary_row, column=2, value=len(records)).font = Font(bold=True)
+            
+            # Har bir o'qituvchi uchun kechikish statistikasi
+            teacher_lateness = {}
+            for record in records:
+                user_id = record['user_id']
+                branch = record['branch']
+                att_time = str(record['time'])
+                att_date = record['date']
+                
+                # Kechikishni tekshirish
+                is_late = False
+                try:
+                    for gid, gdata in all_groups.items():
+                        if gdata.get('teacher_id') == user_id and gdata.get('branch') == branch:
+                            day_times = gdata.get('day_times', {})
+                            day_names = ['Dushanba', 'Seshanba', 'Chorshanba', 'Payshanba', 'Juma', 'Shanba', 'Yakshanba']
+                            day_name = day_names[att_date.weekday()]
+                            
+                            if day_name in day_times:
+                                lesson_time = day_times[day_name]
+                                att_parts = list(map(int, att_time.split(':')[:2]))
+                                les_parts = list(map(int, lesson_time.split(':')))
+                                att_minutes = att_parts[0] * 60 + att_parts[1]
+                                les_minutes = les_parts[0] * 60 + les_parts[1]
+                                diff = att_minutes - les_minutes
+                                
+                                if diff > 0:  # Kechikdi
+                                    is_late = True
+                                break
+                except:
+                    pass
+                
+                teacher_name = record['full_name'] or 'Noma\'lum'
+                if teacher_name not in teacher_lateness:
+                    teacher_lateness[teacher_name] = {'late': 0, 'total': 0, 'dates': []}
+                teacher_lateness[teacher_name]['total'] += 1
+                if is_late:
+                    teacher_lateness[teacher_name]['late'] += 1
+                    teacher_lateness[teacher_name]['dates'].append(str(att_date))
+            
+            # Kechikish statistikasi jadvali
+            summary_row = len(records) + 6
+            ws.cell(row=summary_row, column=1, value="O'QITUVCHILARNING KECHIKISH STATISTIKASI").font = Font(bold=True, size=12)
+            ws.merge_cells(start_row=summary_row, start_column=1, end_row=summary_row, end_column=4)
+            
+            # Sarlavha
+            summary_row += 1
+            summary_headers = ['O\'qituvchi', 'Jami davomat', 'Kechikdi', 'Kechikish kunlari']
+            for col, header in enumerate(summary_headers, 1):
+                cell = ws.cell(row=summary_row, column=col, value=header)
+                cell.font = Font(bold=True, color="FFFFFF")
+                cell.fill = PatternFill(start_color="8B0000", end_color="8B0000", fill_type="solid")
+                cell.alignment = Alignment(horizontal="center", vertical="center")
+            
+            # Har bir o'qituvchi uchun qator
+            for teacher_name, stats in teacher_lateness.items():
+                summary_row += 1
+                late_dates = ', '.join(sorted(set(stats['dates']))) if stats['dates'] else '-'
+                late_info = f"{stats['late']} martta kech qoldi" if stats['late'] > 0 else "Kechikmadi"
+                
+                ws.cell(row=summary_row, column=1, value=teacher_name)
+                ws.cell(row=summary_row, column=2, value=stats['total'])
+                late_cell = ws.cell(row=summary_row, column=3, value=stats['late'])
+                
+                # Kechikish soniga qarab rang berish
+                if stats['late'] == 0:
+                    late_cell.font = Font(color="006600")  # Yashil
+                elif stats['late'] <= 3:
+                    late_cell.font = Font(color="FF8C00")  # To'q sariq
+                else:
+                    late_cell.font = Font(color="FF0000")  # Qizil
+                
+                ws.cell(row=summary_row, column=4, value=late_info + (f" ({late_dates})" if stats['late'] > 0 else ""))
+                
+                for col in range(1, 5):
+                    ws.cell(row=summary_row, column=col).alignment = Alignment(horizontal="left", vertical="center")
         
         # Excel faylni bytes ga aylantirish
         output = io.BytesIO()
