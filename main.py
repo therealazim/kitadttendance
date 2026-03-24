@@ -105,110 +105,96 @@ ALLOWED_DISTANCE = 500
 # --- OFFICE SALARY STRUCTURES (Korean system) ---
 # Base salaries by position and building (in sums)
 SALARY_STRUCTURES = {
-    'stazher': {  # 수습 - Trainee/Stazher (only Building 2)
-        'name': 'Стажер',
-        'name_ru': 'Стажер',
+    'soeup': {  # 수습 - Trainee
+        'name': '수습',
         'salaries': {
-            'bin_2': 7500000,  # 2-hovli
+            'bin_2': 7500000,
         }
     },
-    'xodim': {  # 사원 - Staff/Xodim
-        'name': 'Xodim',
-        'name_ru': 'Сотрудник',
+    'sawon': {  # 사원 - Staff
+        'name': '사원',
         'salaries': {
-            'bin_1': 8500000,   # 1-hovli
-            'bin_2': 9500000,   # 2-hovli
-            'bin_3': 10500000,  # 3-hovli
+            'bin_1': 8500000,
+            'bin_2': 9500000,
+            'bin_3': 10500000,
         }
     },
-    'katta_xodim': {  # 대리 - Deputy/Katta xodim
-        'name': 'Katta xodim',
-        'name_ru': 'Старший сотрудник',
+    'daeri': {  # 대리 - Deputy
+        'name': '대리',
         'salaries': {
-            'bin_1': 11500000,  # 1-hovli
-            'bin_2': 13000000,  # 2-hovli
-            'bin_3': 14500000,  # 3-hovli
+            'bin_1': 11500000,
+            'bin_2': 13000000,
+            'bin_3': 14500000,
         }
     },
-    'boshliq': {  # 관리자 - Manager/Boshliq
-        'name': 'Bo\'lim boshlig\'i',
-        'name_ru': 'Руководитель отдела',
+    'gwallija': {  # 관리자 - Manager
+        'name': '관리자',
         'salaries': {
-            'bin_1': 16000000,  # 1-hovli
-            'bin_2': 17500000,  # 2-hovli
-            'bin_3': 19000000,  # 3-hovli
+            'bin_1': 16000000,
+            'bin_2': 17500000,
+            'bin_3': 19000000,
         }
     }
 }
 
-# Buildings list
+# Buildings list (Korean style)
 BUILDINGS = {
-    'bin_1': '1-hovli',
-    'bin_2': '2-hovli',
-    'bin_3': '3-hovli'
+    'bin_1': '1호봉',
+    'bin_2': '2호봉',
+    'bin_3': '3호봉'
 }
 
-# Penalty/Deduction types (percentage of base salary per occurrence)
+# Penalty/Deduction types (Korean names, fixed amounts from image)
 PENALTY_TYPES = {
-    'late': {  # 지각 - Lateness
-        'name': 'Kechikish',
-        'name_ru': 'Опоздание',
+    'jigak': {  # 지각 - Lateness
+        'name': '지각',
         'percent': 1.0,
-        'icon': '⏰'
+        'amounts': {'soeup': 75000, 'sawon': 95000, 'daeri': 115000, 'gwallija': 160000}
     },
-    'unexcused_late': {  # 무단지각 - Unexcused lateness
-        'name': 'Sababsiz kechikish',
-        'name_ru': 'Необоснованное опоздание',
+    'mudan_jigak': {  # 무단지각 - Unexcused lateness
+        'name': '무단지각',
         'percent': 3.0,
-        'icon': '⚠️'
+        'amounts': {'soeup': 225000, 'sawon': 285000, 'daeri': 345000, 'gwallija': 480000}
     },
-    'early_leave': {  # 조퇴 - Early departure
-        'name': 'Erta ketish',
-        'name_ru': 'Ранний уход',
+    'jote': {  # 조퇴 - Early departure
+        'name': '조퇴',
         'percent': 2.5,
-        'icon': '🚪'
+        'amounts': {'soeup': 187500, 'sawon': 237500, 'daeri': 287500, 'gwallija': 400000}
     },
-    'absent': {  # 결근 - Absent (excused)
-        'name': 'Kelmagan (sababli)',
-        'name_ru': 'Отсутствие (по причине)',
+    'gyeolgun': {  # 결근 - Absent
+        'name': '결근',
         'percent': 5.5,
-        'icon': '📵'
+        'amounts': {'soeup': 412500, 'sawon': 522500, 'daeri': 632500, 'gwallija': 880000}
     },
-    'unexcused_absent': {  # 무단결근 - Unexcused absence
-        'name': 'Sababsiz qoldirish',
-        'name_ru': 'Необоснованное отсутствие',
+    'mudan_gyeolgun': {  # 무단결근 - Unexcused absence
+        'name': '무단결근',
         'percent': 12.0,
-        'icon': '❌'
+        'amounts': {'soeup': 900000, 'sawon': 1140000, 'daeri': 1380000, 'gwallija': 1920000}
     },
-    'no_daily_report': {  # 일일업무보고 - Daily work report not submitted
-        'name': 'Kunlik hisobot yo\'q',
-        'name_ru': 'Нет ежедневного отчета',
+    'ilil_eopmu_bogeo': {  # 일일업무보고 - Daily report
+        'name': '일일업무보고',
         'percent': 1.0,
-        'icon': '📝'
+        'amounts': {'soeup': 75000, 'sawon': 95000, 'daeri': 115000, 'gwallija': 160000}
     },
-    'false_report': {  # 거짓보고 - False report
-        'name': 'Yolg\'on hisobot',
-        'name_ru': 'Ложный отчет',
+    'geojit_bogeo': {  # 거짓보고 - False report
+        'name': '거짓보고',
         'percent': 2.0,
-        'icon': '🚫'
+        'amounts': {'soeup': 150000, 'sawon': 190000, 'daeri': 230000, 'gwallija': 320000}
     },
-    'unauthorized_leave': {  # 무단이탈 - Unauthorized leave
-        'name': 'Ruxsatsiz chiqish',
-        'name_ru': 'Самовольный уход',
+    'mudan_ital': {  # 무단이탈 - Unauthorized leave
+        'name': '무단이탈',
         'percent': 5.0,
-        'icon': '🏃'
+        'amounts': {'soeup': 375000, 'sawon': 475000, 'daeri': 575000, 'gwallija': 800000}
     },
-    'disobedience': {  # 지시불이행 - Disobedience
-        'name': 'Buyruqni bajarish',
-        'name_ru': 'Неподчинение',
+    'jisi_bulihhaeng': {  # 지시불이행 - Disobedience
+        'name': '지시불이행',
         'percent': 8.0,
-        'icon': '⛔'
+        'amounts': {'soeup': 600000, 'sawon': 760000, 'daeri': 920000, 'gwallija': 1280000}
     },
-    'no_report': {  # 미보고 - Not reported
-        'name': 'Xabar bermagan',
-        'name_ru': 'Не сообщено',
+    'mi_bogeo': {  # 미보고 - Not reported
+        'name': '미보고',
         'percent': 2.0,
-        'icon': '📢'
+        'amounts': {'soeup': 150000, 'sawon': 190000, 'daeri': 230000, 'gwallija': 320000}
     }
 }
 
@@ -1540,12 +1526,12 @@ async def admin_api_salary_calc(request):
         return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
 
 async def admin_api_office_salary_calc(request):
-    """Office xodimi oylik hisoblash"""
+    """Office xodimi oylik hisoblash - Korean system"""
     import json as _json
     try:
         data = await request.json()
         employee_id = int(data['employee_id'])
-        position = data['position']  # stazher, xodim, katta_xodim, boshliq
+        position = data['position']  # soeup, sawon, daeri, gwallija
         building = data['building']  # bin_1, bin_2, bin_3
         penalties = data.get('penalties', {})  # {penalty_type: count}
         expenses = data.get('expenses', 0)  # Xarajat cheklari summasi
@@ -1562,29 +1548,27 @@ async def admin_api_office_salary_calc(request):
         
         base_salary = pos_data['salaries'][building]
         
-        # Calculate penalties
-        total_penalty_percent = 0
+        # Calculate penalties using fixed amounts from the image
+        total_penalty = 0
         penalty_details = []
         
         for penalty_type, count in penalties.items():
             if penalty_type in PENALTY_TYPES and count > 0:
                 penalty_info = PENALTY_TYPES[penalty_type]
-                penalty_percent = penalty_info['percent'] * count
-                total_penalty_percent += penalty_percent
-                penalty_amount = base_salary * penalty_percent / 100
+                # Get fixed amount for this position
+                fixed_amount = penalty_info['amounts'].get(position, 0)
+                penalty_amount = fixed_amount * count
+                total_penalty += penalty_amount
                 penalty_details.append({
                     'type': penalty_type,
                     'name': penalty_info['name'],
-                    'icon': penalty_info['icon'],
                     'count': count,
-                    'percent': penalty_info['percent'],
-                    'total_percent': penalty_percent,
+                    'base_amount': fixed_amount,
                     'amount': penalty_amount
                 })
         
         # Calculate salary
-        penalty_amount = base_salary * total_penalty_percent / 100
-        gross_salary = base_salary - penalty_amount - expenses
+        gross_salary = base_salary - total_penalty - expenses
         tax_amount = gross_salary * TAX_RATE / 100
         net_salary = gross_salary - tax_amount
         
@@ -1599,8 +1583,7 @@ async def admin_api_office_salary_calc(request):
                 'building': BUILDINGS.get(building, building),
                 'base_salary': base_salary,
                 'penalties': penalty_details,
-                'total_penalty_percent': total_penalty_percent,
-                'penalty_amount': penalty_amount,
+                'total_penalty': total_penalty,
                 'expenses': expenses,
                 'gross_salary': gross_salary,
                 'tax_rate': TAX_RATE,
