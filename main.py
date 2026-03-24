@@ -675,6 +675,8 @@ TRANSLATIONS = {
         'group_students_title': "O'quvchilar davomati",
         'group_students_submit': "📤 Davomatni yuborish",
         'group_students_sent': "✅ O'quvchilar davomati yuborildi!",
+        'blocked_user': "❌ Siz bloklangansiz. Admin bilan bog'laning.",
+        'ask_language': "🌐 Tilni tanlang / Выберите язык:",
         'buttons': {
             'attendance': "📍 Kelganimni tasdiqlash",
             'my_stats': "📊 Mening statistikam",
@@ -686,8 +688,83 @@ TRANSLATIONS = {
             'language': "🌐 Til",
             'profile': "👤 Mening profilim",
             'schedule': "📅 Dars jadvalim",
-            'stats': "📊 Mening statistikam",
-            'branches': "🏢 Filiallar"
+            'stats': "📊 Mening statistikam"
+        }
+    },
+    'ru': {
+        'welcome': "🌟 Добро пожаловать в бот HANCOM ACADEMY для регистрации преподавателей, {name}!",
+        'ask_name': "👤 Пожалуйста, введите ваше имя и фамилию:\n\nНапример: Али Каримов",
+        'ask_specialty': "📚 Какой предмет вы преподаете?",
+        'specialty_it': "💻 IT",
+        'specialty_korean': "🇰🇷 Корейский язык",
+        'specialty_office': "🏢 Офисный сотрудник",
+        'stats': "📊 Ваша статистика:",
+        'no_stats': "💭 Вы еще не отмечали присутствие",
+        'branches': "🏢 Доступные филиалы (локации):",
+        'help': "🤖 Инструкция по использованию бота:\n\n📍 Для отметки присутствия:\n• Нажмите кнопку \"📍 Подтвердить приход\"\n• Отправьте ваше местоположение\n\n📊 Статистика:\n• \"📊 Моя статистика\" - ваша личная история посещений\n• \"🏢 Филиалы\" - список всех филиалов\n\n⚠️ Примечания:\n• В каждом филиале можно отмечаться только 1 раз в день\n• Отметка рассчитывается по времени Ташкента",
+        'attendance_success': "✅ Присутствие подтверждено!\n\n🏫 Филиал: {branch}\n📅 Дата: {date}\n⏰ Время: {time}\n📊 Посещений в этом месяце: {count} раз\n📍 Расстояние: {distance:.1f} метров",
+        'already_attended': "⚠️ Вы уже отметились в {branch} сегодня!",
+        'not_in_area': "❌ Вы находитесь вне территории образовательных учреждений!",
+        'daily_reminder': "⏰ Напоминание! Вы еще не отметились сегодня. Подтвердите присутствие для начала рабочего дня!",
+        'weekly_top': "🏆 Самые активные преподаватели недели:\n\n{top_list}",
+        'monthly_report': "📊 Отчет за {month}\n\n{report}",
+        'language_changed': "✅ Язык изменен: Русский",
+        'language_prompt': "Пожалуйста, выберите язык:",
+        'view_schedules': "📋 Мое расписание (PDF)",
+        'my_groups': "👥 Мои группы",
+        'my_schedule': "📅 Ваше расписание в формате PDF готово!",
+        'no_schedules': "📭 Вам еще не назначено расписание.",
+        'schedule_updated': "📢 Ваше расписание обновлено!",
+        'schedule_deleted_notify': "📢 Ваше расписание удалено.",
+        'reminder': "⏰ Напоминание!\n\nСегодня в {time} у вас занятие в филиале {branch}.\nНе забудьте отметиться!",
+        'lesson_started_attended': "✅ Занятие началось и вы успешно отметились!\n\nМожете сосредоточиться на уроке.\nНе забудьте отметить присутствие пришедших учеников.\n\nХорошего дня!",
+        'lesson_started_not_attended': "⚠️ Ваше занятие началось, но вы еще не отметились!\n\n📌 Занятие в филиале {branch} началось в {time}.\n📍 Пожалуйста, немедленно отметьтесь или сообщите причину администратору.\n\nДля отметки нажмите кнопку 📍 Подтвердить приход.",
+        'select_teacher': "👤 Выберите преподавателя:",
+        'select_lesson_type': "📚 Выберите тип занятия:",
+        'active_schedules': "📋 Активное расписание",
+        'no_active_schedules': "📭 Активное расписание отсутствует.",
+        'schedule_info': "{teacher} [{specialty}]\n🏢 {branch}\n📚 {lesson_type}\n{days_times}",
+        'enter_date': "📅 Введите дату для отчета (формат: YYYY-MM-DD)\nНапример: 2026-03-01",
+        'invalid_date': "❌ Неверный формат даты. Попробуйте снова:",
+        'select_broadcast_specialty': "📢 Какой группе преподавателей отправить сообщение?",
+        'all_teachers': "👥 Все",
+        'edit_schedule': "✏️ Изменить расписание",
+        'select_new_branch': "🏢 Выберите новый филиал:",
+        'select_new_lesson_type': "📚 Выберите новый тип занятия:",
+        'select_new_weekdays': "📅 Выберите новые дни:",
+        'enter_new_time': "⏰ Введите новое время для {weekday}:\n\nФормат: HH:MM (например: 09:00)",
+        'ontime': "Вовремя",
+        'late': "Опоздал",
+        'my_profile': "👤 Мой профиль",
+        'profile_info': "👤 Ваш профиль:\n\nИмя: {name}\nСпециальность: {specialty}\nЯзык: {lang}",
+        'edit_name': "✏️ Изменить имя",
+        'edit_my_specialty': "📚 Изменить специальность",
+        'enter_new_name': "Введите новое имя и фамилию:",
+        'name_updated': "✅ Ваше имя успешно обновлено!",
+        'back_to_menu': "🔙 Вернуться в меню",
+        'select_new_spec': "Выберите новую специальность:",
+        'spec_updated': "✅ Специальность обновлена!",
+        'back_btn': "🔙 Назад",
+        'pdf_title': "Расписание занятий",
+        'pdf_headers': ['День', 'Время'],
+        'pdf_created': "Дата создания",
+        'group_students_title': "Посещаемость учеников",
+        'group_students_submit': "📤 Отправить данные",
+        'group_students_sent': "✅ Данные о посещаемости отправлены!",
+        'blocked_user': "❌ Вы заблокированы. Свяжитесь с администратором.",
+        'ask_language': "🌐 Выберите язык:",
+        'buttons': {
+            'attendance': "📍 Подтвердить приход",
+            'my_stats': "📊 Моя статистика",
+            'branches': "🏢 Филиалы",
+            'top_week': "🏆 Топ недели",
+            'view_schedules': "📋 Мое расписание (PDF)",
+            'my_groups': "👥 Мои группы",
+            'help': "❓ Помощь",
+            'language': "🌐 Язык",
+            'profile': "👤 Мой профиль",
+            'schedule': "📅 Мое расписание",
+            'stats': "📊 Моя статистика"
         }
     }
 }
@@ -848,7 +925,12 @@ async def get_combined_report_pdf(report_date: d_date) -> io.BytesIO:
 async def main_keyboard(user_id: int):
     builder = ReplyKeyboardBuilder()
     lang = user_languages.get(user_id, 'uz')
-    app_btn_text = '📱 HANCOM Teacher'
+    if lang == 'ru':
+        app_btn_text = '📱 HANCOM Teacher'
+        lang_btn_text = '\U0001F310 Язык'
+    else:
+        app_btn_text = '📱 HANCOM Teacher'
+        lang_btn_text = '\U0001F310 Til'
     webapp_url = f"{BASE_URL}/teacher?user_id={user_id}&section=stats"
     buttons = [
         KeyboardButton(text=get_button_text(user_id, 'attendance'), request_location=True),
@@ -856,9 +938,10 @@ async def main_keyboard(user_id: int):
             text=app_btn_text,
             web_app=types.WebAppInfo(url=webapp_url)
         ),
+        KeyboardButton(text=lang_btn_text),
     ]
     builder.add(*buttons)
-    builder.adjust(2)
+    builder.adjust(2, 1)
     return builder.as_markup(resize_keyboard=True)
 
 
@@ -866,6 +949,7 @@ async def language_selection_keyboard():
     builder = InlineKeyboardBuilder()
     builder.row(
         InlineKeyboardButton(text="🇺🇿 O'zbekcha", callback_data="lang_uz"),
+        InlineKeyboardButton(text="🇷🇺 Русский", callback_data="lang_ru"),
     )
     return builder.as_markup()
 
@@ -3873,10 +3957,12 @@ async def set_initial_language(callback: types.CallbackQuery, state: FSMContext)
 @dp.message(F.text.in_({'\U0001F310 Til', '\U0001F310 Язык', '\U0001F310 언어'}))
 async def change_language(message: types.Message):
     user_id = message.from_user.id
-    user_languages[user_id] = 'uz'
-    await db.save_user(user_id, user_names.get(user_id, ''), user_specialty.get(user_id), 'uz')
-    keyboard = await main_keyboard(user_id)
-    await message.answer("✅ Til o'zgartirildi: O'zbek tili", reply_markup=keyboard)
+    keyboard = await language_selection_keyboard()
+    lang = user_languages.get(user_id, 'uz')
+    if lang == 'ru':
+        await message.answer("Выберите язык / Tilni tanlang:", reply_markup=keyboard)
+    else:
+        await message.answer("Tilni tanlang / Выберите язык:", reply_markup=keyboard)
 
 @dp.callback_query(F.data.startswith("change_lang_"))
 async def set_changed_language(callback: types.CallbackQuery):
