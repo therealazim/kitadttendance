@@ -783,7 +783,10 @@ def get_text(user_id: int, key: str, **kwargs):
     return text
 
 def get_button_text(user_id: int, button_key: str):
-    return TRANSLATIONS['uz'].get('buttons', {}).get(button_key, button_key)
+    lang = user_languages.get(user_id, 'uz')
+    if lang not in TRANSLATIONS:
+        lang = 'uz'
+    return TRANSLATIONS[lang].get('buttons', {}).get(button_key, TRANSLATIONS['uz'].get('buttons', {}).get(button_key, button_key))
 
 # Sizning shaxsiy Telegram ID ingiz (botga /start bosib, /myid yoki @userinfobot dan bilib oling)
 ADMIN_USER_IDS = set()  # Keyin qo'shiladi

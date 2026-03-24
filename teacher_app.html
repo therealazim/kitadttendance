@@ -217,13 +217,7 @@ input:checked+.tslider:before{transform:translateX(20px);}
 </div>
 
 <!-- ── BOTTOM NAV ── -->
-<div class="bnav">
-  <button class="bn on" id="bn-stats" onclick="goSc('stats',this)"><span class="bi">📊</span>Statistika</button>
-  <button class="bn" id="bn-schedule" onclick="goSc('schedule',this)"><span class="bi">📅</span>Jadval</button>
-  <button class="bn" id="bn-groups" onclick="goSc('groups',this)"><span class="bi">📚</span>Guruhlar</button>
-  <button class="bn" id="bn-profile" onclick="goSc('profile',this)"><span class="bi">👤</span>Profil</button>
-  <button class="bn" id="bn-settings" onclick="goSc('settings',this)"><span class="bi">⚙️</span>Sozlamalar</button>
-</div>
+<div class="bnav" id="bottom-nav">
 
 <!-- ── MODALS ── -->
 <!-- Add student -->
@@ -328,6 +322,7 @@ const T = {
     todayLessons: "Bugungi darslar",
     allSchedule: "Barcha jadval",
     students: "o'quvchi",
+    student: "o'quvchi",
     active: "Faol",
     edit: "Tahrirlash",
     thisMonthStats: "Bu oylik statistika",
@@ -339,8 +334,10 @@ const T = {
     confirmDelete: "O'chirishni tasdiqlang",
     willBeDeleted: "o'quvchisi ro'yxatdan o'chiriladi. Davomat tarixi saqlanadi.",
     addStudent: "O'quvchi qo'shish",
+    addStudentBtn: "➕ O'quvchi qo'shish",
     phone: "Telefon raqam",
     payment: "To'lov",
+    paymentTab: "To'lovlar",
     paymentDone: "To'lov qilindi",
     amount: "Summa (so'm)",
     note: "Izoh (ixtiyoriy)",
@@ -372,7 +369,23 @@ const T = {
     error: "Xatolik",
     success: "Muvaffaqiyatli",
     dayMon: "Du", dayTue: "Se", dayWed: "Ch", dayThu: "Pa", dayFri: "Ju", daySat: "Sh", daySun: "Ya",
-    days: ['Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba','Yakshanba']
+    days: ['Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba','Yakshanba'],
+    studentsTab: "O'quvchilar",
+    attendanceTab: "Davomat",
+    back: "Ortga",
+    lessonType: "Fan",
+    time: "Vaqt",
+    today: "Bugun",
+    hancomTitle: "HANCOM DAVOMAT",
+    paymentSaved: "To'lov saqlandi",
+    studentAdded: "O'quvchi qo'shish",
+    deleteStudent: "O'chirish",
+    attendance: "📍 Kelganimni tasdiqlash",
+    myStats: "📊 Mening statistikam",
+    myGroups: "👥 Guruhlarim",
+    mySchedule: "📅 Dars jadvalim",
+    helpBtn: "❓ Yordam",
+    langBtn: "🌐 Til"
   },
   ru: {
     monthNames: MNS_RU,
@@ -388,6 +401,7 @@ const T = {
     todayLessons: "Сегодняшние занятия",
     allSchedule: "Всё расписание",
     students: "учащихся",
+    student: "учащийся",
     active: "Активный",
     edit: "Редактировать",
     thisMonthStats: "Статистика за месяц",
@@ -399,8 +413,10 @@ const T = {
     confirmDelete: "Подтвердите удаление",
     willBeDeleted: "будет удалён из списка. История посещений сохранится.",
     addStudent: "Добавить ученика",
+    addStudentBtn: "➕ Добавить ученика",
     phone: "Телефон",
     payment: "Оплата",
+    paymentTab: "Платежи",
     paymentDone: "Оплата произведена",
     amount: "Сумма (сум)",
     note: "Примечание (необязательно)",
@@ -432,7 +448,23 @@ const T = {
     error: "Ошибка",
     success: "Успешно",
     dayMon: "Пн", dayTue: "Вт", dayWed: "Ср", dayThu: "Чт", dayFri: "Пт", daySat: "Сб", daySun: "Вс",
-    days: ['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье']
+    days: ['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'],
+    studentsTab: "Ученики",
+    attendanceTab: "Посещаемость",
+    back: "Назад",
+    lessonType: "Предмет",
+    time: "Время",
+    today: "Сегодня",
+    hancomTitle: "HANCOM ПОСЕЩАЕМОСТЬ",
+    paymentSaved: "Оплата сохранена",
+    studentAdded: "Добавить ученика",
+    deleteStudent: "Удалить",
+    attendance: "📍 Подтвердить приход",
+    myStats: "📊 Моя статистика",
+    myGroups: "👥 Мои группы",
+    mySchedule: "📅 Мое расписание",
+    helpBtn: "❓ Помощь",
+    langBtn: "🌐 Язык"
   }
 };
 
@@ -465,6 +497,11 @@ function renderNav(){
     const r=await fetch(`${BASE}/teacher/api/data?user_id=${UID}`);
     D=await r.json();
     if(!D.ok)throw new Error(D.error||'Server xatosi');
+    
+    // Set Telegram WebApp title based on language
+    if(tg){
+      tg.setHeaderParams({title: t('hancomTitle')});
+    }
     
     renderNav();
     renderStats();renderSched();renderGroups();renderProfile();renderBranches();renderSettings();
@@ -629,10 +666,11 @@ async function openGrp(gid){
   await loadGrpTab('students');
 }
 function renderGrpTabs(gid){
+  const lang=getLang();
   const tabs=[
-    {id:'students',label:"🧑‍🎓 O'quvchilar"},
-    {id:'payment',label:'💰 To\'lovlar'},
-    {id:'attendance',label:'📋 Davomat'},
+    {id:'students',label:lang==='ru'?"🧑‍🎓 Ученики":"🧑‍🎓 O'quvchilar"},
+    {id:'payment',label:lang==='ru'?'💰 Платежи':'💰 To\'lovlar'},
+    {id:'attendance',label:lang==='ru'?'📋 Посещаемость':'📋 Davomat'},
   ];
   document.getElementById('grpdet-tabs').innerHTML=tabs.map(t=>`
     <button onclick="loadGrpTab('${t.id}')" id="gtab-${t.id}" style="flex:1;padding:9px 4px;font-size:11px;font-weight:600;color:var(--tx2);cursor:pointer;border:none;background:none;font-family:'Inter',sans-serif;border-bottom:2px solid transparent;white-space:nowrap;transition:.1s" class="${t.id==='students'?'on':''}">
@@ -666,9 +704,10 @@ async function renderGrpStudents(){
     const data=await r.json();CUR_GRP=data;
     if(!data.ok)throw new Error(data.error);
     const studs=data.students||[];
+    const lang=getLang();
     ct.innerHTML=`
       <div style="display:flex;justify-content:flex-end;margin-bottom:11px">
-        <button class="btn bp" onclick="openAddStd(${CUR_GID})">➕ O'quvchi qo'shish</button>
+        <button class="btn bp" onclick="openAddStd(${CUR_GID})">${t('addStudentBtn')}</button>
       </div>
       <div class="card">
         ${studs.length?studs.map((s,i)=>`
@@ -678,7 +717,7 @@ async function renderGrpStudents(){
             <div class="std-acts">
               <button class="btn bd" style="padding:5px 9px;font-size:11px" onclick="confirmDel('${s.name.replace(/'/g,"\\'")}',${CUR_GID})">🗑</button>
             </div>
-          </div>`).join(''):'<div class="empty"><div class="ei">🧑‍🎓</div>O\'quvchilar yo\'q</div>'}
+          </div>`).join(''):`<div class="empty"><div class="ei">🧑‍🎓</div>${lang==='ru'?'Нет учеников':'O\'quvchilar yo\'q'}</div>`}
       </div>`;
   }catch(e){ct.innerHTML=`<div class="empty"><div class="ei">❌</div>${e.message}</div>`;}
 }
