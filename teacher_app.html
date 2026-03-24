@@ -500,10 +500,7 @@ function renderNav(){
     
     renderNav();
     await loadProfilePhoto();
-    // Render all sections
     renderStats();renderSched();renderGroups();renderProfile();renderBranches();renderSettings();
-    // Attach event listeners after all rendering is done
-    attachEventListeners();
     
     const bn=document.getElementById('bn-'+sec);
     if(bn)goSc(sec,bn);
@@ -980,7 +977,7 @@ function renderProfile(){
     const avFallback = `<div id="prof-av-fallback" class="prof-av" style="background:${c}22;color:${c};border:2px solid ${c}44;${_profPhotoUrl?'display:none':''}">${ini(u?.name)}</div>`;
     profCt.innerHTML=`
       <div class="prof-card" style="position:relative">
-        <button id="edit-profile-btn" type="button" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.08);border:1px solid var(--bd2);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:600;color:var(--tx2);cursor:pointer;font-family:'Inter',sans-serif;z-index:10">✏️ ${t('edit')}</button>
+        <button id="edit-profile-btn" type="button" onclick="openEditProfile()" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.08);border:1px solid var(--bd2);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:600;color:var(--tx2);cursor:pointer;font-family:'Inter',sans-serif;z-index:10">✏️ ${t('edit')}</button>
         ${avHtml}${avFallback}
         <div class="prof-name">${u?.name||'—'}</div>
         <div class="prof-spec">${u?.specialty||t('teacher')}</div>
@@ -994,17 +991,6 @@ function renderProfile(){
           <div class="toggle-row"><span class="toggle-lbl">📚 ${t('groupsCount')}</span><span style="font-weight:800;color:var(--ac)">${s?.groups||0}</span></div>
         </div>
       </div>`;
-    // Add event listener after rendering
-    const editBtn = document.getElementById('edit-profile-btn');
-    if(editBtn){
-      editBtn.addEventListener('click', function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        console.log('[Edit button] Clicked!');
-        openEditProfile();
-      });
-      console.log('[renderProfile] Edit button event listener added');
-    }
   }catch(e){console.error('renderProfile error:',e);}
 }
 
@@ -1020,10 +1006,10 @@ function renderSettings(){
         <div class="card-hdr"><span class="card-title">🌐 Til / Язык</span></div>
         <div class="card-body">
           <div style="display:flex;gap:8px">
-            <button id="lang-uz-btn" type="button" style="flex:1;padding:12px;border-radius:10px;border:2px solid ${lang==='uz'?'var(--ac)':'var(--bd)'};background:${lang==='uz'?'rgba(79,142,247,.15)':'var(--card2)'};color:var(--tx);font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer">
+            <button id="lang-uz-btn" type="button" onclick="changeLang('uz')" style="flex:1;padding:12px;border-radius:10px;border:2px solid ${lang==='uz'?'var(--ac)':'var(--bd)'};background:${lang==='uz'?'rgba(79,142,247,.15)':'var(--card2)'};color:var(--tx);font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer">
               🇺🇿 O'zbekcha
             </button>
-            <button id="lang-ru-btn" type="button" style="flex:1;padding:12px;border-radius:10px;border:2px solid ${lang==='ru'?'var(--ac)':'var(--bd)'};background:${lang==='ru'?'rgba(79,142,247,.15)':'var(--card2)'};color:var(--tx);font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer">
+            <button id="lang-ru-btn" type="button" onclick="changeLang('ru')" style="flex:1;padding:12px;border-radius:10px;border:2px solid ${lang==='ru'?'var(--ac)':'var(--bd)'};background:${lang==='ru'?'rgba(79,142,247,.15)':'var(--card2)'};color:var(--tx);font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer">
               🇷🇺 Русский
             </button>
           </div>
