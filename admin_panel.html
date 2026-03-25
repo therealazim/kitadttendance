@@ -482,7 +482,7 @@
   <div class="tw">
     <div class="th"><span class="tt" id="atttt">Davomat</span></div>
     <div style="overflow-x:auto"><table>
-      <thead><tr><th>O'qituvchi</th><th>Fan</th><th>Filial</th><th>Vaqt</th><th>Holat</th></tr></thead>
+      <thead><tr><th>O'qituvchi</th><th>Fan</th><th>Filial</th><th>Dars boshlanish</th><th>Vaqt</th><th>Holat</th></tr></thead>
       <tbody id="atttb"></tbody>
     </table></div>
   </div>
@@ -1741,7 +1741,9 @@ else badge=`<span class="b bok"><i class="lucide lucide-check"></i> Keldi${bestD
 } else {
 badge=`<span class="b bno" style="font-size:10px">❓ Darsiz</span>`;
 }
-const atAv=u?.photo_url?`<img src="${u.photo_url}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1.5px solid ${c}44;flex-shrink:0" onerror="this.style.display='none'">`:`<div class="avatar" style="background:${c}22;color:${c};border:1.5px solid ${c}44;font-size:10px">${ini(u?.name||'?')}</div>`;return`<tr><td><div style="display:flex;align-items:center;gap:7px">${atAv}${u?.name||a.user_id}</div></td><td><span class="b ${sb}">${u?.specialty||'—'}</span></td><td style="font-size:11px">${a.branch}</td><td style="font-weight:700;color:var(--ac)">${arrTime}</td><td>${badge}</td></tr>`;
+const atAv=u?.photo_url?`<img src="${u.photo_url}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1.5px solid ${c}44;flex-shrink:0" onerror="this.style.display='none'">`:`<div class="avatar" style="background:${c}22;color:${c};border:1.5px solid ${c}44;font-size:10px">${ini(u?.name||'?')}</div>`;
+const lessonStartTime = best ? best.time : (ls[0]?.time || '—');
+return`<tr><td><div style="display:flex;align-items:center;gap:7px">${atAv}${u?.name||a.user_id}</div></td><td><span class="b ${sb}">${u?.specialty||'—'}</span></td><td style="font-size:11px">${a.branch}</td><td style="font-size:11px;color:var(--tx2)">${lessonStartTime}</td><td style="font-weight:700;color:var(--ac)">${arrTime}</td><td>${badge}</td></tr>`;
 }),
 ...absWithLesson.map(u=>{
 const sb=SBG[u.specialty]||'bno';
