@@ -1882,10 +1882,9 @@ async def admin_api_user_permanent_delete(request):
         data = await request.json()
         uid = int(data['user_id'])
         async with db.pool.acquire() as conn:
-            # Delete all related data
+            # Delete all related data (faqat mavjud jadvallar)
             await conn.execute("DELETE FROM attendance WHERE user_id=$1", uid)
             await conn.execute("DELETE FROM schedules WHERE user_id=$1", uid)
-            await conn.execute("DELETE FROM salary WHERE user_id=$1", uid)
             # Remove teacher from groups
             await conn.execute("UPDATE groups SET teacher_id=NULL WHERE teacher_id=$1", uid)
             # Delete user
