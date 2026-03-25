@@ -1972,7 +1972,8 @@ function showSalaryTab(tab, btn) {
   document.getElementById('salary-tab-' + tab).style.display = 'block';
   if (btn) btn.classList.add('on');
   
-  if (tab === 'office' && !OFF_SALARY_STRUCTURE) {
+  if (tab === 'office') {
+    OFF_SALARY_STRUCTURE = null;
     loadSalaryStructure();
   }
 }
@@ -2242,6 +2243,9 @@ async function saveSalaryConfigs() {
   const r = await api('/admin/api/salary/configs', { configs: SALARY_CONFIGS });
   if (r?.ok) {
     toast('<i class="lucide lucide-check"></i> Maosh sozlamalari saqlandi!');
+    // Reload salary structure for maosh hisoblash page
+    OFF_SALARY_STRUCTURE = null;
+    if (window._curPage === 'salary') loadSalaryStructure();
   } else {
     toast('<i class="lucide lucide-times"></i> Saqlashda xatolik: ' + (r?.error || ''));
   }
