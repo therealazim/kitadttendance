@@ -1003,6 +1003,27 @@
     </div>
   </div>
   
+  <!-- Teacher attendance summary -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hdr">
+      <span class="card-title"><i class="lucide lucide-user-check"></i> O'qituvchilar davomati</span>
+    </div>
+    <div class="card-body" style="overflow-x:auto">
+      <table style="width:100%;font-size:12px">
+        <thead>
+          <tr style="background:var(--card2)">
+            <th style="padding:8px;text-align:left">O'qituvchi</th>
+            <th style="padding:8px;text-align:center">Mutaxassislik</th>
+            <th style="padding:8px;text-align:center">Davomat</th>
+            <th style="padding:8px;text-align:center">Kechikish</th>
+            <th style="padding:8px;text-align:center">Holat</th>
+          </tr>
+        </thead>
+        <tbody id="biz-att-tb"></tbody>
+      </table>
+    </div>
+  </div>
+  
   <!-- Expenses breakdown -->
   <div class="card" style="margin-bottom:16px">
     <div class="card-hdr">
@@ -1752,7 +1773,7 @@ const lessonInfo=ls.map(l=>`${l.time}`).join(', ');
 return`<tr style="opacity:.45"><td><div style="display:flex;align-items:center;gap:7px"><div class="avatar" style="background:var(--bd2);color:var(--tx3);border:1.5px solid var(--bd);font-size:10px">${ini(u.name)}</div>${u.name}</div></td><td><span class="b ${sb}">${u.specialty||'—'}</span></td><td style="font-size:11px;color:var(--tx2)">${ls[0]?.branch||'—'}</td><td style="font-size:11px;color:var(--tx2)">${lessonInfo}</td><td><span class="b bbl"><i class="lucide lucide-times"></i> Kelmadi</span></td></tr>`;
 })
 ];
-document.getElementById('atttb').innerHTML=rows.length?rows.join(''):`<tr><td colspan="5"><div class="empty"><div class="ei"><i class="lucide lucide-map-marker-alt"></i></div>Bu kunda dars yo\'q</div></td></tr>`;
+document.getElementById('atttb').innerHTML=rows.length?rows.join(''):`<tr><td colspan="6"><div class="empty"><div class="ei"><i class="lucide lucide-map-marker-alt"></i></div>Bu kunda dars yo\'q</div></td></tr>`;
 document.getElementById('atttt').textContent='Davomat — '+dateStr;
 }
 async function loadAtt(){const d=document.getElementById('attd').value;const r=await fetch(`/admin/api/attendance?date=${d}`).then(x=>x.json()).catch(()=>null);if(r)rAtt(r.attendance||[]);}
