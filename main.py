@@ -2043,6 +2043,18 @@ async def admin_api_application_status(request):
     except Exception as e:
         return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
 
+async def admin_api_application_delete(request):
+    """Arizani o'chirish"""
+    import json as _json
+    try:
+        data = await request.json()
+        app_id = int(data['id'])
+        async with db.pool.acquire() as conn:
+            await conn.execute("DELETE FROM applications WHERE id=$1", app_id)
+        return web.Response(text=_json.dumps({'ok':True}), content_type='application/json')
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
+
 async def api_get_news(request):
     """Yangiliklar — saytdan"""
     import json as _json
@@ -9744,6 +9756,7 @@ async def main():
     app.router.add_get('/api/branches/map', api_branches_map)
     app.router.add_get('/admin/api/applications', admin_api_applications_get)
     app.router.add_post('/admin/api/application/status', admin_api_application_status)
+    app.router.add_post('/admin/api/application/delete', admin_api_application_delete)
     app.router.add_get('/admin/api/news', admin_api_news_get)
     app.router.add_post('/admin/api/news/save', admin_api_news_save)
     app.router.add_post('/admin/api/news/delete', admin_api_news_delete)  # Public - sayt uchun
