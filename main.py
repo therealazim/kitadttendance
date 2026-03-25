@@ -2705,7 +2705,7 @@ async def admin_api_schedule_view(request):
 
 # HISOBOT API FUNKSIYALARI
 async def admin_api_reports_attendance(request):
-    """O'qituvchi davomati hisoboti Excel formatda"""
+    """O'qituvchi davomati hisoboti Excel formatda - har o'qituvchi alohida sheet"""
     import json as _json
     from datetime import datetime as dt, timedelta
     
@@ -2720,23 +2720,9 @@ async def admin_api_reports_attendance(request):
         return web.json_response({'error': 'start_date va end_date kerak'}, status=400)
     
     try:
-        # Sanalarni date obyektiga aylantirish
         from datetime import date as _date_cls
         start_date_obj = _date_cls.fromisoformat(start_date)
         end_date_obj = _date_cls.fromisoformat(end_date)
-        
-        # Excel fayl yaratish
-        wb = Workbook()
-        ws = wb.active
-        ws.title = "O'qituvchi Davomati Hisoboti"
-        
-        # Sarlavha
-        headers = ['#', 'O\'qituvchi', 'Mutaxassislik', 'Filial', 'Sana', 'Vaqt', 'Holat']
-        for col, header in enumerate(headers, 1):
-            cell = ws.cell(row=1, column=col, value=header)
-            cell.font = Font(bold=True, color="FFFFFF")
-            cell.fill = PatternFill(start_color="366092", end_color="366092", fill_type="solid")
-            cell.alignment = Alignment(horizontal="center", vertical="center")
         
         # Ma'lumotlar
         async with db.pool.acquire() as conn:
@@ -2745,172 +2731,142 @@ async def admin_api_reports_attendance(request):
                 FROM attendance a 
                 JOIN users u ON a.user_id = u.user_id 
                 WHERE a.date BETWEEN $1 AND $2 
-                ORDER BY a.date DESC, a.time DESC
+                ORDER BY a.date, a.time
             """, start_date_obj, end_date_obj)
         
-        # Guruh jadvalini yuklash
         all_groups = dict(groups)
         
-        for row_idx, record in enumerate(records, 2):
-            ws.cell(row=row_idx, column=1, value=row_idx-1)
-            ws.cell(row=row_idx, column=2, value=record['full_name'] or 'Noma\'lum')
-            ws.cell(row=row_idx, column=3, value=record['specialty'] or '')
-            ws.cell(row=row_idx, column=4, value=record['branch'] or '')
-            ws.cell(row=row_idx, column=5, value=record['date'])
-            ws.cell(row=row_idx, column=6, value=str(record['time']))
+        # O'qituvchilar bo'yicha guruhlash
+        teachers = {}
+        for record in records:
+            teacher_name = record['full_name'] or 'Noma\'lum'
+            if teacher_name not in teachers:
+                teachers[teacher_name] = {
+                    'specialty': record['specialty'] or '',
+                    'records': [],
+                    'total_late_minutes': 0
+                }
+            teachers[teacher_name]['records'].append(record)
+        
+        # Excel fayl yaratish
+        wb = Workbook()
+        
+        # Border stili
+        thin_border = Border(
+            left=Side(style='thin'),
+            right=Side(style='thin'),
+            top=Side(style='thin'),
+            bottom=Side(style='thin')
+        )
+        
+        headers = ['#', 'Filial', 'Sana', 'Kun', 'Dars vaqti', 'Keldi', 'Kechikish (daq)', 'Holat']
+        
+        for idx, (teacher_name, data) in enumerate(teachers.items()):
+            # Sheet yaratish (nomi 31 belgidan oshmasin)
+            sheet_name = teacher_name[:31] if len(teacher_name) > 31 else teacher_name
+            if idx == 0:
+                ws = wb.active
+                ws.title = sheet_name
+            else:
+                ws = wb.create_sheet(title=sheet_name)
             
-            # Kechikish/Erta kelishni hisoblash
-            lateness_text = ''
-            try:
-                user_id = record['user_id']
-                branch = record['branch']
-                att_time = str(record['time'])
+            # Sarlavha qatorini yozish
+            for col, header in enumerate(headers, 1):
+                cell = ws.cell(row=1, column=col, value=header)
+                cell.font = Font(bold=True, color="FFFFFF", size=11)
+                cell.fill = PatternFill(start_color="366092", end_color="366092", fill_type="solid")
+                cell.alignment = Alignment(horizontal="center", vertical="center")
+                cell.border = thin_border
+            
+            # Ma'lumotlar
+            row_idx = 2
+            total_late_minutes = 0
+            
+            for record in data['records']:
                 att_date = record['date']
+                att_time = str(record['time'])
+                branch = record['branch']
                 
-                # O'qituvchining guruhini topish va dars vaqtini olish
+                # Hafta kuni
+                day_names = ['Dushanba', 'Seshanba', 'Chorshanba', 'Payshanba', 'Juma', 'Shanba', 'Yakshanba']
+                day_name = day_names[att_date.weekday()]
+                
+                # Dars vaqtini topish va kechikishni hisoblash
+                lesson_time = ''
+                late_minutes = 0
+                status = ''
+                
                 for gid, gdata in all_groups.items():
-                    if gdata.get('teacher_id') == user_id and gdata.get('branch') == branch:
+                    if gdata.get('teacher_id') == record['user_id'] and gdata.get('branch') == branch:
                         day_times = gdata.get('day_times', {})
-                        # Hafta kuni nomini olish
-                        day_names = ['Dushanba', 'Seshanba', 'Chorshanba', 'Payshanba', 'Juma', 'Shanba', 'Yakshanba']
-                        day_name = day_names[att_date.weekday()]
-                        
                         if day_name in day_times:
                             lesson_time = day_times[day_name]
-                            # Vaqtni solishtirish
                             att_parts = list(map(int, att_time.split(':')[:2]))
                             les_parts = list(map(int, lesson_time.split(':')))
-                            
                             att_minutes = att_parts[0] * 60 + att_parts[1]
                             les_minutes = les_parts[0] * 60 + les_parts[1]
-                            
                             diff = att_minutes - les_minutes
                             
                             if diff <= 0:
-                                # Eta yoki vaqtida
-                                if diff == 0:
-                                    lateness_text = '✅ Vaqtida'
-                                else:
-                                    lateness_text = f'🟢 {abs(diff)} daqiqa erta'
+                                status = 'Vaqtida' if diff == 0 else f'{abs(diff)} daq erta'
                             else:
-                                # Kechikdi
-                                lateness_text = f'🔴 +{diff} daqiqa kech'
+                                late_minutes = diff
+                                total_late_minutes += diff
+                                status = f'{diff} daq kech'
                             break
-            except Exception as e:
-                logging.error(f"Lateness calculation error: {e}")
-                lateness_text = ''
-            
-            lateness_cell = ws.cell(row=row_idx, column=7, value=lateness_text)
-            
-            # Rang berish
-            if 'erta' in lateness_text:
-                lateness_cell.font = Font(color="228B22")  # Yashil
-            elif 'kech' in lateness_text:
-                lateness_cell.font = Font(color="FF0000")  # Qizil
-            elif 'Vaqtida' in lateness_text:
-                lateness_cell.font = Font(color="0066CC")  # Ko'k
-            
-            # Har bir qator uchun moslikni sozlash
-            for col in range(1, 8):
-                ws.cell(row=row_idx, column=col).alignment = Alignment(horizontal="left", vertical="center")
-        
-        # Ustun kengliklarini avtomatik sozlash
-        for column in ws.columns:
-            max_length = 0
-            column_letter = get_column_letter(column[0].column)
-            for cell in column:
-                try:
-                    if len(str(cell.value)) > max_length:
-                        max_length = len(str(cell.value))
-                except:
-                    pass
-            adjusted_width = min(max_length + 2, 50)
-            ws.column_dimensions[column_letter].width = adjusted_width
-        
-        # Qatilarni muzlatish (harakatlanmaydigan qatir)
-        ws.freeze_panes = "A2"
-        
-        # Qo'shimcha ma'lumot qo'shish (statistika)
-        if records:
-            summary_row = len(records) + 4
-            ws.cell(row=summary_row, column=1, value="JAMI:").font = Font(bold=True)
-            ws.cell(row=summary_row, column=2, value=len(records)).font = Font(bold=True)
-            
-            # Har bir o'qituvchi uchun kechikish statistikasi
-            teacher_lateness = {}
-            for record in records:
-                user_id = record['user_id']
-                branch = record['branch']
-                att_time = str(record['time'])
-                att_date = record['date']
                 
-                # Kechikishni tekshirish
-                is_late = False
-                try:
-                    for gid, gdata in all_groups.items():
-                        if gdata.get('teacher_id') == user_id and gdata.get('branch') == branch:
-                            day_times = gdata.get('day_times', {})
-                            day_names = ['Dushanba', 'Seshanba', 'Chorshanba', 'Payshanba', 'Juma', 'Shanba', 'Yakshanba']
-                            day_name = day_names[att_date.weekday()]
-                            
-                            if day_name in day_times:
-                                lesson_time = day_times[day_name]
-                                att_parts = list(map(int, att_time.split(':')[:2]))
-                                les_parts = list(map(int, lesson_time.split(':')))
-                                att_minutes = att_parts[0] * 60 + att_parts[1]
-                                les_minutes = les_parts[0] * 60 + les_parts[1]
-                                diff = att_minutes - les_minutes
-                                
-                                if diff > 0:  # Kechikdi
-                                    is_late = True
-                                break
-                except:
-                    pass
+                if not lesson_time:
+                    status = 'Dars topilmadi'
                 
-                teacher_name = record['full_name'] or 'Noma\'lum'
-                if teacher_name not in teacher_lateness:
-                    teacher_lateness[teacher_name] = {'late': 0, 'total': 0, 'dates': []}
-                teacher_lateness[teacher_name]['total'] += 1
-                if is_late:
-                    teacher_lateness[teacher_name]['late'] += 1
-                    teacher_lateness[teacher_name]['dates'].append(str(att_date))
+                # Ma'lumotlarni yozish
+                ws.cell(row=row_idx, column=1, value=row_idx-1).border = thin_border
+                ws.cell(row=row_idx, column=2, value=branch or '').border = thin_border
+                ws.cell(row=row_idx, column=3, value=str(att_date)).border = thin_border
+                ws.cell(row=row_idx, column=4, value=day_name).border = thin_border
+                ws.cell(row=row_idx, column=5, value=lesson_time).border = thin_border
+                ws.cell(row=row_idx, column=6, value=att_time).border = thin_border
+                
+                late_cell = ws.cell(row=row_idx, column=7, value=late_minutes)
+                late_cell.border = thin_border
+                if late_minutes > 0:
+                    late_cell.font = Font(color="FF0000", bold=True)
+                elif late_minutes == 0 and status and 'erta' not in status:
+                    late_cell.font = Font(color="006600")
+                
+                status_cell = ws.cell(row=row_idx, column=8, value=status)
+                status_cell.border = thin_border
+                if 'kech' in status:
+                    status_cell.font = Font(color="FF0000")
+                elif 'erta' in status:
+                    status_cell.font = Font(color="228B22")
+                elif 'Vaqtida' in status:
+                    status_cell.font = Font(color="0066CC")
+                
+                row_idx += 1
             
-            # Kechikish statistikasi jadvali
-            summary_row = len(records) + 6
-            ws.cell(row=summary_row, column=1, value="O'QITUVCHILARNING KECHIKISH STATISTIKASI").font = Font(bold=True, size=12)
-            ws.merge_cells(start_row=summary_row, start_column=1, end_row=summary_row, end_column=4)
+            # JAMI qatori
+            row_idx += 1
+            ws.cell(row=row_idx, column=1, value="JAMI:").font = Font(bold=True, size=12)
+            ws.merge_cells(start_row=row_idx, start_column=1, end_row=row_idx, end_column=6)
+            ws.cell(row=row_idx, column=7, value=total_late_minutes).font = Font(bold=True, color="FF0000", size=12)
+            ws.cell(row=row_idx, column=8, value=f"Bu oy jami {total_late_minutes} daqiqa kech qoldi").font = Font(bold=True, size=11)
             
-            # Sarlavha
-            summary_row += 1
-            summary_headers = ['O\'qituvchi', 'Jami davomat', 'Kechikdi', 'Kechikish kunlari']
-            for col, header in enumerate(summary_headers, 1):
-                cell = ws.cell(row=summary_row, column=col, value=header)
-                cell.font = Font(bold=True, color="FFFFFF")
-                cell.fill = PatternFill(start_color="8B0000", end_color="8B0000", fill_type="solid")
-                cell.alignment = Alignment(horizontal="center", vertical="center")
+            # Chegarani qo'shish
+            for col in range(1, 9):
+                ws.cell(row=row_idx, column=col).border = thin_border
             
-            # Har bir o'qituvchi uchun qator
-            for teacher_name, stats in teacher_lateness.items():
-                summary_row += 1
-                late_dates = ', '.join(sorted(set(stats['dates']))) if stats['dates'] else '-'
-                late_info = f"{stats['late']} martta kech qoldi" if stats['late'] > 0 else "Kechikmadi"
-                
-                ws.cell(row=summary_row, column=1, value=teacher_name)
-                ws.cell(row=summary_row, column=2, value=stats['total'])
-                late_cell = ws.cell(row=summary_row, column=3, value=stats['late'])
-                
-                # Kechikish soniga qarab rang berish
-                if stats['late'] == 0:
-                    late_cell.font = Font(color="006600")  # Yashil
-                elif stats['late'] <= 3:
-                    late_cell.font = Font(color="FF8C00")  # To'q sariq
-                else:
-                    late_cell.font = Font(color="FF0000")  # Qizil
-                
-                ws.cell(row=summary_row, column=4, value=late_info + (f" ({late_dates})" if stats['late'] > 0 else ""))
-                
-                for col in range(1, 5):
-                    ws.cell(row=summary_row, column=col).alignment = Alignment(horizontal="left", vertical="center")
+            # Ustun kengliklari
+            ws.column_dimensions['A'].width = 5
+            ws.column_dimensions['B'].width = 20
+            ws.column_dimensions['C'].width = 12
+            ws.column_dimensions['D'].width = 12
+            ws.column_dimensions['E'].width = 12
+            ws.column_dimensions['F'].width = 10
+            ws.column_dimensions['G'].width = 15
+            ws.column_dimensions['H'].width = 20
+            
+            # Muzlatish
+            ws.freeze_panes = "A2"
         
         # Excel faylni bytes ga aylantirish
         output = io.BytesIO()
@@ -2926,6 +2882,7 @@ async def admin_api_reports_attendance(request):
         )
         
     except Exception as e:
+        logging.error(f"Attendance report error: {e}")
         return web.json_response({'error': str(e)}, status=500)
 
 async def admin_api_reports_students(request):
