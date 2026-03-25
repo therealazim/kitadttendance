@@ -676,8 +676,11 @@
   <div style="margin-top:16px">
     <div id="salarycfg-list"></div>
     <div style="display:flex;gap:10px;margin-top:16px">
-      <button class="btn bp bfull" onclick="saveSalaryConfigs()">
-        <i class="lucide lucide-save"></i> Saqlash
+      <button class="btn bp bfull" id="save-salary-btn">
+        <span id="save-salary-icon"><i class="lucide lucide-save"></i> Saqlash</span>
+        <span id="save-salary-spinner" style="display:none; margin-left:8px">
+          <div class="ldr"><div class="spin"></div></div>
+        </span>
       </button>
     </div>
   </div>
@@ -2233,6 +2236,10 @@ function renderSalaryConfigs() {
 }
 
 async function saveSalaryConfigs() {
+  // Show spinner
+  document.getElementById('save-salary-icon').style.display = 'none';
+  document.getElementById('save-salary-spinner').style.display = 'inline-block';
+  
   // Collect all values from inputs
   document.querySelectorAll('.salary-input').forEach(input => {
     const ci = parseInt(input.dataset.cat);
@@ -2242,14 +2249,22 @@ async function saveSalaryConfigs() {
     }
   });
   
-  const r = await api('/admin/api/salary/configs', { configs: SALARY_CONFIGS });
-  if (r?.ok) {
-    toast('<i class="lucide lucide-check"></i> Maosh sozlamalari saqlandi!');
-    // Reload salary structure for maosh hisoblash page
-    OFF_SALARY_STRUCTURE = null;
-    if (window._curPage === 'salary') loadSalaryStructure();
-  } else {
-    toast('<i class="lucide lucide-times"></i> Saqlashda xatolik: ' + (r?.error || ''));
+  try {
+    const r = await api('/admin/api/salary/configs', { configs: SALARY_CONFIGS });
+    if (r?.ok) {
+      toast('<i class="lucide lucide-check"></i> Maosh sozlamalari saqlandi!');
+      // Reload salary structure for maosh hisoblash page
+      OFF_SALARY_STRUCTURE = null;
+      if (window._curPage === 'salary') loadSalaryStructure();
+    } else {
+      toast('<i class="lucide lucide-times"></i> Saqlashda xatolik: ' + (r?.error || ''));
+    }
+  } catch (e) {
+    toast('<i class="lucide lucide-times"></i> Xato: ' + e.message);
+  } finally {
+    // Hide spinner
+    document.getElementById('save-salary-icon').style.display = 'inline-block';
+    document.getElementById('save-salary-spinner').style.display = 'none';
   }
 }
 
