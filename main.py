@@ -76,30 +76,8 @@ groups = {}  # group_id -> group ma'lumotlari
 group_students = defaultdict(list)  # group_id -> o'quvchilar ro'yxati
 group_attendance_files = {}  # group_id -> kumulativ Excel (bytes) — har dars uchun yangi ustun
 
-# BARCHA LOKATSIYALAR RO'YXATI (default - database dan yuklanadi)
-DEFAULT_LOCATIONS =[
-    {"name": "Kimyo Xalqaro Universiteti", "lat": 41.257490, "lon": 69.220109},
-    {"name": "Menejment Universiteti", "lat": 41.270526, "lon": 69.236492},
-    {"name": "78-Maktab", "lat": 41.282791, "lon": 69.173290},
-    {"name": "126-Maktab", "lat": 41.260249, "lon": 69.153216},
-    {"name": "290-Maktab", "lat": 41.234736, "lon": 69.350745},
-    {"name": "348-Maktab", "lat": 41.214092, "lon": 69.340152},
-    {"name": "347-Maktab", "lat": 41.236833, "lon": 69.372048},
-    {"name": "358-Maktab", "lat": 41.240690, "lon": 69.366529},
-    {"name": "346-Maktab", "lat": 41.216158, "lon": 69.323902},
-    {"name": "293-Maktab", "lat": 41.253573, "lon": 69.377204},
-    {"name": "345-Maktab", "lat": 41.220456, "lon": 69.333441},
-    {"name": "IM.Gubkin Litseyi", "lat": 41.254183, "lon": 69.382270},
-    {"name": "Narxoz universiteti", "lat": 41.308916, "lon": 69.247496},
-    {"name": "Narxoz litseyi", "lat": 41.306951, "lon": 69.247667},
-    {"name": "Tekstil litseyi", "lat": 41.284784, "lon": 69.249356},
-    {"name": "200-Maktab", "lat": 41.263860, "lon": 69.181538},
-    {"name": "Selxoz litseyi", "lat": 41.362532, "lon": 69.340768},
-    {"name": "294-Maktab", "lat": 41.281633, "lon": 69.289237},
-    {"name": "Umnie Deti School", "lat": 41.315790, "lon": 69.209515},
-    {"name": "Cambridge School", "lat": 41.342296, "lon": 69.167571}
-]
-LOCATIONS = []  # Database dan yuklanadi
+# BARCHA LOKATSIYALAR - DATABASE DAN YUKLANADI
+LOCATIONS = []
 
 ALLOWED_DISTANCE = 500
 
@@ -428,21 +406,11 @@ class Database:
             async with self.pool.acquire() as conn:
                 rows = await conn.fetch("SELECT * FROM branches ORDER BY id")
             
-            if not rows:
-                # Seed default branches
-                async with self.pool.acquire() as conn:
-                    for loc in DEFAULT_LOCATIONS:
-                        await conn.execute("""
-                            INSERT INTO branches (name, lat, lon) VALUES ($1, $2, $3)
-                            ON CONFLICT (name) DO NOTHING
-                        """, loc['name'], loc['lat'], loc['lon'])
-                rows = await conn.fetch("SELECT * FROM branches ORDER BY id")
-            
             LOCATIONS = [{'name': r['name'], 'lat': r['lat'], 'lon': r['lon']} for r in rows]
             logging.info(f"✅ Filiallar yuklandi: {len(LOCATIONS)} ta")
         except Exception as e:
             logging.error(f"Branches load error: {e}")
-            LOCATIONS = DEFAULT_LOCATIONS.copy()
+            LOCATIONS = []
     
     async def save_attendance(self, user_id, branch, att_date, att_time):
         try:
