@@ -3441,29 +3441,29 @@ async def admin_api_salary_configs_get(request):
     try:
         async with db.pool.acquire() as conn:
             rows = await conn.fetch("SELECT * FROM salary_configs ORDER BY category, bin_key")
-        
-        # If no configs exist, seed with defaults
-        if not rows:
-            salary_defaults = [
-                ('soeup', '수업', 'bin_1', '1호봉', 7500000),
-                ('soeup', '수업', 'bin_2', '2호봉', 9000000),
-                ('soeup', '수업', 'bin_3', '3호봉', 10500000),
-                ('sawon', '사원', 'bin_1', '1호봉', 9500000),
-                ('sawon', '사원', 'bin_2', '2호봉', 11000000),
-                ('sawon', '사원', 'bin_3', '3호봉', 12500000),
-                ('daeri', '대리', 'bin_1', '1호봉', 11500000),
-                ('daeri', '대리', 'bin_2', '2호봉', 13000000),
-                ('daeri', '대리', 'bin_3', '3호봉', 14500000),
-                ('gwallija', '관리자', 'bin_1', '1호봉', 16000000),
-                ('gwallija', '관리자', 'bin_2', '2호봉', 17500000),
-                ('gwallija', '관리자', 'bin_3', '3호봉', 19000000),
-            ]
-            for cat, cat_kr, bin_key, bin_name, amount in salary_defaults:
-                await conn.execute("""
-                    INSERT INTO salary_configs (category, category_kr, bin_key, bin_name, amount)
-                    VALUES ($1, $2, $3, $4, $5)
-                """, cat, cat_kr, bin_key, bin_name, amount)
-            rows = await conn.fetch("SELECT * FROM salary_configs ORDER BY category, bin_key")
+            
+            # If no configs exist, seed with defaults
+            if not rows:
+                salary_defaults = [
+                    ('soeup', '수업', 'bin_1', '1호봉', 7500000),
+                    ('soeup', '수업', 'bin_2', '2호봉', 9000000),
+                    ('soeup', '수업', 'bin_3', '3호봉', 10500000),
+                    ('sawon', '사원', 'bin_1', '1호봉', 9500000),
+                    ('sawon', '사원', 'bin_2', '2호봉', 11000000),
+                    ('sawon', '사원', 'bin_3', '3호봉', 12500000),
+                    ('daeri', '대리', 'bin_1', '1호봉', 11500000),
+                    ('daeri', '대리', 'bin_2', '2호봉', 13000000),
+                    ('daeri', '대리', 'bin_3', '3호봉', 14500000),
+                    ('gwallija', '관리자', 'bin_1', '1호봉', 16000000),
+                    ('gwallija', '관리자', 'bin_2', '2호봉', 17500000),
+                    ('gwallija', '관리자', 'bin_3', '3호봉', 19000000),
+                ]
+                for cat, cat_kr, bin_key, bin_name, amount in salary_defaults:
+                    await conn.execute("""
+                        INSERT INTO salary_configs (category, category_kr, bin_key, bin_name, amount)
+                        VALUES ($1, $2, $3, $4, $5)
+                    """, cat, cat_kr, bin_key, bin_name, amount)
+                rows = await conn.fetch("SELECT * FROM salary_configs ORDER BY category, bin_key")
         
         configs = {}
         for row in rows:
