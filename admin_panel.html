@@ -2236,42 +2236,8 @@ function renderSalaryConfigs() {
 }
 
 async function saveSalaryConfigs() {
-  alert('saveSalaryConfigs called');
-  // Check if configs are loaded
-  if (!SALARY_CONFIGS || SALARY_CONFIGS.length === 0) {
-    toast('<i class="lucide lucide-times"></i> Iltimos, avval maosh sozlamalarini yuklang! "Yangilash" tugmasini bosing.');
-    return;
-  }
-  // Show spinner
-  document.getElementById('save-salary-icon').style.display = 'none';
-  document.getElementById('save-salary-spinner').style.display = 'inline-block';
-  
-  // Collect all values from inputs
-  document.querySelectorAll('.salary-input').forEach(input => {
-    const ci = parseInt(input.dataset.cat);
-    const binKey = input.dataset.bin;
-    if (SALARY_CONFIGS[ci] && SALARY_CONFIGS[ci].bins[binKey]) {
-      SALARY_CONFIGS[ci].bins[binKey].amount = parseInt(input.value) || 0;
-    }
-  });
-  
-  try {
-    const r = await api('/admin/api/salary/configs', { configs: SALARY_CONFIGS });
-    if (r?.ok) {
-      toast('<i class="lucide lucide-check"></i> Maosh sozlamalari saqlandi!');
-      // Reload salary structure for maosh hisoblash page
-      OFF_SALARY_STRUCTURE = null;
-      if (window._curPage === 'salary') loadSalaryStructure();
-    } else {
-      toast('<i class="lucide lucide-times"></i> Saqlashda xatolik: ' + (r?.error || ''));
-    }
-  } catch (e) {
-    toast('<i class="lucide lucide-times"></i> Xato: ' + e.message);
-  } finally {
-    // Hide spinner
-    document.getElementById('save-salary-icon').style.display = 'inline-block';
-    document.getElementById('save-salary-spinner').style.display = 'none';
-  }
+  alert('Function called');
+  document.getElementById('save-salary-icon').textContent = 'Clicked';
 }
 
 function rBrs(){const br=D.branches||[];document.getElementById('brcnt').textContent=br.length+' ta';document.getElementById('brlist').innerHTML=br.length?br.map((b,i)=>`<div class="brit"><div class="brnum">${i+1}</div><div style="flex:1"><div style="font-size:12px;font-weight:600">${b.name}</div><div style="font-size:10px;color:var(--tx2)"><i class="lucide lucide-map-marker-alt"></i> ${b.lat?.toFixed(4)||'?'}, ${b.lon?.toFixed(4)||'?'}</div></div><div style="display:flex;gap:4px"><a href="https://yandex.com/maps/?pt=${b.lon},${b.lat}&z=17" target="_blank" class="btn bg" style="font-size:10px;padding:3px 8px"><i class="lucide lucide-map"></i></a><button class="btn" style="font-size:10px;padding:3px 8px;background:rgba(79,142,247,.15);color:var(--ac);border:1px solid rgba(79,142,247,.3)" onclick="editBr(${i})"><i class="lucide lucide-edit"></i></button><button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="delBr(${i})"><i class="lucide lucide-trash"></i></button></div></div>`).join(''):'<div class="empty"><div class="ei"><i class="lucide lucide-building"></i></div>Filiallar yo\u2019q</div>';}
