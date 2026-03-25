@@ -108,7 +108,7 @@ SALARY_STRUCTURES = {
     'soeup': {  # 수습 - Trainee
         'name': '수습',
         'salaries': {
-            'bin_2': 7500000,
+            'bin_1': 7500000,
         }
     },
     'sawon': {  # 사원 - Staff
