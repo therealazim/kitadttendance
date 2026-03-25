@@ -1751,9 +1751,9 @@ const u=USERS.find(x=>x.user_id===a.user_id);
 const c=AVC[a.user_id%AVC.length]; const sb=SBG[u?.specialty]||'bno';
 const arrTime=(a.time||'').slice(0,5);
 let badge='<span class="b bok"><i class="lucide lucide-check"></i> Keldi</span>';
-if(hasLesson.has(a.user_id)){
 const ls=lessonMap[a.user_id]||[];
 let best=null,bestD=Infinity;
+if(hasLesson.has(a.user_id)){
 for(const l of ls){const d=minDiff(l.time,a.time);if(d!==null&&Math.abs(d)<Math.abs(bestD)){bestD=d;best=l;}}
 if(best){
 if(bestD>2) badge=`<span class="b" style="background:rgba(251,191,36,.15);color:#fbbf24"><i class="lucide lucide-clock"></i> ${bestD} daq kech</span>`;
