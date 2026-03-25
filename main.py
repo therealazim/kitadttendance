@@ -316,6 +316,20 @@ class Database:
                     updated_at TIMESTAMP DEFAULT NOW()
                 )
             """)
+            
+            # Salary configurations table (Korean style)
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS salary_configs (
+                    id SERIAL PRIMARY KEY,
+                    category TEXT NOT NULL,
+                    category_kr TEXT DEFAULT '',
+                    bin_key TEXT NOT NULL,
+                    bin_name TEXT DEFAULT '',
+                    amount INT DEFAULT 0,
+                    updated_at TIMESTAMP DEFAULT NOW(),
+                    UNIQUE(category, bin_key)
+                )
+            """)
             defaults = [
                 ('hero_title', 'KITA구 HANCOM Academy'),
                 ('hero_subtitle', 'IT texnologiyalari, Koreys tili va ofis koʻnikmalarini professional darajada oʻrganing.'),
@@ -369,6 +383,33 @@ class Database:
                     VALUES ($1, $2)
                     ON CONFLICT (key) DO NOTHING
                 """, key, value)
+            
+            # Seed salary configurations (Korean style)
+            salary_defaults = [
+                # 수업 - Lesson teacher
+                ('soeup', '수업', 'bin_1', '1호봉', 7500000),
+                ('soeup', '수업', 'bin_2', '2호봉', 9000000),
+                ('soeup', '수업', 'bin_3', '3호봉', 10500000),
+                # 사원 - Employee
+                ('sawon', '사원', 'bin_1', '1호봉', 9500000),
+                ('sawon', '사원', 'bin_2', '2호봉', 11000000),
+                ('sawon', '사원', 'bin_3', '3호봉', 12500000),
+                # 대리 - Deputy
+                ('daeri', '대리', 'bin_1', '1호봉', 11500000),
+                ('daeri', '대리', 'bin_2', '2호봉', 13000000),
+                ('daeri', '대리', 'bin_3', '3호봉', 14500000),
+                # 관리자 - Manager
+                ('gwallija', '관리자', 'bin_1', '1호봉', 16000000),
+                ('gwallija', '관리자', 'bin_2', '2호봉', 17500000),
+                ('gwallija', '관리자', 'bin_3', '3호봉', 19000000),
+            ]
+            for cat, cat_kr, bin_key, bin_name, amount in salary_defaults:
+                await conn.execute("""
+                    INSERT INTO salary_configs (category, category_kr, bin_key, bin_name, amount)
+                    VALUES ($1, $2, $3, $4, $5)
+                    ON CONFLICT (category, bin_key) DO NOTHING
+                """, cat, cat_kr, bin_key, bin_name, amount)
+            
             logging.info("✅ Jadvallar yaratildi!")
     
     async def save_user(self, user_id, full_name, specialty=None, language='uz'):
@@ -1465,17 +1506,19 @@ async def admin_api_office_salary_calc(request):
         penalties = data.get('penalties', {})  # {penalty_type: count}
         expenses = data.get('expenses', 0)  # Xarajat cheklari summasi
         
-        # Get base salary
-        if position not in SALARY_STRUCTURES:
-            return web.Response(text=_json.dumps({'ok': False, 'error': 'Noto\'g\'ri lavozim'}), content_type='application/json')
+        # Get base salary from database
+        async with db.pool.acquire() as conn:
+            row = await conn.fetchrow(
+                "SELECT amount, category_kr, bin_name FROM salary_configs WHERE category=$1 AND bin_key=$2",
+                position, building
+            )
         
-        pos_data = SALARY_STRUCTURES[position]
+        if not row:
+            return web.Response(text=_json.dumps({'ok': False, 'error': 'Noto\'g\'ri lavozim yoki 호봉'}), content_type='application/json')
         
-        # Check if position has this building
-        if building not in pos_data['salaries']:
-            return web.Response(text=_json.dumps({'ok': False, 'error': f'{pos_data["name"]} uchun {BUILDINGS.get(building, building)} mavjud emas'}), content_type='application/json')
-        
-        base_salary = pos_data['salaries'][building]
+        base_salary = row['amount']
+        pos_name_kr = row['category_kr']
+        bin_name = row['bin_name']
         
         # Calculate penalties using fixed amounts from the image
         total_penalty = 0
@@ -1508,9 +1551,9 @@ async def admin_api_office_salary_calc(request):
             text=_json.dumps({
                 'ok': True,
                 'employee_name': employee_name,
-                'position': pos_data['name'],
+                'position': pos_name_kr,
                 'position_key': position,
-                'building': BUILDINGS.get(building, building),
+                'building': bin_name,
                 'base_salary': base_salary,
                 'penalties': penalty_details,
                 'total_penalty': total_penalty,
@@ -3411,6 +3454,65 @@ async def admin_api_business_expenses_save(request):
                     ON CONFLICT (month, expense_type) 
                     DO UPDATE SET amount = EXCLUDED.amount
                 """, month, expense_type, int(amount))
+        
+        return web.Response(
+            text=_json.dumps({'ok': True}),
+            content_type='application/json'
+        )
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
+
+async def admin_api_salary_configs_get(request):
+    """Get salary configurations"""
+    import json as _json
+    try:
+        async with db.pool.acquire() as conn:
+            rows = await conn.fetch("SELECT * FROM salary_configs ORDER BY category, bin_key")
+        
+        configs = {}
+        for row in rows:
+            cat = row['category']
+            if cat not in configs:
+                configs[cat] = {
+                    'category': cat,
+                    'category_kr': row['category_kr'],
+                    'bins': {}
+                }
+            configs[cat]['bins'][row['bin_key']] = {
+                'name': row['bin_name'],
+                'amount': row['amount']
+            }
+        
+        return web.Response(
+            text=_json.dumps({'ok': True, 'configs': list(configs.values())}, ensure_ascii=False),
+            content_type='application/json'
+        )
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
+
+async def admin_api_salary_configs_save(request):
+    """Save salary configurations"""
+    import json as _json
+    try:
+        data = await request.json()
+        configs = data.get('configs', [])
+        
+        async with db.pool.acquire() as conn:
+            for config in configs:
+                category = config.get('category', '')
+                category_kr = config.get('category_kr', '')
+                bins = config.get('bins', {})
+                
+                for bin_key, bin_data in bins.items():
+                    bin_name = bin_data.get('name', '')
+                    amount = int(bin_data.get('amount', 0))
+                    
+                    await conn.execute("""
+                        INSERT INTO salary_configs (category, category_kr, bin_key, bin_name, amount)
+                        VALUES ($1, $2, $3, $4, $5)
+                        ON CONFLICT (category, bin_key) 
+                        DO UPDATE SET category_kr = EXCLUDED.category_kr, bin_name = EXCLUDED.bin_name, amount = EXCLUDED.amount, updated_at = NOW()
+                    """, category, category_kr, bin_key, bin_name, amount)
         
         return web.Response(
             text=_json.dumps({'ok': True}),
@@ -9673,6 +9775,10 @@ async def main():
     # Business Report API (Korean style)
     app.router.add_get('/admin/api/business/report', admin_api_business_report)
     app.router.add_post('/admin/api/business/expenses', admin_api_business_expenses_save)
+    
+    # Salary Configs API (Korean style)
+    app.router.add_get('/admin/api/salary/configs', admin_api_salary_configs_get)
+    app.router.add_post('/admin/api/salary/configs', admin_api_salary_configs_save)
 
     port = int(os.environ.get("PORT", 10000))
     runner = web.AppRunner(app)
