@@ -329,19 +329,29 @@ class Database:
     
     async def load_configurations(self):
         """Load all configurations from database"""
+        import json as _json
         global SALARY_STRUCTURES, BUILDINGS, PENALTY_TYPES, LESSON_TYPES
         try:
             async with self.pool.acquire() as conn:
                 rows = await conn.fetch("SELECT key, value FROM configurations")
             
-            configs = {row['key']: row['value'] for row in rows}
+            configs = {}
+            for row in rows:
+                val = row['value']
+                if isinstance(val, str):
+                    val = _json.loads(val)
+                configs[row['key']] = val
             
             if not configs:
                 # Seed default configurations
                 await self.seed_configurations()
                 async with self.pool.acquire() as conn:
                     rows = await conn.fetch("SELECT key, value FROM configurations")
-                configs = {row['key']: row['value'] for row in rows}
+                for row in rows:
+                    val = row['value']
+                    if isinstance(val, str):
+                        val = _json.loads(val)
+                    configs[row['key']] = val
             
             # Load into globals
             if 'salary_structures' in configs:
@@ -2377,6 +2387,29 @@ async def admin_api_branch_delete(request):
             async with db.pool.acquire() as conn:
                 await conn.execute("DELETE FROM branches WHERE name = $1", removed['name'])
             return web.Response(text=_json.dumps({'ok': True, 'name': removed['name']}), content_type='application/json')
+        return web.Response(text=_json.dumps({'ok': False, 'error': 'Index xato'}), content_type='application/json')
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
+
+async def admin_api_branch_update(request):
+    """Filialni yangilash"""
+    import json as _json
+    try:
+        data = await request.json()
+        idx = int(data['index'])
+        name = data['name'].strip()
+        lat = float(data['lat'])
+        lon = float(data['lon'])
+        if not name or not (-90 <= lat <= 90) or not (-180 <= lon <= 180):
+            return web.Response(text=_json.dumps({'ok': False, 'error': 'Noto\'g\'ri ma\'lumot'}), content_type='application/json')
+        if 0 <= idx < len(LOCATIONS):
+            old_name = LOCATIONS[idx]['name']
+            LOCATIONS[idx] = {'name': name, 'lat': lat, 'lon': lon}
+            # Update in database
+            async with db.pool.acquire() as conn:
+                await conn.execute("UPDATE branches SET name=$1, lat=$2, lon=$3 WHERE name=$4", name, lat, lon, old_name)
+            await update_all_keyboards()
+            return web.Response(text=_json.dumps({'ok': True}), content_type='application/json')
         return web.Response(text=_json.dumps({'ok': False, 'error': 'Index xato'}), content_type='application/json')
     except Exception as e:
         return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
@@ -9768,6 +9801,7 @@ async def main():
     app.router.add_post('/admin/api/student/edit', admin_api_student_edit)
     app.router.add_post('/admin/api/student/delete', admin_api_student_delete)
     app.router.add_post('/admin/api/branch/delete', admin_api_branch_delete)
+    app.router.add_post('/admin/api/branch/update', admin_api_branch_update)
     app.router.add_get('/teacher', miniapp_teacher_page)
     app.router.add_get('/teacher/api/profile/photo', miniapp_get_profile_photo)
     app.router.add_post('/teacher/api/profile/update', miniapp_update_profile)
