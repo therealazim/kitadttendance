@@ -1875,6 +1875,40 @@ async def admin_api_user_restore(request):
         logging.error(f"admin_api_user_restore error: {e}")
         return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
 
+async def admin_api_user_permanent_delete(request):
+    """Foydalanuvchini UMUMAN o'chirish (bazadan)"""
+    import json as _json
+    try:
+        data = await request.json()
+        uid = int(data['user_id'])
+        async with db.pool.acquire() as conn:
+            # Delete all related data
+            await conn.execute("DELETE FROM attendance WHERE user_id=$1", uid)
+            await conn.execute("DELETE FROM schedules WHERE user_id=$1", uid)
+            await conn.execute("DELETE FROM salary WHERE user_id=$1", uid)
+            # Remove teacher from groups
+            await conn.execute("UPDATE groups SET teacher_id=NULL WHERE teacher_id=$1", uid)
+            # Delete user
+            await conn.execute("DELETE FROM users WHERE user_id=$1", uid)
+        
+        # Clear from memory
+        if uid in user_ids:
+            user_ids.remove(uid)
+        user_status.pop(uid, None)
+        user_names.pop(uid, None)
+        user_specialty.pop(uid, None)
+        user_languages.pop(uid, None)
+        user_photo_cache.pop(uid, None)
+        if uid in user_schedules:
+            for schedule_id in user_schedules[uid]:
+                schedules.pop(schedule_id, None)
+            user_schedules.pop(uid, None)
+        
+        return web.Response(text=_json.dumps({'ok': True}), content_type='application/json')
+    except Exception as e:
+        logging.error(f"admin_api_user_permanent_delete error: {e}")
+        return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
+
 async def admin_api_user_stats(request):
     """Foydalanuvchi batafsil statistikasi"""
     import json as _json
@@ -9788,6 +9822,7 @@ async def main():
     app.router.add_post('/admin/api/group/delete', admin_api_group_delete)
     app.router.add_post('/admin/api/user/delete', admin_api_user_delete)
     app.router.add_post('/admin/api/user/restore', admin_api_user_restore)
+    app.router.add_post('/admin/api/user/permanent-delete', admin_api_user_permanent_delete)
     app.router.add_get('/admin/api/user/stats', admin_api_user_stats)
     app.router.add_get('/admin/api/group/detail', admin_api_group_detail)
     app.router.add_post('/admin/api/group/edit/schedule', admin_api_group_edit_schedule)
