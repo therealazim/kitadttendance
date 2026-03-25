@@ -676,11 +676,8 @@
   <div style="margin-top:16px">
     <div id="salarycfg-list"></div>
     <div style="display:flex;gap:10px;margin-top:16px">
-      <button class="btn bp" onclick="saveSalaryConfigs()" style="flex:1">
+      <button class="btn bp bfull" onclick="saveSalaryConfigs()">
         <i class="lucide lucide-save"></i> Saqlash
-      </button>
-      <button class="btn bd" onclick="resetSalaryConfigs()">
-        <i class="lucide lucide-rotate-ccw"></i> Standartga qaytarish
       </button>
     </div>
   </div>
@@ -2125,7 +2122,7 @@ function loadPenaltiesList() {
   for (const [key, penalty] of Object.entries(OFF_SALARY_STRUCTURE.penalty_types)) {
     html += `
       <div class="fg" style="margin:0">
-        <label style="font-size:11px">${penalty.icon} ${penalty.name} (${penalty.percent}%)</label>
+        <label style="font-size:11px">${penalty.name} (${penalty.percent}%)</label>
         <input type="number" id="pen-${key}" class="inp" value="0" min="0" placeholder="0">
       </div>
     `;
@@ -2328,18 +2325,6 @@ async function saveSalaryConfigs() {
     toast('<i class="lucide lucide-check"></i> Maosh sozlamalari saqlandi!');
   } else {
     toast('<i class="lucide lucide-times"></i> Saqlashda xatolik: ' + (r?.error || ''));
-  }
-}
-
-async function resetSalaryConfigs() {
-  if (!confirm('Barcha maosh sozlamalari standart qiymatlarga qaytarilsinmi?')) return;
-  
-  const r = await api('/admin/api/salary/configs', { configs: [], reset: true });
-  if (r?.ok) {
-    toast('<i class="lucide lucide-check"></i> Standart qiymatlar qaytarildi!');
-    loadSalaryConfigs();
-  } else {
-    toast('<i class="lucide lucide-times"></i> Xatolik: ' + (r?.error || ''));
   }
 }
 
