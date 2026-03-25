@@ -2761,9 +2761,18 @@ async def admin_api_reports_attendance(request):
         
         headers = ['#', 'Filial', 'Sana', 'Kun', 'Dars vaqti', 'Keldi', 'Kechikish (daq)', 'Holat']
         
+        # Excel'da ruxsat etilmagan belgilarni tozalash
+        invalid_chars = ['[', ']', ':', '*', '?', '/', '\\']
+        
         for idx, (teacher_name, data) in enumerate(teachers.items()):
-            # Sheet yaratish (nomi 31 belgidan oshmasin)
-            sheet_name = teacher_name[:31] if len(teacher_name) > 31 else teacher_name
+            # Sheet nomini tozalash
+            clean_name = teacher_name
+            for char in invalid_chars:
+                clean_name = clean_name.replace(char, '')
+            sheet_name = clean_name[:31] if len(clean_name) > 31 else clean_name
+            if not sheet_name:
+                sheet_name = f'O\'qituvchi {idx+1}'
+            
             if idx == 0:
                 ws = wb.active
                 ws.title = sheet_name
