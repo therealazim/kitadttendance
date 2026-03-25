@@ -78,107 +78,13 @@ group_attendance_files = {}  # group_id -> kumulativ Excel (bytes) — har dars 
 
 # BARCHA LOKATSIYALAR - DATABASE DAN YUKLANADI
 LOCATIONS = []
+SALARY_STRUCTURES = {}
+BUILDINGS = {}
+PENALTY_TYPES = {}
+LESSON_TYPES = {}
 
 ALLOWED_DISTANCE = 500
-
-# --- OFFICE SALARY STRUCTURES (Korean system) ---
-# Base salaries by position and building (in sums)
-SALARY_STRUCTURES = {
-    'soeup': {  # 수습 - Trainee
-        'name': '수습',
-        'salaries': {
-            'bin_1': 7500000,
-        }
-    },
-    'sawon': {  # 사원 - Staff
-        'name': '사원',
-        'salaries': {
-            'bin_1': 8500000,
-            'bin_2': 9500000,
-            'bin_3': 10500000,
-        }
-    },
-    'daeri': {  # 대리 - Deputy
-        'name': '대리',
-        'salaries': {
-            'bin_1': 11500000,
-            'bin_2': 13000000,
-            'bin_3': 14500000,
-        }
-    },
-    'gwallija': {  # 관리자 - Manager
-        'name': '관리자',
-        'salaries': {
-            'bin_1': 16000000,
-            'bin_2': 17500000,
-            'bin_3': 19000000,
-        }
-    }
-}
-
-# Buildings list (Korean style)
-BUILDINGS = {
-    'bin_1': '1호봉',
-    'bin_2': '2호봉',
-    'bin_3': '3호봉'
-}
-
-# Penalty/Deduction types (Korean names, fixed amounts from image)
-PENALTY_TYPES = {
-    'jigak': {  # 지각 - Lateness
-        'name': '지각',
-        'percent': 1.0,
-        'amounts': {'soeup': 75000, 'sawon': 95000, 'daeri': 115000, 'gwallija': 160000}
-    },
-    'mudan_jigak': {  # 무단지각 - Unexcused lateness
-        'name': '무단지각',
-        'percent': 3.0,
-        'amounts': {'soeup': 225000, 'sawon': 285000, 'daeri': 345000, 'gwallija': 480000}
-    },
-    'jote': {  # 조퇴 - Early departure
-        'name': '조퇴',
-        'percent': 2.5,
-        'amounts': {'soeup': 187500, 'sawon': 237500, 'daeri': 287500, 'gwallija': 400000}
-    },
-    'gyeolgun': {  # 결근 - Absent
-        'name': '결근',
-        'percent': 5.5,
-        'amounts': {'soeup': 412500, 'sawon': 522500, 'daeri': 632500, 'gwallija': 880000}
-    },
-    'mudan_gyeolgun': {  # 무단결근 - Unexcused absence
-        'name': '무단결근',
-        'percent': 12.0,
-        'amounts': {'soeup': 900000, 'sawon': 1140000, 'daeri': 1380000, 'gwallija': 1920000}
-    },
-    'ilil_eopmu_bogeo': {  # 일일업무보고 - Daily report
-        'name': '일일업무보고',
-        'percent': 1.0,
-        'amounts': {'soeup': 75000, 'sawon': 95000, 'daeri': 115000, 'gwallija': 160000}
-    },
-    'geojit_bogeo': {  # 거짓보고 - False report
-        'name': '거짓보고',
-        'percent': 2.0,
-        'amounts': {'soeup': 150000, 'sawon': 190000, 'daeri': 230000, 'gwallija': 320000}
-    },
-    'mudan_ital': {  # 무단이탈 - Unauthorized leave
-        'name': '무단이탈',
-        'percent': 5.0,
-        'amounts': {'soeup': 375000, 'sawon': 475000, 'daeri': 575000, 'gwallija': 800000}
-    },
-    'jisi_bulihhaeng': {  # 지시불이행 - Disobedience
-        'name': '지시불이행',
-        'percent': 8.0,
-        'amounts': {'soeup': 600000, 'sawon': 760000, 'daeri': 920000, 'gwallija': 1280000}
-    },
-    'mi_bogeo': {  # 미보고 - Not reported
-        'name': '미보고',
-        'percent': 2.0,
-        'amounts': {'soeup': 150000, 'sawon': 190000, 'daeri': 230000, 'gwallija': 320000}
-    }
-}
-
-# Tax rate (7.5%)
-TAX_RATE = 7.5
+TAX_RATE = 7.5  # Soliq stavkasi (%)
 
 # --- OYLIK HISOBOT UCHUN STATE ---
 class MonthlyReport(StatesGroup):
@@ -320,6 +226,15 @@ class Database:
                     created_at TIMESTAMP DEFAULT NOW()
                 )
             """)
+            
+            # Configurations table (JSON data storage)
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS configurations (
+                    key TEXT PRIMARY KEY,
+                    value JSONB NOT NULL,
+                    updated_at TIMESTAMP DEFAULT NOW()
+                )
+            """)
             defaults = [
                 ('hero_title', 'KITA구 HANCOM Academy'),
                 ('hero_subtitle', 'IT texnologiyalari, Koreys tili va ofis koʻnikmalarini professional darajada oʻrganing.'),
@@ -411,6 +326,70 @@ class Database:
         except Exception as e:
             logging.error(f"Branches load error: {e}")
             LOCATIONS = []
+    
+    async def load_configurations(self):
+        """Load all configurations from database"""
+        global SALARY_STRUCTURES, BUILDINGS, PENALTY_TYPES, LESSON_TYPES
+        try:
+            async with self.pool.acquire() as conn:
+                rows = await conn.fetch("SELECT key, value FROM configurations")
+            
+            configs = {row['key']: row['value'] for row in rows}
+            
+            if not configs:
+                # Seed default configurations
+                await self.seed_configurations()
+                async with self.pool.acquire() as conn:
+                    rows = await conn.fetch("SELECT key, value FROM configurations")
+                configs = {row['key']: row['value'] for row in rows}
+            
+            # Load into globals
+            if 'salary_structures' in configs:
+                SALARY_STRUCTURES = configs['salary_structures']
+            if 'buildings' in configs:
+                BUILDINGS = configs['buildings']
+            if 'penalty_types' in configs:
+                PENALTY_TYPES = configs['penalty_types']
+            if 'lesson_types' in configs:
+                LESSON_TYPES = configs['lesson_types']
+            
+            logging.info(f"✅ Konfiguratsiyalar yuklandi: {len(configs)} ta")
+        except Exception as e:
+            logging.error(f"Configurations load error: {e}")
+    
+    async def seed_configurations(self):
+        """Seed default configurations"""
+        import json as _json
+        
+        default_configs = [
+            ('salary_structures', {
+                'soeup': {'name': '수습', 'salaries': {'bin_1': 7500000}},
+                'sawon': {'name': '사원', 'salaries': {'bin_1': 8500000, 'bin_2': 9500000, 'bin_3': 10500000}},
+                'daeri': {'name': '대리', 'salaries': {'bin_1': 11500000, 'bin_2': 13000000, 'bin_3': 14500000}},
+                'gwallija': {'name': '관리자', 'salaries': {'bin_1': 16000000, 'bin_2': 17500000, 'bin_3': 19000000}}
+            }),
+            ('buildings', {'bin_1': '1호봉', 'bin_2': '2호봉', 'bin_3': '3호봉'}),
+            ('penalty_types', {
+                'jigak': {'name': '지각', 'percent': 1.0, 'amounts': {'soeup': 75000, 'sawon': 95000, 'daeri': 115000, 'gwallija': 160000}},
+                'mudan_jigak': {'name': '무단지각', 'percent': 3.0, 'amounts': {'soeup': 225000, 'sawon': 285000, 'daeri': 345000, 'gwallija': 480000}},
+                'jote': {'name': '조퇴', 'percent': 2.5, 'amounts': {'soeup': 187500, 'sawon': 237500, 'daeri': 287500, 'gwallija': 400000}},
+                'gyeolgun': {'name': '결근', 'percent': 5.5, 'amounts': {'soeup': 412500, 'sawon': 522500, 'daeri': 632500, 'gwallija': 880000}},
+                'mudan_gyeolgun': {'name': '무단결근', 'percent': 12.0, 'amounts': {'soeup': 900000, 'sawon': 1140000, 'daeri': 1380000, 'gwallija': 1920000}},
+                'ilil_eopmu_bogeo': {'name': '일일업무보고', 'percent': 1.0, 'amounts': {'soeup': 75000, 'sawon': 95000, 'daeri': 115000, 'gwallija': 160000}},
+                'geojit_bogeo': {'name': '거짓보고', 'percent': 2.0, 'amounts': {'soeup': 150000, 'sawon': 190000, 'daeri': 230000, 'gwallija': 320000}},
+                'mudan_ital': {'name': '무단이탈', 'percent': 5.0, 'amounts': {'soeup': 375000, 'sawon': 475000, 'daeri': 575000, 'gwallija': 800000}},
+                'jisi_bulihhaeng': {'name': '지시불이행', 'percent': 8.0, 'amounts': {'soeup': 600000, 'sawon': 760000, 'daeri': 920000, 'gwallija': 1280000}},
+                'mi_bogeo': {'name': '미보고', 'percent': 2.0, 'amounts': {'soeup': 150000, 'sawon': 190000, 'daeri': 230000, 'gwallija': 320000}}
+            }),
+            ('lesson_types', {'Koreys tili': 'korean', 'IT': 'it', 'Ofis xodimi': 'office'})
+        ]
+        
+        async with self.pool.acquire() as conn:
+            for key, value in default_configs:
+                await conn.execute("""
+                    INSERT INTO configurations (key, value) VALUES ($1, $2)
+                    ON CONFLICT (key) DO NOTHING
+                """, key, _json.dumps(value))
     
     async def save_attendance(self, user_id, branch, att_date, att_time):
         try:
@@ -9680,6 +9659,7 @@ async def main():
     await db.create_pool()
     await db.init_tables()
     await db.load_branches()
+    await db.load_configurations()
     await db.load_to_ram()
 
     # Barcha foydalanuvchilar tilini 'uz' ga o'zgartirish (bir martalik migration)
