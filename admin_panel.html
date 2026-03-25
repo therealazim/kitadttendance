@@ -676,9 +676,14 @@
   </div>
   <div style="margin-top:16px">
     <div id="salarycfg-list"></div>
-    <button class="btn bp bfull" onclick="saveSalaryConfigs()" style="margin-top:16px">
-      <i class="lucide lucide-save"></i> Barcha o'zgarishlarni saqlash
-    </button>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn bp" onclick="saveSalaryConfigs()" style="flex:1">
+        <i class="lucide lucide-save"></i> Saqlash
+      </button>
+      <button class="btn bd" onclick="resetSalaryConfigs()">
+        <i class="lucide lucide-rotate-ccw"></i> Standartga qaytarish
+      </button>
+    </div>
   </div>
 </div>
 
@@ -2456,6 +2461,18 @@ async function saveSalaryConfigs() {
     toast('<i class="lucide lucide-check"></i> Maosh sozlamalari saqlandi!');
   } else {
     toast('<i class="lucide lucide-times"></i> Saqlashda xatolik: ' + (r?.error || ''));
+  }
+}
+
+async function resetSalaryConfigs() {
+  if (!confirm('Barcha maosh sozlamalari standart qiymatlarga qaytarilsinmi?')) return;
+  
+  const r = await api('/admin/api/salary/configs', { configs: [], reset: true });
+  if (r?.ok) {
+    toast('<i class="lucide lucide-check"></i> Standart qiymatlar qaytarildi!');
+    loadSalaryConfigs();
+  } else {
+    toast('<i class="lucide lucide-times"></i> Xatolik: ' + (r?.error || ''));
   }
 }
 

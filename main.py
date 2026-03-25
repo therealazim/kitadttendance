@@ -3490,6 +3490,29 @@ async def admin_api_salary_configs_save(request):
     try:
         data = await request.json()
         configs = data.get('configs', [])
+        reset = data.get('reset', False)
+        
+        # If reset requested, delete all and reseed
+        if reset:
+            async with db.pool.acquire() as conn:
+                await conn.execute("DELETE FROM salary_configs")
+                salary_defaults = [
+                    ('soeup', '수습', 'bin_1', '1호봉', 7500000),
+                    ('sawon', '사원', 'bin_1', '1호봉', 8500000),
+                    ('sawon', '사원', 'bin_2', '2호봉', 9500000),
+                    ('sawon', '사원', 'bin_3', '3호봉', 10500000),
+                    ('daeri', '대리', 'bin_1', '1호봉', 11500000),
+                    ('daeri', '대리', 'bin_2', '2호봉', 13000000),
+                    ('daeri', '대리', 'bin_3', '3호봉', 14500000),
+                    ('gwallija', '관리자', 'bin_1', '1호봉', 16000000),
+                    ('gwallija', '관리자', 'bin_2', '2호봉', 17500000),
+                    ('gwallija', '관리자', 'bin_3', '3호봉', 19000000),
+                ]
+                for cat, cat_kr, bin_key, bin_name, amount in salary_defaults:
+                    await conn.execute("""
+                        INSERT INTO salary_configs (category, category_kr, bin_key, bin_name, amount)
+                        VALUES ($1, $2, $3, $4, $5)
+                    """, cat, cat_kr, bin_key, bin_name, amount)
         
         async with db.pool.acquire() as conn:
             for config in configs:
