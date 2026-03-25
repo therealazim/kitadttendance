@@ -76,8 +76,8 @@ groups = {}  # group_id -> group ma'lumotlari
 group_students = defaultdict(list)  # group_id -> o'quvchilar ro'yxati
 group_attendance_files = {}  # group_id -> kumulativ Excel (bytes) — har dars uchun yangi ustun
 
-# BARCHA LOKATSIYALAR RO'YXATI
-LOCATIONS =[
+# BARCHA LOKATSIYALAR RO'YXATI (default - database dan yuklanadi)
+DEFAULT_LOCATIONS =[
     {"name": "Kimyo Xalqaro Universiteti", "lat": 41.257490, "lon": 69.220109},
     {"name": "Menejment Universiteti", "lat": 41.270526, "lon": 69.236492},
     {"name": "78-Maktab", "lat": 41.282791, "lon": 69.173290},
@@ -99,6 +99,7 @@ LOCATIONS =[
     {"name": "Umnie Deti School", "lat": 41.315790, "lon": 69.209515},
     {"name": "Cambridge School", "lat": 41.342296, "lon": 69.167571}
 ]
+LOCATIONS = []  # Database dan yuklanadi
 
 ALLOWED_DISTANCE = 500
 
@@ -330,6 +331,17 @@ class Database:
                     UNIQUE(category, bin_key)
                 )
             """)
+            
+            # Branches table
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS branches (
+                    id SERIAL PRIMARY KEY,
+                    name TEXT UNIQUE NOT NULL,
+                    lat DOUBLE PRECISION DEFAULT 0,
+                    lon DOUBLE PRECISION DEFAULT 0,
+                    created_at TIMESTAMP DEFAULT NOW()
+                )
+            """)
             defaults = [
                 ('hero_title', 'KITA구 HANCOM Academy'),
                 ('hero_subtitle', 'IT texnologiyalari, Koreys tili va ofis koʻnikmalarini professional darajada oʻrganing.'),
@@ -408,6 +420,29 @@ class Database:
     async def get_user(self, user_id):
         async with self.pool.acquire() as conn:
             return await conn.fetchrow("SELECT * FROM users WHERE user_id = $1", user_id)
+    
+    async def load_branches(self):
+        """Load branches from database into LOCATIONS"""
+        global LOCATIONS
+        try:
+            async with self.pool.acquire() as conn:
+                rows = await conn.fetch("SELECT * FROM branches ORDER BY id")
+            
+            if not rows:
+                # Seed default branches
+                async with self.pool.acquire() as conn:
+                    for loc in DEFAULT_LOCATIONS:
+                        await conn.execute("""
+                            INSERT INTO branches (name, lat, lon) VALUES ($1, $2, $3)
+                            ON CONFLICT (name) DO NOTHING
+                        """, loc['name'], loc['lat'], loc['lon'])
+                rows = await conn.fetch("SELECT * FROM branches ORDER BY id")
+            
+            LOCATIONS = [{'name': r['name'], 'lat': r['lat'], 'lon': r['lon']} for r in rows]
+            logging.info(f"✅ Filiallar yuklandi: {len(LOCATIONS)} ta")
+        except Exception as e:
+            logging.error(f"Branches load error: {e}")
+            LOCATIONS = DEFAULT_LOCATIONS.copy()
     
     async def save_attendance(self, user_id, branch, att_date, att_time):
         try:
@@ -1305,6 +1340,13 @@ async def admin_api_branch_add(request):
         # Takrorlanishni tekshirish
         if any(b['name'] == name for b in LOCATIONS):
             return web.Response(text=_json.dumps({'ok': False, 'error': 'Bu nom allaqachon bor'}), content_type='application/json')
+        
+        # Save to database
+        async with db.pool.acquire() as conn:
+            await conn.execute("""
+                INSERT INTO branches (name, lat, lon) VALUES ($1, $2, $3)
+            """, name, lat, lon)
+        
         new_branch = {'name': name, 'lat': lat, 'lon': lon}
         LOCATIONS.append(new_branch)
         # Barcha keyboard yangilash
@@ -2372,6 +2414,9 @@ async def admin_api_branch_delete(request):
         idx = int(data['index'])
         if 0 <= idx < len(LOCATIONS):
             removed = LOCATIONS.pop(idx)
+            # Delete from database
+            async with db.pool.acquire() as conn:
+                await conn.execute("DELETE FROM branches WHERE name = $1", removed['name'])
             return web.Response(text=_json.dumps({'ok': True, 'name': removed['name']}), content_type='application/json')
         return web.Response(text=_json.dumps({'ok': False, 'error': 'Index xato'}), content_type='application/json')
     except Exception as e:
@@ -9666,6 +9711,7 @@ async def handle_static(request):
 async def main():
     await db.create_pool()
     await db.init_tables()
+    await db.load_branches()
     await db.load_to_ram()
 
     # Barcha foydalanuvchilar tilini 'uz' ga o'zgartirish (bir martalik migration)
