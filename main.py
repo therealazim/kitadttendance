@@ -1565,18 +1565,32 @@ async def admin_api_office_employees_list(request):
 
 
 async def admin_api_salary_structure(request):
-    """Oylik tuzilmasi va jarima turlarini qaytarish"""
+    """Oylik tuzilmasi va jarima turlarini qaytarish - salary_configs dan"""
     import json as _json
-    return web.Response(
-        text=_json.dumps({
-            'ok': True,
-            'salary_structures': SALARY_STRUCTURES,
-            'buildings': BUILDINGS,
-            'penalty_types': PENALTY_TYPES,
-            'tax_rate': TAX_RATE
-        }, ensure_ascii=False),
-        content_type='application/json', charset='utf-8'
-    )
+    try:
+        # Get salary structures from salary_configs table
+        async with db.pool.acquire() as conn:
+            rows = await conn.fetch("SELECT * FROM salary_configs ORDER BY category, bin_key")
+        
+        salary_structures = {}
+        for row in rows:
+            cat = row['category']
+            if cat not in salary_structures:
+                salary_structures[cat] = {'name': row['category_kr'], 'salaries': {}}
+            salary_structures[cat]['salaries'][row['bin_key']] = row['amount']
+        
+        return web.Response(
+            text=_json.dumps({
+                'ok': True,
+                'salary_structures': salary_structures,
+                'buildings': BUILDINGS,
+                'penalty_types': PENALTY_TYPES,
+                'tax_rate': TAX_RATE
+            }, ensure_ascii=False),
+            content_type='application/json', charset='utf-8'
+        )
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
 
 
 async def admin_api_teachers_list(request):
