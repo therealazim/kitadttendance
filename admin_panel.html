@@ -2236,6 +2236,11 @@ function renderSalaryConfigs() {
 }
 
 async function saveSalaryConfigs() {
+  // Check if configs are loaded
+  if (!SALARY_CONFIGS || SALARY_CONFIGS.length === 0) {
+    toast('<i class="lucide lucide-times"></i> Iltimos, avval maosh sozlamalarini yuklang! "Yangilash" tugmasini bosing.');
+    return;
+  }
   // Show spinner
   document.getElementById('save-salary-icon').style.display = 'none';
   document.getElementById('save-salary-spinner').style.display = 'inline-block';
