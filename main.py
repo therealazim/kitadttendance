@@ -1848,6 +1848,33 @@ async def admin_api_user_delete(request):
         logging.error(f"admin_api_user_delete error: {e}")
         return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
 
+async def admin_api_user_restore(request):
+    """Foydalanuvchini tiklash (arxivdan chiqarish)"""
+    import json as _json
+    try:
+        data = await request.json()
+        uid = int(data['user_id'])
+        async with db.pool.acquire() as conn:
+            # Get archived name and restore
+            row = await conn.fetchrow("SELECT full_name FROM users WHERE user_id=$1", uid)
+            if row and row['full_name']:
+                clean_name = row['full_name'].replace('[ARXIV]', '').strip()
+                await conn.execute(
+                    "UPDATE users SET status='active', full_name=$1 WHERE user_id=$2",
+                    clean_name, uid
+                )
+            else:
+                await conn.execute("UPDATE users SET status='active' WHERE user_id=$1", uid)
+        user_status[uid] = 'active'
+        if row and row['full_name']:
+            user_names[uid] = row['full_name'].replace('[ARXIV]', '').strip()
+        if uid not in user_ids:
+            user_ids.append(uid)
+        return web.Response(text=_json.dumps({'ok': True}), content_type='application/json')
+    except Exception as e:
+        logging.error(f"admin_api_user_restore error: {e}")
+        return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
+
 async def admin_api_user_stats(request):
     """Foydalanuvchi batafsil statistikasi"""
     import json as _json
@@ -4184,25 +4211,28 @@ async def admin_api_data(request):
         today_str = now_uzb.strftime('%Y-%m-%d')
         this_month = now_uzb.strftime('%Y-%m')
 
-        # Foydalanuvchilar
+        # Foydalanuvchilar (arxivdagilar ham)
         users_data = []
         skipped_users = []
         logging.info(f"admin_api_data: user_ids count = {len(user_ids)}")
         for uid in user_ids:
             name = user_names.get(uid, '')
-            if not name or '[ARXIV]' in name:
-                skipped_users.append({'uid': uid, 'name': name, 'reason': 'no name' if not name else 'archived'})
+            if not name:
+                skipped_users.append({'uid': uid, 'name': name, 'reason': 'no name'})
                 continue
+            # Arxivlangan foydalanuvchini aniqlash
+            is_archived = '[ARXIV]' in name
+            clean_name = name.replace('[ARXIV]', '').strip()
             month_att = len([
                 a for a in daily_attendance_log
                 if a[0] == uid and a[2].startswith(this_month)
             ])
             users_data.append({
                 'user_id': uid,
-                'name': name,
+                'name': clean_name,
                 'specialty': user_specialty.get(uid, ''),
                 'language': user_languages.get(uid, 'uz'),
-                'status': user_status.get(uid, 'active'),
+                'status': 'archived' if is_archived else user_status.get(uid, 'active'),
                 'attendance_count': month_att,
                 'photo_url': user_photo_cache.get(uid),
             })
@@ -9757,6 +9787,7 @@ async def main():
     app.router.add_get('/admin/api/salary/structure', admin_api_salary_structure)
     app.router.add_post('/admin/api/group/delete', admin_api_group_delete)
     app.router.add_post('/admin/api/user/delete', admin_api_user_delete)
+    app.router.add_post('/admin/api/user/restore', admin_api_user_restore)
     app.router.add_get('/admin/api/user/stats', admin_api_user_stats)
     app.router.add_get('/admin/api/group/detail', admin_api_group_detail)
     app.router.add_post('/admin/api/group/edit/schedule', admin_api_group_edit_schedule)
