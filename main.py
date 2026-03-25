@@ -3445,12 +3445,10 @@ async def admin_api_salary_configs_get(request):
             # If no configs exist, seed with defaults
             if not rows:
                 salary_defaults = [
-                    ('soeup', '수업', 'bin_1', '1호봉', 7500000),
-                    ('soeup', '수업', 'bin_2', '2호봉', 9000000),
-                    ('soeup', '수업', 'bin_3', '3호봉', 10500000),
-                    ('sawon', '사원', 'bin_1', '1호봉', 9500000),
-                    ('sawon', '사원', 'bin_2', '2호봉', 11000000),
-                    ('sawon', '사원', 'bin_3', '3호봉', 12500000),
+                    ('soeup', '수습', 'bin_1', '1호봉', 7500000),
+                    ('sawon', '사원', 'bin_1', '1호봉', 8500000),
+                    ('sawon', '사원', 'bin_2', '2호봉', 9500000),
+                    ('sawon', '사원', 'bin_3', '3호봉', 10500000),
                     ('daeri', '대리', 'bin_1', '1호봉', 11500000),
                     ('daeri', '대리', 'bin_2', '2호봉', 13000000),
                     ('daeri', '대리', 'bin_3', '3호봉', 14500000),

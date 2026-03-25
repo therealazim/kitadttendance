@@ -2416,16 +2416,16 @@ function renderSalaryConfigs() {
     html += `
       <div class="card" style="margin-bottom:16px">
         <div class="card-hdr">
-          <span class="card-title">${config.category_kr} (${config.category})</span>
+          <span class="card-title">${config.category_kr}</span>
         </div>
         <div class="card-body">
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+          <div style="display:grid;grid-template-columns:repeat(${Object.keys(config.bins).length},1fr);gap:12px">
     `;
     
     for (const [binKey, binData] of Object.entries(config.bins)) {
       html += `
         <div class="fg" style="margin:0">
-          <label>${binData.name} (${binKey})</label>
+          <label>${binData.name}</label>
           <input type="number" class="inp salary-input" data-cat="${ci}" data-bin="${binKey}" value="${binData.amount}" placeholder="0">
         </div>
       `;
