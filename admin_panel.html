@@ -687,7 +687,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         <div class="fb" id="off-expenses-section" style="display:none">
           <div class="ft"><i class="lucide lucide-receipt"></i> Xarajat cheklari</div>
           <div class="fg"><label>Cheklar summasi (so'm)</label>
-            <input type="number" id="off-expenses" class="inp" placeholder="0" value="0">
+            <input type="number" id="off-expenses" class="inp" placeholder="0">
           </div>
         </div>
         
@@ -1939,14 +1939,14 @@ h+=`<div style="font-size:10px;color:var(--tx2);margin:4px 0 6px;font-weight:600
 </div>
 <div style="font-size:10px;color:var(--tx2);margin:8px 0 6px;font-weight:600">📦 400,000 UZS (12 dars/oy)</div>
 <div class="fr2">
-<div class="fg"><label>O'quvchi soni</label><input type="number" id="sb400s${i}" class="inp" placeholder="0" min="0" value="0"></div>
+<div class="fg"><label>O'quvchi soni</label><input type="number" id="sb400s${i}" class="inp" placeholder="0" min="0"></div>
 <div class="fg"><label>Bu oy dars</label><input type="number" id="sb400l${i}" class="inp" placeholder="12" min="0" value="12"></div>
 </div>
 <div class="fr2" style="margin-top:8px">
 <div class="fg"><label>Imtixon ulushi</label><select id="sbc${i}" class="inp"><option value="35">35%</option><option value="45">45%</option></select></div>
-<div class="fg"><label>Jarima (%)</label><input type="number" id="sbn${i}" class="inp" value="0" min="0" placeholder="0"></div>
+<div class="fg"><label>Jarima (%)</label><input type="number" id="sbn${i}" class="inp" min="0" placeholder="0"></div>
 </div>
-<div class="fg" style="margin-top:6px"><label>&#127873; Bonus (so'm)</label><input type="number" id="sbbonus${i}" class="inp" value="0" min="0" placeholder="0"></div>`;
+<div class="fg" style="margin-top:6px"><label>&#127873; Bonus (so'm)</label><input type="number" id="sbbonus${i}" class="inp" min="0" placeholder="0"></div>`;
 } else {
 h+=`<div class="fr2">
 <div class="fg"><label>O'quvchilar</label><input type="number" id="sbs${i}" class="inp" min="0" value="${g.student_count||0}"></div>
@@ -1954,9 +1954,9 @@ h+=`<div class="fr2">
 </div>
 <div class="fr2">
 <div class="fg"><label>Imtixon %</label><select id="sbc${i}" class="inp">${[10,20,30,40,50,60,70,80,90,100].map(p=>`<option value="${p}">${p}%</option>`).join('')}</select></div>
-<div class="fg"><label>Jarima (so'm)</label><input type="number" id="sbn${i}" class="inp" value="0" min="0"></div>
+<div class="fg"><label>Jarima (so'm)</label><input type="number" id="sbn${i}" class="inp" min="0" placeholder="0"></div>
 </div>
-<div class="fg" style="margin-top:6px"><label>&#127873; Bonus (so'm)</label><input type="number" id="sbbonus${i}" class="inp" value="0" min="0" placeholder="0"></div>`;
+<div class="fg" style="margin-top:6px"><label>&#127873; Bonus (so'm)</label><input type="number" id="sbbonus${i}" class="inp" min="0" placeholder="0"></div>`;
 }
 h+=`<input type="hidden" id="sbb${i}" value="${g.branch}">
 <input type="hidden" id="sbgn${i}" value="${g.name}">
