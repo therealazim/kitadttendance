@@ -330,7 +330,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 <body>
 <div class="layout">
 <div class="sidebar" id="sb">
-  <div class="logo"><img src="/static/black_logo.svg" id="theme-logo" style="height:44px" alt="KITA"></div>
+  <div class="logo" onclick="gp('dash',document.querySelector('.sbi[onclick*=dash]'))" style="cursor:pointer"><img src="/static/black_logo.svg" id="theme-logo" style="height:44px" alt="KITA"></div>
   <div class="sbnav">
     <div class="sbsec" data-i18n="sec_main">Asosiy</div>
     <button class="sbi on" onclick="gp('dash',this)"><span class="ico"><i class="lucide lucide-chart-line"></i></span><span class="lbl" data-i18n="nav_dash">Dashboard</span></button>
