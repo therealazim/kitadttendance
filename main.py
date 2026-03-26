@@ -1541,6 +1541,151 @@ async def admin_api_office_salary_calc(request):
         return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
 
 
+async def admin_api_office_salary_excel(request):
+    """Office xodimi oylik Excel"""
+    import json as _json
+    try:
+        data = await request.json()
+        from openpyxl import Workbook
+        from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
+        
+        employee_name = data.get('employee_name', 'Noma\'lum')
+        position = data.get('position', '')
+        building = data.get('building', '')
+        base_salary = float(data.get('base_salary', 0))
+        penalties = data.get('penalties', [])
+        total_penalty = float(data.get('total_penalty', 0))
+        expenses = float(data.get('expenses', 0))
+        gross_salary = float(data.get('gross_salary', 0))
+        tax_rate = float(data.get('tax_rate', 7.5))
+        tax_amount = float(data.get('tax_amount', 0))
+        net_salary = float(data.get('net_salary', 0))
+        
+        now_uzb = datetime.now(UZB_TZ)
+        month_str = now_uzb.strftime('%Y-%m')
+        
+        COLOR_HDR = "1a3a5c"
+        COLOR_COL = "2E86AB"
+        COLOR_TOTAL = "4472C4"
+        COLOR_TAX = "C00000"
+        COLOR_NET = "006100"
+        
+        thin = Side(border_style="thin", color="AAAAAA")
+        border = Border(top=thin, left=thin, right=thin, bottom=thin)
+        
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Oylik"
+        ws.row_dimensions[1].height = 28
+        
+        # Title
+        ws.merge_cells('A1:B1')
+        ws['A1'] = f"{employee_name} - Oylik hisobot"
+        ws['A1'].font = Font(bold=True, size=16, color=COLOR_HDR)
+        ws['A1'].alignment = Alignment(horizontal="center", vertical="center")
+        
+        # Month
+        ws['A2'] = "Oy"
+        ws['B2'] = month_str
+        ws['A2'].font = Font(bold=True)
+        ws['B2'].font = Font(bold=True)
+        
+        # Headers
+        ws['A4'] = "Ko'rsatkich"
+        ws['B4'] = "Summa (so'm)"
+        for col in ['A4', 'B4']:
+            c = ws[col]
+            c.fill = PatternFill(start_color=COLOR_COL, end_color=COLOR_COL, fill_type="solid")
+            c.font = Font(bold=True, size=11, color="FFFFFF")
+            c.border = border
+            c.alignment = Alignment(horizontal="center", vertical="center")
+        
+        row = 5
+        # Base salary
+        ws[f'A{row}'] = "Asosiy oylik"
+        ws[f'B{row}'] = f"{int(base_salary):,}"
+        ws[f'A{row}'].font = Font(size=11)
+        ws[f'B{row}'].font = Font(size=11)
+        ws[f'A{row}'].border = border
+        ws[f'B{row}'].border = border
+        
+        # Penalties
+        row += 1
+        if penalties:
+            for p in penalties:
+                ws[f'A{row}'] = f"{p['name']} ({p['count']} × {p['percent']}%)"
+                ws[f'B{row}'] = f"-{int(p['amount']):,}"
+                ws[f'A{row}'].font = Font(size=10, color=COLOR_TAX)
+                ws[f'B{row}'].font = Font(size=10, color=COLOR_TAX)
+                ws[f'A{row}'].border = border
+                ws[f'B{row}'].border = border
+                row += 1
+        
+        # Total penalty
+        if total_penalty > 0:
+            ws[f'A{row}'] = "Jami jarima"
+            ws[f'B{row}'] = f"-{int(total_penalty):,}"
+            ws[f'A{row}'].font = Font(bold=True, size=10, color=COLOR_TAX)
+            ws[f'B{row}'].font = Font(bold=True, size=10, color=COLOR_TAX)
+            ws[f'A{row}'].border = border
+            ws[f'B{row}'].border = border
+            row += 1
+        
+        # Expenses
+        if expenses > 0:
+            ws[f'A{row}'] = "Xarajat cheklari"
+            ws[f'B{row}'] = f"+{int(expenses):,}"
+            ws[f'A{row}'].font = Font(size=10, color=COLOR_NET)
+            ws[f'B{row}'].font = Font(size=10, color=COLOR_NET)
+            ws[f'A{row}'].border = border
+            ws[f'B{row}'].border = border
+            row += 1
+        
+        # Gross
+        row += 1
+        ws[f'A{row}'] = "Jami (soliqsiz)"
+        ws[f'B{row}'] = f"{int(gross_salary):,}"
+        ws[f'A{row}'].font = Font(bold=True, size=11, color=COLOR_TOTAL)
+        ws[f'B{row}'].font = Font(bold=True, size=11, color=COLOR_TOTAL)
+        ws[f'A{row}'].border = border
+        ws[f'B{row}'].border = border
+        
+        # Tax
+        row += 1
+        ws[f'A{row}'] = f"Soliq ({tax_rate}%)"
+        ws[f'B{row}'] = f"-{int(tax_amount):,}"
+        ws[f'A{row}'].font = Font(bold=True, size=11, color=COLOR_TAX)
+        ws[f'B{row}'].font = Font(bold=True, size=11, color=COLOR_TAX)
+        ws[f'A{row}'].border = border
+        ws[f'B{row}'].border = border
+        
+        # Net
+        row += 1
+        ws[f'A{row}'] = "Qo'lga tegadi"
+        ws[f'B{row}'] = f"{int(net_salary):,}"
+        ws[f'A{row}'].font = Font(bold=True, size=12, color=COLOR_NET)
+        ws[f'B{row}'].font = Font(bold=True, size=12, color=COLOR_NET)
+        ws[f'A{row}'].border = border
+        ws[f'B{row}'].border = border
+        
+        # Column widths
+        ws.column_dimensions['A'].width = 25
+        ws.column_dimensions['B'].width = 20
+        
+        buf = io.BytesIO()
+        wb.save(buf)
+        buf.seek(0)
+        fname = f"Oylik_{employee_name}_{month_str}.xlsx"
+        return web.Response(
+            body=buf.getvalue(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            headers={'Content-Disposition': f'attachment; filename="{fname}"'}
+        )
+    except Exception as e:
+        logging.error(f"office_salary_excel error: {e}", exc_info=True)
+        return web.Response(status=500, text=str(e))
+
+
 async def admin_api_office_employees_list(request):
     """Office xodimlar ro'yxati"""
     import json as _json
@@ -9816,6 +9961,7 @@ async def main():
     app.router.add_post('/admin/api/payment/save', miniapp_save_payment)
     app.router.add_post('/admin/api/salary', admin_api_salary_calc)
     app.router.add_post('/admin/api/office/salary', admin_api_office_salary_calc)
+    app.router.add_post('/admin/api/office/salary/excel', admin_api_office_salary_excel)
     app.router.add_get('/admin/api/office/employees', admin_api_office_employees_list)
     app.router.add_get('/admin/api/salary/structure', admin_api_salary_structure)
     app.router.add_post('/admin/api/group/delete', admin_api_group_delete)

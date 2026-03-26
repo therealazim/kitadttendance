@@ -2201,8 +2201,12 @@ async function calcOfficeSalary() {
         <button class="btn bp bfull" style="margin-top:16px" onclick="printOfficeSalary()">
           <i class="lucide lucide-printer"></i> Chop etish
         </button>
+        <button class="btn bpu bfull" style="margin-top:8px" onclick="downloadOfficeSalaryExcel()">
+          <i class="lucide lucide-download"></i> Excel yuklab olish
+        </button>
       </div>
     `;
+    window._officeSalaryResult = r;
     
   } catch(e) {
     toast('<i class="lucide lucide-times"></i> ' + e.message);
@@ -2214,6 +2218,32 @@ async function calcOfficeSalary() {
 
 function printOfficeSalary() {
   window.print();
+}
+
+async function downloadOfficeSalaryExcel() {
+  if (!window._officeSalaryResult) {
+    toast('<i class="lucide lucide-exclamation-triangle"></i> Avval hisoblang');
+    return;
+  }
+  toast('⏳ Excel tayyorlanmoqda...', 5000);
+  try {
+    const r = await fetch('/admin/api/office/salary/excel', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(window._officeSalaryResult)
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const blob = await r.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Oylik_${window._officeSalaryResult.employee_name}.xlsx`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('<i class="lucide lucide-check"></i> Excel yuklab olindi');
+  } catch (e) {
+    toast('<i class="lucide lucide-times"></i> ' + e.message);
+  }
 }
 
 // Salary Config Functions
