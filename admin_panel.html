@@ -2198,10 +2198,7 @@ async function calcOfficeSalary() {
           </div>
         </div>
         
-        <button class="btn bp bfull" style="margin-top:16px" onclick="printOfficeSalary()">
-          <i class="lucide lucide-printer"></i> Chop etish
-        </button>
-        <button class="btn bpu bfull" style="margin-top:8px" onclick="downloadOfficeSalaryExcel()">
+        <button class="btn bpu bfull" style="margin-top:16px" onclick="downloadOfficeSalaryExcel()">
           <i class="lucide lucide-download"></i> Excel yuklab olish
         </button>
       </div>
@@ -2216,10 +2213,7 @@ async function calcOfficeSalary() {
   }
 }
 
-function printOfficeSalary() {
-  window.print();
-}
-
+// Salary Config Functions
 async function downloadOfficeSalaryExcel() {
   if (!window._officeSalaryResult) {
     toast('<i class="lucide lucide-exclamation-triangle"></i> Avval hisoblang');
