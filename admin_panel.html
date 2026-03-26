@@ -2277,6 +2277,7 @@ LANG='uz';
 applyLang();
 fetchAll();
 setInterval(fetchAll,120000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)fetchAll();});
 async function loadApps(){
 document.getElementById('apps-table').innerHTML='<div class="ldr"><div class="spin"></div></div>';
 const r=await fetch('/admin/api/applications',{credentials:'include'}).then(x=>x.json()).catch(()=>null);
