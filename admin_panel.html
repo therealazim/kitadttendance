@@ -330,7 +330,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 <body>
 <div class="layout">
 <div class="sidebar" id="sb">
-  <div class="logo"><img src="/static/black_logo.svg" style="height:44px" alt="KITA"></div>
+  <div class="logo"><img src="/static/black_logo.svg" id="theme-logo" style="height:44px" alt="KITA"></div>
   <div class="sbnav">
     <div class="sbsec" data-i18n="sec_main">Asosiy</div>
     <button class="sbi on" onclick="gp('dash',this)"><span class="ico"><i class="lucide lucide-chart-line"></i></span><span class="lbl" data-i18n="nav_dash">Dashboard</span></button>
@@ -1024,8 +1024,8 @@ if(el_attd) el_attd.value=TODAY;
 (function tick(){const n=new Date();document.getElementById('clock').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');document.getElementById('cldate').textContent=n.toLocaleDateString('uz-UZ',{weekday:'short',day:'numeric',month:'short'});setTimeout(tick,9000);})();
 function tSb(){document.getElementById('sb').classList.toggle('mopen');document.getElementById('movov').classList.toggle('show');}
 function cSb(){document.getElementById('sb').classList.remove('mopen');document.getElementById('movov').classList.remove('show');}
-function toggleTheme(){const html=document.documentElement;const btn=document.getElementById('theme-toggle');if(html.getAttribute('data-theme')==='dark'){html.setAttribute('data-theme','light');localStorage.setItem('theme','light');btn.innerHTML='<i class="lucide lucide-moon"></i> Dark';}else{html.setAttribute('data-theme','dark');localStorage.setItem('theme','dark');btn.innerHTML='<i class="lucide lucide-sun"></i> Light';}}
-(function(){const t=localStorage.getItem('theme');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');document.getElementById('theme-toggle').innerHTML='<i class="lucide lucide-sun"></i> Light';}})();
+function toggleTheme(){const html=document.documentElement;const btn=document.getElementById('theme-toggle');const logo=document.getElementById('theme-logo');if(html.getAttribute('data-theme')==='dark'){html.setAttribute('data-theme','light');localStorage.setItem('theme','light');btn.innerHTML='<i class="lucide lucide-moon"></i> Dark';logo.src='/static/black_logo.svg';}else{html.setAttribute('data-theme','dark');localStorage.setItem('theme','dark');btn.innerHTML='<i class="lucide lucide-sun"></i> Light';logo.src='/static/white_logo.svg';}}
+(function(){const t=localStorage.getItem('theme');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');document.getElementById('theme-toggle').innerHTML='<i class="lucide lucide-sun"></i> Light';document.getElementById('theme-logo').src='/static/white_logo.svg';}})();
 let LANG='uz';
 
 const I18N={
