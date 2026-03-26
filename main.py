@@ -1410,19 +1410,29 @@ async def admin_api_salary_calc(request):
 
             if spec == 'IT':
                 # 250k guruh: (250000 × s250 / 8) × l250 × perc%
+                # 400k guruh: (400000 × s400 / 12) × l400 × perc%
+                dtype = br.get('dtype', '')  # '250' yoki '400'
                 s250 = int(br.get('s250', 0))
                 l250 = int(br.get('l250', 8))
                 s400 = int(br.get('s400', 0))
                 l400 = int(br.get('l400', 12))
                 penalty_pct = float(br.get('penalty', 0))
 
-                rate250 = (250000 * s250 / 8) if s250 > 0 else 0
-                gross250 = rate250 * l250 * perc / 100
-
-                rate400 = (400000 * s400 / 12) if s400 > 0 else 0
-                gross400 = rate400 * l400 * perc / 100
-
-                gross_before_penalty = gross250 + gross400
+                gross = 0
+                if dtype == '250':
+                    rate250 = (250000 * s250 / 8) if s250 > 0 else 0
+                    gross = rate250 * l250 * perc / 100
+                elif dtype == '400':
+                    rate400 = (400000 * s400 / 12) if s400 > 0 else 0
+                    gross = rate400 * l400 * perc / 100
+                else:
+                    rate250 = (250000 * s250 / 8) if s250 > 0 else 0
+                    gross250 = rate250 * l250 * perc / 100
+                    rate400 = (400000 * s400 / 12) if s400 > 0 else 0
+                    gross400 = rate400 * l400 * perc / 100
+                    gross = gross250 + gross400
+                
+                gross_before_penalty = gross
                 gross = gross_before_penalty * (1 - penalty_pct / 100)
                 bonus = float(br.get('bonus', 0))
                 gross += bonus

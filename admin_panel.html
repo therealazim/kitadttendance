@@ -1932,15 +1932,20 @@ grps.forEach((g,i)=>{
 h+=`<div class="salbr">
 <div class="salbrt"><i class="lucide lucide-book"></i> ${g.name} <span style="font-size:10px;color:var(--tx2);font-weight:400">· <i class="lucide lucide-building"></i> ${g.branch}</span></div>`;
 if(sp==='IT'){
-h+=`<div style="font-size:10px;color:var(--tx2);margin:4px 0 6px;font-weight:600">📦 250,000 UZS (8 dars/oy)</div>
+h+=`<div class="fg" style="margin:8px 0"><label>Dars turi</label><select id="sbtype${i}" class="inp" onchange="toggleSalFields(${i},'${sp}')"><option value="">Tanlang...</option><option value="250">250,000 UZS (8 dars/oy)</option><option value="400">400,000 UZS (12 dars/oy)</option></select></div>
+<div id="sbfields250_${i}" style="display:none">
+<div style="font-size:10px;color:var(--tx2);margin:4px 0 6px;font-weight:600">📦 250,000 UZS (8 dars/oy)</div>
 <div class="fr2">
-<div class="fg"><label>O'quvchi soni</label><input type="number" id="sb250s${i}" class="inp" placeholder="0" min="0" value="${g.student_count||0}"></div>
+<div class="fg"><label>O'quvchi soni</label><input type="number" id="sb250s${i}" class="inp" placeholder="0" min="0"></div>
 <div class="fg"><label>Bu oy dars</label><input type="number" id="sb250l${i}" class="inp" placeholder="8" min="0" value="8"></div>
 </div>
+</div>
+<div id="sbfields400_${i}" style="display:none">
 <div style="font-size:10px;color:var(--tx2);margin:8px 0 6px;font-weight:600">📦 400,000 UZS (12 dars/oy)</div>
 <div class="fr2">
 <div class="fg"><label>O'quvchi soni</label><input type="number" id="sb400s${i}" class="inp" placeholder="0" min="0"></div>
 <div class="fg"><label>Bu oy dars</label><input type="number" id="sb400l${i}" class="inp" placeholder="12" min="0" value="12"></div>
+</div>
 </div>
 <div class="fr2" style="margin-top:8px">
 <div class="fg"><label>Imtixon ulushi</label><select id="sbc${i}" class="inp"><option value="35">35%</option><option value="45">45%</option></select></div>
@@ -1964,6 +1969,11 @@ h+=`<input type="hidden" id="sbb${i}" value="${g.branch}">
 });
 document.getElementById('salbrs').innerHTML=h;document.getElementById('salbtn').style.display='block';
 }
+function toggleSalFields(i, sp) {
+  const type = document.getElementById('sbtype' + i)?.value;
+  document.getElementById('sbfields250_' + i).style.display = (type === '250') ? 'block' : 'none';
+  document.getElementById('sbfields400_' + i).style.display = (type === '400') ? 'block' : 'none';
+}
 async function calcSal(){
 const uid=parseInt(document.getElementById('salte').value);const sp=document.getElementById('salsp').value;
 const t=SALS.find(x=>x.user_id===uid);if(!t)return;
@@ -1971,12 +1981,14 @@ const grps=t.teacher_groups||[];
 const branches=grps.map((g,i)=>{
 const sp2=document.getElementById('salsp').value;
 if(sp2==='IT'){
+const dtype = document.getElementById('sbtype' + i)?.value;
 return {branch:document.getElementById(`sbb${i}`).value,
 group_name:document.getElementById(`sbgn${i}`).value,
 s250:parseInt(document.getElementById(`sb250s${i}`)?.value||0),
 l250:parseInt(document.getElementById(`sb250l${i}`)?.value||8),
 s400:parseInt(document.getElementById(`sb400s${i}`)?.value||0),
 l400:parseInt(document.getElementById(`sb400l${i}`)?.value||12),
+dtype: dtype,
 perc:parseInt(document.getElementById(`sbc${i}`).value||35),
 penalty:parseInt(document.getElementById(`sbn${i}`).value||0),
 bonus:parseInt(document.getElementById(`sbbonus${i}`)?.value||0)};
