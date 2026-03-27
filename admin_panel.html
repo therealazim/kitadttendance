@@ -375,6 +375,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     <div class="online"><div class="dot"></div><span id="updlbl">Yuklanmoqda...</span></div>
 
     <button class="rbtn" id="theme-toggle" onclick="toggleTheme()"><i class="lucide lucide-moon"></i> Dark</button>
+    <div style="position:relative">
+      <button class="rbtn" id="lang-toggle" onclick="toggleLangMenu()"><i class="lucide lucide-globe"></i> <span id="lang-label">UZ</span></button>
+      <div id="lang-menu" style="display:none;position:absolute;top:100%;right:0;background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:4px;min-width:80px;z-index:1000">
+        <button class="lang-opt" onclick="setLang('uz')">UZ</button>
+        <button class="lang-opt" onclick="setLang('ru')">RU</button>
+        <button class="lang-opt" onclick="setLang('kr')">KR</button>
+      </div>
+    </div>
     <button class="rbtn" onclick="fetchAll()" data-i18n="btn_refresh"><i class="lucide lucide-sync"></i> Yangilash</button>
     <button class="rbtn" style="background:rgba(248,113,113,.15);color:#f87171;border:1px solid rgba(248,113,113,.3)" onclick="logout()" data-i18n="btn_logout"><i class="lucide lucide-sign-out-alt"></i> Chiqish</button>
   </div>
@@ -1097,7 +1105,32 @@ contact_address_lbl:'주소',contact_phone_lbl:'전화번호',contact_telegram_l
 };
 
 function setLang(lang){
-    LANG='uz';
+}
+function toggleLangMenu(){const m=document.getElementById('lang-menu');m.style.display=m.style.display==='none'?'block':'none';}
+let _currentLang='uz';
+let _googleTranslateLoaded=false;
+function loadGoogleTranslate(){if(_googleTranslateLoaded)return;const s=document.createElement('script');s.src='https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';document.head.appendChild(s);window.googleTranslateElementInit=function(){new google.translate.TranslateElement({pageLanguage:'uz',includedLanguages:'uz,ru,ko'},'google_translate_element');_googleTranslateLoaded=true;};}
+function setLang(lang){
+document.getElementById('lang-menu').style.display='none';
+document.getElementById('lang-label').textContent=lang.toUpperCase();
+_currentLang=lang;
+if(lang==='uz'){
+const el=document.getElementById('google_translate_element');
+if(el)el.innerHTML='';
+} else {
+if(!_googleTranslateLoaded){
+const div=document.createElement('div');div.id='google_translate_element';div.style.position='absolute';div.style.left='-9999px';document.body.appendChild(div);
+loadGoogleTranslate();
+} else {
+const combo=document.querySelector('.goog-te-combo');
+if(combo){
+combo.value=lang==='ru'?'ru':'ko';
+combo.dispatchEvent(new Event('change'));
+}
+}
+}
+}
+LANG='uz';
     localStorage.setItem('admin_lang','uz');
     applyLang();
     if(window.lucide)lucide.createIcons();
@@ -3056,6 +3089,8 @@ async function exportBizReport(){
     stroke-width: 2px;
 }
 #theme-toggle{background:rgba(99,102,241,.15);color:#6366f1;border:1px solid rgba(99,102,241,.3)}
+.lang-opt{display:block;width:100%;text-align:left;padding:8px 12px;border:none;background:none;color:var(--tx);cursor:pointer;font-size:12px;border-radius:4px}
+.lang-opt:hover{background:var(--bg2)}
 </style>
 </body>
 </html>
