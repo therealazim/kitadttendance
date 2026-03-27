@@ -2430,6 +2430,33 @@ async def admin_api_site_config_save(request):
     except Exception as e:
         return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
 
+async def admin_api_upload_image(request):
+    """Rasm yuklash"""
+    import json as _json
+    try:
+        reader = await request.multipart()
+        async for part in reader:
+            if part.name == 'image':
+                filename = part.filename
+                if not filename:
+                    return web.Response(text=_json.dumps({'ok': False, 'error': 'Fayl tanlanmadi'}), content_type='application/json')
+                import uuid
+                ext = os.path.splitext(filename)[1].lower()
+                if ext not in ('.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'):
+                    return web.Response(text=_json.dumps({'ok': False, 'error': 'Rasm formati noto\'g\'ri'}), content_type='application/json')
+                new_filename = f"{uuid.uuid4().hex}{ext}"
+                static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
+                os.makedirs(static_dir, exist_ok=True)
+                filepath = os.path.join(static_dir, new_filename)
+                data = await part.read()
+                with open(filepath, 'wb') as f:
+                    f.write(data)
+                return web.Response(text=_json.dumps({'ok': True, 'url': f'/static/{new_filename}'}), content_type='application/json')
+        return web.Response(text=_json.dumps({'ok': False, 'error': 'Fayl topilmadi'}), content_type='application/json')
+    except Exception as e:
+        logging.error(f"upload_image error: {e}")
+        return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
+
 async def admin_api_group_edit_name(request):
     """Guruh nomini o'zgartirish"""
     import json as _json
@@ -9992,6 +10019,7 @@ async def main():
     app.router.add_post('/admin/api/news/delete', admin_api_news_delete)  # Public - sayt uchun
     app.router.add_get('/admin/api/site/config', admin_api_site_config_get)
     app.router.add_post('/admin/api/site/config', admin_api_site_config_save)
+    app.router.add_post('/admin/api/upload/image', admin_api_upload_image)
     app.router.add_post('/admin/api/group/create', admin_api_group_create)
     app.router.add_get('/admin/api/group/excel', admin_api_group_excel)
     app.router.add_post('/admin/api/student/add', admin_api_student_add)

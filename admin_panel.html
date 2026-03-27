@@ -845,17 +845,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       </div>
       <div style="background:var(--bg2);border-radius:10px;padding:16px">
         <div style="font-weight:700;font-size:13px;color:var(--ac);margin-bottom:12px"><i class="lucide lucide-image"></i> Kurs rasmlari (URL)</div>
-        <div class="fg"><label>Kurs 1 rasmi</label><input class="inp" id="sc-course1_img"></div>
-        <div class="fg"><label>Kurs 2 rasmi</label><input class="inp" id="sc-course2_img"></div>
-        <div class="fg"><label>Kurs 3 rasmi</label><input class="inp" id="sc-course3_img"></div>
+        <div class="fg"><label>Kurs 1 rasmi</label><input type="file" accept="image/*" class="inp" onchange="uploadImage(this,'sc-course1_img')" style="padding:8px"></div>
+        <div class="fg"><label>Kurs 2 rasmi</label><input type="file" accept="image/*" class="inp" onchange="uploadImage(this,'sc-course2_img')" style="padding:8px"></div>
+        <div class="fg"><label>Kurs 3 rasmi</label><input type="file" accept="image/*" class="inp" onchange="uploadImage(this,'sc-course3_img')" style="padding:8px"></div>
       </div>
       <div style="background:var(--bg2);border-radius:10px;padding:16px">
         <div style="font-weight:700;font-size:13px;color:var(--ac);margin-bottom:12px"><i class="lucide lucide-images"></i> Galereya (URL)</div>
-        <div class="fg"><label>Rasm 1</label><input class="inp" id="sc-gallery_img1"></div>
-        <div class="fg"><label>Rasm 2</label><input class="inp" id="sc-gallery_img2"></div>
-        <div class="fg"><label>Rasm 3</label><input class="inp" id="sc-gallery_img3"></div>
-        <div class="fg"><label>Rasm 4</label><input class="inp" id="sc-gallery_img4"></div>
-        <div class="fg"><label>Rasm 5</label><input class="inp" id="sc-gallery_img5"></div>
+        <div class="fg"><label>Rasm 1</label><input type="file" accept="image/*" class="inp" onchange="uploadImage(this,'sc-gallery_img1')" style="padding:8px"></div>
+        <div class="fg"><label>Rasm 2</label><input type="file" accept="image/*" class="inp" onchange="uploadImage(this,'sc-gallery_img2')" style="padding:8px"></div>
+        <div class="fg"><label>Rasm 3</label><input type="file" accept="image/*" class="inp" onchange="uploadImage(this,'sc-gallery_img3')" style="padding:8px"></div>
+        <div class="fg"><label>Rasm 4</label><input type="file" accept="image/*" class="inp" onchange="uploadImage(this,'sc-gallery_img4')" style="padding:8px"></div>
+        <div class="fg"><label>Rasm 5</label><input type="file" accept="image/*" class="inp" onchange="uploadImage(this,'sc-gallery_img5')" style="padding:8px"></div>
       </div>
     </div>
   </div>
@@ -2456,6 +2456,25 @@ document.querySelectorAll('#sc-lang-uz,#sc-lang-ru,#sc-lang-kr').forEach(d=>d.st
 document.getElementById('sc-lang-'+lang).style.display='block';
 document.querySelectorAll('#pg-site .tab').forEach(b=>b.classList.remove('on'));
 if(el)el.classList.add('on');
+}
+async function uploadImage(input, targetId) {
+  const file = input.files[0];
+  if (!file) return;
+  toast('⏳ Yuklanmoqda...', 3000);
+  const formData = new FormData();
+  formData.append('image', file);
+  try {
+    const r = await fetch('/admin/api/upload/image', { method: 'POST', body: formData });
+    const d = await r.json();
+    if (d.ok) {
+      document.getElementById(targetId).value = d.url;
+      toast('<i class="lucide lucide-check"></i> Rasm yuklandi');
+    } else {
+      toast('<i class="lucide lucide-times"></i> Xatolik: ' + (d.error || ''));
+    }
+  } catch (e) {
+    toast('<i class="lucide lucide-times"></i> Xato: ' + e.message);
+  }
 }
 async function saveSiteConfig(){
 const keys=[
