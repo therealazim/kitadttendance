@@ -1612,16 +1612,18 @@ badge=`<span class="b bno" style="font-size:10px">❓ Darsiz</span>`;
 }
 const atAv=u?.photo_url?`<img src="${u.photo_url}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1.5px solid ${c}44;flex-shrink:0" onerror="this.style.display='none'">`:`<div class="avatar" style="background:${c}22;color:${c};border:1.5px solid ${c}44;font-size:10px">${ini(u?.name||'?')}</div>`;
 const lessonStartTime = best ? best.time : (ls[0]?.time || '—');
-return`<tr><td><div style="display:flex;align-items:center;gap:7px">${atAv}${u?.name||a.user_id}</div></td><td><span class="b ${sb}">${u?.specialty||'—'}</span></td><td style="font-size:11px">${a.branch}</td><td style="font-size:11px;color:var(--tx2)">${lessonStartTime}</td><td style="font-weight:700;color:var(--ac)">${arrTime}</td><td>${badge}</td></tr>`;
+return{uid:a.user_id, tr:`<tr><td><div style="display:flex;align-items:center;gap:7px">${atAv}${u?.name||a.user_id}</div></td><td><span class="b ${sb}">${u?.specialty||'—'}</span></td><td style="font-size:11px">${a.branch}</td><td style="font-size:11px;color:var(--tx2)">${lessonStartTime}</td><td style="font-weight:700;color:var(--ac)">${arrTime}</td><td>${badge}</td></tr>`, sortKey:lessonStartTime};
 }),
 ...absWithLesson.map(u=>{
 const sb=SBG[u.specialty]||'bno';
 const ls=lessonMap[u.user_id]||[];
 const lessonInfo=ls.map(l=>`${l.time}`).join(', ');
-return`<tr style="opacity:.45"><td><div style="display:flex;align-items:center;gap:7px"><div class="avatar" style="background:var(--bd2);color:var(--tx3);border:1.5px solid var(--bd);font-size:10px">${ini(u.name)}</div>${u.name}</div></td><td><span class="b ${sb}">${u.specialty||'—'}</span></td><td style="font-size:11px;color:var(--tx2)">${ls[0]?.branch||'—'}</td><td style="font-size:11px;color:var(--tx2)">${lessonInfo}</td><td><span class="b bbl"><i class="lucide lucide-times"></i> Kelmadi</span></td></tr>`;
+const sortKey = ls.length > 0 ? ls[0].time : '99:99';
+return{uid:u.user_id, tr:`<tr style="opacity:.45"><td><div style="display:flex;align-items:center;gap:7px"><div class="avatar" style="background:var(--bd2);color:var(--tx3);border:1.5px solid var(--bd);font-size:10px">${ini(u.name)}</div>${u.name}</div></td><td><span class="b ${sb}">${u.specialty||'—'}</span></td><td style="font-size:11px;color:var(--tx2)">${ls[0]?.branch||'—'}</td><td style="font-size:11px;color:var(--tx2)">${lessonInfo}</td><td><span class="b bbl"><i class="lucide lucide-times"></i> Kelmadi</span></td></tr>`, sortKey};
 })
 ];
-document.getElementById('atttb').innerHTML=rows.length?rows.join(''):`<tr><td colspan="6"><div class="empty"><div class="ei"><i class="lucide lucide-map-marker-alt"></i></div>Bu kunda dars yo\'q</div></td></tr>`;
+rows.sort((a,b) => a.sortKey.localeCompare(b.sortKey));
+document.getElementById('atttb').innerHTML=rows.length?rows.map(r=>r.tr).join(''):`<tr><td colspan="6"><div class="empty"><div class="ei"><i class="lucide lucide-map-marker-alt"></i></div>Bu kunda dars yo\'q</div></td></tr>`;
 document.getElementById('atttt').textContent='Davomat — '+dateStr;
 }
 async function loadAtt(){const d=document.getElementById('attd').value;const r=await fetch(`/admin/api/attendance?date=${d}`).then(x=>x.json()).catch(()=>null);if(r)rAtt(r.attendance||[]);}
