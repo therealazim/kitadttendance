@@ -837,35 +837,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         <div class="fg"><label>Faol guruhlar</label><input class="inp" id="sc-stat_groups" placeholder="22"></div>
       </div>
       <div style="background:var(--bg2);border-radius:10px;padding:16px">
-        <!-- CONTACT: Emoji/Icons replaced with Lucide icons -->
-        <div class="contact-item">
-          <div class="contact-icon"><i class="lucide lucide-map-pin"></i></div>
-          <div>
-            <div class="contact-label" data-i18n="contact_address_lbl">Manzil</div>
-            <div class="contact-value" id="sc-contact_address">Shota Rustaveli ko'chasi 156</div>
-          </div>
-        </div>
-        <div class="contact-item">
-          <div class="contact-icon"><i class="lucide lucide-phone"></i></div>
-          <div>
-            <div class="contact-label" data-i18n="contact_phone_lbl">Telefon</div>
-            <div class="contact-value"><a id="sc-contact_phone" href="tel:+998508182280">+998 50 818 22 80</a></div>
-          </div>
-        </div>
-        <div class="contact-item">
-          <div class="contact-icon"><i class="lucide lucide-send"></i></div> <!-- Telegram uchun -->
-          <div>
-            <div class="contact-label" data-i18n="contact_telegram_lbl">Telegram</div>
-            <div class="contact-value"><a id="sc-contact_telegram" href="https://t.me/Hancom_A" target="_blank">@Hancom_A</a></div>
-          </div>
-        </div>
-        <div class="contact-item">
-          <div class="contact-icon"><i class="lucide lucide-instagram"></i></div> <!-- Instagram uchun -->
-          <div>
-            <div class="contact-label" data-i18n="contact_instagram_lbl">Instagram</div>
-            <div class="contact-value"><a id="sc-contact_instagram" href="https://instagram.com/hancomacademy.uz" target="_blank">@hancomacademy.uz</a></div>
-          </div>
-        </div>
+        <!-- CONTACT -->
+        <div class="fg"><label><i class="lucide lucide-map-pin"></i> Manzil</label><input class="inp" id="sc-contact_address"></div>
+        <div class="fg"><label><i class="lucide lucide-phone"></i> Telefon</label><input class="inp" id="sc-contact_phone"></div>
+        <div class="fg"><label><i class="lucide lucide-send"></i> Telegram</label><input class="inp" id="sc-contact_telegram" placeholder="@username"></div>
+        <div class="fg"><label><i class="lucide lucide-instagram"></i> Instagram</label><input class="inp" id="sc-contact_instagram" placeholder="@username"></div>
       </div>
       <div style="background:var(--bg2);border-radius:10px;padding:16px">
         <div style="font-weight:700;font-size:13px;color:var(--ac);margin-bottom:12px"><i class="lucide lucide-image"></i> Kurs rasmlari (URL)</div>
@@ -1061,7 +1037,8 @@ dash_active:'Faol foydalanuvchilar',dash_groups:'Guruhlar',dash_today:'Bugun kel
 dash_weekly_att:'Haftalik davomat',dash_today_came:'Bugun kelganlar',
 txt_loading:'Yuklanmoqda...',txt_updated:'Yangilandi',txt_no_data:'Ma\'lumot yo\'q',
 lbl_came:'Keldi',lbl_absent:'Kelmadi',lbl_paid:'To\'ladi',lbl_unpaid:'To\'lamadi',
-usr_deleted:'Arxivlangan',hali_yoq:'hali yo\'q',txt_no_one_came:'Bugun hali kim kelmadi'
+usr_deleted:'Arxivlangan',hali_yoq:'hali yo\'q',txt_no_one_came:'Bugun hali kim kelmadi',
+contact_address_lbl:'Manzil',contact_phone_lbl:'Telefon',contact_telegram_lbl:'Telegram',contact_instagram_lbl:'Instagram'
 },
 ru:{
 sec_main:'Основное',sec_control:'Контроль',sec_actions:'Действия',
@@ -1082,7 +1059,8 @@ dash_active:'Активные пользователи',dash_groups:'Всего 
 dash_weekly_att:'Еженедельная явка',dash_today_came:'Пришли сегодня',
 txt_loading:'Загрузка...',txt_updated:'Обновлено',txt_no_data:'Нет данных',
 lbl_came:'Пришел',lbl_absent:'Не пришел',lbl_paid:'Оплачено',lbl_unpaid:'Не оплачено',
-usr_deleted:'Архивировано',hali_yoq:'пока нет',txt_no_one_came:'Сегодня еще никто не пришел'
+usr_deleted:'Архивировано',hali_yoq:'пока нет',txt_no_one_came:'Сегодня еще никто не пришел',
+contact_address_lbl:'Адрес',contact_phone_lbl:'Телефон',contact_telegram_lbl:'Телеграм',contact_instagram_lbl:'Инстаграм'
 },
 kr:{
 sec_main:'메인',sec_control:'제어',sec_actions:'작업',
@@ -1103,7 +1081,8 @@ dash_active:'활성 사용자',dash_groups:'그룹 수',dash_today:'오늘 출�
 dash_weekly_att:'주간 출석률',dash_today_came:'오늘 온 사람',
 txt_loading:'로딩 중...',txt_updated:'업데이트됨',txt_no_data:'데이터 없음',
 lbl_came:'출석',lbl_absent:'결석',lbl_paid:'납부함',lbl_unpaid:'미납',
-usr_deleted:'보관됨',hali_yoq:'아직 없음',txt_no_one_came:'오늘 아직 아무도 오지 않았습니다'
+usr_deleted:'보관됨',hali_yoq:'아직 없음',txt_no_one_came:'오늘 아직 아무도 오지 않았습니다',
+contact_address_lbl:'주소',contact_phone_lbl:'전화번호',contact_telegram_lbl:'텔레그램',contact_instagram_lbl:'인스타그램'
 }
 };
 
