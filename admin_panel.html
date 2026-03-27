@@ -1170,6 +1170,7 @@ function ini(n){if(!n)return'?';const p=n.trim().split(' ');return p.length>=2?(
 function fmt(n){return Math.round(n).toLocaleString('uz-UZ');}
 async function logout(){
 if(!confirm(t('btn_logout_confirm')))return;
+await api('/admin/logout',{});
 location.href='/admin';
 }
 async function fetchAll(){
