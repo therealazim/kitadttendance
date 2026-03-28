@@ -720,11 +720,18 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     <button class="btn bp" onclick="loadSalaryConfigs()"><i class="lucide lucide-sync"></i> Yangilash</button>
   </div>
   <div class="tabrow" style="margin:16px 0">
-    <button class="tab on" onclick="showSalaryTab('kr',this)"><span class="b bkr">Koreys tili</span></button>
+    <button class="tab on" onclick="showSalaryTab('ishchi',this)"><span class="b bof">Ishchi</span></button>
     <button class="tab" onclick="showSalaryTab('it',this)"><span class="b bit">IT</span></button>
+    <button class="tab" onclick="showSalaryTab('kr',this)"><span class="b bkr">Koreys tili</span></button>
   </div>
-  <div id="salarycfg-kr">
-    <div id="salarycfg-list"></div>
+  <div id="salarycfg-ishchi">
+    <div class="tw">
+      <div class="th"><span class="tt">Ishchi (Ofis xodimlari) maosh sozlamalari</span></div>
+      <div style="padding:16px">
+        <div class="fg"><label>Asosiy oylik (so'm)</label><input type="number" id="ishchi-base" class="inp" value="1500000" placeholder="1500000"></div>
+        <div class="fg"><label>Soliq stavkasi (%)</label><input type="number" id="ishchi-tax" class="inp" value="7.5" step="0.5"></div>
+      </div>
+    </div>
   </div>
   <div id="salarycfg-it" style="display:none">
     <div class="tw">
@@ -736,6 +743,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         <div class="fg"><label>Soliq stavkasi (%)</label><input type="number" id="it-tax-rate" class="inp" value="7.5" step="0.5"></div>
       </div>
     </div>
+  </div>
+  <div id="salarycfg-kr" style="display:none">
+    <div id="salarycfg-list"></div>
   </div>
   <div style="display:flex;gap:10px;margin-top:16px">
     <button class="btn bp bfull" id="save-salary-btn" onclick="saveSalaryConfigs()">
@@ -2296,8 +2306,9 @@ async function loadSalaryConfigs() {
 function showSalaryTab(tab, btn) {
   document.querySelectorAll('#pg-salarycfg .tab').forEach(t => t.classList.remove('on'));
   if (btn) btn.classList.add('on');
-  document.getElementById('salarycfg-kr').style.display = tab === 'kr' ? 'block' : 'none';
+  document.getElementById('salarycfg-ishchi').style.display = tab === 'ishchi' ? 'block' : 'none';
   document.getElementById('salarycfg-it').style.display = tab === 'it' ? 'block' : 'none';
+  document.getElementById('salarycfg-kr').style.display = tab === 'kr' ? 'block' : 'none';
 }
 
 function renderSalaryConfigs() {
@@ -2359,8 +2370,14 @@ async function saveSalaryConfigs() {
     tax_rate: parseFloat(document.getElementById('it-tax-rate').value) || 7.5
   };
   
+  // Ishchi configs
+  const ishchiConfigs = {
+    base_salary: parseInt(document.getElementById('ishchi-base').value) || 1500000,
+    tax_rate: parseFloat(document.getElementById('ishchi-tax').value) || 7.5
+  };
+  
   try {
-    const r = await api('/admin/api/salary/configs', { configs: SALARY_CONFIGS, it_configs: itConfigs });
+    const r = await api('/admin/api/salary/configs', { configs: SALARY_CONFIGS, it_configs: itConfigs, ishchi_configs: ishchiConfigs });
     if (r?.ok) {
       toast('<i class="lucide lucide-check"></i> Maosh sozlamalari saqlandi!');
       OFF_SALARY_STRUCTURE = null;
