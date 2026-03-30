@@ -1443,9 +1443,10 @@ async def admin_api_salary_calc(request):
                 per_lesson_rate = mid / 12
                 # Real darslar soniga ko'paytiramiz
                 gross_before_penalty = per_lesson_rate * lessons
+                penalty_pct = float(br.get('penalty', 0))
                 bonus = float(br.get('bonus', 0))
-                gross = gross_before_penalty - penalty + bonus
-                pen_disp = f"{int(penalty):,} so'm".replace(',', ' ')
+                gross = gross_before_penalty * (1 - penalty_pct / 100) + bonus
+                pen_disp = f"{int(penalty_pct)}%"
 
             results.append({
                 'branch': br['branch'],
