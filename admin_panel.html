@@ -1195,7 +1195,8 @@ const spMap={'Koreys tili':{ic:'<i class="lucide lucide-language"></i>',cls:'bkr
 const spCnt={};act.forEach(u=>{const k=u.specialty||'Boshqa';spCnt[k]=(spCnt[k]||0)+1;});
 const spHtml=Object.entries(spCnt).map(([k,v])=>{const sp=spMap[k]||{ic:'<i class="lucide lucide-user"></i>',cls:'bno'};return`<span class="b ${sp.cls}" style="font-size:10px;margin:1px">${sp.ic} ${k}: ${v}</span>`;}).join('');
 const grpSp={};GROUPS.forEach(g=>{const k=g.lesson_type||'Boshqa';grpSp[k]=(grpSp[k]||0)+1;});
-const grpSpHtml=Object.entries(grpSp).map(([k,v])=>{const sp=spMap[k]||{ic:'<i class="lucide lucide-book"></i>',cls:'bno'};return`<span class="b ${sp.cls}" style="font-size:10px;margin:1px">${sp.ic} ${k}: ${v}</span>`;}).join('');
+const grpStuSp={};GROUPS.forEach(g=>{const k=g.lesson_type||'Boshqa';const cnt=(g.students||[]).length;grpStuSp[k]=(grpStuSp[k]||0)+cnt;});
+const grpSpHtml=Object.entries(grpSp).map(([k,v])=>{const sp=spMap[k]||{ic:'<i class="lucide lucide-book"></i>',cls:'bno'};const stu=grpStuSp[k]||0;return`<span class="b ${sp.cls}" style="font-size:10px;margin:1px">${sp.ic} ${k}: ${v} guruh · ${stu} o'quvchi</span>`;}).join('');
 const attSp={};att.forEach(a=>{const u=USERS.find(x=>x.user_id===a.user_id);const k=u?.specialty||'Boshqa';attSp[k]=(attSp[k]||0)+1;});
 const attSpHtml=Object.entries(attSp).map(([k,v])=>{const sp=spMap[k]||{ic:'<i class="lucide lucide-user"></i>',cls:'bno'};return`<span class="b ${sp.cls}" style="font-size:10px;margin:1px">${sp.ic} ${k}: ${v}</span>`;}).join('');
 const ps=D.pay_stats||{paid:0,total:0,amount:0};
