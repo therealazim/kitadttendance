@@ -988,6 +988,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       <div id="cgstds"></div>
        <button class="btn bg" style="margin-top:6px;font-size:11px" onclick="addCgS()"><i class="lucide lucide-user-plus"></i> O'quvchi qo'shish</button>
     </div>
+    <div class="fg" id="cg-freecount-section" style="display:none">
+      <label>O'quvchi soni</label>
+      <input type="number" id="cg-freecount" class="inp" placeholder="0" min="0">
+    </div>
     <div class="mact">
        <button class="btn bg" onclick="cM('cgm')"><i class="lucide lucide-x"></i> Bekor qilish</button>
        <button class="btn bp" onclick="createG()"><i class="lucide lucide-check"></i> Guruh yaratish</button>
@@ -1569,6 +1573,7 @@ function toggleFreeTeacher(){
   const isFree=tid==='free';
   document.getElementById('cg-days-section').style.display=isFree?'none':'block';
   document.getElementById('cg-students-section').style.display=isFree?'none':'block';
+  document.getElementById('cg-freecount-section').style.display=isFree?'block':'none';
 }
 function addCgS(){_cgS.push({name:'',phone:''});rCgS();}
 function rCgS(){document.getElementById('cgstds').innerHTML=_cgS.map((s,i)=>`<div style="display:flex;gap:6px;margin-bottom:6px"><input type="text" class="inp" value="${s.name}" placeholder="Ism" oninput="_cgS[${i}].name=this.value" style="flex:2"><input type="text" class="inp" value="${s.phone}" placeholder="Telefon" oninput="_cgS[${i}].phone=this.value" style="flex:2"><button class="btn bd" style="padding:4px 9px" onclick="_cgS.splice(${i},1);rCgS()">✕</button></div>`).join('');}
@@ -1583,7 +1588,8 @@ if(!isFree){
 const ch=isFree?[]:[...document.querySelectorAll('#cgdays input:checked')].map(i=>i.value);
 const dt={};ch.forEach(d=>{const v=(document.getElementById('ct'+d.replace(/\s/g,''))||{}).value?.trim()||'—';dt[d]=v;});
 const stds=isFree?[]:_cgS.filter(s=>s.name&&s.phone);
-const r=await api('/admin/api/group/create',{group_name:nm,lesson_type:tp,branch:br,teacher_id:isFree?null:parseInt(tid),day_times:dt,students:stds});
+const freeCount=isFree?(parseInt(document.getElementById('cg-freecount').value)||0):0;
+const r=await api('/admin/api/group/create',{group_name:nm,lesson_type:tp,branch:br,teacher_id:isFree?null:parseInt(tid),day_times:dt,students:stds,student_count:freeCount});
 if(r?.ok){successNotify('Guruh yaratildi!');cM('cgm');_cgS=[];await fetchAll();}else toast('<i class="lucide lucide-times"></i> '+(r?.error||'Xatolik'));
 }
 function getTeacherSchedule(userId, dateStr){

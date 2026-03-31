@@ -2532,14 +2532,15 @@ async def admin_api_group_create(request):
         data = await request.json()
         branch = data['branch']
         lesson_type = data['lesson_type']
-        teacher_id = int(data['teacher_id'])
+        teacher_id_raw = data.get('teacher_id')
+        teacher_id = int(teacher_id_raw) if teacher_id_raw else None
         group_name = data['group_name'].strip()
-        day_times = data['day_times']  # {day: time}
+        day_times = data.get('day_times', {})  # {day: time}
         students = data.get('students', [])  # [{name, phone}]
-        if not group_name or not day_times:
-            return web.Response(text=_json.dumps({'ok': False, 'error': 'Guruh nomi va jadval kerak'}), content_type='application/json')
-        days = list(day_times.keys())
-        first_time = list(day_times.values())[0]
+        if not group_name:
+            return web.Response(text=_json.dumps({'ok': False, 'error': 'Guruh nomi kerak'}), content_type='application/json')
+        days = list(day_times.keys()) if day_times else []
+        first_time = list(day_times.values())[0] if day_times else ''
         async with db.pool.acquire() as conn:
             gid = await conn.fetchval(
                 "INSERT INTO groups(group_name, branch, lesson_type, teacher_id, days_data, time_text) VALUES($1,$2,$3,$4,$5,$6) RETURNING id",
