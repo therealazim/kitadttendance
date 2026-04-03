@@ -214,7 +214,7 @@ svg.lucide{display:inline-block;vertical-align:middle;width:1.2em;height:1.2em;s
   <ul class="nav-links">
     <li><a href="#courses" data-i18n="nav_courses">Kurslar</a></li>
     <li><a href="#gallery" data-i18n="nav_gallery">Galereya</a></li>
-    <li><a href="#partners">Hamkorlar</a></li>
+    <li><a href="#partners" data-i18n="nav_partners">Hamkorlar</a></li>
     <li><a href="#news" data-i18n="nav_news">Yangiliklar</a></li>
     <li><a href="#map" data-i18n="nav_map">Xarita</a></li>
     <li><a href="#history" data-i18n="nav_about">Biz haqimizda</a></li>
@@ -237,7 +237,7 @@ svg.lucide{display:inline-block;vertical-align:middle;width:1.2em;height:1.2em;s
 <div class="mobile-menu" id="mobileMenu">
   <a href="#courses" onclick="toggleMenu()" data-i18n="m_courses"><i class="lucide lucide-book"></i> Kurslar</a>
   <a href="#gallery" onclick="toggleMenu()" data-i18n="m_gallery"><i class="lucide lucide-images"></i> Galereya</a>
-  <a href="#partners" onclick="toggleMenu()"><i class="lucide lucide-handshake"></i> Hamkorlar</a>
+  <a href="#partners" onclick="toggleMenu()" data-i18n="m_partners"><i class="lucide lucide-handshake"></i> Hamkorlar</a>
   <a href="#news" onclick="toggleMenu()" data-i18n="m_news"><i class="lucide lucide-newspaper"></i> Yangiliklar</a>
   <a href="#history" onclick="toggleMenu()" data-i18n="m_about"><i class="lucide lucide-info-circle"></i> Biz haqimizda</a>
   <a href="#contact" onclick="toggleMenu()" data-i18n="m_contact"><i class="lucide lucide-phone"></i> Aloqa</a>
@@ -327,9 +327,9 @@ svg.lucide{display:inline-block;vertical-align:middle;width:1.2em;height:1.2em;s
 
 <!-- PARTNERS -->
 <section id="partners" class="partners-section">
-  <div class="section-tag">Hamkorlar</div>
-  <h2 class="section-title">Our Partners</h2>
-  <p class="section-sub"></p>
+  <div class="section-tag" data-i18n="sec_partners">Hamkorlar</div>
+  <h2 class="section-title" data-i18n="partners_title">Our Partners</h2>
+  <p class="section-sub" data-i18n="partners_sub"></p>
   <div style="overflow:hidden">
     <div id="partners-track" style="display:flex;gap:40px;align-items:center;margin-top:40px;width:fit-content">
       <div class="partners-empty">Hamkorlar yuklanmoqda...</div>
@@ -432,6 +432,7 @@ const LANGS = {
     btn_enroll:"Yozilish",
     sec_gallery:"Galereya", gallery_title:"Bizning Smart Classlar",
     gallery_sub:"Zamonaviy jihozlangan sinf xonalarimiz.",
+    sec_partners:"Hamkorlar", partners_title:"Our Partners", partners_sub:"",
     sec_news:"Yangiliklar", news_title:"So'nggi yangiliklar",
     news_sub:"KITA Academy dan eng so'nggi xabarlar.",
     news_empty:"Hozircha yangiliklar yo'q",
@@ -441,7 +442,7 @@ const LANGS = {
     apply_sub:"Ma'lumotlaringizni qoldiring, biz siz bilan bog'lanamiz.",
     sec_about:"Biz haqimizda", about_title:"KITA ning tarixi va yutuqlari",
     sec_contact:"Aloqa", contact_title:"Biz bilan bog'laning",
-    nav_courses:"Kurslar", nav_gallery:"Galereya", nav_news:"Yangiliklar",
+    nav_courses:"Kurslar", nav_gallery:"Galereya", nav_partners:"Hamkorlar", nav_news:"Yangiliklar",
     nav_about:"Biz haqimizda", nav_contact:"Aloqa", nav_apply:"Ariza",
     nav_map:"Xarita", nav_faq:"FAQ",
     contact_address_lbl:"Manzil", contact_phone_lbl:"Telefon",
@@ -453,7 +454,7 @@ const LANGS = {
     form_success:"Arizangiz qabul qilindi! Tez orada siz bilan bog'lanamiz.",
     form_err_name:"Ismingizni kiriting", form_err_phone:"Telefon raqamingizni kiriting",
     footer_copy:"© 2026 KITA HANCOM Academy. Barcha huquqlar himoyalangan.",
-    m_courses:"<i class='lucide lucide-book'></i> Kurslar", m_gallery:"<i class='lucide lucide-images'></i> Galereya", m_news:"<i class='lucide lucide-newspaper'></i> Yangiliklar",
+    m_courses:"<i class='lucide lucide-book'></i> Kurslar", m_gallery:"<i class='lucide lucide-images'></i> Galereya", m_partners:"<i class='lucide lucide-handshake'></i> Hamkorlar", m_news:"<i class='lucide lucide-newspaper'></i> Yangiliklar",
     m_about:"Biz haqimizda", m_contact:"Aloqa", m_apply:"Ariza qoldirish",
     faq_title:"Ko'p so'raladigan savollar",
     faq_sub:"Bizga eng ko'p beriladigan savollarga javoblar.",
@@ -471,6 +472,7 @@ const LANGS = {
     btn_enroll:"Записаться",
     sec_gallery:"Галерея", gallery_title:"Наши Smart Классы",
     gallery_sub:"Современно оборудованные учебные классы.",
+    sec_partners:"Партнёры", partners_title:"Наши партнёры", partners_sub:"",
     sec_news:"Новости", news_title:"Последние новости",
     news_sub:"Самые свежие новости от KITA Academy.",
     news_empty:"Новостей пока нет",
@@ -480,7 +482,7 @@ const LANGS = {
     apply_sub:"Оставьте данные, и мы свяжемся с вами.",
     sec_about:"О нас", about_title:"История и достижения KITA",
     sec_contact:"Контакты", contact_title:"Свяжитесь с нами",
-    nav_courses:"Курсы", nav_gallery:"Галерея", nav_news:"Новости",
+    nav_courses:"Курсы", nav_gallery:"Галерея", nav_partners:"Партнёры", nav_news:"Новости",
     nav_about:"О нас", nav_contact:"Контакты", nav_apply:"Заявка",
     nav_map:"Карта", nav_faq:"FAQ",
     contact_address_lbl:"Адрес", contact_phone_lbl:"Телефон",
@@ -492,7 +494,7 @@ const LANGS = {
     form_success:"Ваша заявка принята! Мы свяжемся с вами в ближайшее время.",
     form_err_name:"Введите ваше имя", form_err_phone:"Введите номер телефона",
     footer_copy:"© 2026 KITA HANCOM Academy. Все права защищены.",
-    m_courses:"<i class='lucide lucide-book'></i> Курсы", m_gallery:"<i class='lucide lucide-images'></i> Галерея", m_news:"<i class='lucide lucide-newspaper'></i> Новости",
+    m_courses:"<i class='lucide lucide-book'></i> Курсы", m_gallery:"<i class='lucide lucide-images'></i> Галерея", m_partners:"<i class='lucide lucide-handshake'></i> Партнёры", m_news:"<i class='lucide lucide-newspaper'></i> Новости",
     m_about:"О нас", m_contact:"Контакты", m_apply:"Подать заявку",
     faq_title:"Часто задаваемые вопросы",
     faq_sub:"Ответы на самые частые вопросы.",
@@ -510,6 +512,7 @@ const LANGS = {
     btn_enroll:"등록하기",
     sec_gallery:"갤러리", gallery_title:"스마트 클래스",
     gallery_sub:"최신 시설을 갖춘 강의실입니다.",
+    sec_partners:"파트너", partners_title:"파트너", partners_sub:"",
     sec_news:"뉴스", news_title:"최신 뉴스",
     news_sub:"KITA Academy의 최신 소식입니다.",
     news_empty:"아직 뉴스가 없습니다",
@@ -519,7 +522,7 @@ const LANGS = {
     apply_sub:"정보를 남겨 주시면 연락드리겠습니다.",
     sec_about:"소개", about_title:"KITA의 역사와 성과",
     sec_contact:"연락처", contact_title:"문의하기",
-    nav_courses:"강좌", nav_gallery:"갤러리", nav_news:"뉴스",
+    nav_courses:"강좌", nav_gallery:"갤러리", nav_partners:"파트너", nav_news:"뉴스",
     nav_about:"소개", nav_contact:"연락처", nav_apply:"신청",
     nav_map:"지도", nav_faq:"FAQ",
     contact_address_lbl:"주소", contact_phone_lbl:"전화",
@@ -531,7 +534,7 @@ const LANGS = {
     form_success:"신청서가 접수되었습니다! 곧 연락드리겠습니다.",
     form_err_name:"성함을 입력해 주세요", form_err_phone:"전화번호를 입력해 주세요",
     footer_copy:"© 2026 KITA HANCOM Academy. 모든 권리 보유.",
-    m_courses:"<i class='lucide lucide-book'></i> 강좌", m_gallery:"<i class='lucide lucide-images'></i> 갤러리", m_news:"<i class='lucide lucide-newspaper'></i> 뉴스",
+    m_courses:"<i class='lucide lucide-book'></i> 강좌", m_gallery:"<i class='lucide lucide-images'></i> 갤러리", m_partners:"<i class='lucide lucide-handshake'></i> 파트너", m_news:"<i class='lucide lucide-newspaper'></i> 뉴스",
     m_about:"정보", m_contact:"연락처", m_apply:"신청하기",
     faq_title:"자주 묻는 질문",
     faq_sub:"가장 많이 받는 질문에 대한 답변입니다.",
