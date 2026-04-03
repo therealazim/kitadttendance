@@ -674,12 +674,15 @@
     };
 
     try {
+      console.log('Submitting form with data:', data);
       const resp = await fetch('/api/bootcamp/apply', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data)
       });
+      console.log('Submit response status:', resp.status);
       const result = await resp.json();
+      console.log('Submit result:', result);
       
       if (result.ok) {
         document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
@@ -689,10 +692,10 @@
         document.getElementById('successCard').classList.add('active');
         window.scrollTo({top: 0, behavior: 'smooth'});
       } else {
-        alert('Xatolik yuz berdi. Qayta urinib ko\'ring.');
+        alert('Xatolik: ' + (result.error || 'Noma\'lum'));
       }
     } catch(e) {
-      alert('Xatolik yuz berdi. Internetingizni tekshiring.');
+      alert('Xatolik: ' + e.message);
     }
   }
 </script>
