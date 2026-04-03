@@ -2489,8 +2489,16 @@ if(!apps.length){document.getElementById('bootcamp-table').innerHTML='<div class
 const statusColor={'new':'#f59e0b','contacted':'#3b82f6','enrolled':'#10b981','cancelled':'#ef4444'};
 const statusLabel={'new':'Yangi','contacted':'Bog\u2019lanildi','enrolled':'Yozildi','cancelled':'Bekor'};
 const trackLabel={'artist':'Rassom','developer':'Dasturchi'};
+const skillLabels={
+'genai_bilaman':'Generativ AI bilaman','5_dan_ortiq':'5+ Generativ AI','tasvir_yarataman':'AI tasvir','musiqa_yarataman':'AI musiqa',
+'video_yarataman':'AI video','youtube':'YouTube','kod_bilaman':'Kodlash bilaman','dastur_yarataman':'Dastur yarataman',
+'ilova_yaratdim':'AI ilova yaratdim','oyin_yaratdim':'O\'yin yaratdim','san_at':'San\'at sohasi','dasturchilik':'Dasturchilik',
+'ai_organish':'AI o\'rganish','ist_dod':'Iste\'dod'
+};
+const getSkills=(s)=>{if(!s)return'-';return s.split(',').map(x=>skillLabels[x]||x).join(', ');};
 document.getElementById('bootcamp-table').innerHTML=`
-<table><thead><tr><th>#</th><th>Ism</th><th>Telefon</th><th>Email</th><th>Yo'nalish</th><th>Sana</th><th>Holat</th><th>Amal</th><th></th></tr></thead>
+<div style="margin-bottom:12px"><button class="btn bp" onclick="exportBootcampExcel()"><i class="lucide lucide-download"></i> Excel yuklab olish</button></div>
+<table><thead><tr><th>#</th><th>Ism</th><th>Telefon</th><th>Email</th><th>Yo'nalish</th><th>Sana</th><th>Holat</th><th>Amal</th></tr></thead>
 <tbody>${apps.map((a,i)=>`<tr>
 <td>${i+1}</td>
 <td><b>${a.fname} ${a.lname}</b>${a.about?`<br><small style="color:var(--tx2)">${a.about.substring(0,50)}</small>`:''}</td>
@@ -2499,16 +2507,99 @@ document.getElementById('bootcamp-table').innerHTML=`
 <td>${trackLabel[a.track]||a.track||'—'}</td>
 <td style="font-size:11px">${a.created_at}</td>
 <td><span style="background:${statusColor[a.status]||'#888'};color:white;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700">${statusLabel[a.status]||a.status}</span></td>
-<td>
+<td style="white-space:nowrap">
+<button class="btn bp" style="font-size:10px;padding:4px 8px" onclick="viewBootcampApp(${a.id})"><i class="lucide lucide-eye"></i></button>
 <select onchange="updateBootcampStatus(${a.id},this.value)" style="font-size:11px;padding:3px 6px;border-radius:6px;border:1px solid var(--bd);background:var(--bg);color:var(--tx)">
 <option value="new" ${a.status==='new'?'selected':''}>Yangi</option>
 <option value="contacted" ${a.status==='contacted'?'selected':''}>Bog'lanildi</option>
 <option value="enrolled" ${a.status==='enrolled'?'selected':''}>Yozildi</option>
 <option value="cancelled" ${a.status==='cancelled'?'selected':''}>Bekor</option>
 </select>
+<button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="deleteBootcampApp(${a.id})"><i class="lucide lucide-trash"></i></button>
 </td>
-<td><button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="deleteBootcampApp(${a.id})"><i class="lucide lucide-trash"></i></button></td>
 </tr>`).join('')}</tbody></table>`;
+}
+async function viewBootcampApp(id){
+const r=await fetch('/admin/api/bootcamp/applications',{credentials:'include'}).then(x=>x.json()).catch(()=>null);
+const app=r?.applications?.find(a=>a.id===id);
+if(!app){toast('Topilmadi');return;}
+const skillLabels={
+'genai_bilaman':'Generativ AI nima ekanligini bilaman','5_dan_ortiq':'5 dan ortiq generativ AIdan foydalanganman',
+'tasvir_yarataman':'AI yordamida tasvir yarata olaman','musiqa_yarataman':'AI yordamida musiqa yarata olaman',
+'video_yarataman':'AI yordamida video yaratishim mumkin','youtube':'YouTube kanalimni boshqaraman',
+'kod_bilaman':'Matn kodlash nima ekanligini bilaman','dastur_yarataman':'AI yordamida dasturlar yarata olaman',
+'ilova_yaratdim':'AI ilovalarini yaratdim','oyin_yaratdim':'O\'yinlarni kodladim va yaratdim',
+'san_at':'San\'at sohalariga qiziqaman','dasturchilik':'Dastur ishlab chiqishga qiziqaman',
+'ai_organish':'AI bilan bog\'liq barcha ko\'nikmalarni o\'rganishga umid qilaman','ist_dod':'Iste\'dodlarim asosida AI sohasida o\'rganishga umid qilaman'
+};
+const trackLabel={'artist':'Rassom 🎨','developer':'Dasturchi 💻'};
+const skills=app.skills?app.skills.split(',').map(s=>skillLabels[s]||s).join('<br>'):'-';
+const modal=document.createElement('div');
+modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px';
+modal.innerHTML=`
+<div style="background:var(--bg);border-radius:16px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;padding:24px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+<h2 style="margin:0;font-size:18px"><i class="lucide lucide-graduation-cap"></i> Ariza #${app.id}</h2>
+<button onclick="this.closest('[style*=\\"fixed\\"]').remove()" style="background:none;border:none;font-size:20px;cursor:pointer">✕</button>
+</div>
+<div style="display:grid;gap:16px">
+<div style="background:var(--bg2);border-radius:10px;padding:14px">
+<div style="font-size:12px;color:var(--tx2);margin-bottom:4px">Ism Familiya</div>
+<div style="font-weight:600;font-size:16px">${app.fname} ${app.lname}</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<div style="background:var(--bg2);border-radius:10px;padding:14px">
+<div style="font-size:12px;color:var(--tx2);margin-bottom:4px">Telefon</div>
+<div style="font-weight:600"><a href="tel:${app.phone}">${app.phone}</a></div>
+</div>
+<div style="background:var(--bg2);border-radius:10px;padding:14px">
+<div style="font-size:12px;color:var(--tx2);margin-bottom:4px">Email</div>
+<div style="font-weight:600"><a href="mailto:${app.email}">${app.email}</a></div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<div style="background:var(--bg2);border-radius:10px;padding:14px">
+<div style="font-size:12px;color:var(--tx2);margin-bottom:4px">Tug'ilgan sana</div>
+<div style="font-weight:600">${app.dob||'-'}</div>
+</div>
+<div style="background:var(--bg2);border-radius:10px;padding:14px">
+<div style="font-size:12px;color:var(--tx2);margin-bottom:4px">Yo'nalish</div>
+<div style="font-weight:600">${trackLabel[app.track]||app.track||'-'}</div>
+</div>
+</div>
+<div style="background:var(--bg2);border-radius:10px;padding:14px">
+<div style="font-size:12px;color:var(--tx2);margin-bottom:8px">O'zi haqida</div>
+<div style="line-height:1.6">${app.about||'-'}</div>
+</div>
+<div style="background:var(--bg2);border-radius:10px;padding:14px">
+<div style="font-size:12px;color:var(--tx2);margin-bottom:8px">Tanlagan ko'nikmalar</div>
+<div style="line-height:1.8">${skills}</div>
+</div>
+<div style="font-size:12px;color:var(--tx2);text-align:right">Yuborilgan: ${app.created_at}</div>
+</div>
+</div>`;
+document.body.appendChild(modal);
+}
+async function exportBootcampExcel(){
+const r=await fetch('/admin/api/bootcamp/applications',{credentials:'include'}).then(x=>x.json()).catch(()=>null);
+if(!r?.ok){toast('Xatolik');return;}
+const apps=r.applications||[];
+if(!apps.length){toast('Ma\'lumot yo\'q');return;}
+const skillLabels={'genai_bilaman':'Generativ AI bilaman','5_dan_ortiq':'5+ Generativ AI','tasvir_yarataman':'AI tasvir yarataman','musiqa_yarataman':'AI musiqa yarataman','video_yarataman':'AI video yarataman','youtube':'YouTube','kod_bilaman':'Kodlash bilaman','dastur_yarataman':'Dastur yarataman','ilova_yaratdim':'AI ilova yaratdim','oyin_yaratdim':'O\'yin yaratdim','san_at':'San\'at','dasturchilik':'Dasturchilik','ai_organish':'AI o\'rganish','ist_dod':'Iste\'dod'};
+const trackLabel={'artist':'Rassom','developer':'Dasturchi'};
+let csv='Ism,Familiya,Telefon,Email,Tug\'ilgan sana,Yo\'nalish,O\'zi haqida,Ko\'nikmalar,Status,Yuborilgan sana\n';
+apps.forEach(a=>{
+const skills=a.skills?a.skills.split(',').map(s=>skillLabels[s]||s).join('; '):'';
+csv+=`${a.fname},${a.lname},${a.phone},${a.email},${a.dob||''},${trackLabel[a.track]||a.track||''},"${(a.about||'').replace(/"/g,'""')}",${skills},${a.status},${a.created_at}\n`;
+});
+const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+const url=URL.createObjectURL(blob);
+const a=document.createElement('a');
+a.href=url;
+a.download='bootcamp_arizalari_'+new Date().toISOString().slice(0,10)+'.csv';
+a.click();
+URL.revokeObjectURL(url);
+toast('<i class="lucide lucide-check"></i> Yuklab olindi');
 }
 async function updateBootcampStatus(id,status){
 const r=await fetch('/admin/api/bootcamp/application/status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,status}),credentials:'include'}).then(x=>x.json()).catch(()=>null);
