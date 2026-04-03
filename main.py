@@ -2429,8 +2429,12 @@ async def api_get_partners(request):
     try:
         async with db.pool.acquire() as conn:
             rows = await conn.fetch("SELECT * FROM partners ORDER BY sort_order ASC, id ASC")
-            partners = [dict(r) for r in rows]
-            logging.info(f"Partners from DB: {partners}")
+            partners = []
+            for r in rows:
+                p = dict(r)
+                if p.get('created_at'):
+                    p['created_at'] = p['created_at'].strftime('%d.%m.%Y %H:%M')
+                partners.append(p)
         return web.Response(text=_json.dumps({'ok':True,'partners':partners}), content_type='application/json')
     except Exception as e:
         logging.error(f"api_get_partners error: {e}")
@@ -2442,8 +2446,12 @@ async def admin_api_partners_get(request):
     try:
         async with db.pool.acquire() as conn:
             rows = await conn.fetch("SELECT * FROM partners ORDER BY sort_order ASC, id DESC")
-            partners = [dict(r) for r in rows]
-            logging.info(f"Admin partners list: {partners}")
+            partners = []
+            for r in rows:
+                p = dict(r)
+                if p.get('created_at'):
+                    p['created_at'] = p['created_at'].strftime('%d.%m.%Y %H:%M')
+                partners.append(p)
         return web.Response(text=_json.dumps({'ok':True,'partners':partners}), content_type='application/json')
     except Exception as e:
         logging.error(f"admin_api_partners_get error: {e}")
