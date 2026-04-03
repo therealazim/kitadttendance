@@ -191,6 +191,10 @@ class Database:
                     created_at TIMESTAMP DEFAULT NOW()
                 )
             """)
+            try:
+                await conn.execute("ALTER TABLE bootcamp_applications ADD COLUMN IF NOT EXISTS resume_url TEXT DEFAULT ''")
+                await conn.execute("ALTER TABLE bootcamp_applications ADD COLUMN IF NOT EXISTS resume_name TEXT DEFAULT ''")
+            except: pass
             await conn.execute("""
                 CREATE TABLE IF NOT EXISTS news (
                     id SERIAL PRIMARY KEY,
