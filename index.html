@@ -94,6 +94,16 @@ section{padding:64px 5%;}
 #news-modal{animation:fadeIn .3s ease;}
 @keyframes fadeIn{from{opacity:0} to{opacity:1}}
 
+/* PARTNERS */
+.partners-section{background:var(--light);}
+.partners-track{display:flex;gap:40px;align-items:center;margin-top:40px;animation:scroll 20s linear infinite;}
+.partners-track:hover{animation-play-state:paused;}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.partners-wrapper{overflow:hidden;width:100%;}
+.partners-inner{display:flex;width:fit-content;}
+.partner-logo{width:120px;height:60px;object-fit:contain;filter:grayscale(100%);opacity:.7;transition:all .3s;}
+.partner-logo:hover{filter:grayscale(0%);opacity:1;}
+
 /* APPLY FORM */
 .apply-bg{background:linear-gradient(135deg,var(--navy),#1565C0);}
 .apply-bg .section-tag{background:rgba(255,179,0,.15);color:var(--gold);}
@@ -205,6 +215,7 @@ svg.lucide{display:inline-block;vertical-align:middle;width:1.2em;height:1.2em;s
   <ul class="nav-links">
     <li><a href="#courses" data-i18n="nav_courses">Kurslar</a></li>
     <li><a href="#gallery" data-i18n="nav_gallery">Galereya</a></li>
+    <li><a href="#partners">Hamkorlar</a></li>
     <li><a href="#news" data-i18n="nav_news">Yangiliklar</a></li>
     <li><a href="#map" data-i18n="nav_map">Xarita</a></li>
     <li><a href="#history" data-i18n="nav_about">Biz haqimizda</a></li>
@@ -227,6 +238,7 @@ svg.lucide{display:inline-block;vertical-align:middle;width:1.2em;height:1.2em;s
 <div class="mobile-menu" id="mobileMenu">
   <a href="#courses" onclick="toggleMenu()" data-i18n="m_courses"><i class="lucide lucide-book"></i> Kurslar</a>
   <a href="#gallery" onclick="toggleMenu()" data-i18n="m_gallery"><i class="lucide lucide-images"></i> Galereya</a>
+  <a href="#partners" onclick="toggleMenu()"><i class="lucide lucide-handshake"></i> Hamkorlar</a>
   <a href="#news" onclick="toggleMenu()" data-i18n="m_news"><i class="lucide lucide-newspaper"></i> Yangiliklar</a>
   <a href="#history" onclick="toggleMenu()" data-i18n="m_about"><i class="lucide lucide-info-circle"></i> Biz haqimizda</a>
   <a href="#contact" onclick="toggleMenu()" data-i18n="m_contact"><i class="lucide lucide-phone"></i> Aloqa</a>
@@ -311,6 +323,18 @@ svg.lucide{display:inline-block;vertical-align:middle;width:1.2em;height:1.2em;s
     <div class="gallery-item"><img id="gallery-img3" src="https://i.ibb.co/hF4R5r9F/6.jpg" alt="Sinf"></div>
     <div class="gallery-item"><img id="gallery-img4" src="https://i.ibb.co/5XJ4nPKP/7.jpg" alt="Sinf"></div>
     <div class="gallery-item"><img id="gallery-img5" src="https://i.ibb.co/sdQHfZs5/8.jpg" alt="Sinf"></div>
+  </div>
+</section>
+
+<!-- PARTNERS -->
+<section id="partners" class="partners-section">
+  <div class="section-tag">Hamkorlar</div>
+  <h2 class="section-title">Our Partners</h2>
+  <p class="section-sub">Bizning hamkorlarimiz</p>
+  <div class="partners-wrapper">
+    <div class="partners-inner" id="partners-track">
+      <div class="partners-empty">Hamkorlar yuklanmoqda...</div>
+    </div>
   </div>
 </section>
 
@@ -602,6 +626,21 @@ async function loadConfig(){
   }catch(e){console.log('Config error:',e);}
 }
 
+// Hamkorlar yuklash
+async function loadPartners(){
+  try{
+    const r=await fetch('/api/partners');
+    const d=await r.json();
+    if(!d.ok||!d.partners||d.partners.length===0){
+      document.getElementById('partners-track').innerHTML='<div class="partners-empty">Hamkorlar yo\'q</div>';
+      return;
+    }
+    const p=d.partners;
+    const html=p.map(p=>p.website_url?`<a href="${p.website_url}" target="_blank" rel="noopener"><img src="${p.logo_url||'https://placehold.co/120x60?text='+encodeURIComponent(p.name)}" alt="${p.name}" class="partner-logo"></a>`:`<img src="${p.logo_url||'https://placehold.co/120x60?text='+encodeURIComponent(p.name)}" alt="${p.name}" class="partner-logo">`).join('');
+    document.getElementById('partners-track').innerHTML=html+html;
+  }catch(e){document.getElementById('partners-track').innerHTML='<div class="partners-empty">Xato</div>';}
+}
+
 // Yangiliklar yuklash
 async function loadNews(){
   try{
@@ -866,6 +905,7 @@ document.getElementById('apply-course')?.addEventListener('change', function() {
 setLang(_lang);
 loadConfig();
 loadNews();
+loadPartners();
 </script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>

@@ -293,6 +293,18 @@ class Database:
                     VALUES ($1, $2)
                     ON CONFLICT (key) DO NOTHING
                 """, key, value)
+            
+            # Partners table
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS partners (
+                    id SERIAL PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    logo_url TEXT DEFAULT '',
+                    website_url TEXT DEFAULT '',
+                    sort_order INT DEFAULT 0,
+                    created_at TIMESTAMP DEFAULT NOW()
+                )
+            """)
             logging.info("✅ Jadvallar yaratildi!")
     
     async def save_user(self, user_id, full_name, specialty=None, language='uz'):
@@ -2408,6 +2420,69 @@ async def admin_api_news_get(request):
                 if n.get('created_at'):
                     n['created_at'] = n['created_at'].strftime('%d.%m.%Y %H:%M')
         return web.Response(text=_json.dumps({'ok':True,'news':news}), content_type='application/json')
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
+
+async def api_get_partners(request):
+    """Public: sayt uchun partnerlar ro'yxati"""
+    import json as _json
+    try:
+        async with db.pool.acquire() as conn:
+            rows = await conn.fetch("SELECT * FROM partners ORDER BY sort_order ASC, id ASC")
+            partners = [dict(r) for r in rows]
+        return web.Response(text=_json.dumps({'ok':True,'partners':partners}), content_type='application/json')
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
+
+async def admin_api_partners_get(request):
+    """Admin: barcha partnerlar"""
+    import json as _json
+    try:
+        async with db.pool.acquire() as conn:
+            rows = await conn.fetch("SELECT * FROM partners ORDER BY sort_order ASC, id DESC")
+            partners = [dict(r) for r in rows]
+        return web.Response(text=_json.dumps({'ok':True,'partners':partners}), content_type='application/json')
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
+
+async def admin_api_partners_save(request):
+    """Partner saqlash"""
+    import json as _json
+    try:
+        data = await request.json()
+        pid = data.get('id')
+        name = data.get('name','').strip()
+        logo_url = data.get('logo_url','').strip()
+        website_url = data.get('website_url','').strip()
+        sort_order = int(data.get('sort_order') or 0)
+        if not name:
+            return web.Response(text=_json.dumps({'ok':False,'error':'Nomi kerak'}), content_type='application/json')
+        async with db.pool.acquire() as conn:
+            if pid:
+                await conn.execute(
+                    "UPDATE partners SET name=$1, logo_url=$2, website_url=$3, sort_order=$4 WHERE id=$5",
+                    name, logo_url, website_url, sort_order, int(pid)
+                )
+            else:
+                await conn.execute(
+                    "INSERT INTO partners (name, logo_url, website_url, sort_order) VALUES ($1,$2,$3,$4)",
+                    name, logo_url, website_url, sort_order
+                )
+        return web.Response(text=_json.dumps({'ok':True}), content_type='application/json')
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
+
+async def admin_api_partners_delete(request):
+    """Partner o'chirish"""
+    import json as _json
+    try:
+        data = await request.json()
+        pid = int(data.get('id', 0))
+        if not pid:
+            return web.Response(text=_json.dumps({'ok':False,'error':'ID kerak'}), content_type='application/json')
+        async with db.pool.acquire() as conn:
+            await conn.execute("DELETE FROM partners WHERE id=$1", pid)
+        return web.Response(text=_json.dumps({'ok':True}), content_type='application/json')
     except Exception as e:
         return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
 
@@ -10028,6 +10103,10 @@ async def main():
     app.router.add_get('/admin/api/news', admin_api_news_get)
     app.router.add_post('/admin/api/news/save', admin_api_news_save)
     app.router.add_post('/admin/api/news/delete', admin_api_news_delete)  # Public - sayt uchun
+    app.router.add_get('/api/partners', api_get_partners)
+    app.router.add_get('/admin/api/partners', admin_api_partners_get)
+    app.router.add_post('/admin/api/partners/save', admin_api_partners_save)
+    app.router.add_post('/admin/api/partners/delete', admin_api_partners_delete)
     app.router.add_get('/admin/api/site/config', admin_api_site_config_get)
     app.router.add_post('/admin/api/site/config', admin_api_site_config_save)
     app.router.add_post('/admin/api/upload/image', admin_api_upload_image)
