@@ -530,14 +530,14 @@
   <div class="card" id="step8">
     <div class="step-num">Savol 08</div>
     <div class="step-q">Resume (CV) yuklash <span style="font-size:13px;font-weight:400;color:var(--text-hint)">(ixtiyoriy)</span></div>
-    <div class="upload-zone" id="resumeUploadZone"
+    <div class="upload-zone" id="resumeUploadZone" onclick="document.getElementById('resumeFile').click()"
       ondragover="event.preventDefault();this.style.borderColor='var(--purple)'"
       ondragleave="this.style.borderColor=''"
       ondrop="handleDrop(event)">
       <div class="upload-icon">📎</div>
       <p>Fayllarni bu yerga tashlang yoki bosing</p>
       <small>Maks. fayl hajmi: 10 MB &nbsp;•&nbsp; PDF, DOC, DOCX, JPG, PNG</small><br>
-      <label class="upload-btn-label">Fayl tanlash</label>
+      <label class="upload-btn-label" onclick="event.stopPropagation()">Fayl tanlash</label>
       <input type="file" id="resumeFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="handleResumeFile(this)" style="display:none">
     </div>
     <div class="file-name" id="fileName"></div>
@@ -633,12 +633,21 @@
     const formData = new FormData();
     formData.append('resume', file);
     try {
+      console.log('Uploading resume...', file.name);
       const resp = await fetch('/api/upload/resume', { method: 'POST', body: formData });
+      console.log('Response status:', resp.status);
       const result = await resp.json();
+      console.log('Result:', result);
       if (result.ok) {
         uploadedResume = { url: result.url, name: result.name };
+        document.getElementById('fileName').textContent = '✓ ' + file.name + ' yuklandi';
+      } else {
+        alert('Yuklashda xatolik: ' + (result.error || 'Noma\'lum'));
       }
-    } catch(e) { console.error(e); }
+    } catch(e) { 
+      console.error('Upload error:', e);
+      alert('Yuklashda xatolik: ' + e.message);
+    }
   }
   
   async function submitForm() {
