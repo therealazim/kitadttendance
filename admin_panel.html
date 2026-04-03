@@ -2581,10 +2581,15 @@ const name=document.getElementById('pf-name').value.trim();
 const logo_url=document.getElementById('pf-logo').value.trim();
 const website_url=document.getElementById('pf-url').value.trim();
 const sort_order=parseInt(document.getElementById('pf-order').value)||0;
+console.log('Saving partner:', {id, name, logo_url, website_url, sort_order});
 if(!name){toast('<i class="lucide lucide-times"></i> Hamkor nomi kerak');return;}
-const r=await fetch('/admin/api/partners/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id||null,name,logo_url,website_url,sort_order}),credentials:'include'}).then(x=>x.json()).catch(()=>null);
+try{
+const response=await fetch('/admin/api/partners/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id||null,name,logo_url,website_url,sort_order}),credentials:'include'});
+const r=await response.json();
+console.log('Save response:', r);
 if(r?.ok){successNotify('Saqlandi!');document.getElementById('partner-form-wrap').style.display='none';loadPartnersPage();}
 else toast('<i class="lucide lucide-times"></i> '+(r?.error||'Xato'));
+}catch(e){console.error('Save error:', e);toast('<i class="lucide lucide-times"></i> Xato: '+e.message);}
 }
 async function deletePartner(id){
 if(!confirm('Hamkorni o\u2019chirasizmi?'))return;

@@ -2450,6 +2450,7 @@ async def admin_api_partners_save(request):
     import json as _json
     try:
         data = await request.json()
+        logging.info(f"Partner save data: {data}")
         pid = data.get('id')
         name = data.get('name','').strip()
         logo_url = data.get('logo_url','').strip()
