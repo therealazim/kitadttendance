@@ -2554,9 +2554,6 @@ document.getElementById('pf-order').value=p?.sort_order||0;
 document.getElementById('partner-form-title').innerHTML=p?.id?'<i class="lucide lucide-edit"></i> Hamkorni tahrirlash':'<i class="lucide lucide-plus"></i> Yangi hamkor';
 document.getElementById('partner-form-wrap').scrollIntoView({behavior:'smooth'});
 }
-}else{toast('<i class="lucide lucide-times"></i> Xatolik: '+(d.error||''));}
-}catch(e){toast('<i class="lucide lucide-times"></i> Xato: '+e.message);}
-}
 async function savePartner(){
 const id=document.getElementById('pf-id').value;
 const name=document.getElementById('pf-name').value.trim();
