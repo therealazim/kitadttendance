@@ -208,15 +208,14 @@ svg.lucide{display:inline-block;vertical-align:middle;width:1.2em;height:1.2em;s
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 </head>
 <body>
-<div id="init-section" style="display:none"></div>
 
 <nav>
   <img src="/static/KITA_LOGO.svg" alt="KITA" class="nav-logo">
   <ul class="nav-links">
-    <li><a href="/courses" data-i18n="nav_courses">Kurslar</a></li>
+    <li><a href="#courses" data-i18n="nav_courses">Kurslar</a></li>
     <li><a href="#gallery" data-i18n="nav_gallery">Galereya</a></li>
-    <li><a href="/partners" data-i18n="nav_partners">Hamkorlar</a></li>
-    <li><a href="/news" data-i18n="nav_news">Yangiliklar</a></li>
+    <li><a href="#partners" data-i18n="nav_partners">Hamkorlar</a></li>
+    <li><a href="#news" data-i18n="nav_news">Yangiliklar</a></li>
     <li><a href="#map" data-i18n="nav_map">Xarita</a></li>
     <li><a href="#history" data-i18n="nav_about">Biz haqimizda</a></li>
     <li><a href="#contact" data-i18n="nav_contact">Aloqa</a></li>
@@ -236,10 +235,10 @@ svg.lucide{display:inline-block;vertical-align:middle;width:1.2em;height:1.2em;s
 </nav>
 
 <div class="mobile-menu" id="mobileMenu">
-  <a href="/courses" onclick="toggleMenu()" data-i18n="m_courses"><i class="lucide lucide-book"></i> Kurslar</a>
+  <a href="#courses" onclick="toggleMenu()" data-i18n="m_courses"><i class="lucide lucide-book"></i> Kurslar</a>
   <a href="#gallery" onclick="toggleMenu()" data-i18n="m_gallery"><i class="lucide lucide-images"></i> Galereya</a>
-  <a href="/partners" onclick="toggleMenu()" data-i18n="m_partners"><i class="lucide lucide-handshake"></i> Hamkorlar</a>
-  <a href="/news" onclick="toggleMenu()" data-i18n="m_news"><i class="lucide lucide-newspaper"></i> Yangiliklar</a>
+  <a href="#partners" onclick="toggleMenu()" data-i18n="m_partners"><i class="lucide lucide-handshake"></i> Hamkorlar</a>
+  <a href="#news" onclick="toggleMenu()" data-i18n="m_news"><i class="lucide lucide-newspaper"></i> Yangiliklar</a>
   <a href="#history" onclick="toggleMenu()" data-i18n="m_about"><i class="lucide lucide-info-circle"></i> Biz haqimizda</a>
   <a href="#contact" onclick="toggleMenu()" data-i18n="m_contact"><i class="lucide lucide-phone"></i> Aloqa</a>
   <a href="#apply" onclick="toggleMenu()" style="color:var(--gold);font-weight:700;" data-i18n="m_apply"><i class="lucide lucide-edit"></i> Ariza qoldirish</a>
@@ -911,32 +910,6 @@ setLang(_lang);
 loadConfig();
 loadNews();
 loadPartners();
-
-// Handle separate page navigation
-document.addEventListener('DOMContentLoaded', function() {
-  const sectionEl = document.getElementById('init-section');
-  const section = sectionEl?.getAttribute('data-section');
-  if (section) {
-    // Hide hero and nav, show only target section
-    document.querySelector('.hero').style.display = 'none';
-    document.querySelector('nav').innerHTML = '<a href="/" style="display:flex;align-items:center;gap:10px;color:var(--navy);font-weight:600"><i class="lucide lucide-arrow-left"></i> Bosh sahifaga qaytish</a>';
-    document.querySelector('.lang-switch').style.display = 'none';
-    document.querySelector('.nav-btn').style.display = 'none';
-    document.querySelectorAll('section').forEach(sec => {
-      if (sec.id !== section) sec.style.display = 'none';
-      else {
-        sec.style.display = 'block';
-        sec.style.padding = '80px 5%';
-      }
-    });
-    // Add back link
-    const target = document.getElementById(section);
-    if (target) {
-      target.insertAdjacentHTML('beforebegin', '<a href="/" class="back-link" style="position:fixed;top:20px;left:20px;z-index:100;background:white;padding:10px 20px;border-radius:30px;box-shadow:0 2px 10px rgba(0,0,0,0.1);color:var(--navy);font-weight:600;display:flex;align-items:center;gap:8px"><i class="lucide lucide-arrow-left"></i> Bosh sahifaga qaytish</a>');
-      target.scrollIntoView({behavior: 'smooth'});
-    }
-  }
-});
 </script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
