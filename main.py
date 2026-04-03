@@ -1120,10 +1120,22 @@ async def get_student_attendance_kb(group_id, selected_indices):
 async def handle(request):
     """Asosiy sahifa — KITA landing page"""
     import os
+    path = request.rel_url.path
+    
+    section = ''
+    if path == '/partners':
+        section = 'partners'
+    elif path == '/courses':
+        section = 'courses'
+    elif path == '/news':
+        section = 'news'
+    
     html_path = os.path.join(os.path.dirname(__file__), 'index.html')
     try:
         with open(html_path, 'r', encoding='utf-8') as f:
             html = f.read()
+        if section:
+            html = html.replace('id="init-section"', f'id="init-section" data-section="{section}"')
         return web.Response(text=html, content_type='text/html', charset='utf-8')
     except FileNotFoundError:
         now_uzb = datetime.now(UZB_TZ)
@@ -10072,6 +10084,9 @@ async def main():
     # Qo'shimcha routelar (health check, status)
     app.router.add_get('/static/{filename}', handle_static)
     app.router.add_get('/', handle)
+    app.router.add_get('/partners', handle)
+    app.router.add_get('/courses', handle)
+    app.router.add_get('/news', handle)
     import os as _os
     if _os.path.isdir('static'):
         app.router.add_static('/static', path='static', name='static')
