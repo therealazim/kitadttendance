@@ -529,9 +529,18 @@
   <!-- Step 8 -->
   <div class="card" id="step8">
     <div class="step-num">Savol 08</div>
-    <div class="step-q">Resume (CV) havola <span style="font-size:13px;font-weight:400;color:var(--text-hint)">(ixtiyoriy)</span></div>
-    <input type="url" id="resumeUrl" placeholder="https://docs.google.com/... yoki https://ibb.co/..." style="width:100%;border:1px solid var(--border);border-radius:12px;padding:11px 14px;font-size:15px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--surface);outline:none">
-    <div class="hint">Google Drive, IBB yoki boshqa hostingdan havola qo'shing. Yoki Google Doc dan "Everyone with link" qilib havola oling.</div>
+    <div class="step-q">Resume (CV) yuklash <span style="font-size:13px;font-weight:400;color:var(--text-hint)">(ixtiyoriy)</span></div>
+    <div class="upload-zone" id="resumeUploadZone"
+      ondragover="event.preventDefault();this.style.borderColor='var(--purple)'"
+      ondragleave="this.style.borderColor=''"
+      ondrop="handleDrop(event)">
+      <div class="upload-icon">📎</div>
+      <p>Fayllarni bu yerga tashlang yoki bosing</p>
+      <small>Maks. fayl hajmi: 10 MB &nbsp;•&nbsp; PDF, DOC, DOCX, JPG, PNG</small><br>
+      <label class="upload-btn-label">Fayl tanlash</label>
+      <input type="file" id="resumeFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="handleResumeFile(this)" style="display:none">
+    </div>
+    <div class="file-name" id="fileName"></div>
     <div class="nav">
       <button class="btn btn-prev" onclick="goPrev(8)">← Oldingi</button>
       <button class="btn btn-submit" onclick="submitForm()">Yuborish ✓</button>
@@ -601,33 +610,45 @@
     document.getElementById(other).classList.remove('selected');
   }
 
-  function handleFile(input) {
-    if (input.files[0]) document.getElementById('fileName').textContent = '📄 ' + input.files[0].name;
+  let uploadedResume = null;
+  
+  function handleResumeFile(input) {
+    const file = input.files[0];
+    if (file) {
+      document.getElementById('fileName').textContent = '📄 ' + file.name;
+      uploadResume(file);
+    }
   }
 
   function handleDrop(e) {
     e.preventDefault();
     const f = e.dataTransfer.files[0];
-    if (f) document.getElementById('fileName').textContent = '📄 ' + f.name;
+    if (f) {
+      document.getElementById('fileName').textContent = '📄 ' + f.name;
+      uploadResume(f);
+    }
   }
 
+  async function uploadResume(file) {
+    const formData = new FormData();
+    formData.append('resume', file);
+    try {
+      const resp = await fetch('/api/upload/resume', { method: 'POST', body: formData });
+      const result = await resp.json();
+      if (result.ok) {
+        uploadedResume = { url: result.url, name: result.name };
+      }
+    } catch(e) { console.error(e); }
+  }
+  
   async function submitForm() {
     const skills = Array.from(document.querySelectorAll('input[name=skills]:checked')).map(cb => cb.value);
     const track = document.querySelector('input[name=track]:checked')?.value || '';
-    const resumeUrl = document.getElementById('resumeUrl').value.trim();
     
     let resume_url = '', resume_name = '';
-    if (resumeUrl) {
-      if (resumeUrl.includes('drive.google.com')) {
-        resume_url = resumeUrl;
-        resume_name = 'Google Drive Resume';
-      } else if (resumeUrl.includes('ibb.co')) {
-        resume_url = resumeUrl;
-        resume_name = 'IBB Resume';
-      } else {
-        resume_url = resumeUrl;
-        resume_name = resumeUrl.split('/').pop() || 'Resume';
-      }
+    if (uploadedResume) {
+      resume_url = uploadedResume.url;
+      resume_name = uploadedResume.name;
     }
     
     const data = {

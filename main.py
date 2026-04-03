@@ -2645,6 +2645,33 @@ async def admin_api_upload_image(request):
         logging.error(f"upload_image error: {e}")
         return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
 
+async def api_upload_resume(request):
+    """Resume fayli yuklash"""
+    import json as _json
+    try:
+        reader = await request.multipart()
+        async for part in reader:
+            if part.name == 'resume':
+                filename = part.filename
+                if not filename:
+                    return web.Response(text=_json.dumps({'ok': False, 'error': 'Fayl tanlanmadi'}), content_type='application/json')
+                import uuid
+                ext = os.path.splitext(filename)[1].lower()
+                if ext not in ('.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png'):
+                    return web.Response(text=_json.dumps({'ok': False, 'error': 'Noto\'g\'ri format'}), content_type='application/json')
+                new_filename = f"{uuid.uuid4().hex}{ext}"
+                resumes_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'resumes')
+                os.makedirs(resumes_dir, exist_ok=True)
+                filepath = os.path.join(resumes_dir, new_filename)
+                data = await part.read()
+                with open(filepath, 'wb') as f:
+                    f.write(data)
+                return web.Response(text=_json.dumps({'ok': True, 'url': f'/resumes/{new_filename}', 'name': filename}), content_type='application/json')
+        return web.Response(text=_json.dumps({'ok': False, 'error': 'Fayl topilmadi'}), content_type='application/json')
+    except Exception as e:
+        logging.error(f"upload_resume error: {e}")
+        return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
+
 async def admin_api_group_edit_name(request):
     """Guruh nomini o'zgartirish"""
     import json as _json
@@ -10229,6 +10256,9 @@ async def main():
     app.router.add_get('/admin/api/site/config', admin_api_site_config_get)
     app.router.add_post('/admin/api/site/config', admin_api_site_config_save)
     app.router.add_post('/admin/api/upload/image', admin_api_upload_image)
+    app.router.add_post('/api/upload/resume', api_upload_resume)
+    if _os.path.isdir('resumes'):
+        app.router.add_static('/resumes', path='resumes', name='resumes')
     app.router.add_post('/admin/api/group/create', admin_api_group_create)
     app.router.add_get('/admin/api/group/excel', admin_api_group_excel)
     app.router.add_post('/admin/api/student/add', admin_api_student_add)
