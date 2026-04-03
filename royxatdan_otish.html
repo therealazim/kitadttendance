@@ -529,18 +529,9 @@
   <!-- Step 8 -->
   <div class="card" id="step8">
     <div class="step-num">Savol 08</div>
-    <div class="step-q">Resume yuklash <span style="font-size:13px;font-weight:400;color:var(--text-hint)">(ixtiyoriy)</span></div>
-    <div class="upload-zone" onclick="document.getElementById('resumeFile').click()"
-      ondragover="event.preventDefault();this.style.borderColor='var(--purple)'"
-      ondragleave="this.style.borderColor=''"
-      ondrop="handleDrop(event)">
-      <div class="upload-icon">📎</div>
-      <p>Fayllarni bu yerga tashlang</p>
-      <small>Maks. fayl hajmi: 10.0 MB &nbsp;•&nbsp; PDF, DOC, DOCX</small><br>
-      <label class="upload-btn-label">Fayl tanlash</label>
-      <input type="file" id="resumeFile" accept=".pdf,.doc,.docx" onchange="handleFile(this)">
-    </div>
-    <div class="file-name" id="fileName"></div>
+    <div class="step-q">Resume (CV) havola <span style="font-size:13px;font-weight:400;color:var(--text-hint)">(ixtiyoriy)</span></div>
+    <input type="url" id="resumeUrl" placeholder="https://docs.google.com/... yoki https://ibb.co/..." style="width:100%;border:1px solid var(--border);border-radius:12px;padding:11px 14px;font-size:15px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--surface);outline:none">
+    <div class="hint">Google Drive, IBB yoki boshqa hostingdan havola qo'shing. Yoki Google Doc dan "Everyone with link" qilib havola oling.</div>
     <div class="nav">
       <button class="btn btn-prev" onclick="goPrev(8)">← Oldingi</button>
       <button class="btn btn-submit" onclick="submitForm()">Yuborish ✓</button>
@@ -623,6 +614,21 @@
   async function submitForm() {
     const skills = Array.from(document.querySelectorAll('input[name=skills]:checked')).map(cb => cb.value);
     const track = document.querySelector('input[name=track]:checked')?.value || '';
+    const resumeUrl = document.getElementById('resumeUrl').value.trim();
+    
+    let resume_url = '', resume_name = '';
+    if (resumeUrl) {
+      if (resumeUrl.includes('drive.google.com')) {
+        resume_url = resumeUrl;
+        resume_name = 'Google Drive Resume';
+      } else if (resumeUrl.includes('ibb.co')) {
+        resume_url = resumeUrl;
+        resume_name = 'IBB Resume';
+      } else {
+        resume_url = resumeUrl;
+        resume_name = resumeUrl.split('/').pop() || 'Resume';
+      }
+    }
     
     const data = {
       fname: document.getElementById('fname').value.trim(),
@@ -632,7 +638,9 @@
       email: document.getElementById('email').value.trim(),
       about: document.getElementById('about').value.trim(),
       skills: skills.join(','),
-      track: track
+      track: track,
+      resume_url: resume_url,
+      resume_name: resume_name
     };
 
     try {

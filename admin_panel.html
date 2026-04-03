@@ -2536,11 +2536,19 @@ const trackLabel={'artist':'Rassom 🎨','developer':'Dasturchi 💻'};
 const skills=app.skills?app.skills.split(',').map(s=>skillLabels[s]||s).join('<br>'):'-';
 const modal=document.createElement('div');
 modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px';
+modal.onclick=function(e){if(e.target===modal)modal.remove();};
+const resumeHtml=app.resume_url?`<div style="background:var(--bg2);border-radius:10px;padding:14px;margin-top:12px">
+<div style="font-size:12px;color:var(--tx2);margin-bottom:8px">Resume</div>
+<div style="display:flex;align-items:center;gap:10px">
+<i class="lucide lucide-file-text" style="font-size:24px;color:var(--ac)"></i>
+<a href="${app.resume_url}" target="_blank" style="color:var(--ac);font-weight:600;word-break:break-all">${app.resume_name||'Resume fayli'}</a>
+</div>
+</div>`:'';
 modal.innerHTML=`
 <div style="background:var(--bg);border-radius:16px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;padding:24px">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
 <h2 style="margin:0;font-size:18px"><i class="lucide lucide-graduation-cap"></i> Ariza #${app.id}</h2>
-<button onclick="this.closest('[style*=\\"fixed\\"]').remove()" style="background:none;border:none;font-size:20px;cursor:pointer">✕</button>
+<button onclick="this.closest('[style*=\'fixed\']').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px 8px;border-radius:6px">&times;</button>
 </div>
 <div style="display:grid;gap:16px">
 <div style="background:var(--bg2);border-radius:10px;padding:14px">
@@ -2575,6 +2583,7 @@ modal.innerHTML=`
 <div style="font-size:12px;color:var(--tx2);margin-bottom:8px">Tanlagan ko'nikmalar</div>
 <div style="line-height:1.8">${skills}</div>
 </div>
+${resumeHtml}
 <div style="font-size:12px;color:var(--tx2);text-align:right">Yuborilgan: ${app.created_at}</div>
 </div>
 </div>`;

@@ -185,6 +185,8 @@ class Database:
                     about TEXT DEFAULT '',
                     skills TEXT DEFAULT '',
                     track TEXT DEFAULT '',
+                    resume_url TEXT DEFAULT '',
+                    resume_name TEXT DEFAULT '',
                     status TEXT DEFAULT 'new',
                     created_at TIMESTAMP DEFAULT NOW()
                 )
@@ -2299,17 +2301,21 @@ async def api_bootcamp_apply(request):
         about = data.get('about','').strip()
         skills = data.get('skills','').strip()
         track = data.get('track','').strip()
+        resume_url = data.get('resume_url','').strip()
+        resume_name = data.get('resume_name','').strip()
         
         if not fname or not lname or not phone:
             return web.Response(text=_json.dumps({'ok':False,'error':'Ism va telefon kerak'}), content_type='application/json')
         async with db.pool.acquire() as conn:
             await conn.execute(
-                "INSERT INTO bootcamp_applications (fname, lname, phone, dob, email, about, skills, track) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)",
-                fname, lname, phone, dob, email, about, skills, track
+                "INSERT INTO bootcamp_applications (fname, lname, phone, dob, email, about, skills, track, resume_url, resume_name) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",
+                fname, lname, phone, dob, email, about, skills, track, resume_url, resume_name
             )
         try:
             track_text = "Rassom" if track == "artist" else "Dasturchi"
             msg = f"\U0001f393 Yangi Bootcamp ariza!\n\U0001f464 {fname} {lname}\n\U0001f4de {phone}\n\U0001f4c5 Tug'ilgan sana: {dob}\n\U0001f4e7 Email: {email}\n\U0001f4dd Yo'nalish: {track_text}"
+            if resume_url:
+                msg += f"\n\U0001f4c4 Resume: {resume_url}"
             await bot.send_message(ADMIN_GROUP_ID, msg)
         except: pass
         return web.Response(text=_json.dumps({'ok':True}), content_type='application/json')
