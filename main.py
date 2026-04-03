@@ -130,7 +130,7 @@ class Database:
     
     async def create_pool(self):
         try:
-            self.pool = await asyncpg.create_pool(self.url)
+            self.pool = await asyncpg.create_pool(self.url, command_timeout=60, statement_cache_size=0)
             logging.info("✅ PostgreSQL ga ulandik!")
             return True
         except Exception as e:
