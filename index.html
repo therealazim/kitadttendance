@@ -100,9 +100,10 @@ section{padding:64px 5%;}
 .partners-track:hover{animation-play-state:paused;}
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .partners-wrapper{overflow:hidden;width:100%;}
-.partners-inner{display:flex;width:fit-content;}
+.partners-track{width:fit-content;display:flex;}
 .partner-logo{width:120px;height:60px;object-fit:contain;filter:grayscale(100%);opacity:.7;transition:all .3s;}
 .partner-logo:hover{filter:grayscale(0%);opacity:1;}
+.partners-empty{padding:20px;color:var(--text2);}
 
 /* APPLY FORM */
 .apply-bg{background:linear-gradient(135deg,var(--navy),#1565C0);}
@@ -332,7 +333,7 @@ svg.lucide{display:inline-block;vertical-align:middle;width:1.2em;height:1.2em;s
   <h2 class="section-title">Our Partners</h2>
   <p class="section-sub">Bizning hamkorlarimiz</p>
   <div class="partners-wrapper">
-    <div class="partners-inner" id="partners-track">
+    <div class="partners-track" id="partners-track">
       <div class="partners-empty">Hamkorlar yuklanmoqda...</div>
     </div>
   </div>
