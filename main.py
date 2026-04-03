@@ -2122,6 +2122,7 @@ async def admin_api_group_detail(request):
             'days': list(raw.keys()) if isinstance(raw, dict) else (raw or []),
             'time_text': grp['time_text'],
             'students': [{'id': s['id'], 'name': s['student_name'], 'phone': s['student_phone']} for s in stds],
+            'student_count': grp.get('student_count') or len(stds),
         }, ensure_ascii=False, default=str), content_type='application/json', charset='utf-8')
     except Exception as e:
         return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
