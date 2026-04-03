@@ -2430,8 +2430,10 @@ async def api_get_partners(request):
         async with db.pool.acquire() as conn:
             rows = await conn.fetch("SELECT * FROM partners ORDER BY sort_order ASC, id ASC")
             partners = [dict(r) for r in rows]
+            logging.info(f"Partners from DB: {partners}")
         return web.Response(text=_json.dumps({'ok':True,'partners':partners}), content_type='application/json')
     except Exception as e:
+        logging.error(f"api_get_partners error: {e}")
         return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
 
 async def admin_api_partners_get(request):
