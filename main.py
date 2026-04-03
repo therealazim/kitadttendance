@@ -2462,11 +2462,13 @@ async def admin_api_partners_save(request):
             return web.Response(text=_json.dumps({'ok':False,'error':'Nomi kerak'}), content_type='application/json')
         async with db.pool.acquire() as conn:
             if pid:
+                logging.info(f"Updating partner {pid}: {name}")
                 await conn.execute(
                     "UPDATE partners SET name=$1, logo_url=$2, website_url=$3, sort_order=$4 WHERE id=$5",
                     name, logo_url, website_url, sort_order, int(pid)
                 )
             else:
+                logging.info(f"Inserting new partner: {name}")
                 await conn.execute(
                     "INSERT INTO partners (name, logo_url, website_url, sort_order) VALUES ($1,$2,$3,$4)",
                     name, logo_url, website_url, sort_order
