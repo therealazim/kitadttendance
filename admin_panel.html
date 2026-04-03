@@ -373,6 +373,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     <button class="sbi" onclick="gp('branches',this)"><span class="ico"><i class="lucide lucide-building"></i></span><span class="lbl" data-i18n="nav_br">Filiallar</span></button>
     <button class="sbi" onclick="gp('reports',this)"><span class="ico"><i class="lucide lucide-clipboard-list"></i></span><span class="lbl" data-i18n="nav_rep">Hisobotlar</span></button>
     <button class="sbi" onclick="gp('applies',this)"><span class="ico"><i class="lucide lucide-envelope"></i></span><span class="lbl" data-i18n="nav_applies">Arizalar</span><span class="bdg" id="nap" style="display:none">0</span></button>
+    <button class="sbi" onclick="gp('bootcamp',this)"><span class="ico"><i class="lucide lucide-graduation-cap"></i></span><span class="lbl">Bootcamp Ariza</span><span class="bdg" id="nboot" style="display:none">0</span></button>
     <button class="sbi" onclick="gp('news_admin',this)"><span class="ico"><i class="lucide lucide-newspaper"></i></span><span class="lbl" data-i18n="nav_news">Yangiliklar</span></button>
     <button class="sbi" onclick="gp('partners',this)"><span class="ico"><i class="lucide lucide-handshake"></i></span><span class="lbl">Hamkorlar</span></button>
     <button class="sbi" onclick="gp('site',this)"><span class="ico"><i class="lucide lucide-globe"></i></span><span class="lbl" data-i18n="nav_site">Sayt</span></button>
@@ -751,6 +752,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     <button class="btn bd" onclick="loadApps()"><i class="lucide lucide-sync"></i> Yangilash</button>
   </div>
   <div id="apps-table"></div>
+</div>
+
+<!-- BOOTCAMP ARIZALAR -->
+<div class="page" id="pg-bootcamp">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+    <div class="th" style="margin:0"><span class="tt"><i class="lucide lucide-graduation-cap"></i> Bootcamp Arizalari</span><span class="tm" id="boot-cnt"></span></div>
+    <button class="btn bd" onclick="loadBootcampApps()"><i class="lucide lucide-sync"></i> Yangilash</button>
+  </div>
+  <div id="bootcamp-table"></div>
 </div>
 
 <!-- YANGILIKLAR ADMIN -->
@@ -1161,7 +1171,9 @@ att:()=>t('title_att'),stuatt:()=>t('title_stuatt'),payments:()=>t('title_pay'),
 sched:()=>t('title_sched'),stats:()=>t('title_stats'),broadcast:()=>t('title_bc'),
 salary:()=>t('title_sal'),branches:()=>t('title_br'),reports:()=>t('title_rep'),
 salarycfg:()=>'⚙️ Maosh sozlamalari',
-applies:()=>'<i class="lucide lucide-envelope"></i> '+t('nav_applies'),news_admin:()=>'<i class="lucide lucide-newspaper"></i> '+t('nav_news'),site:()=>'<i class="lucide lucide-globe"></i> '+t('nav_site')
+applies:()=>'<i class="lucide lucide-envelope"></i> '+t('nav_applies'),
+bootcamp:()=>'<i class="lucide lucide-graduation-cap"></i> Bootcamp Arizalari',
+news_admin:()=>'<i class="lucide lucide-newspaper"></i> '+t('nav_news'),site:()=>'<i class="lucide lucide-globe"></i> '+t('nav_site')
 };
 function gp(n,el){
   document.querySelectorAll('.sbi').forEach(b=>b.classList.remove('on'));
@@ -1175,6 +1187,7 @@ function gp(n,el){
   if(n==='sched')ldSched();
   if(n==='payments')renderPaymentsPage();
   if(n==='applies')loadApps();
+  if(n==='bootcamp')loadBootcampApps();
   if(n==='news_admin')loadNewsAdmin();
   if(n==='partners')loadPartnersPage();
   if(n==='site')loadSiteConfig();
@@ -2462,6 +2475,49 @@ async function deleteApp(id){
 if(!confirm('Bu arizani o\'chirishni xohlaysizmi?'))return;
 const r=await fetch('/admin/api/application/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id}),credentials:'include'}).then(x=>x.json()).catch(()=>null);
 if(r?.ok){toast('<i class="lucide lucide-check"></i> Ariza o\'chirildi');loadApps();}else toast('<i class="lucide lucide-times"></i> Xato');
+}
+async function loadBootcampApps(){
+document.getElementById('bootcamp-table').innerHTML='<div class="ldr"><div class="spin"></div></div>';
+const r=await fetch('/admin/api/bootcamp/applications',{credentials:'include'}).then(x=>x.json()).catch(()=>null);
+if(!r?.ok){document.getElementById('bootcamp-table').innerHTML='<div class="empty"><div class="ei"><i class="lucide lucide-times"></i></div>Yuklanmadi</div>';return;}
+const apps=r.applications||[];
+document.getElementById('boot-cnt').textContent=apps.length+' ta';
+const newCount=apps.filter(a=>a.status==='new').length;
+const badge=document.getElementById('nboot');
+if(newCount>0){badge.textContent=newCount;badge.style.display='';}else{badge.style.display='none';}
+if(!apps.length){document.getElementById('bootcamp-table').innerHTML='<div class="empty"><div class="ei"><i class="lucide lucide-graduation-cap"></i></div>Hozircha bootcamp ariza yo\u2019q</div>';return;}
+const statusColor={'new':'#f59e0b','contacted':'#3b82f6','enrolled':'#10b981','cancelled':'#ef4444'};
+const statusLabel={'new':'Yangi','contacted':'Bog\u2019lanildi','enrolled':'Yozildi','cancelled':'Bekor'};
+const trackLabel={'artist':'Rassom','developer':'Dasturchi'};
+document.getElementById('bootcamp-table').innerHTML=`
+<table><thead><tr><th>#</th><th>Ism</th><th>Telefon</th><th>Email</th><th>Yo'nalish</th><th>Sana</th><th>Holat</th><th>Amal</th><th></th></tr></thead>
+<tbody>${apps.map((a,i)=>`<tr>
+<td>${i+1}</td>
+<td><b>${a.fname} ${a.lname}</b>${a.about?`<br><small style="color:var(--tx2)">${a.about.substring(0,50)}</small>`:''}</td>
+<td><a href="tel:${a.phone}" style="color:var(--ac)">${a.phone}</a></td>
+<td>${a.email||'—'}</td>
+<td>${trackLabel[a.track]||a.track||'—'}</td>
+<td style="font-size:11px">${a.created_at}</td>
+<td><span style="background:${statusColor[a.status]||'#888'};color:white;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700">${statusLabel[a.status]||a.status}</span></td>
+<td>
+<select onchange="updateBootcampStatus(${a.id},this.value)" style="font-size:11px;padding:3px 6px;border-radius:6px;border:1px solid var(--bd);background:var(--bg);color:var(--tx)">
+<option value="new" ${a.status==='new'?'selected':''}>Yangi</option>
+<option value="contacted" ${a.status==='contacted'?'selected':''}>Bog'lanildi</option>
+<option value="enrolled" ${a.status==='enrolled'?'selected':''}>Yozildi</option>
+<option value="cancelled" ${a.status==='cancelled'?'selected':''}>Bekor</option>
+</select>
+</td>
+<td><button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="deleteBootcampApp(${a.id})"><i class="lucide lucide-trash"></i></button></td>
+</tr>`).join('')}</tbody></table>`;
+}
+async function updateBootcampStatus(id,status){
+const r=await fetch('/admin/api/bootcamp/application/status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,status}),credentials:'include'}).then(x=>x.json()).catch(()=>null);
+if(r?.ok)toast('<i class="lucide lucide-check"></i> Holat yangilandi');else toast('<i class="lucide lucide-times"></i> Xato');
+}
+async function deleteBootcampApp(id){
+if(!confirm('Bu arizani o\'chirishni xohlaysizmi?'))return;
+const r=await fetch('/admin/api/bootcamp/application/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id}),credentials:'include'}).then(x=>x.json()).catch(()=>null);
+if(r?.ok){toast('<i class="lucide lucide-check"></i> Ariza o\'chirildi');loadBootcampApps();}else toast('<i class="lucide lucide-times"></i> Xato');
 }
 async function loadNewsAdmin(){
 document.getElementById('news-admin-list').innerHTML='<div class="ldr"><div class="spin"></div></div>';
