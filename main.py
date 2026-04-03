@@ -194,6 +194,11 @@ class Database:
                     await conn.execute(f"ALTER TABLE news ADD COLUMN IF NOT EXISTS {col[0]} {col[1]}")
                 except:
                     pass
+            # Groups table migration - add student_count column if not exist
+            try:
+                await conn.execute("ALTER TABLE groups ADD COLUMN IF NOT EXISTS student_count INTEGER DEFAULT 0")
+            except:
+                pass
             await conn.execute("""
                 CREATE TABLE IF NOT EXISTS site_config (
                     key TEXT PRIMARY KEY,
@@ -555,7 +560,8 @@ class Database:
                     'day_times': day_times,
                     'time': first_time,
                     'time_text': first_time,
-                    'created_at': g['created_at']
+                    'created_at': g['created_at'],
+                    'student_count': g.get('student_count') or len(group_students.get(g['id'], []))
                 }
                 
                 students = await conn.fetch("SELECT * FROM group_students WHERE group_id = $1", g['id'])
@@ -2537,14 +2543,15 @@ async def admin_api_group_create(request):
         group_name = data['group_name'].strip()
         day_times = data.get('day_times', {})  # {day: time}
         students = data.get('students', [])  # [{name, phone}]
+        student_count = data.get('student_count', 0)  # FREE TEACHER uchun o'quvchi soni
         if not group_name:
             return web.Response(text=_json.dumps({'ok': False, 'error': 'Guruh nomi kerak'}), content_type='application/json')
         days = list(day_times.keys()) if day_times else []
         first_time = list(day_times.values())[0] if day_times else ''
         async with db.pool.acquire() as conn:
             gid = await conn.fetchval(
-                "INSERT INTO groups(group_name, branch, lesson_type, teacher_id, days_data, time_text) VALUES($1,$2,$3,$4,$5,$6) RETURNING id",
-                group_name, branch, lesson_type, teacher_id, _json.dumps(day_times), first_time
+                "INSERT INTO groups(group_name, branch, lesson_type, teacher_id, days_data, time_text, student_count) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING id",
+                group_name, branch, lesson_type, teacher_id, _json.dumps(day_times), first_time, student_count
             )
             for std in students:
                 if std.get('name') and std.get('phone'):
@@ -2556,7 +2563,8 @@ async def admin_api_group_create(request):
         groups[gid] = {
             'group_name': group_name, 'branch': branch, 'lesson_type': lesson_type,
             'teacher_id': teacher_id, 'days': days, 'day_times': day_times,
-            'time': first_time, 'time_text': first_time, 'created_at': datetime.now(UZB_TZ)
+            'time': first_time, 'time_text': first_time, 'created_at': datetime.now(UZB_TZ),
+            'student_count': student_count if student_count else len(students)
         }
         # O'quvchilarni ham RAM ga saqlash
         group_students[gid] = [
