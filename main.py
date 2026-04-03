@@ -175,6 +175,21 @@ class Database:
                 )
             """)
             await conn.execute("""
+                CREATE TABLE IF NOT EXISTS bootcamp_applications (
+                    id SERIAL PRIMARY KEY,
+                    fname TEXT NOT NULL,
+                    lname TEXT NOT NULL,
+                    phone TEXT NOT NULL,
+                    dob TEXT DEFAULT '',
+                    email TEXT DEFAULT '',
+                    about TEXT DEFAULT '',
+                    skills TEXT DEFAULT '',
+                    track TEXT DEFAULT '',
+                    status TEXT DEFAULT 'new',
+                    created_at TIMESTAMP DEFAULT NOW()
+                )
+            """)
+            await conn.execute("""
                 CREATE TABLE IF NOT EXISTS news (
                     id SERIAL PRIMARY KEY,
                     title TEXT NOT NULL,
@@ -2267,6 +2282,75 @@ async def api_submit_application(request):
             if message: msg += "\n\U0001f4ac " + str(message)
             await bot.send_message(ADMIN_GROUP_ID, msg)
         except: pass
+        return web.Response(text=_json.dumps({'ok':True}), content_type='application/json')
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
+
+async def api_bootcamp_apply(request):
+    """Bootcampga ariza yuborish"""
+    import json as _json
+    try:
+        data = await request.json()
+        fname = data.get('fname','').strip()
+        lname = data.get('lname','').strip()
+        phone = data.get('phone','').strip()
+        dob = data.get('dob','').strip()
+        email = data.get('email','').strip()
+        about = data.get('about','').strip()
+        skills = data.get('skills','').strip()
+        track = data.get('track','').strip()
+        
+        if not fname or not lname or not phone:
+            return web.Response(text=_json.dumps({'ok':False,'error':'Ism va telefon kerak'}), content_type='application/json')
+        async with db.pool.acquire() as conn:
+            await conn.execute(
+                "INSERT INTO bootcamp_applications (fname, lname, phone, dob, email, about, skills, track) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)",
+                fname, lname, phone, dob, email, about, skills, track
+            )
+        try:
+            track_text = "Rassom" if track == "artist" else "Dasturchi"
+            msg = f"\U0001f393 Yangi Bootcamp ariza!\n\U0001f464 {fname} {lname}\n\U0001f4de {phone}\n\U0001f4c5 Tug'ilgan sana: {dob}\n\U0001f4e7 Email: {email}\n\U0001f4dd Yo'nalish: {track_text}"
+            await bot.send_message(ADMIN_GROUP_ID, msg)
+        except: pass
+        return web.Response(text=_json.dumps({'ok':True}), content_type='application/json')
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
+
+async def admin_api_bootcamp_applications_get(request):
+    """Bootcamp arizalarini olish"""
+    import json as _json
+    try:
+        async with db.pool.acquire() as conn:
+            rows = await conn.fetch("SELECT * FROM bootcamp_applications ORDER BY created_at DESC LIMIT 100")
+            apps = [dict(r) for r in rows]
+            for a in apps:
+                if a.get('created_at'):
+                    a['created_at'] = a['created_at'].strftime('%d.%m.%Y %H:%M')
+        return web.Response(text=_json.dumps({'ok':True,'applications':apps}), content_type='application/json')
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
+
+async def admin_api_bootcamp_application_status(request):
+    """Bootcamp ariza statusini yangilash"""
+    import json as _json
+    try:
+        data = await request.json()
+        app_id = int(data.get('id',0))
+        status = data.get('status','new')
+        async with db.pool.acquire() as conn:
+            await conn.execute("UPDATE bootcamp_applications SET status=$1 WHERE id=$2", status, app_id)
+        return web.Response(text=_json.dumps({'ok':True}), content_type='application/json')
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
+
+async def admin_api_bootcamp_application_delete(request):
+    """Bootcamp arizani o'chirish"""
+    import json as _json
+    try:
+        data = await request.json()
+        app_id = int(data.get('id',0))
+        async with db.pool.acquire() as conn:
+            await conn.execute("DELETE FROM bootcamp_applications WHERE id=$1", app_id)
         return web.Response(text=_json.dumps({'ok':True}), content_type='application/json')
     except Exception as e:
         return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
@@ -10072,6 +10156,18 @@ async def main():
     # Qo'shimcha routelar (health check, status)
     app.router.add_get('/static/{filename}', handle_static)
     app.router.add_get('/', handle)
+    
+    async def handle_register(request):
+        import os
+        html_path = os.path.join(os.path.dirname(__file__), 'royxatdan_otish.html')
+        try:
+            with open(html_path, 'r', encoding='utf-8') as f:
+                html = f.read()
+            return web.Response(text=html, content_type='text/html', charset='utf-8')
+        except FileNotFoundError:
+            return web.Response(text='File not found', status=404)
+    
+    app.router.add_get('/register', handle_register)
     import os as _os
     if _os.path.isdir('static'):
         app.router.add_static('/static', path='static', name='static')
@@ -10110,11 +10206,13 @@ async def main():
     app.router.add_post('/admin/api/group/edit/name', admin_api_group_edit_name)
     app.router.add_get('/api/site/config', admin_api_site_config_get)
     app.router.add_post('/api/apply', api_submit_application)
-    app.router.add_get('/api/news', api_get_news)
-    app.router.add_get('/api/branches/map', api_branches_map)
+    app.router.add_post('/api/bootcamp/apply', api_bootcamp_apply)
     app.router.add_get('/admin/api/applications', admin_api_applications_get)
     app.router.add_post('/admin/api/application/status', admin_api_application_status)
     app.router.add_post('/admin/api/application/delete', admin_api_application_delete)
+    app.router.add_get('/admin/api/bootcamp/applications', admin_api_bootcamp_applications_get)
+    app.router.add_post('/admin/api/bootcamp/application/status', admin_api_bootcamp_application_status)
+    app.router.add_post('/admin/api/bootcamp/application/delete', admin_api_bootcamp_application_delete)
     app.router.add_get('/admin/api/news', admin_api_news_get)
     app.router.add_post('/admin/api/news/save', admin_api_news_save)
     app.router.add_post('/admin/api/news/delete', admin_api_news_delete)  # Public - sayt uchun

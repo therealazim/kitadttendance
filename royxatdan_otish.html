@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI O'qituvchilari — Ro'yxatdan O'tish</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --purple: #534AB7;
+    --purple-light: #EEEDFE;
+    --purple-mid: #AFA9EC;
+    --text: #1a1a2e;
+    --text-muted: #6b6b80;
+    --text-hint: #a0a0b0;
+    --border: rgba(83,74,183,0.15);
+    --border-hover: rgba(83,74,183,0.35);
+    --bg: #f8f7ff;
+    --surface: #ffffff;
+    --danger: #D85A30;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(83,74,183,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .wrap { max-width: 600px; margin: 0 auto; }
+
+  .header {
+    text-align: center;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--purple-light);
+    color: var(--purple);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 1rem;
+  }
+
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(26px, 5vw, 36px);
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+  }
+
+  .header p {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .progress-wrap {
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.5s 0.1s ease both;
+  }
+
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-hint);
+    margin-bottom: 6px;
+  }
+
+  .progress-track {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple-mid), var(--purple));
+    border-radius: 2px;
+    transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem;
+    display: none;
+    animation: fadeUp 0.35s ease both;
+  }
+
+  .card.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .step-num {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 0.4rem;
+  }
+
+  .step-q {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+  }
+
+  .req { color: var(--danger); }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .field-group { display: flex; flex-direction: column; gap: 5px; }
+
+  label.fl {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.03em;
+  }
+
+  input[type=text],
+  input[type=email],
+  input[type=tel],
+  input[type=date],
+  textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 11px 14px;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    background: var(--surface);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  input:focus, textarea:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px rgba(83,74,183,0.1);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.6;
+  }
+
+  .hint {
+    font-size: 12px;
+    color: var(--text-hint);
+    margin-top: 5px;
+  }
+
+  .check-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .check-item:hover { border-color: var(--border-hover); background: var(--purple-light); }
+
+  .check-item input[type=checkbox] {
+    width: 17px; height: 17px;
+    margin-top: 2px;
+    accent-color: var(--purple);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .check-item span {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .radio-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .radio-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .radio-item:hover { border-color: var(--border-hover); background: var(--purple-light); }
+  .radio-item.selected { border-color: var(--purple); background: var(--purple-light); }
+
+  .radio-item input[type=radio] {
+    width: 18px; height: 18px;
+    margin-top: 3px;
+    accent-color: var(--purple);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .radio-item .rt { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .radio-item .rd { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+  .upload-zone {
+    border: 1.5px dashed var(--border-hover);
+    border-radius: 14px;
+    padding: 2.5rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .upload-zone:hover { border-color: var(--purple); background: var(--purple-light); }
+
+  .upload-icon {
+    width: 44px; height: 44px;
+    background: var(--purple-light);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 12px;
+    font-size: 20px;
+  }
+
+  .upload-zone p { font-size: 14px; color: var(--text-muted); margin-bottom: 4px; }
+  .upload-zone small { font-size: 12px; color: var(--text-hint); }
+  .upload-zone input[type=file] { display: none; }
+
+  .upload-btn-label {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid var(--border-hover);
+    border-radius: 100px;
+    color: var(--purple);
+    background: var(--surface);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .upload-btn-label:hover { background: var(--purple-light); }
+
+  .file-name {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--purple);
+    font-weight: 500;
+  }
+
+  .err {
+    font-size: 12px;
+    color: var(--danger);
+    margin-top: 8px;
+    display: none;
+  }
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn {
+    padding: 11px 26px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    border-radius: 100px;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.1s, box-shadow 0.2s, opacity 0.15s;
+  }
+
+  .btn:active { transform: scale(0.97); }
+
+  .btn-prev {
+    background: transparent;
+    border: 1px solid var(--border-hover);
+    color: var(--text-muted);
+  }
+
+  .btn-prev:hover { background: var(--purple-light); color: var(--purple); }
+
+  .btn-next, .btn-submit {
+    background: var(--purple);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(83,74,183,0.3);
+  }
+
+  .btn-next:hover, .btn-submit:hover {
+    box-shadow: 0 6px 24px rgba(83,74,183,0.45);
+    opacity: 0.95;
+  }
+
+  .success {
+    display: none;
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .success.active { display: block; }
+
+  .success-circle {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, var(--purple-mid), var(--purple));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 28px;
+    color: #fff;
+  }
+
+  .success h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+
+  .success p {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 380px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 500px) {
+    .field-row { grid-template-columns: 1fr; }
+    .card { padding: 1.5rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="badge">Arizalar qabul qilinmoqda</div>
+    <h1>AI O'qituvchisi<br>bo'lishni xohlaysizmi?</h1>
+    <p>Xush kelibsiz! 2 hafta ichida Sun'iy intellekt bo'yicha o'qituvchi bo'lishni xohlaysizmi? Unday bo'lsa, quyidagi shaklni to'ldiring va yuboring.</p>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span id="pLabel">1-savol</span>
+      <span id="pCount">1 / 8</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="pFill" style="width:12.5%"></div>
+    </div>
+  </div>
+
+  <!-- Step 1 -->
+  <div class="card active" id="step1">
+    <div class="step-num">Savol 01</div>
+    <div class="step-q">Ismingizni kiriting <span class="req">*</span></div>
+    <div class="field-row">
+      <div class="field-group">
+        <label class="fl">Ism</label>
+        <input type="text" id="fname" placeholder="Ism">
+      </div>
+      <div class="field-group">
+        <label class="fl">Familiya</label>
+        <input type="text" id="lname" placeholder="Familiya">
+      </div>
+    </div>
+    <div class="err" id="err1">Iltimos, ism va familiyangizni kiriting.</div>
+    <div class="nav">
+      <span></span>
+      <button class="btn btn-next" onclick="goNext(1)">Keyingi →</button>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="card" id="step2">
+    <div class="step-num">Savol 02</div>
+    <div class="step-q">Telefon raqamingizni kiriting <span class="req">*</span></div>
+    <input type="tel" id="phone" placeholder="+998 90 123 45 67">
+    <div class="hint">Yaroqli telefon raqamini kiriting.</div>
+    <div class="err" id="err2">Iltimos, telefon raqamingizni kiriting.</div>
+    <div class="nav">
+      <button class="btn btn-prev" onclick="goPrev(2)">← Oldingi</button>
+      <button class="btn btn-next" onclick="goNext(2)">Keyingi →</button>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="card" id="step3">
+    <div class="step-num">Savol 03</div>
+    <div class="step-q">Tug'ilgan sana <span class="req">*</span></div>
+    <input type="date" id="dob">
+    <div class="err" id="err3">Iltimos, tug'ilgan sanangizni tanlang.</div>
+    <div class="nav">
+      <button class="btn btn-prev" onclick="goPrev(3)">← Oldingi</button>
+      <button class="btn btn-next" onclick="goNext(3)">Keyingi →</button>
+    </div>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="card" id="step4">
+    <div class="step-num">Savol 04</div>
+    <div class="step-q">Elektron pochtangizni kiriting <span class="req">*</span></div>
+    <input type="email" id="email" placeholder="misol@example.com">
+    <div class="err" id="err4">Iltimos, to'g'ri email manzilini kiriting.</div>
+    <div class="nav">
+      <button class="btn btn-prev" onclick="goPrev(4)">← Oldingi</button>
+      <button class="btn btn-next" onclick="goNext(4)">Keyingi →</button>
+    </div>
+  </div>
+
+  <!-- Step 5 -->
+  <div class="card" id="step5">
+    <div class="step-num">Savol 05</div>
+    <div class="step-q">O'zingiz haqingizda qisqacha yozing <span class="req">*</span></div>
+    <textarea id="about" placeholder="O'zingiz, tajribangiz va qiziqishlaringiz haqida..."></textarea>
+    <div class="err" id="err5">Iltimos, o'zingiz haqingizda yozing.</div>
+    <div class="nav">
+      <button class="btn btn-prev" onclick="goPrev(5)">← Oldingi</button>
+      <button class="btn btn-next" onclick="goNext(5)">Keyingi →</button>
+    </div>
+  </div>
+
+  <!-- Step 6 -->
+  <div class="card" id="step6">
+    <div class="step-num">Savol 06</div>
+    <div class="step-q">Tanlang <span class="req">*</span></div>
+    <div class="check-list">
+      <label class="check-item"><input type="checkbox" name="skills" value="genai_bilaman"><span>Generativ AI nima ekanligini bilaman.</span></label>
+      <label class="check-item"><input type="checkbox" name="skills" value="5_dan_ortiq"><span>Men 5 dan ortiq generativ AIdan foydalanganman.</span></label>
+      <label class="check-item"><input type="checkbox" name="skills" value="tasvir_yarataman"><span>Men AI yordamida bir martalik o'zim xohlagan tasvirni aniq yarata olaman.</span></label>
+      <label class="check-item"><input type="checkbox" name="skills" value="musiqa_yarataman"><span>Men sun'iy intellekt yordamida o'zim xohlagan musiqani bir martada aniq yarata olaman.</span></label>
+      <label class="check-item"><input type="checkbox" name="skills" value="video_yarataman"><span>AI yordamida video yaratishim mumkin.</span></label>
+      <label class="check-item"><input type="checkbox" name="skills" value="youtube"><span>Men o'zimning YouTube kanalimni boshqaraman.</span></label>
+      <label class="check-item"><input type="checkbox" name="skills" value="kod_bilaman"><span>Men matn kodlash nima ekanligini bilaman.</span></label>
+      <label class="check-item"><input type="checkbox" name="skills" value="dastur_yarataman"><span>Men AI yordamida dasturlar yarata olaman.</span></label>
+      <label class="check-item"><input type="checkbox" name="skills" value="ilova_yaratdim"><span>Men AI ilovalarini yaratdim.</span></label>
+      <label class="check-item"><input type="checkbox" name="skills" value="oyin_yaratdim"><span>Men o'yinlarni kodladim va yaratdim.</span></label>
+      <label class="check-item"><input type="checkbox" name="skills" value="san_at"><span>Rassomlik, qo'shiqchilik, kino kabi san'at sohalariga qiziqaman.</span></label>
+      <label class="check-item"><input type="checkbox" name="skills" value="dasturchilik"><span>Men dastur ishlab chiqish va kodlash kabi rivojlanish sohalariga qiziqaman.</span></label>
+      <label class="check-item"><input type="checkbox" name="skills" value="ai_organish"><span>Men sun'iy intellekt bilan bog'liq barcha ko'nikmalarni o'rganishga umid qilaman.</span></label>
+      <label class="check-item"><input type="checkbox" name="skills" value="ist_dod"><span>Men o'z iste'dodlarim asosida AI sohasida maxsus ko'nikmalarni o'rganishga umid qilaman.</span></label>
+    </div>
+    <div class="err" id="err6">Iltimos, kamida bitta tanlov qiling.</div>
+    <div class="nav">
+      <button class="btn btn-prev" onclick="goPrev(6)">← Oldingi</button>
+      <button class="btn btn-next" onclick="goNext(6)">Keyingi →</button>
+    </div>
+  </div>
+
+  <!-- Step 7 -->
+  <div class="card" id="step7">
+    <div class="step-num">Savol 07</div>
+    <div class="step-q">Qaysi yo'nalish sizga ko'proq qiziq? <span class="req">*</span></div>
+    <div class="radio-list">
+      <label class="radio-item" id="r1" onclick="selectRadio('r1','r2')">
+        <input type="radio" name="track" value="artist">
+        <div>
+          <div class="rt">🎨 Rassom</div>
+          <div class="rd">Sun'iy intellektni qo'llagan holda tasvir, tovush va video yaratish orqali film yaratish texnikasi, o'yin dizayni, UI/UX dizayn va Roblox o'yinlarini ishlab chiqish texnologiyalarini o'z ichiga olgan barcha multimedia texnologiyalari ta'limi.</div>
+        </div>
+      </label>
+      <label class="radio-item" id="r2" onclick="selectRadio('r2','r1')">
+        <input type="radio" name="track" value="developer">
+        <div>
+          <div class="rt">💻 Dasturchi</div>
+          <div class="rd">Python'ni qo'llagan holda sun'iy intellekt dasturlarini ishlab chiqish va ishga tushirish tajribasi, bulutli texnologiyalar va server ilovalari (Linux, Java), Lua skriptlarini qo'llash orqali Roblox o'yinlarini ishlab chiqish loyihalari.</div>
+        </div>
+      </label>
+    </div>
+    <div class="err" id="err7">Iltimos, bitta yo'nalish tanlang.</div>
+    <div class="nav">
+      <button class="btn btn-prev" onclick="goPrev(7)">← Oldingi</button>
+      <button class="btn btn-next" onclick="goNext(7)">Keyingi →</button>
+    </div>
+  </div>
+
+  <!-- Step 8 -->
+  <div class="card" id="step8">
+    <div class="step-num">Savol 08</div>
+    <div class="step-q">Resume yuklash <span style="font-size:13px;font-weight:400;color:var(--text-hint)">(ixtiyoriy)</span></div>
+    <div class="upload-zone" onclick="document.getElementById('resumeFile').click()"
+      ondragover="event.preventDefault();this.style.borderColor='var(--purple)'"
+      ondragleave="this.style.borderColor=''"
+      ondrop="handleDrop(event)">
+      <div class="upload-icon">📎</div>
+      <p>Fayllarni bu yerga tashlang</p>
+      <small>Maks. fayl hajmi: 10.0 MB &nbsp;•&nbsp; PDF, DOC, DOCX</small><br>
+      <label class="upload-btn-label">Fayl tanlash</label>
+      <input type="file" id="resumeFile" accept=".pdf,.doc,.docx" onchange="handleFile(this)">
+    </div>
+    <div class="file-name" id="fileName"></div>
+    <div class="nav">
+      <button class="btn btn-prev" onclick="goPrev(8)">← Oldingi</button>
+      <button class="btn btn-submit" onclick="submitForm()">Yuborish ✓</button>
+    </div>
+  </div>
+
+  <!-- Success -->
+  <div class="success" id="successCard">
+    <div class="success-circle">✓</div>
+    <h2>Ariza yuborildi!</h2>
+    <p>Rahmat! Sizning arizangiz muvaffaqiyatli qabul qilindi. Tez orada siz bilan bog'lanamiz.</p>
+  </div>
+
+</div>
+
+<script>
+  let current = 1;
+  const total = 8;
+
+  function updateProgress(step) {
+    document.getElementById('pFill').style.width = (step / total * 100) + '%';
+    document.getElementById('pCount').textContent = step + ' / ' + total;
+    document.getElementById('pLabel').textContent = step + '-savol';
+  }
+
+  function showStep(n) {
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+    const el = document.getElementById('step' + n);
+    if (el) { el.classList.add('active'); updateProgress(n); window.scrollTo({top: 0, behavior: 'smooth'}); }
+  }
+
+  function validate(step) {
+    const err = document.getElementById('err' + step);
+    if (err) err.style.display = 'none';
+    if (step === 1) {
+      if (!document.getElementById('fname').value.trim() || !document.getElementById('lname').value.trim()) { err.style.display = 'block'; return false; }
+    } else if (step === 2) {
+      if (!document.getElementById('phone').value.trim()) { err.style.display = 'block'; return false; }
+    } else if (step === 3) {
+      if (!document.getElementById('dob').value) { err.style.display = 'block'; return false; }
+    } else if (step === 4) {
+      const v = document.getElementById('email').value;
+      if (!v || !v.includes('@') || !v.includes('.')) { err.style.display = 'block'; return false; }
+    } else if (step === 5) {
+      if (!document.getElementById('about').value.trim()) { err.style.display = 'block'; return false; }
+    } else if (step === 6) {
+      if (!document.querySelectorAll('#step6 input[type=checkbox]:checked').length) { err.style.display = 'block'; return false; }
+    } else if (step === 7) {
+      if (!document.querySelector('input[name=track]:checked')) { err.style.display = 'block'; return false; }
+    }
+    return true;
+  }
+
+  function goNext(step) {
+    if (!validate(step)) return;
+    current = step + 1;
+    showStep(current);
+  }
+
+  function goPrev(step) {
+    current = step - 1;
+    showStep(current);
+  }
+
+  function selectRadio(id, other) {
+    document.getElementById(id).classList.add('selected');
+    document.getElementById(other).classList.remove('selected');
+  }
+
+  function handleFile(input) {
+    if (input.files[0]) document.getElementById('fileName').textContent = '📄 ' + input.files[0].name;
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    const f = e.dataTransfer.files[0];
+    if (f) document.getElementById('fileName').textContent = '📄 ' + f.name;
+  }
+
+  async function submitForm() {
+    const skills = Array.from(document.querySelectorAll('input[name=skills]:checked')).map(cb => cb.value);
+    const track = document.querySelector('input[name=track]:checked')?.value || '';
+    
+    const data = {
+      fname: document.getElementById('fname').value.trim(),
+      lname: document.getElementById('lname').value.trim(),
+      phone: document.getElementById('phone').value.trim(),
+      dob: document.getElementById('dob').value,
+      email: document.getElementById('email').value.trim(),
+      about: document.getElementById('about').value.trim(),
+      skills: skills.join(','),
+      track: track
+    };
+
+    try {
+      const resp = await fetch('/api/bootcamp/apply', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+      const result = await resp.json();
+      
+      if (result.ok) {
+        document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+        document.getElementById('pFill').style.width = '100%';
+        document.getElementById('pCount').textContent = '✓';
+        document.getElementById('pLabel').textContent = 'Yakunlandi';
+        document.getElementById('successCard').classList.add('active');
+        window.scrollTo({top: 0, behavior: 'smooth'});
+      } else {
+        alert('Xatolik yuz berdi. Qayta urinib ko\'ring.');
+      }
+    } catch(e) {
+      alert('Xatolik yuz berdi. Internetingizni tekshiring.');
+    }
+  }
+</script>
+</body>
+</html>
