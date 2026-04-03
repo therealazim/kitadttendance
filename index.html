@@ -95,7 +95,7 @@ section{padding:64px 5%;}
 @keyframes fadeIn{from{opacity:0} to{opacity:1}}
 
 /* PARTNERS */
-.partners-section{background:var(--light);}
+.partners-section{background:var(--light);padding:60px 0;}
 .partners-track{display:flex;gap:40px;align-items:center;margin-top:40px;animation:scroll 20s linear infinite;}
 .partners-track:hover{animation-play-state:paused;}
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
@@ -103,7 +103,8 @@ section{padding:64px 5%;}
 .partners-track{width:fit-content;display:flex;}
 .partner-logo{width:120px;height:60px;object-fit:contain;filter:grayscale(100%);opacity:.7;transition:all .3s;}
 .partner-logo:hover{filter:grayscale(0%);opacity:1;}
-.partners-empty{padding:20px;color:var(--text2);}
+.partners-empty{padding:20px;color:var(--text2);text-align:center;width:100%;}
+.partners-wrapper .partners-empty{display:block;}
 
 /* APPLY FORM */
 .apply-bg{background:linear-gradient(135deg,var(--navy),#1565C0);}
@@ -632,14 +633,16 @@ async function loadPartners(){
   try{
     const r=await fetch('/api/partners');
     const d=await r.json();
+    console.log('Partners response:', d);
     if(!d.ok||!d.partners||d.partners.length===0){
       document.getElementById('partners-track').innerHTML='<div class="partners-empty">Hamkorlar yo\'q</div>';
       return;
     }
     const p=d.partners;
+    console.log('Partners data:', p);
     const html=p.map(p=>p.website_url?`<a href="${p.website_url}" target="_blank" rel="noopener"><img src="${p.logo_url||'https://placehold.co/120x60?text='+encodeURIComponent(p.name)}" alt="${p.name}" class="partner-logo"></a>`:`<img src="${p.logo_url||'https://placehold.co/120x60?text='+encodeURIComponent(p.name)}" alt="${p.name}" class="partner-logo">`).join('');
     document.getElementById('partners-track').innerHTML=html+html;
-  }catch(e){document.getElementById('partners-track').innerHTML='<div class="partners-empty">Xato</div>';}
+  }catch(e){console.error('Partners error:', e);document.getElementById('partners-track').innerHTML='<div class="partners-empty">Xato: '+e.message+'</div>';}
 }
 
 // Yangiliklar yuklash
