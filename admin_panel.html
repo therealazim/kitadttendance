@@ -749,7 +749,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 <div class="page" id="pg-applies">
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px">
     <div class="th" style="margin:0"><span class="tt"><i class="lucide lucide-envelope"></i> Arizalar</span><span class="tm" id="app-cnt"></span></div>
-    <button class="btn bd" onclick="loadApps()"><i class="lucide lucide-sync"></i> Yangilash</button>
+    <div style="display:flex;gap:8px">
+      <button class="btn bp" onclick="exportAppsExcel()"><i class="lucide lucide-download"></i> Excel</button>
+      <button class="btn bd" onclick="loadApps()"><i class="lucide lucide-sync"></i> Yangilash</button>
+    </div>
   </div>
   <div id="apps-table"></div>
 </div>
@@ -2467,6 +2470,24 @@ document.getElementById('apps-table').innerHTML=`
 <td><button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="deleteApp(${a.id})"><i class="lucide lucide-trash"></i></button></td>
 </tr>`).join('')}</tbody></table>`;
 }
+async function exportAppsExcel(){
+const r=await fetch('/admin/api/applications',{credentials:'include'}).then(x=>x.json()).catch(()=>null);
+if(!r?.ok){toast('Xatolik');return;}
+const apps=r.applications||[];
+if(!apps.length){toast('Ma\'lumot yo\'q');return;}
+let csv='Ism,Telefon,Kurs,Xabar,Status,Yuborilgan sana\n';
+apps.forEach(a=>{
+csv+=`${a.name},${a.phone},${a.course||''},"${(a.message||'').replace(/"/g,'""')}",${a.status},${a.created_at}\n`;
+});
+const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+const url=URL.createObjectURL(blob);
+const a=document.createElement('a');
+a.href=url;
+a.download='arizalari_'+new Date().toISOString().slice(0,10)+'.csv';
+a.click();
+URL.revokeObjectURL(url);
+toast('<i class="lucide lucide-check"></i> Yuklab olindi');
+}
 async function updateAppStatus(id,status){
 const r=await fetch('/admin/api/application/status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,status}),credentials:'include'}).then(x=>x.json()).catch(()=>null);
 if(r?.ok)toast('<i class="lucide lucide-check"></i> Holat yangilandi');else toast('<i class="lucide lucide-times"></i> Xato');
@@ -2596,10 +2617,10 @@ const apps=r.applications||[];
 if(!apps.length){toast('Ma\'lumot yo\'q');return;}
 const skillLabels={'genai_bilaman':'Generativ AI bilaman','5_dan_ortiq':'5+ Generativ AI','tasvir_yarataman':'AI tasvir yarataman','musiqa_yarataman':'AI musiqa yarataman','video_yarataman':'AI video yarataman','youtube':'YouTube','kod_bilaman':'Kodlash bilaman','dastur_yarataman':'Dastur yarataman','ilova_yaratdim':'AI ilova yaratdim','oyin_yaratdim':'O\'yin yaratdim','san_at':'San\'at','dasturchilik':'Dasturchilik','ai_organish':'AI o\'rganish','ist_dod':'Iste\'dod'};
 const trackLabel={'artist':'Rassom','developer':'Dasturchi'};
-let csv='Ism,Familiya,Telefon,Email,Tug\'ilgan sana,Yo\'nalish,O\'zi haqida,Ko\'nikmalar,Status,Yuborilgan sana\n';
+let csv='Ism,Familiya,Telefon,Email,Tug\'ilgan sana,Yo\'nalish,O\'zi haqida,Ko\'nikmalar,Resume,Status,Yuborilgan sana\n';
 apps.forEach(a=>{
 const skills=a.skills?a.skills.split(',').map(s=>skillLabels[s]||s).join('; '):'';
-csv+=`${a.fname},${a.lname},${a.phone},${a.email},${a.dob||''},${trackLabel[a.track]||a.track||''},"${(a.about||'').replace(/"/g,'""')}",${skills},${a.status},${a.created_at}\n`;
+csv+=`${a.fname},${a.lname},${a.phone},${a.email},${a.dob||''},${trackLabel[a.track]||a.track||''},"${(a.about||'').replace(/"/g,'""')}",${skills},${a.resume_url||''},${a.status},${a.created_at}\n`;
 });
 const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
 const url=URL.createObjectURL(blob);
