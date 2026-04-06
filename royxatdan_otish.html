@@ -396,7 +396,7 @@
   <div class="progress-wrap">
     <div class="progress-meta">
       <span id="pLabel">1-savol</span>
-      <span id="pCount">1 / 10</span>
+      <span id="pCount">1 / 9</span>
     </div>
     <div class="progress-track">
       <div class="progress-fill" id="pFill" style="width:12.5%"></div>
@@ -531,78 +531,21 @@
   <div class="card" id="step8">
     <div class="step-num">Savol 08</div>
     <div class="step-q">Qaysi ta'lim muassasida tahsil olasiz? <span class="req">*</span></div>
-    <div class="radio-list">
-      <label class="radio-item" id="s1" onclick="selectRadio('s1','s2','s3','s4')">
-        <input type="radio" name="school" value="maktab">
-        <div>
-          <div class="rt">🏫 Maktab</div>
-          <div class="rd">Hozirda maktabda o'qiyman</div>
-        </div>
-      </label>
-      <label class="radio-item" id="s2" onclick="selectRadio('s2','s1','s3','s4')">
-        <input type="radio" name="school" value="kolej">
-        <div>
-          <div class="rt">🎓 Kolej</div>
-          <div class="rd">Kolejda o'qiyman</div>
-        </div>
-      </label>
-      <label class="radio-item" id="s3" onclick="selectRadio('s3','s1','s2','s4')">
-        <input type="radio" name="school" value="univer">
-        <div>
-          <div class="rt">🎓 Universitet</div>
-          <div class="rd">Universitetda o'qiyman</div>
-        </div>
-      </label>
-      <label class="radio-item" id="s4" onclick="selectRadio('s4','s1','s2','s3')">
-        <input type="radio" name="school" value="boshqa">
-        <div>
-          <div class="rt">📚 Boshqa</div>
-          <div class="rd">Boshqa ta'lim muassasida o'qiyman yoki tamomlaganman</div>
-        </div>
-      </label>
+    <div class="field-group" style="margin-bottom:14px">
+      <label class="fl">Ta'lim muassasasi</label>
+      <select id="schoolType" style="width:100%;border:1px solid var(--border);border-radius:12px;padding:11px 14px;font-size:15px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--surface);outline:none">
+        <option value="">Tanlang...</option>
+        <option value="maktab">Maktab</option>
+        <option value="kolej">Kolej</option>
+        <option value="univer">Universitet</option>
+        <option value="boshqa">Boshqa</option>
+      </select>
     </div>
-    <div class="err" id="err8">Iltimos, bitta tanlov qiling.</div>
-    <div class="nav">
-      <button class="btn btn-prev" onclick="goPrev(8)">← Oldingi</button>
-      <button class="btn btn-next" onclick="goNext(8)">Keyingi →</button>
+    <div class="field-group" id="schoolInfoGroup" style="display:none">
+      <label class="fl">Nechanchi sinf yoki kurs?</label>
+      <input type="text" id="schoolYear" placeholder="Masalan: 9-sinf, 2-kurs, 4-sinf">
     </div>
-  </div>
-
-  <!-- Step 9 -->
-  <div class="card" id="step9">
-    <div class="step-num">Savol 09</div>
-    <div class="step-q">Qaysi ta'lim muassasida tahsil olasiz? <span class="req">*</span></div>
-    <div class="radio-list">
-      <label class="radio-item" id="s1" onclick="selectRadio('s1','s2','s3','s4')">
-        <input type="radio" name="school" value="maktab">
-        <div>
-          <div class="rt">🏫 Maktab</div>
-          <div class="rd">Hozirda maktabda o'qiyman</div>
-        </div>
-      </label>
-      <label class="radio-item" id="s2" onclick="selectRadio('s2','s1','s3','s4')">
-        <input type="radio" name="school" value="kolej">
-        <div>
-          <div class="rt">🎓 Kolej</div>
-          <div class="rd">Kolejda o'qiyman</div>
-        </div>
-      </label>
-      <label class="radio-item" id="s3" onclick="selectRadio('s3','s1','s2','s4')">
-        <input type="radio" name="school" value="univer">
-        <div>
-          <div class="rt">🎓 Universitet</div>
-          <div class="rd">Universitetda o'qiyman</div>
-        </div>
-      </label>
-      <label class="radio-item" id="s4" onclick="selectRadio('s4','s1','s2','s3')">
-        <input type="radio" name="school" value="boshqa">
-        <div>
-          <div class="rt">📚 Boshqa</div>
-          <div class="rd">Boshqa ta'lim muassasida o'qiyman yoki tamomlaganman</div>
-        </div>
-      </label>
-    </div>
-    <div class="err" id="err8">Iltimos, bitta tanlov qiling.</div>
+    <div class="err" id="err8">Iltimos, ta'lim muassasasini tanlang.</div>
     <div class="nav">
       <button class="btn btn-prev" onclick="goPrev(8)">← Oldingi</button>
       <button class="btn btn-next" onclick="goNext(8)">Keyingi →</button>
@@ -629,6 +572,10 @@
       <button class="btn btn-submit" onclick="submitForm()">Yuborish ✓</button>
     </div>
   </div>
+      <button class="btn btn-prev" onclick="goPrev(9)">← Oldingi</button>
+      <button class="btn btn-submit" onclick="submitForm()">Yuborish ✓</button>
+    </div>
+  </div>
 
   <!-- Success -->
   <div class="success" id="successCard">
@@ -641,7 +588,7 @@
 
 <script>
   let current = 1;
-  const total = 10;
+  const total = 9;
 
   function updateProgress(step) {
     document.getElementById('pFill').style.width = (step / total * 100) + '%';
@@ -674,7 +621,7 @@
     } else if (step === 7) {
       if (!document.querySelector('input[name=track]:checked')) { err.style.display = 'block'; return false; }
     } else if (step === 8) {
-      if (!document.querySelector('input[name=school]:checked')) { err.style.display = 'block'; return false; }
+      if (!document.getElementById('schoolType').value) { err.style.display = 'block'; return false; }
     }
     return true;
   }
@@ -698,6 +645,18 @@
   }
 
   let uploadedResume = null;
+  
+  document.getElementById('schoolType')?.addEventListener('change', function() {
+    const group = document.getElementById('schoolInfoGroup');
+    if (this.value && this.value !== 'boshqa') {
+      group.style.display = 'flex';
+      group.style.flexDirection = 'column';
+      group.style.gap = '5px';
+    } else {
+      group.style.display = 'none';
+      document.getElementById('schoolYear').value = '';
+    }
+  });
   
   function handleResumeFile(input) {
     const file = input.files[0];
@@ -740,7 +699,8 @@
   async function submitForm() {
     const skills = Array.from(document.querySelectorAll('input[name=skills]:checked')).map(cb => cb.value);
     const track = document.querySelector('input[name=track]:checked')?.value || '';
-    const school = document.querySelector('input[name=school]:checked')?.value || '';
+    const school = document.getElementById('schoolType').value || '';
+    const school_year = document.getElementById('schoolYear').value.trim() || '';
     
     let resume_url = '', resume_name = '';
     if (uploadedResume) {
@@ -758,6 +718,7 @@
       skills: skills.join(','),
       track: track,
       school: school,
+      school_year: school_year,
       resume_url: resume_url,
       resume_name: resume_name
     };

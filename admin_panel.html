@@ -2525,7 +2525,7 @@ document.getElementById('bootcamp-table').innerHTML=`
 <td>${i+1}</td>
 <td><b>${a.fname} ${a.lname}</b>${a.about?`<br><small style="color:var(--tx2)">${a.about.substring(0,50)}</small>`:''}</td>
 <td><a href="tel:${a.phone}" style="color:var(--ac)">${a.phone}</a></td>
-<td>${schoolLabel[a.school]||a.school||'—'}</td>
+<td>${schoolLabel[a.school]||a.school||'—'}${a.school_year?' ('+a.school_year+')':''}</td>
 <td>${trackLabel[a.track]||a.track||'—'}</td>
 <td style="font-size:11px">${a.created_at}</td>
 <td><span style="background:${statusColor[a.status]||'#888'};color:white;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700">${statusLabel[a.status]||a.status}</span></td>
@@ -2627,7 +2627,7 @@ const schoolLabel={'maktab':'Maktab','kolej':'Kolej','univer':'Universitet','bos
 let csv='Ism,Familiya,Telefon,Email,Tug\'ilgan sana,Ta\'lim muassasasi,Yo\'nalish,O\'zi haqida,Ko\'nikmalar,Resume,Status,Yuborilgan sana\n';
 apps.forEach(a=>{
 const skills=a.skills?a.skills.split(',').map(s=>skillLabels[s]||s).join('; '):'';
-csv+=`${a.fname},${a.lname},${a.phone},${a.email},${a.dob||''},${schoolLabel[a.school]||a.school||''},${trackLabel[a.track]||a.track||''},"${(a.about||'').replace(/"/g,'""')}",${skills},${a.resume_url||''},${a.status},${a.created_at}\n`;
+csv+=`${a.fname},${a.lname},${a.phone},${a.email},${a.dob||''},${schoolLabel[a.school]||a.school||''} ${a.school_year||''},${trackLabel[a.track]||a.track||''},"${(a.about||'').replace(/"/g,'""')}",${skills},${a.resume_url||''},${a.status},${a.created_at}\n`;
 });
 const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
 const url=URL.createObjectURL(blob);
