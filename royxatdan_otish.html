@@ -395,7 +395,7 @@
   <div class="progress-wrap">
     <div class="progress-meta">
       <span id="pLabel">1-savol</span>
-      <span id="pCount">1 / 9</span>
+      <span id="pCount">1 / 10</span>
     </div>
     <div class="progress-track">
       <div class="progress-fill" id="pFill" style="width:12.5%"></div>
@@ -567,9 +567,9 @@
     </div>
   </div>
 
-  <!-- Step 9 -->
-  <div class="card" id="step9">
-    <div class="step-num">Savol 09</div>
+  <!-- Step 10 -->
+  <div class="card" id="step10">
+    <div class="step-num">Savol 10</div>
     <div class="step-q">Resume (CV) yuklash <span style="font-size:13px;font-weight:400;color:var(--text-hint)">(ixtiyoriy)</span></div>
     <div class="upload-zone" id="resumeUploadZone" onclick="document.getElementById('resumeFile').click()"
       ondragover="event.preventDefault();this.style.borderColor='var(--purple)'"
@@ -583,7 +583,7 @@
     </div>
     <div class="file-name" id="fileName"></div>
     <div class="nav">
-      <button class="btn btn-prev" onclick="goPrev(8)">← Oldingi</button>
+      <button class="btn btn-prev" onclick="goPrev(10)">← Oldingi</button>
       <button class="btn btn-submit" onclick="submitForm()">Yuborish ✓</button>
     </div>
   </div>
@@ -599,7 +599,7 @@
 
 <script>
   let current = 1;
-  const total = 9;
+  const total = 10;
 
   function updateProgress(step) {
     document.getElementById('pFill').style.width = (step / total * 100) + '%';
