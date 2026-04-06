@@ -428,7 +428,7 @@
   <div class="card" id="step2">
     <div class="step-num">Savol 02</div>
     <div class="step-q">Telefon raqamingizni kiriting <span class="req">*</span></div>
-    <input type="tel" id="phone" placeholder="+998 90 123 45 67">
+    <input type="tel" id="phone" placeholder="+998 90 123 45 67" value="+998 ">
     <div class="hint">Yaroqli telefon raqamini kiriting.</div>
     <div class="err" id="err2">Iltimos, telefon raqamingizni kiriting.</div>
     <div class="nav">
@@ -655,6 +655,12 @@
     } else {
       group.style.display = 'none';
       document.getElementById('schoolYear').value = '';
+    }
+  });
+  
+  document.getElementById('phone')?.addEventListener('focus', function() {
+    if (!this.value.startsWith('+998')) {
+      this.value = '+998 ';
     }
   });
   
