@@ -542,6 +542,10 @@
       </select>
     </div>
     <div class="field-group" id="schoolInfoGroup" style="display:none">
+      <label class="fl">O'quv muassasasi nomi</label>
+      <input type="text" id="schoolName" placeholder="Maktab/Kolej/Universitet nomi">
+    </div>
+    <div class="field-group" id="schoolInfoGroup2" style="display:none">
       <label class="fl">Nechanchi sinf yoki kurs?</label>
       <input type="text" id="schoolYear" placeholder="Masalan: 9-sinf, 2-kurs, 4-sinf">
     </div>
@@ -648,13 +652,19 @@
   
   document.getElementById('schoolType')?.addEventListener('change', function() {
     const group = document.getElementById('schoolInfoGroup');
+    const group2 = document.getElementById('schoolInfoGroup2');
     if (this.value && this.value !== 'boshqa') {
       group.style.display = 'flex';
       group.style.flexDirection = 'column';
       group.style.gap = '5px';
+      group2.style.display = 'flex';
+      group2.style.flexDirection = 'column';
+      group2.style.gap = '5px';
     } else {
       group.style.display = 'none';
+      group2.style.display = 'none';
       document.getElementById('schoolYear').value = '';
+      document.getElementById('schoolName').value = '';
     }
   });
   
@@ -706,6 +716,7 @@
     const skills = Array.from(document.querySelectorAll('input[name=skills]:checked')).map(cb => cb.value);
     const track = document.querySelector('input[name=track]:checked')?.value || '';
     const school = document.getElementById('schoolType').value || '';
+    const school_name = document.getElementById('schoolName').value.trim() || '';
     const school_year = document.getElementById('schoolYear').value.trim() || '';
     
     let resume_url = '', resume_name = '';
@@ -724,6 +735,7 @@
       skills: skills.join(','),
       track: track,
       school: school,
+      school_name: school_name,
       school_year: school_year,
       resume_url: resume_url,
       resume_name: resume_name

@@ -2527,7 +2527,7 @@ document.getElementById('bootcamp-table').innerHTML=`
 <td>${i+1}</td>
 <td><b>${a.fname} ${a.lname}</b>${a.about?`<br><small style="color:var(--tx2)">${a.about.substring(0,50)}</small>`:''}</td>
 <td><a href="tel:${a.phone}" style="color:var(--ac)">${a.phone}</a></td>
-<td>${schoolLabel[a.school]||a.school||'—'}${a.school_year?' ('+a.school_year+')':''}</td>
+<td>${schoolLabel[a.school]||a.school||'—'}${a.school_name?' - '+a.school_name:''}${a.school_year?' ('+a.school_year+')':''}</td>
 <td>${trackLabel[a.track]||a.track||'—'}</td>
 <td style="font-size:11px">${a.created_at}</td>
 <td><span style="background:${statusColor[a.status]||'#888'};color:white;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700">${statusLabel[a.status]||a.status}</span></td>
@@ -2636,7 +2636,7 @@ html+=`<tr>
 <td>${a.phone||''}</td>
 <td>${a.email||''}</td>
 <td>${a.dob||''}</td>
-<td>${schoolLabel[a.school]||a.school||''} ${a.school_year||''}</td>
+<td>${schoolLabel[a.school]||a.school||''} ${a.school_name||''} ${a.school_year||''}</td>
 <td>${trackLabel[a.track]||a.track||''}</td>
 <td>${(a.about||'').substring(0,100)}</td>
 <td>${skills}</td>
