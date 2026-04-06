@@ -10261,8 +10261,9 @@ async def main():
     app.router.add_post('/admin/api/site/config', admin_api_site_config_save)
     app.router.add_post('/admin/api/upload/image', admin_api_upload_image)
     app.router.add_post('/api/upload/resume', api_upload_resume)
-    if _os.path.isdir('resumes'):
-        app.router.add_static('/resumes', path='resumes', name='resumes')
+    resumes_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'resumes')
+    os.makedirs(resumes_dir, exist_ok=True)
+    app.router.add_static('/resumes', path='resumes', name='resumes')
     app.router.add_post('/admin/api/group/create', admin_api_group_create)
     app.router.add_get('/admin/api/group/excel', admin_api_group_excel)
     app.router.add_post('/admin/api/student/add', admin_api_student_add)
