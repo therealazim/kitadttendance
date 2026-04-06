@@ -527,6 +527,47 @@
     </div>
   </div>
 
+  <!-- Step 8 -->
+  <div class="card" id="step8">
+    <div class="step-num">Savol 08</div>
+    <div class="step-q">Qaysi ta'lim muassasida tahsil olasiz? <span class="req">*</span></div>
+    <div class="radio-list">
+      <label class="radio-item" id="s1" onclick="selectRadio('s1','s2','s3','s4')">
+        <input type="radio" name="school" value="maktab">
+        <div>
+          <div class="rt">🏫 Maktab</div>
+          <div class="rd">Hozirda maktabda o'qiyman</div>
+        </div>
+      </label>
+      <label class="radio-item" id="s2" onclick="selectRadio('s2','s1','s3','s4')">
+        <input type="radio" name="school" value="kolej">
+        <div>
+          <div class="rt">🎓 Kolej</div>
+          <div class="rd">Kolejda o'qiyman</div>
+        </div>
+      </label>
+      <label class="radio-item" id="s3" onclick="selectRadio('s3','s1','s2','s4')">
+        <input type="radio" name="school" value="univer">
+        <div>
+          <div class="rt">🎓 Universitet</div>
+          <div class="rd">Universitetda o'qiyman</div>
+        </div>
+      </label>
+      <label class="radio-item" id="s4" onclick="selectRadio('s4','s1','s2','s3')">
+        <input type="radio" name="school" value="boshqa">
+        <div>
+          <div class="rt">📚 Boshqa</div>
+          <div class="rd">Boshqa ta'lim muassasida o'qiyman yoki tamomlaganman</div>
+        </div>
+      </label>
+    </div>
+    <div class="err" id="err8">Iltimos, bitta tanlov qiling.</div>
+    <div class="nav">
+      <button class="btn btn-prev" onclick="goPrev(8)">← Oldingi</button>
+      <button class="btn btn-next" onclick="goNext(8)">Keyingi →</button>
+    </div>
+  </div>
+
   <!-- Step 9 -->
   <div class="card" id="step9">
     <div class="step-num">Savol 09</div>
@@ -568,9 +609,9 @@
     </div>
   </div>
 
-  <!-- Step 10 -->
-  <div class="card" id="step10">
-    <div class="step-num">Savol 10</div>
+  <!-- Step 9 -->
+  <div class="card" id="step9">
+    <div class="step-num">Savol 09</div>
     <div class="step-q">Resume (CV) yuklash <span style="font-size:13px;font-weight:400;color:var(--text-hint)">(ixtiyoriy)</span></div>
     <div class="upload-zone" id="resumeUploadZone" onclick="document.getElementById('resumeFile').click()"
       ondragover="event.preventDefault();this.style.borderColor='var(--purple)'"
@@ -584,7 +625,7 @@
     </div>
     <div class="file-name" id="fileName"></div>
     <div class="nav">
-      <button class="btn btn-prev" onclick="goPrev(10)">← Oldingi</button>
+      <button class="btn btn-prev" onclick="goPrev(9)">← Oldingi</button>
       <button class="btn btn-submit" onclick="submitForm()">Yuborish ✓</button>
     </div>
   </div>
