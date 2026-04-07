@@ -385,15 +385,18 @@
 </style>
 </head>
 <body>
-<div id="landingPage" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center;padding:20px;max-width:600px;margin:0 auto">
-  <img src="https://i.ibb.co/tGVCrc1/AI-CLASS-AD.png" alt="AI Class" style="width:100%;max-width:500px;margin-bottom:24px;border-radius:16px;box-shadow:0 8px 32px rgba(83,74,183,0.15)">
-  <h2 style="font-family:'DM Serif Display',serif;font-size:24px;margin-bottom:16px;color:var(--text)">AI O'qituvchisi bo'ling!</h2>
-  <p style="font-size:15px;color:var(--text-muted);max-width:400px;line-height:1.7;margin-bottom:24px">
-    Janubiy koreyalik professional AI mutaxassisidan tahsil olib, 2 haftadan so'ng Hancom Academyning Toshkentdagi 40 dan ortiq filialida o'qituvchilik qilishni xohlaysizmi?<br><br>
-    O'quvchilarga dars bering va qo'shimcha daromad oling!<br>
-    Ishtirok etish uchun so'rovnomani to'ldiring.
+<div id="landingPage" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:85vh;text-align:center;padding:30px 20px;max-width:680px;margin:0 auto;position:relative;overflow:hidden">
+  <div style="position:absolute;top:-100px;left:-100px;width:350px;height:350px;background:radial-gradient(circle,rgba(83,74,183,0.12) 0%,transparent 70%);pointer-events:none"></div>
+  <div style="position:absolute;bottom:-150px;right:-150px;width:400px;height:400px;background:radial-gradient(circle,rgba(99,102,241,0.08) 0%,transparent 70%);pointer-events:none"></div>
+  <div style="background:linear-gradient(135deg,var(--purple) 0%,#818cf8 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;animation:fadeUp 0.6s ease both">KITA Academy</div>
+  <img src="https://i.ibb.co/tGVCrc1/AI-CLASS-AD.png" alt="AI Class" style="width:100%;max-width:500px;margin-bottom:28px;border-radius:20px;box-shadow:0 20px 60px rgba(83,74,183,0.25);animation:fadeUp 0.7s ease both;animation-delay:0.1s">
+  <h2 style="font-family:'DM Serif Display',serif;font-size:32px;margin-bottom:20px;color:var(--text);animation:fadeUp 0.6s ease both;animation-delay:0.2s">AI O'qituvchisi bo'ling!</h2>
+  <p style="font-size:16px;color:var(--text-muted);max-width:480px;line-height:1.8;margin-bottom:32px;animation:fadeUp 0.6s ease both;animation-delay:0.3s">
+    Janubiy koreyalik professional AI mutaxassisidan tahsil olib, <strong style="color:var(--purple)">2 hafta ichida</strong> Hancom Academyning Toshkentdagi 40 dan ortiq filialida o'qituvchilik qilishni xohlaysizmi?<br><br>
+    O'quvchilarga dars bering va <strong style="color:var(--purple)">qo'shimcha daromad</strong> oling!
   </p>
-  <button class="btn btn-next" onclick="startForm()" style="font-size:16px;padding:14px 32px;background:var(--purple);color:#fff;border:none;border-radius:100px;cursor:pointer">So'rovnomani to'ldirish →</button>
+  <button class="btn btn-next" onclick="startForm()" style="font-size:17px;padding:18px 40px;background:linear-gradient(135deg,var(--purple) 0%,#818cf8 100%);color:#fff;border:none;border-radius:16px;cursor:pointer;box-shadow:0 8px 24px rgba(83,74,183,0.35);transition:all 0.3s;animation:fadeUp 0.6s ease both;animation-delay:0.4s" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 12px 32px rgba(83,74,183,0.45)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 8px 24px rgba(83,74,183,0.35)'">So'rovnomani to'ldirish →</button>
+  <p style="font-size:12px;color:var(--text-hint);margin-top:20px;animation:fadeUp 0.6s ease both;animation-delay:0.5s">⏱ 5 daqiqa vaqt oladi</p>
 </div>
 
 <div class="wrap" id="formContent" style="display:none">
