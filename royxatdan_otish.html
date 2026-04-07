@@ -355,11 +355,11 @@
 
   .btn-prev {
     background: transparent;
-    border: 1px solid var(--border-hover);
-    color: var(--text-muted);
+    border: 1.5px solid var(--purple);
+    color: var(--purple);
   }
 
-  .btn-prev:hover { background: var(--purple-light); color: var(--purple); }
+  .btn-prev:hover { background: var(--purple-light); }
 
   .btn-next, .btn-submit {
     background: var(--purple);
@@ -620,11 +620,7 @@
     <div class="file-name" id="fileName"></div>
     <div class="nav">
       <button class="btn btn-prev" onclick="goPrev(9)">← Oldingi</button>
-      <button class="btn btn-submit" onclick="submitForm()">Yuborish ✓</button>
-    </div>
-  </div>
-      <button class="btn btn-prev" onclick="goPrev(9)">← Oldingi</button>
-      <button class="btn btn-submit" onclick="submitForm()">Yuborish ✓</button>
+      <button class="btn btn-next" onclick="submitForm()">Yuborish ✓</button>
     </div>
   </div>
 
