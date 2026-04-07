@@ -385,7 +385,18 @@
 </style>
 </head>
 <body>
-<div class="wrap">
+<div id="landingPage" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center;padding:20px;max-width:600px;margin:0 auto">
+  <img src="https://i.ibb.co/3YdXvkG/AI-CLASS-AD.png" alt="AI Class" style="max-width:300px;width:100%;margin-bottom:24px;border-radius:16px;box-shadow:0 8px 32px rgba(83,74,183,0.15)">
+  <h2 style="font-family:'DM Serif Display',serif;font-size:24px;margin-bottom:16px;color:var(--text)">AI O'qituvchisi bo'ling!</h2>
+  <p style="font-size:15px;color:var(--text-muted);max-width:400px;line-height:1.7;margin-bottom:24px">
+    Janubiy koreyalik professional AI mutaxassisidan tahsil olib, 2 haftadan so'ng Hancom Academyning Toshkentdagi 40 dan ortiq filialida o'qituvchilik qilishni xohlaysizmi?<br><br>
+    O'quvchilarga dars bering va qo'shimcha daromad oling!<br>
+    Ishtirok etish uchun so'rovnomani to'ldiring.
+  </p>
+  <button class="btn btn-next" onclick="startForm()" style="font-size:16px;padding:14px 32px;background:var(--purple);color:#fff;border:none;border-radius:100px;cursor:pointer">So'rovnomani to'ldirish →</button>
+</div>
+
+<div class="wrap" id="formContent" style="display:none">
 
   <div class="header">
     <div class="badge">Arizalar qabul qilinmoqda</div>
@@ -593,6 +604,11 @@
 <script>
   let current = 1;
   const total = 9;
+
+  function startForm() {
+    document.getElementById('landingPage').style.display = 'none';
+    document.getElementById('formContent').style.display = 'block';
+  }
 
   function updateProgress(step) {
     document.getElementById('pFill').style.width = (step / total * 100) + '%';
