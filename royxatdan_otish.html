@@ -607,15 +607,15 @@
   <div class="card" id="step9">
     <div class="step-num">Savol 09</div>
     <div class="step-q">Resume (CV) yuklash <span style="font-size:13px;font-weight:400;color:var(--text-hint)">(ixtiyoriy)</span></div>
-    <div class="upload-zone" id="resumeUploadZone" onclick="document.getElementById('resumeFile').click()"
+    <div class="upload-zone" id="resumeUploadZone"
       ondragover="event.preventDefault();this.style.borderColor='var(--purple)'"
       ondragleave="this.style.borderColor=''"
       ondrop="handleDrop(event)">
       <div class="upload-icon">📎</div>
       <p>Fayllarni bu yerga tashlang yoki bosing</p>
       <small>Maks. fayl hajmi: 10 MB &nbsp;•&nbsp; PDF, DOC, DOCX, JPG, PNG</small><br>
-      <label class="upload-btn-label" onclick="event.stopPropagation()">Fayl tanlash</label>
-      <input type="file" id="resumeFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="handleResumeFile(this)" style="display:none">
+      <label class="upload-btn-label" style="cursor:pointer">Fayl tanlash</label>
+      <input type="file" id="resumeFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="handleResumeFile(this)">
     </div>
     <div class="file-name" id="fileName"></div>
     <div class="nav">
