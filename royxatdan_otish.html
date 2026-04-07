@@ -121,6 +121,23 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
+  @keyframes scrollPartners {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  #partners-track img {
+    height: 36px;
+    width: auto;
+    object-fit: contain;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+
+  #partners-track img:hover {
+    opacity: 1;
+  }
+
   .step-num {
     font-size: 11px;
     font-weight: 600;
@@ -388,7 +405,9 @@
 <div id="landingPage" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:85vh;text-align:center;padding:30px 20px;max-width:680px;margin:0 auto;position:relative;overflow:hidden">
   <div style="position:absolute;top:-100px;left:-100px;width:350px;height:350px;background:radial-gradient(circle,rgba(83,74,183,0.12) 0%,transparent 70%);pointer-events:none"></div>
   <div style="position:absolute;bottom:-150px;right:-150px;width:400px;height:400px;background:radial-gradient(circle,rgba(99,102,241,0.08) 0%,transparent 70%);pointer-events:none"></div>
-  <div style="background:linear-gradient(135deg,var(--purple) 0%,#818cf8 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:24px;animation:fadeUp 0.6s ease both">KITA Academy</div>
+  <div id="partners-scroller" style="display:flex;gap:30px;margin-bottom:24px;animation:fadeUp 0.6s ease both;overflow:hidden;mask-image:linear-gradient(to right,transparent,black 10%,black 90%,transparent);-webkit-mask-image:linear-gradient(to right,transparent,black 10%,black 90%,transparent);max-width:100%">
+    <div style="display:flex;gap:30px;animation:scrollPartners 20s linear infinite" id="partners-track"></div>
+  </div>
   <h2 style="font-family:'DM Serif Display',serif;font-size:32px;margin-bottom:20px;color:var(--text);animation:fadeUp 0.6s ease both;animation-delay:0.2s">AI O'qituvchisi bo'ling!</h2>
   <p style="font-size:16px;color:var(--text-muted);max-width:480px;line-height:1.8;margin-bottom:32px;animation:fadeUp 0.6s ease both;animation-delay:0.3s">
     Janubiy koreyalik professional AI mutaxassisidan tahsil olib, <strong style="color:var(--purple)">2 hafta ichida</strong> Hancom Academyning Toshkentdagi 40 dan ortiq filialida o'qituvchilik qilishni xohlaysizmi?<br><br>
@@ -606,6 +625,19 @@
 <script>
   let current = 1;
   const total = 9;
+
+  async function loadPartners() {
+    try {
+      const r = await fetch('/api/partners');
+      const d = await r.json();
+      if (d.partners && d.partners.length > 0) {
+        const p = d.partners;
+        const html = p.map(p => `<img src="${p.logo_url}" alt="${p.name}">`).join('');
+        document.getElementById('partners-track').innerHTML = html + html;
+      }
+    } catch(e) { console.error('Partners error:', e); }
+  }
+  loadPartners();
 
   function startForm() {
     document.getElementById('landingPage').style.display = 'none';
