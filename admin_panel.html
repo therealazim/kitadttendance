@@ -519,14 +519,23 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 <div class="page" id="pg-groups">
    <div style="display:flex;gap:9px;margin-bottom:10px;flex-wrap:wrap">
      <div class="sr" style="flex:1;min-width:160px;margin-bottom:0"><i class="lucide lucide-search"></i><input id="gq" placeholder="Guruh, filial..." oninput="fgrp()"></div>
+     <button class="btn" id="sortGrpBtn" style="font-size:12px;padding:8px 14px" onclick="toggleGrpSort()">🔄 Saralash</button>
      <button class="btn bp" onclick="oCG()">Yangi guruh</button>
    </div>
-  <div class="tw">
+  <div class="tw" id="grpTableWrap">
     <div class="th"><span class="tt">Guruhlar</span><span class="tm" id="gcnt"></span></div>
     <div style="overflow-x:auto"><table>
       <thead><tr><th style="width:30px"></th><th>Guruh</th><th>Fan</th><th>Filial</th><th>O'qituvchi</th><th>O'quvchi</th><th>Jadval</th><th>Amallar</th></tr></thead>
       <tbody id="gtb"></tbody>
     </table></div>
+  </div>
+  <div id="grpSortPanel" style="display:none;padding:16px;background:var(--card2);border-radius:12px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <span style="font-weight:600"><i class="lucide lucide-arrow-up-down"></i> Guruhlarni tartiblang</span>
+      <button class="btn" style="font-size:11px;padding:6px 12px" onclick="cancelGrpSort()">Bekor qilish</button>
+    </div>
+    <div id="grpSortList" style="display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto"></div>
+    <button class="btn bp" style="margin-top:12px;width:100%" onclick="saveGrpSort()">💾 Saqlash</button>
   </div>
 </div>
 
@@ -1533,7 +1542,14 @@ return`<tr><td><b>${g.group_name}</b></td><td><span class="b ${sb}">${g.lesson_t
 }).join('');
 }
 function fgrp(){const q=document.getElementById('gq').value.toLowerCase();rGroups(GROUPS.filter(g=>(g.group_name||'').toLowerCase().includes(q)||(g.branch||'').toLowerCase().includes(q)));}
+let _grpSortMode=false;
+function toggleGrpSort(){_grpSortMode=!_grpSortMode;document.getElementById('grpSortPanel').style.display=_grpSortMode?'block':'none';document.getElementById('grpTableWrap').style.display=_grpSortMode?'none':'block';if(_grpSortMode){const sb={'IT':'💻','Koreys tili':'🇰🇷'};document.getElementById('grpSortList').innerHTML=GROUPS.map((g,i)=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--card);border-radius:8px;cursor:grab" draggable="true" ondragstart="dragG(event,${g.id})" ondragover="allowDrop(event)" ondrop="dropG(event,${g.id})"><span style="color:var(--tx3);font-size:14px">☰</span><span style="flex:1;font-weight:500">${g.group_name}</span><span class="b ${SBG[g.lesson_type]||'bno'}" style="font-size:10px">${sb[g.lesson_type]||g.lesson_type||''}</span><span style="font-size:11px;color:var(--tx2)">${g.branch}</span></div>`).join('');}}
+function cancelGrpSort(){_grpSortMode=false;document.getElementById('grpSortPanel').style.display='none';document.getElementById('grpTableWrap').style.display='block';document.getElementById('grpSortList').innerHTML='';}
 let _dragGid=null;
+function dragG(e,gid){_dragGid=gid;e.dataTransfer.effectAllowed='move';}
+function allowDrop(e){e.preventDefault();}
+async function dropG(e,targetGid){e.preventDefault();if(_dragGid===targetGid||!_dragGid)return;const list=document.getElementById('grpSortList').children;const arr=[];for(let i=0;i<list.length;i++){const id=parseInt(list[i].draggable);if(id)_dragGid===id?arr.push(targetGid):arr.push(id);}_dragGid===targetGid&&arr.push(targetGid);const grpMap={};GROUPS.forEach(g=>grpMap[g.id]=g);GROUPS.length=0;arr.forEach(id=>{if(grpMap[id])GROUPS.push(grpMap[id])});document.getElementById('grpSortList').innerHTML=GROUPS.map((g,i)=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--card);border-radius:8px;cursor:grab" draggable="true" ondragstart="dragG(event,${g.id})" ondragover="allowDrop(event)" ondrop="dropG(event,${g.id})"><span style="color:var(--tx3);font-size:14px">☰</span><span style="flex:1;font-weight:500">${g.group_name}</span><span class="b ${SBG[g.lesson_type]||'bno'}" style="font-size:10px">${SBG[g.lesson_type]||g.lesson_type||''}</span><span style="font-size:11px;color:var(--tx2)">${g.branch}</span></div>`).join('');_dragGid=null;}
+async function saveGrpSort(){const arr=GROUPS.map(g=>g.id);GROUPS.forEach((g,i)=>g.sort_order=i);rGroups(GROUPS);await api('/admin/api/group/reorder',{group_ids:arr});cancelGrpSort();toast('<i class="lucide lucide-check"></i> Saqlandi');}
 function rGroups(list){
 document.getElementById('gcnt').textContent=list.length+' ta';const tb=document.getElementById('gtb');
 if(!list.length){tb.innerHTML=`<tr><td colspan="8"><div class="empty"><div class="ei"><i class="lucide lucide-book"></i></div>Yo'q</div></td></tr>`;return;}
