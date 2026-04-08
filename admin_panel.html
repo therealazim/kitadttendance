@@ -529,8 +529,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       <span style="font-weight:600"><i class="lucide lucide-arrow-up-down"></i> Guruhlarni tartiblang</span>
       <button class="btn" style="font-size:11px;padding:6px 12px" onclick="cancelGrpSort()">Bekor qilish</button>
     </div>
-    <div id="grpSortList" style="display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto"></div>
-    <button class="btn bp" style="margin-top:12px;width:100%" onclick="saveGrpSort()">💾 Saqlash</button>
+    <div id="grpSortList" style="display:flex;flex-direction:column;gap:6px;max-height:500px;overflow-y:auto"></div>
+    <button class="btn bp" style="margin-top:12px;width:100%" onclick="saveGrpSort()"><i class="lucide lucide-save"></i> Saqlash</button>
   </div>
 </div>
 
@@ -2859,7 +2859,7 @@ setTimeout(()=>msg.textContent='',3000);
     <div class="fg"><label>Summa (so'm)</label><input type="number" id="sp-amount" class="inp" placeholder="10800000" min="0"></div>
     <div style="display:flex;gap:8px;margin-top:14px">
       <button class="btn bg" style="flex:1" onclick="document.getElementById('school-pay-modal').style.display='none'">Bekor</button>
-      <button class="btn bp" style="flex:2" onclick="saveSchoolPay()">💾 Saqlash</button>
+      <button class="btn bp" style="flex:2" onclick="saveSchoolPay()"><i class="lucide lucide-save"></i> Saqlash</button>
     </div>
   </div>
 </div>
