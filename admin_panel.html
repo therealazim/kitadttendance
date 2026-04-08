@@ -524,7 +524,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   <div class="tw">
     <div class="th"><span class="tt">Guruhlar</span><span class="tm" id="gcnt"></span></div>
     <div style="overflow-x:auto"><table>
-      <thead><tr><th onclick="srtGrp('name')" style="cursor:pointer">Guruh ↕</th><th onclick="srtGrp('type')" style="cursor:pointer">Fan ↕</th><th onclick="srtGrp('branch')" style="cursor:pointer">Filial ↕</th><th>O'qituvchi</th><th onclick="srtGrp('students')" style="cursor:pointer">O'quvchi ↕</th><th>Jadval</th><th>Amallar</th></tr></thead>
+      <thead><tr><th style="width:30px"></th><th onclick="srtGrp('name')" style="cursor:pointer">Guruh ↕</th><th onclick="srtGrp('type')" style="cursor:pointer">Fan ↕</th><th onclick="srtGrp('branch')" style="cursor:pointer">Filial ↕</th><th>O'qituvchi</th><th onclick="srtGrp('students')" style="cursor:pointer">O'quvchi ↕</th><th>Jadval</th><th>Amallar</th></tr></thead>
       <tbody id="gtb"></tbody>
     </table></div>
   </div>
@@ -1244,7 +1244,7 @@ if(r.status===401){document.getElementById('updlbl').textContent='<i class="luci
 if(!r.ok)throw new Error('HTTP '+r.status);
 const txt=await r.text();
 try{D=JSON.parse(txt);}catch(pe){console.error('JSON parse xato:',txt.slice(0,200));throw new Error('JSON parse xato');}
-USERS=D.users||[];GROUPS=D.groups||[];window._BRANCHES=(D.branches||[]).map(b=>b.name||b).filter(Boolean);
+USERS=D.users||[];GROUPS=(D.groups||[]).sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));window._BRANCHES=(D.branches||[]).map(b=>b.name||b).filter(Boolean);
 try{rAll();}catch(re){console.error('rAll xato:',re);document.getElementById('updlbl').textContent='<i class="lucide lucide-times"></i> Render xato: '+re.message;return;}
 applyLang();
 if(window.lucide)lucide.createIcons();
@@ -1543,15 +1543,19 @@ return`<tr><td><b>${g.group_name}</b></td><td><span class="b ${sb}">${g.lesson_t
 function fgrp(){const q=document.getElementById('gq').value.toLowerCase();rGroups(GROUPS.filter(g=>(g.group_name||'').toLowerCase().includes(q)||(g.branch||'').toLowerCase().includes(q)));}
 let _grpSort={field:'name',asc:true};
 function srtGrp(f){if(_grpSort.field===f){_grpSort.asc=!_grpSort.asc;}else{_grpSort.field=f;_grpSort.asc=true;}const s=_grpSort;const lst=GROUPS.slice().sort((a,b)=>{let av=a.group_name||'',bv=b.group_name||'';if(f==='branch'){av=a.branch||'';bv=b.branch||'';}if(f==='type'){av=a.lesson_type||'';bv=b.lesson_type||'';}if(f==='students'){av=a.students?.length||0;bv=b.students?.length||0;return s.asc?av-bv:bv-av;}return s.asc?av.localeCompare(bv):bv.localeCompare(av);});rGroups(lst);}
-async function oGM(gid){
-window._gid=gid;_gid=gid;const [r,rp]=await Promise.all([fetch(`/admin/api/group/detail?id=${gid}`).then(x=>x.json()).catch(()=>null),fetch(`/admin/api/student_payments?group_id=${gid}&month=${TODAY.slice(0,7)}`).then(x=>x.json()).catch(()=>null)]);
-if(!r?.ok){toast('<i class="lucide lucide-times"></i> Yuklanmadi');return;}
-_gdat=r;document.getElementById('gmt').textContent=r.group_name;
-const _payBadge=rp?.ok?`<div style="background:var(--card2);border-radius:8px;padding:8px 12px;margin-bottom:10px;display:flex;align-items:center;gap:8px;font-size:12px"><span style="font-size:16px"><i class="lucide lucide-money-bill-wave"></i></span><div>Bu oy to'lov: <b style="color:${rp.paid_count>0?'#34d399':'#f87171'}">${rp.paid_count}/${rp.total}</b> <span style="color:var(--tx2);font-size:10px">(${rp.unpaid_count} to'lamagan · ${fmt(rp.total_amount)} so'm)</span></div></div>`:'' ;
-document.getElementById('gminfo').innerHTML=_payBadge+`<div class="mr"><span class="mk"><i class="lucide lucide-building"></i> Filial</span><span class="mv">${r.branch}</span></div><div class="mr"><span class="mk"><i class="lucide lucide-book"></i> Fan</span><span class="mv"><span class="b ${SBG[r.lesson_type]||'bno'}">${r.lesson_type}</span></span></div><div class="mr"><span class="mk"><i class="lucide lucide-user"></i> O'qituvchi</span><span class="mv">${r.teacher_name}</span></div><div class="mr"><span class="mk"><i class="lucide lucide-user-graduate"></i> O'quvchilar</span><span class="mv">${r.student_count} ta</span></div>${Object.entries(sortDayTimes(r.day_times||{})).map(([d,ti])=>`<div class="mr"><span class="mk"><i class="lucide lucide-calendar"></i> ${d}</span><span class="mv"><i class="lucide lucide-clock"></i> ${ti}</span></div>`).join('')}<div style="margin-top:10px"><button class="btn bg" onclick="dlGE(${gid})"><i class="lucide lucide-file-excel"></i> O'quvchilar Excel</button></div>`;
-rGS(r);rGSch(r);rGT(r);rGBranch(r);rGName(r);
-gtab('info',document.querySelector('#gm .tab'));oM('gm');
+let _dragGid=null;
+function rGroups(list){
+document.getElementById('gcnt').textContent=list.length+' ta';const tb=document.getElementById('gtb');
+if(!list.length){tb.innerHTML=`<tr><td colspan="8"><div class="empty"><div class="ei"><i class="lucide lucide-book"></i></div>Yo'q</div></td></tr>`;return;}
+tb.innerHTML=list.map(g=>{
+const t=USERS.find(u=>u.user_id===g.teacher_id);const sb=SBG[g.lesson_type]||'bno';
+const dt=Object.entries(sortDayTimes(g.day_times||{})).map(([d,ti])=>`<span class="dtag">${d.slice(0,2)} ${ti}</span>`).join('')||(g.days||[]).map(d=>`<span class="dtag">${d.slice(0,2)}</span>`).join('');
+return`<tr draggable="true" ondragstart="dragG(event,${g.id})" ondragover="allowDrop(event)" ondrop="dropG(event,${g.id})" style="cursor:grab"><td style="color:var(--tx3)">☰</td><td><b>${g.group_name}</b></td><td><span class="b ${sb}">${g.lesson_type||'—'}</span></td><td style="font-size:11px;white-space:nowrap">${g.branch}</td><td style="font-size:11px">${t?t.name:'—'}</td><td style="text-align:center"><b>${(g.students||[]).length}</b></td><td><div style="display:flex;flex-wrap:wrap;gap:2px">${dt}</div></td><td><div style="display:flex;gap:3px"><button class="btn bg" style="font-size:10px;padding:4px 9px" onclick="oGM(${g.id})"><i class="lucide lucide-edit"></i> Edit</button><button class="btn bd" style="font-size:10px;padding:4px 9px" onclick="delG(${g.id})"><i class="lucide lucide-trash"></i></button></div></td></tr>`;
+}).join('');
 }
+function dragG(e,gid){_dragGid=gid;e.dataTransfer.effectAllowed='move';}
+function allowDrop(e){e.preventDefault();}
+async function dropG(e,targetGid){e.preventDefault();if(_dragGid===targetGid||!_dragGid)return;const arr=GROUPS.map(g=>g.id);const fromIdx=arr.indexOf(_dragGid),toIdx=arr.indexOf(targetGid);if(fromIdx===-1||toIdx===-1)return;const [m]=GROUPS.splice(fromIdx,1);GROUPS.splice(toIdx,0,m);rGroups(GROUPS);await api('/admin/api/group/reorder',{group_ids:arr});_dragGid=null;}
 function gtab(t,el){document.querySelectorAll('#gm .tab').forEach(b=>b.classList.remove('on'));if(el)el.classList.add('on');['info','studs','sched','teacher','branch','name'].forEach(n=>document.getElementById('gm'+n).style.display=n===t?'block':'none');}
 function rGS(r){
 const gid=r.id;

@@ -600,6 +600,7 @@ class Database:
                     'time': first_time,
                     'time_text': first_time,
                     'created_at': g['created_at'],
+                    'sort_order': g.get('sort_order') or 0,
                     'student_count': g.get('student_count') or len(group_students.get(g['id'], []))
                 }
                 
@@ -4630,6 +4631,26 @@ async def miniapp_api_submit(request):
         logging.error(f"miniapp_submit error: {e}")
         return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
 
+async def admin_api_group_reorder(request):
+    """Guruhlar tartibini o'zgartirish (drag & drop)"""
+    import json as _json
+    try:
+        data = await request.json()
+        group_ids = data.get('group_ids', [])
+        if not group_ids:
+            return web.Response(text=_json.dumps({'ok': False, 'error': 'group_ids kerak'}), content_type='application/json')
+        async with db.pool.acquire() as conn:
+            for idx, gid in enumerate(group_ids):
+                await conn.execute("UPDATE groups SET sort_order = $1 WHERE id = $2", idx, int(gid))
+        # RAM dagi groups dictni yangilash uchun sort_order ni qo'shamiz
+        for idx, gid in enumerate(group_ids):
+            gid_int = int(gid)
+            if gid_int in groups:
+                groups[gid_int]['sort_order'] = idx
+        return web.Response(text=_json.dumps({'ok': True}), content_type='application/json')
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
+
 async def admin_api_group_delete(request):
     """Guruhni o'chirish"""
     import json as _json
@@ -4704,6 +4725,7 @@ async def admin_api_data(request):
                 'day_times': gdata.get('day_times', {}),
                 'students': students,
                 'student_count': len(students),
+                'sort_order': gdata.get('sort_order', 0),
             })
 
         # Bugungi davomat
@@ -10278,6 +10300,7 @@ async def main():
     resumes_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'resumes')
     os.makedirs(resumes_dir, exist_ok=True)
     app.router.add_static('/resumes', path='resumes', name='resumes')
+    app.router.add_post('/admin/api/group/reorder', admin_api_group_reorder)
     app.router.add_post('/admin/api/group/create', admin_api_group_create)
     app.router.add_get('/admin/api/group/excel', admin_api_group_excel)
     app.router.add_post('/admin/api/student/add', admin_api_student_add)
