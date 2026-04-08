@@ -1543,7 +1543,7 @@ return`<tr><td><b>${g.group_name}</b></td><td><span class="b ${sb}">${g.lesson_t
 }
 function fgrp(){const q=document.getElementById('gq').value.toLowerCase();rGroups(GROUPS.filter(g=>(g.group_name||'').toLowerCase().includes(q)||(g.branch||'').toLowerCase().includes(q)));}
 let _grpSortMode=false;
-function toggleGrpSort(){_grpSortMode=!_grpSortMode;document.getElementById('grpSortPanel').style.display=_grpSortMode?'block':'none';document.getElementById('grpTableWrap').style.display=_grpSortMode?'none':'block';if(_grpSortMode){const sb={'IT':'💻','Koreys tili':'🇰🇷'};document.getElementById('grpSortList').innerHTML=GROUPS.map((g,i)=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--card);border-radius:8px;cursor:grab" draggable="true" ondragstart="dragG(event,${g.id})" ondragover="allowDrop(event)" ondrop="dropG(event,${g.id})"><span style="color:var(--tx3);font-size:14px">☰</span><span style="flex:1;font-weight:500">${g.group_name}</span><span class="b ${SBG[g.lesson_type]||'bno'}" style="font-size:10px">${sb[g.lesson_type]||g.lesson_type||''}</span><span style="font-size:11px;color:var(--tx2)">${g.branch}</span></div>`).join('');}}
+function toggleGrpSort(){_grpSortMode=!_grpSortMode;document.getElementById('grpSortPanel').style.display=_grpSortMode?'block':'none';document.getElementById('grpTableWrap').style.display=_grpSortMode?'none':'block';if(_grpSortMode){const sb={'IT':'IT','Koreys tili':'KOR'};document.getElementById('grpSortList').innerHTML=GROUPS.map((g,i)=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--card);border-radius:8px;cursor:grab" draggable="true" ondragstart="dragG(event,${g.id})" ondragover="allowDrop(event)" ondrop="dropG(event,${g.id})"><span style="color:var(--tx3);font-size:14px">☰</span><span style="flex:1;font-weight:500">${g.group_name}</span><span class="b ${SBG[g.lesson_type]||'bno'}" style="font-size:10px">${sb[g.lesson_type]||g.lesson_type||''}</span><span style="font-size:11px;color:var(--tx2)">${g.branch}</span></div>`).join('');}}
 function cancelGrpSort(){_grpSortMode=false;document.getElementById('grpSortPanel').style.display='none';document.getElementById('grpTableWrap').style.display='block';document.getElementById('grpSortList').innerHTML='';}
 let _dragGid=null;
 function dragG(e,gid){_dragGid=gid;e.dataTransfer.effectAllowed='move';}
@@ -1826,10 +1826,10 @@ document.getElementById('pay-progress').innerHTML=`
 </div>
 </div>
 ${r.school_amount>0?`<div style="background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.3);border-radius:10px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center">
-<span style="font-size:12px;font-weight:700">🏫 Maktab to'lovi</span>
+<span style="font-size:12px;font-weight:700"><i class="lucide lucide-school"></i> Maktab to'lovi</span>
 <span style="font-size:14px;font-weight:800;color:#818cf8">${fmt(r.school_amount)} so'm</span>
 </div>`:''}
-<button class="btn" style="width:100%;margin-top:4px;background:rgba(99,102,241,.15);color:#818cf8;border:1px dashed rgba(99,102,241,.4);font-size:12px" onclick="openSchoolPay()">🏫 ${r.school_amount>0?'Maktab to\'lovini tahrirlash':'+ Maktab to\'lovi qo\'shish'}</button>`;
+<button class="btn" style="width:100%;margin-top:4px;background:rgba(99,102,241,.15);color:#818cf8;border:1px dashed rgba(99,102,241,.4);font-size:12px" onclick="openSchoolPay()"><i class="lucide lucide-plus-circle"></i> ${r.school_amount>0?'Maktab to\'lovini tahrirlash':'Maktab to\'lovi qo\'shish'}</button>`;
 window._lastPayData=r;
 document.getElementById('pay-table').innerHTML=`
 <div class="tw">
@@ -1976,7 +1976,7 @@ return`<tr style="cursor:pointer" onclick="paySelBrDirect('${g.branch.replace(/'
 <span style="font-weight:800;color:${gc}">${g.pct}%</span>
 </div>
 </td>
-<td style="font-weight:700;color:#34d399">${g.amount?fmt(g.amount)+' so\'m'+(g.school_amount?'<br><span style="font-size:9px;color:#818cf8">🏫 '+fmt(g.school_amount)+'</span>':''):'—'}</td>
+<td style="font-weight:700;color:#34d399">${g.amount?fmt(g.amount)+' so\'m'+(g.school_amount?'<br><span style="font-size:9px;color:#818cf8"><i class="lucide lucide-school"></i> '+fmt(g.school_amount)+'</span>':''):'—'}</td>
 </tr>`;
 }).join('')}
 </tbody>
@@ -2286,7 +2286,7 @@ async function calcOfficeSalary() {
         </div>
         
         <div class="toggle-row">
-          <span class="toggle-lbl">📊 Asosiy oylik</span>
+          <span class="toggle-lbl"><i class="lucide lucide-dollar-sign"></i> Asosiy oylik</span>
           <span style="font-weight:600">${fmt(r.base_salary)} so'm</span>
         </div>
         
@@ -2582,8 +2582,8 @@ const skillLabels={
 'san_at':'San\'at sohalariga qiziqaman','dasturchilik':'Dastur ishlab chiqishga qiziqaman',
 'ai_organish':'AI bilan bog\'liq barcha ko\'nikmalarni o\'rganishga umid qilaman','ist_dod':'Iste\'dodlarim asosida AI sohasida o\'rganishga umid qilaman'
 };
-const trackLabel={'artist':'Rassom 🎨','developer':'Dasturchi 💻'};
-const schoolLabel={'maktab':'Maktab 🏫','kolej':'Kolej 🎓','univer':'Universitet 🎓','boshqa':'Boshqa 📚'};
+const trackLabel={'artist':'Rassom','developer':'Dasturchi'};
+const schoolLabel={'maktab':'Maktab','kolej':'Kolej','univer':'Universitet','boshqa':'Boshqa'};
 const skills=app.skills?app.skills.split(',').map(s=>skillLabels[s]||s).join('<br>'):'-';
 const modal=document.createElement('div');
 modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px';
@@ -3232,7 +3232,7 @@ async function loadBizReport(){
   
   try {
     const r = await fetch(`/admin/api/business/report?month=${month}`).then(x=>x.json());
-    if(!r?.ok) { toast('❌ Xatolik'); return; }
+    if(!r?.ok) { toast('<i class="lucide lucide-alert-circle"></i> Xatolik'); return; }
     
     // Update summary cards
     document.getElementById('biz-revenue').textContent = fmt(r.summary.total_revenue);
@@ -3310,7 +3310,7 @@ async function loadBizReport(){
     
   } catch(e) {
     console.error('loadBizReport error:', e);
-    toast('❌ Yuklashda xatolik');
+    toast('<i class="lucide lucide-alert-circle"></i> Yuklashda xatolik');
   }
 }
 
@@ -3345,7 +3345,7 @@ async function saveBizExpenses(){
 
 async function exportBizReport(){
   const month = document.getElementById('biz-month')?.value;
-  if(!month){ toast('❌ Oyni tanlang'); return; }
+  if(!month){ toast('<i class="lucide lucide-alert-circle"></i> Oyni tanlang'); return; }
   
   try {
     toast('<i class="lucide lucide-spinner"></i> Excel tayyorlanmoqda...', 5000);
