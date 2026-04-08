@@ -10291,6 +10291,7 @@ async def main():
     app.router.add_post('/admin/api/news/save', admin_api_news_save)
     app.router.add_post('/admin/api/news/delete', admin_api_news_delete)  # Public - sayt uchun
     app.router.add_get('/api/partners', api_get_partners)
+    app.router.add_get('/api/branches/map', api_branches_map)
     app.router.add_get('/admin/api/partners', admin_api_partners_get)
     app.router.add_post('/admin/api/partners/save', admin_api_partners_save)
     app.router.add_post('/admin/api/partners/delete', admin_api_partners_delete)
