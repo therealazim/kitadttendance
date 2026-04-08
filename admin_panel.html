@@ -524,7 +524,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   <div class="tw">
     <div class="th"><span class="tt">Guruhlar</span><span class="tm" id="gcnt"></span></div>
     <div style="overflow-x:auto"><table>
-      <thead><tr><th style="width:30px"></th><th onclick="srtGrp('name')" style="cursor:pointer">Guruh ↕</th><th onclick="srtGrp('type')" style="cursor:pointer">Fan ↕</th><th onclick="srtGrp('branch')" style="cursor:pointer">Filial ↕</th><th>O'qituvchi</th><th onclick="srtGrp('students')" style="cursor:pointer">O'quvchi ↕</th><th>Jadval</th><th>Amallar</th></tr></thead>
+      <thead><tr><th style="width:30px"></th><th>Guruh</th><th>Fan</th><th>Filial</th><th>O'qituvchi</th><th>O'quvchi</th><th>Jadval</th><th>Amallar</th></tr></thead>
       <tbody id="gtb"></tbody>
     </table></div>
   </div>
@@ -1541,8 +1541,6 @@ return`<tr><td><b>${g.group_name}</b></td><td><span class="b ${sb}">${g.lesson_t
 }).join('');
 }
 function fgrp(){const q=document.getElementById('gq').value.toLowerCase();rGroups(GROUPS.filter(g=>(g.group_name||'').toLowerCase().includes(q)||(g.branch||'').toLowerCase().includes(q)));}
-let _grpSort={field:'name',asc:true};
-function srtGrp(f){if(_grpSort.field===f){_grpSort.asc=!_grpSort.asc;}else{_grpSort.field=f;_grpSort.asc=true;}const s=_grpSort;const lst=GROUPS.slice().sort((a,b)=>{let av=a.group_name||'',bv=b.group_name||'';if(f==='branch'){av=a.branch||'';bv=b.branch||'';}if(f==='type'){av=a.lesson_type||'';bv=b.lesson_type||'';}if(f==='students'){av=a.students?.length||0;bv=b.students?.length||0;return s.asc?av-bv:bv-av;}return s.asc?av.localeCompare(bv):bv.localeCompare(av);});rGroups(lst);}
 let _dragGid=null;
 function rGroups(list){
 document.getElementById('gcnt').textContent=list.length+' ta';const tb=document.getElementById('gtb');
