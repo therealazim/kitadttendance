@@ -519,18 +519,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 <div class="page" id="pg-groups">
    <div style="display:flex;gap:9px;margin-bottom:10px;flex-wrap:wrap">
      <div class="sr" style="flex:1;min-width:160px;margin-bottom:0"><i class="lucide lucide-search"></i><input id="gq" placeholder="Guruh, filial..." oninput="fgrp()"></div>
-     <div style="display:flex;gap:5px">
-       <button class="btn" style="font-size:11px;padding:6px 10px" onclick="srtGrp('name')">Nomi ↑</button>
-       <button class="btn" style="font-size:11px;padding:6px 10px" onclick="srtGrp('branch')">Filial ↑</button>
-       <button class="btn" style="font-size:11px;padding:6px 10px" onclick="srtGrp('type')">Fan ↑</button>
-       <button class="btn" style="font-size:11px;padding:6px 10px" onclick="srtGrp('students')">O'quvchi ↑</button>
-     </div>
      <button class="btn bp" onclick="oCG()">Yangi guruh</button>
    </div>
   <div class="tw">
     <div class="th"><span class="tt">Guruhlar</span><span class="tm" id="gcnt"></span></div>
     <div style="overflow-x:auto"><table>
-      <thead><tr><th>Guruh</th><th>Fan</th><th>Filial</th><th>O'qituvchi</th><th>O'quvchi</th><th>Jadval</th><th>Amallar</th></tr></thead>
+      <thead><tr><th onclick="srtGrp('name')" style="cursor:pointer">Guruh ↕</th><th onclick="srtGrp('type')" style="cursor:pointer">Fan ↕</th><th onclick="srtGrp('branch')" style="cursor:pointer">Filial ↕</th><th>O'qituvchi</th><th onclick="srtGrp('students')" style="cursor:pointer">O'quvchi ↕</th><th>Jadval</th><th>Amallar</th></tr></thead>
       <tbody id="gtb"></tbody>
     </table></div>
   </div>
