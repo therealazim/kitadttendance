@@ -224,6 +224,7 @@ class Database:
             # Groups table migration - add student_count column if not exist
             try:
                 await conn.execute("ALTER TABLE groups ADD COLUMN IF NOT EXISTS student_count INTEGER DEFAULT 0")
+                await conn.execute("ALTER TABLE groups ADD COLUMN IF NOT EXISTS sort_order INTEGER DEFAULT 0")
             except:
                 pass
             await conn.execute("""

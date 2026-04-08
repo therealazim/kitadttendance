@@ -1545,7 +1545,7 @@ return`<tr draggable="true" ondragstart="dragG(event,${g.id})" ondragover="allow
 }
 function dragG(e,gid){_dragGid=gid;e.dataTransfer.effectAllowed='move';}
 function allowDrop(e){e.preventDefault();}
-async function dropG(e,targetGid){e.preventDefault();if(_dragGid===targetGid||!_dragGid)return;const arr=GROUPS.map(g=>g.id);const fromIdx=arr.indexOf(_dragGid),toIdx=arr.indexOf(targetGid);if(fromIdx===-1||toIdx===-1)return;const [m]=GROUPS.splice(fromIdx,1);GROUPS.splice(toIdx,0,m);rGroups(GROUPS);await api('/admin/api/group/reorder',{group_ids:arr});_dragGid=null;}
+async function dropG(e,targetGid){e.preventDefault();if(_dragGid===targetGid||!_dragGid)return;const arr=GROUPS.map(g=>g.id);const fromIdx=arr.indexOf(_dragGid),toIdx=arr.indexOf(targetGid);if(fromIdx===-1||toIdx===-1)return;const [m]=GROUPS.splice(fromIdx,1);GROUPS.splice(toIdx,0,m);GROUPS.forEach((g,i)=>g.sort_order=i);rGroups(GROUPS);await api('/admin/api/group/reorder',{group_ids:arr});_dragGid=null;}
 function gtab(t,el){document.querySelectorAll('#gm .tab').forEach(b=>b.classList.remove('on'));if(el)el.classList.add('on');['info','studs','sched','teacher','branch','name'].forEach(n=>document.getElementById('gm'+n).style.display=n===t?'block':'none');}
 function rGS(r){
 const gid=r.id;
