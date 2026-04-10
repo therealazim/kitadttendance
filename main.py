@@ -2107,11 +2107,34 @@ async def admin_api_user_permanent_delete(request):
         logging.error(f"admin_api_user_permanent_delete error: {e}")
         return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
 
+async def admin_api_user_photos(request):
+    """Barcha foydalanuvchilar fotolarini yangilash"""
+    import json as _json
+    result = []
+    for uid in user_ids:
+        try:
+            if uid in user_photo_cache:
+                result.append({'user_id': uid, 'photo_url': user_photo_cache[uid]})
+            else:
+                photos = await bot.get_user_profile_photos(uid, limit=1)
+                if photos.total_count > 0:
+                    file_id = photos.photos[0][-1].file_id
+                    file_obj = await bot.get_file(file_id)
+                    url = f"https://api.telegram.org/file/bot{TOKEN}/{file_obj.file_path}"
+                    user_photo_cache[uid] = url
+                    result.append({'user_id': uid, 'photo_url': url})
+        except:
+            pass
+    return web.Response(text=_json.dumps({'ok': True, 'users': result, 'count': len(result)}), content_type='application/json')
+
 async def admin_api_user_stats(request):
     """Foydalanuvchi batafsil statistikasi"""
     import json as _json
     try:
         uid = int(request.rel_url.query.get('user_id', 0))
+        if not uid:
+            return web.Response(text=_json.dumps({'ok': False, 'error': 'user_id kerak'}), content_type='application/json')
+        # ... (existing code)
         branch_stats = {}
         month_stats = {}
         for (user_id, branch, date, time) in daily_attendance_log:
@@ -10273,6 +10296,7 @@ async def main():
     app.router.add_post('/admin/api/user/restore', admin_api_user_restore)
     app.router.add_post('/admin/api/user/permanent-delete', admin_api_user_permanent_delete)
     app.router.add_get('/admin/api/user/stats', admin_api_user_stats)
+    app.router.add_get('/admin/api/user/photos', admin_api_user_photos)
     app.router.add_get('/admin/api/group/detail', admin_api_group_detail)
     app.router.add_post('/admin/api/group/edit/schedule', admin_api_group_edit_schedule)
     app.router.add_post('/admin/api/group/edit/teacher', admin_api_group_edit_teacher)
