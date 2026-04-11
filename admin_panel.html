@@ -7,11 +7,10 @@
 <title>KITA Admin</title>
 <script src="https://unpkg.com/lucide@latest"></script>
 
-<style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');*{margin:0;padding:0;box-sizing:border-box}:root{--bg:#ffffff;--sb:#f5f5f5;--card:#ffffff;--card2:#f8f9fa;--bg2:#f8f9fa;--bd:rgba(0,0,0,.1);--bd2:rgba(0,0,0,.15);--ac:#4f8ef7;--gn:#10b981;--gr:#10b981;--rd:#ef4444;--og:#f59e0b;--pu:#8b5cf6;--tx:#1f2937;--tx2:#6b7280;--tx3:#9ca3af;--sbw:225px}[data-theme="dark"]{--bg:#0a0f1e;--sb:#0d1324;--card:#111827;--card2:#151e30;--bg2:#131c2e;--bd:rgba(255,255,255,.07);--bd2:rgba(255,255,255,.13);--tx:#edf2ff;--tx2:#8899b0;--tx3:#3d4f65} html,body{height:100%} body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-size:13px;overflow:hidden}
-/* Umumiy hover effect */
-.card-hover, .tw, .fb, .salbr, .stdi, .brit, .class-now, .teacher-status, .upcoming-item, .live-card, tr {
-  transition: all 0.2s ease;
-}
+<style>@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');*{margin:0;padding:0;box-sizing:border-box}:root{--bg:#f8fafc;--sb:#ffffff;--card:#ffffff;--card2:#f1f5f9;--bg2:#f1f5f9;--bd:#e2e8f0;--bd2:#cbd5e1;--ac:#3b82f6;--ac2:#2563eb;--gn:#10b981;--gr:#10b981;--rd:#ef4444;--og:#f59e0b;--pu:#8b5cf6;--tx:#0f172a;--tx2:#64748b;--tx3:#94a3b8;--sbw:240px;--shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -2px rgba(0,0,0,0.05);--radius:12px;--radius-sm:8px;--radius-lg:16px}[data-theme="dark"]{--bg:#0c0f14;--sb:#161b22;--card:#1c2128;--card2:#21262d;--bg2:#21262d;--bd:#30363d;--bd2:#484f58;--ac:#58a6ff;--ac2:#388bfd;--gn:#3fb950;--rd:#f85149;--og:#d29922;--pu:#a371f7;--tx:#f0f6fc;--tx2:#8b949e;--tx3:#6e7681;--shadow:0 1px 3px rgba(0,0,0,0.3),0 1px 2px rgba(0,0,0,0.2);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.4),0 4px 6px -2px rgba(0,0,0,0.3)}html,body{height:100%}body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);font-size:13px;overflow:hidden;-webkit-font-smoothing:antialiased}
+.card-hover,.tw,.fb,.salbr,.stdi,.brit,.class-now,.teacher-status,.upcoming-item,.live-card,tr{transition:all 0.25s cubic-bezier(0.4,0,0.2,1)}
+.card-hover:hover,.tw:hover,.fb:hover,.salbr:hover,.stdi:hover,.brit:hover,.class-now:hover,.teacher-status:hover,.upcoming-item:hover,.live-card:hover,tr:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+tr:hover{background:var(--card2)}
 .card-hover:hover, .tw:hover, .fb:hover, .salbr:hover, .stdi:hover, .brit:hover, .class-now:hover, .teacher-status:hover, .upcoming-item:hover, .live-card:hover, tr:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
