@@ -206,6 +206,7 @@ resume_url TEXT DEFAULT '',
                     id SERIAL PRIMARY KEY,
                     name TEXT NOT NULL,
                     class TEXT DEFAULT '',
+                    school TEXT DEFAULT '',
                     phone TEXT NOT NULL,
                     q1 TEXT DEFAULT '',
                     q2 TEXT DEFAULT '',
@@ -2426,6 +2427,7 @@ async def api_aiclass_apply(request):
         data = await request.json()
         name = data.get('name','').strip()
         class_name = data.get('class','').strip()
+        school = data.get('school','').strip()
         phone = data.get('phone','').strip()
         q1 = data.get('q1','').strip()
         q2_raw = data.get('q2')
@@ -2445,12 +2447,12 @@ async def api_aiclass_apply(request):
         
         async with db.pool.acquire() as conn:
             await conn.execute(
-                "INSERT INTO aiclass_applications (name, class, phone, q1, q2, q3, q4, q5) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)",
-                name, class_name, phone, q1, ','.join(filter(None, q2)), q3, q4, q5
+                "INSERT INTO aiclass_applications (name, class, school, phone, q1, q2, q3, q4, q5) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)",
+                name, class_name, school, phone, q1, ','.join(filter(None, q2)), q3, q4, q5
             )
         
         try:
-            msg = f"\U0001f916 Yangi AI Dars ariza!\n\U0001f464 {name}\n\U0001f4de {phone}\n\U0001f4d5 Sinf: {class_name}\n\U0001f4cb Q1: {q1}\n\U0001f4cb Q2: {', '.join(filter(None, q2))}\n\U0001f4cb Q3: {q3}\n\U0001f4cb Q4: {q4}\n\U0001f4cb Q5: {q5}"
+            msg = f"\U0001f916 Yangi AI Dars ariza!\n\U0001f464 {name}\n\U0001f4d5 Sinf: {class_name}\n\U0001f3eb Maktab: {school}\n\U0001f4de {phone}\n\U0001f4cb Q1: {q1}\n\U0001f4cb Q2: {', '.join(filter(None, q2))}\n\U0001f4cb Q3: {q3}\n\U0001f4cb Q4: {q4}\n\U0001f4cb Q5: {q5}"
             await bot.send_message(ADMIN_GROUP_ID, msg)
         except: pass
         

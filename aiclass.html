@@ -577,11 +577,15 @@ body, html {
             </div>
             <div class="info-input-group">
               <label>Sinfingiz</label>
-              <input type="text" name="class" placeholder="Masalan: 10A, 11B">
+              <input type="text" name="class" placeholder="9, 10, 11" required>
+            </div>
+            <div class="info-input-group">
+              <label>Qaysi maktabda o'qiysiz?</label>
+              <input type="text" name="school" placeholder="Maktab nomi" required>
             </div>
             <div class="info-input-group">
               <label>Telefon raqamingiz</label>
-              <input type="tel" name="phone" placeholder="+998 XX XXX XX XX">
+              <input type="tel" name="phone" placeholder="+998 XX XXX XX XX" required>
             </div>
           </div>
         </div>
@@ -698,6 +702,7 @@ document.getElementById('surveyForm').addEventListener('submit', async function(
   const data = {
     name: formData.get('name'),
     class: formData.get('class'),
+    school: formData.get('school'),
     phone: formData.get('phone'),
     q1: formData.get('q1'),
     q2: formData.getAll('q2'),

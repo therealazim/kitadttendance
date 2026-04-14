@@ -2730,11 +2730,12 @@ if(!apps.length){document.getElementById('aiclass-table').innerHTML='<div class=
 const statusColor={'new':'#f59e0b','contacted':'#3b82f6','enrolled':'#10b981','cancelled':'#ef4444'};
 const statusLabel={'new':'Yangi','contacted':'Bog\u2019lanildi','enrolled':'Yozildi','cancelled':'Bekor'};
 document.getElementById('aiclass-table').innerHTML=`
-<table><thead><tr><th>#</th><th>Ism</th><th>Sinf</th><th>Telefon</th><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th><th>Q5</th><th>Sana</th><th>Holat</th><th>Amal</th></tr></thead>
+<table><thead><tr><th>#</th><th>Ism</th><th>Sinf</th><th>Maktab</th><th>Telefon</th><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th><th>Q5</th><th>Sana</th><th>Holat</th><th>Amal</th></tr></thead>
 <tbody>${apps.map((a,i)=>`<tr>
 <td>${i+1}</td>
 <td><b>${a.name}</b></td>
 <td>${a.class||'—'}</td>
+<td>${a.school||'—'}</td>
 <td><a href="tel:${a.phone}" style="color:var(--ac)">${a.phone}</a></td>
 <td style="font-size:11px">${a.q1||'—'}</td>
 <td style="font-size:11px">${a.q2||'—'}</td>
