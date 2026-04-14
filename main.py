@@ -2428,7 +2428,13 @@ async def api_aiclass_apply(request):
         class_name = data.get('class','').strip()
         phone = data.get('phone','').strip()
         q1 = data.get('q1','').strip()
-        q2 = data.getAll('q2') if hasattr(data.get('q2'), '__iter__') else [data.get('q2','')]
+        q2_raw = data.get('q2')
+        if isinstance(q2_raw, list):
+            q2 = q2_raw
+        elif q2_raw:
+            q2 = [q2_raw]
+        else:
+            q2 = []
         q3 = data.get('q3','').strip()
         q4 = data.get('q4','').strip()
         q5 = data.get('q5','').strip()
