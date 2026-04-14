@@ -10265,6 +10265,18 @@ async def main():
             return web.Response(text='File not found', status=404)
     
     app.router.add_get('/register', handle_register)
+    
+    async def handle_aiclass(request):
+        import os
+        html_path = os.path.join(os.path.dirname(__file__), 'aiclass.html')
+        try:
+            with open(html_path, 'r', encoding='utf-8') as f:
+                html = f.read()
+            return web.Response(text=html, content_type='text/html', charset='utf-8')
+        except FileNotFoundError:
+            return web.Response(text='File not found', status=404)
+    
+    app.router.add_get('/aiclass', handle_aiclass)
     import os as _os
     if _os.path.isdir('static'):
         app.router.add_static('/static', path='static', name='static')
