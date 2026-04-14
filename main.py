@@ -188,10 +188,10 @@ class Database:
                     school TEXT DEFAULT '',
                     school_name TEXT DEFAULT '',
                     school_year TEXT DEFAULT '',
-                    resume_url TEXT DEFAULT '',
+resume_url TEXT DEFAULT '',
                     resume_name TEXT DEFAULT '',
                     status TEXT DEFAULT 'new',
-                    created_at TIMESTAMP DEFAULT NOW()
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """)
             try:
@@ -201,6 +201,21 @@ class Database:
                 await conn.execute("ALTER TABLE bootcamp_applications ADD COLUMN IF NOT EXISTS school_year TEXT DEFAULT ''")
                 await conn.execute("ALTER TABLE bootcamp_applications ADD COLUMN IF NOT EXISTS school_name TEXT DEFAULT ''")
             except: pass
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS aiclass_applications (
+                    id SERIAL PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    class TEXT DEFAULT '',
+                    phone TEXT NOT NULL,
+                    q1 TEXT DEFAULT '',
+                    q2 TEXT DEFAULT '',
+                    q3 TEXT DEFAULT '',
+                    q4 TEXT DEFAULT '',
+                    q5 TEXT DEFAULT '',
+                    status TEXT DEFAULT 'new',
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
             await conn.execute("""
                 CREATE TABLE IF NOT EXISTS news (
                     id SERIAL PRIMARY KEY,
@@ -2400,6 +2415,78 @@ async def admin_api_bootcamp_application_delete(request):
         app_id = int(data.get('id',0))
         async with db.pool.acquire() as conn:
             await conn.execute("DELETE FROM bootcamp_applications WHERE id=$1", app_id)
+        return web.Response(text=_json.dumps({'ok':True}), content_type='application/json')
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
+
+async def api_aiclass_apply(request):
+    """AI Classga ariza yuborish"""
+    import json as _json
+    try:
+        data = await request.json()
+        name = data.get('name','').strip()
+        class_name = data.get('class','').strip()
+        phone = data.get('phone','').strip()
+        q1 = data.get('q1','').strip()
+        q2 = data.getAll('q2') if hasattr(data.get('q2'), '__iter__') else [data.get('q2','')]
+        q3 = data.get('q3','').strip()
+        q4 = data.get('q4','').strip()
+        q5 = data.get('q5','').strip()
+        timestamp = data.get('timestamp','')
+        
+        if not name or not phone:
+            return web.Response(text=_json.dumps({'ok':False,'error':'Ism va telefon kerak'}), content_type='application/json')
+        
+        async with db.pool.acquire() as conn:
+            await conn.execute(
+                "INSERT INTO aiclass_applications (name, class, phone, q1, q2, q3, q4, q5) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)",
+                name, class_name, phone, q1, ','.join(filter(None, q2)), q3, q4, q5
+            )
+        
+        try:
+            msg = f"\U0001f916 Yangi AI Dars ariza!\n\U0001f464 {name}\n\U0001f4de {phone}\n\U0001f4d5 Sinf: {class_name}\n\U0001f4cb Q1: {q1}\n\U0001f4cb Q2: {', '.join(filter(None, q2))}\n\U0001f4cb Q3: {q3}\n\U0001f4cb Q4: {q4}\n\U0001f4cb Q5: {q5}"
+            await bot.send_message(ADMIN_GROUP_ID, msg)
+        except: pass
+        
+        return web.Response(text=_json.dumps({'ok':True}), content_type='application/json')
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
+
+async def admin_api_aiclass_applications_get(request):
+    """AI Class arizalarini olish"""
+    import json as _json
+    try:
+        async with db.pool.acquire() as conn:
+            rows = await conn.fetch("SELECT * FROM aiclass_applications ORDER BY created_at DESC LIMIT 100")
+            apps = [dict(r) for r in rows]
+            for a in apps:
+                if a.get('created_at'):
+                    a['created_at'] = a['created_at'].strftime('%d.%m.%Y %H:%M')
+        return web.Response(text=_json.dumps({'ok':True,'applications':apps}), content_type='application/json')
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
+
+async def admin_api_aiclass_application_status(request):
+    """AI Class ariza statusini yangilash"""
+    import json as _json
+    try:
+        data = await request.json()
+        app_id = int(data.get('id',0))
+        status = data.get('status','new')
+        async with db.pool.acquire() as conn:
+            await conn.execute("UPDATE aiclass_applications SET status=$1 WHERE id=$2", status, app_id)
+        return web.Response(text=_json.dumps({'ok':True}), content_type='application/json')
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
+
+async def admin_api_aiclass_application_delete(request):
+    """AI Class arizani o'chirish"""
+    import json as _json
+    try:
+        data = await request.json()
+        app_id = int(data.get('id',0))
+        async with db.pool.acquire() as conn:
+            await conn.execute("DELETE FROM aiclass_applications WHERE id=$1", app_id)
         return web.Response(text=_json.dumps({'ok':True}), content_type='application/json')
     except Exception as e:
         return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
@@ -10323,6 +10410,10 @@ async def main():
     app.router.add_get('/admin/api/bootcamp/applications', admin_api_bootcamp_applications_get)
     app.router.add_post('/admin/api/bootcamp/application/status', admin_api_bootcamp_application_status)
     app.router.add_post('/admin/api/bootcamp/application/delete', admin_api_bootcamp_application_delete)
+    app.router.add_post('/api/aiclass/apply', api_aiclass_apply)
+    app.router.add_get('/admin/api/aiclass/applications', admin_api_aiclass_applications_get)
+    app.router.add_post('/admin/api/aiclass/application/status', admin_api_aiclass_application_status)
+    app.router.add_post('/admin/api/aiclass/application/delete', admin_api_aiclass_application_delete)
     app.router.add_get('/admin/api/news', admin_api_news_get)
     app.router.add_post('/admin/api/news/save', admin_api_news_save)
     app.router.add_post('/admin/api/news/delete', admin_api_news_delete)  # Public - sayt uchun

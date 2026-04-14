@@ -691,7 +691,7 @@ body, html {
 </div>
 
 <script>
-document.getElementById('surveyForm').addEventListener('submit', function(e) {
+document.getElementById('surveyForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   
   const formData = new FormData(this);
@@ -707,14 +707,25 @@ document.getElementById('surveyForm').addEventListener('submit', function(e) {
     timestamp: new Date().toLocaleString('uz-UZ')
   };
   
-  console.log('So\'rovnoma ma\'lumotlari:', data);
-  
-  document.getElementById('successMsg').style.display = 'block';
-  
-  setTimeout(() => {
-    this.reset();
-    document.getElementById('successMsg').style.display = 'none';
-  }, 2000);
+  try {
+    const response = await fetch('/api/aiclass/apply', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+    const result = await response.json();
+    if (result.ok) {
+      document.getElementById('successMsg').style.display = 'block';
+      setTimeout(() => {
+        this.reset();
+        document.getElementById('successMsg').style.display = 'none';
+      }, 2000);
+    } else {
+      alert('Xatolik: ' + result.error);
+    }
+  } catch (err) {
+    alert('Xatolik yuz berdi');
+  }
 });
 </script>
 </div>

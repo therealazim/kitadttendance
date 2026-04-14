@@ -390,6 +390,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     <button class="sbi" onclick="gp('reports',this)"><span class="ico"><i class="lucide lucide-clipboard-list"></i></span><span class="lbl" data-i18n="nav_rep">Hisobotlar</span></button>
     <button class="sbi" onclick="gp('applies',this)"><span class="ico"><i class="lucide lucide-envelope"></i></span><span class="lbl" data-i18n="nav_applies">Arizalar</span><span class="bdg" id="nap" style="display:none">0</span></button>
     <button class="sbi" onclick="gp('bootcamp',this)"><span class="ico"><i class="lucide lucide-graduation-cap"></i></span><span class="lbl">Bootcamp Ariza</span><span class="bdg" id="nboot" style="display:none">0</span></button>
+    <button class="sbi" onclick="gp('aiclass',this)"><span class="ico"><i class="lucide lucide-brain"></i></span><span class="lbl">AI Dars Ariza</span><span class="bdg" id="naic" style="display:none">0</span></button>
     <button class="sbi" onclick="gp('news_admin',this)"><span class="ico"><i class="lucide lucide-newspaper"></i></span><span class="lbl" data-i18n="nav_news">Yangiliklar</span></button>
     <button class="sbi" onclick="gp('partners',this)"><span class="ico"><i class="lucide lucide-handshake"></i></span><span class="lbl">Hamkorlar</span></button>
     <button class="sbi" onclick="gp('site',this)"><span class="ico"><i class="lucide lucide-globe"></i></span><span class="lbl" data-i18n="nav_site">Sayt</span></button>
@@ -785,6 +786,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     <button class="btn bd" onclick="loadBootcampApps()"><i class="lucide lucide-sync"></i> Yangilash</button>
   </div>
   <div id="bootcamp-table"></div>
+</div>
+
+<!-- AI CLASS ARIZALAR -->
+<div class="page" id="pg-aiclass">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+    <div class="th" style="margin:0"><span class="tt"><i class="lucide lucide-brain"></i> AI Dars Arizalari</span><span class="tm" id="aic-cnt"></span></div>
+    <button class="btn bd" onclick="loadAiclassApps()"><i class="lucide lucide-sync"></i> Yangilash</button>
+  </div>
+  <div id="aiclass-table"></div>
 </div>
 
 <!-- YANGILIKLAR ADMIN -->
@@ -1197,7 +1207,8 @@ salary:()=>t('title_sal'),branches:()=>t('title_br'),reports:()=>t('title_rep'),
 salarycfg:()=>'⚙️ Maosh sozlamalari',
 applies:()=>'<i class="lucide lucide-envelope"></i> '+t('nav_applies'),
 bootcamp:()=>'<i class="lucide lucide-graduation-cap"></i> Bootcamp Arizalari',
-news_admin:()=>'<i class="lucide lucide-newspaper"></i> '+t('nav_news'),site:()=>'<i class="lucide lucide-globe"></i> '+t('nav_site')
+news_admin:()=>'<i class="lucide lucide-newspaper"></i> '+t('nav_news'),site:()=>'<i class="lucide lucide-globe"></i> '+t('nav_site'),
+  aiclass:()=>'<i class="lucide lucide-brain"></i> AI Dars Ariza'
 };
 function gp(n,el){
   document.querySelectorAll('.sbi').forEach(b=>b.classList.remove('on'));
@@ -1212,6 +1223,7 @@ function gp(n,el){
   if(n==='payments')renderPaymentsPage();
   if(n==='applies')loadApps();
   if(n==='bootcamp')loadBootcampApps();
+  if(n==='aiclass')loadAiclassApps();
   if(n==='news_admin')loadNewsAdmin();
   if(n==='partners')loadPartnersPage();
   if(n==='site')loadSiteConfig();
@@ -1288,6 +1300,7 @@ document.getElementById('nbu').textContent=USERS.filter(u=>u.status!=='blocked'&
 document.getElementById('nbg').textContent=GROUPS.length;
 const sb=document.getElementById('schedbr');const brs=[...new Set(GROUPS.map(g=>g.branch))].sort();
 sb.innerHTML='<option value="">Barcha filiallar</option>'+brs.map(b=>`<option value="${b}">${b}</option>`).join('');
+loadAiclassCount();
 }catch(e){console.error('rAll misc:',e);}
 }
 function rDash(){
@@ -2703,6 +2716,53 @@ async function deleteBootcampApp(id){
 if(!confirm('Bu arizani o\'chirishni xohlaysizmi?'))return;
 const r=await fetch('/admin/api/bootcamp/application/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id}),credentials:'include'}).then(x=>x.json()).catch(()=>null);
 if(r?.ok){toast('<i class="lucide lucide-check"></i> Ariza o\'chirildi');loadBootcampApps();}else toast('<i class="lucide lucide-times"></i> Xato');
+}
+async function loadAiclassApps(){
+document.getElementById('aiclass-table').innerHTML='<div class="ldr"><div class="spin"></div></div>';
+const r=await fetch('/admin/api/aiclass/applications',{credentials:'include'}).then(x=>x.json()).catch(()=>null);
+if(!r?.ok){document.getElementById('aiclass-table').innerHTML='<div class="empty"><div class="ei"><i class="lucide lucide-times"></i></div>Yuklanmadi</div>';return;}
+const apps=r.applications||[];
+document.getElementById('aic-cnt').textContent=apps.length+' ta';
+const newCount=apps.filter(a=>a.status==='new').length;
+const badge=document.getElementById('naic');
+if(newCount>0){badge.textContent=newCount;badge.style.display='';}else{badge.style.display='none';}
+if(!apps.length){document.getElementById('aiclass-table').innerHTML='<div class="empty"><div class="ei"><i class="lucide lucide-brain"></i></div>Hozircha AI dars ariza yo\u2019q</div>';return;}
+const statusColor={'new':'#f59e0b','contacted':'#3b82f6','enrolled':'#10b981','cancelled':'#ef4444'};
+const statusLabel={'new':'Yangi','contacted':'Bog\u2019lanildi','enrolled':'Yozildi','cancelled':'Bekor'};
+document.getElementById('aiclass-table').innerHTML=`
+<table><thead><tr><th>#</th><th>Ism</th><th>Sinf</th><th>Telefon</th><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th><th>Q5</th><th>Sana</th><th>Holat</th><th>Amal</th></tr></thead>
+<tbody>${apps.map((a,i)=>`<tr>
+<td>${i+1}</td>
+<td><b>${a.name}</b></td>
+<td>${a.class||'—'}</td>
+<td><a href="tel:${a.phone}" style="color:var(--ac)">${a.phone}</a></td>
+<td style="font-size:11px">${a.q1||'—'}</td>
+<td style="font-size:11px">${a.q2||'—'}</td>
+<td style="font-size:11px">${a.q3||'—'}</td>
+<td style="font-size:11px">${a.q4||'—'}</td>
+<td style="font-size:11px">${a.q5||'—'}</td>
+<td style="font-size:11px">${a.created_at}</td>
+<td><span style="background:${statusColor[a.status]||'#888'};color:white;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700">${statusLabel[a.status]||a.status}</span></td>
+<td style="white-space:nowrap">
+<button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="deleteAiclassApp(${a.id})"><i class="lucide lucide-trash"></i></button>
+</td>
+</tr>`).join('')}</tbody></table>`;
+}
+async function deleteAiclassApp(id){
+if(!confirm('Bu arizani o\'chirishni xohlaysizmi?'))return;
+const r=await fetch('/admin/api/aiclass/application/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id}),credentials:'include'}).then(x=>x.json()).catch(()=>null);
+if(r?.ok){toast('<i class="lucide lucide-check"></i> Ariza o\'chirildi');loadAiclassApps();}else toast('<i class="lucide lucide-times"></i> Xato');
+}
+async function loadAiclassCount(){
+try{
+const r=await fetch('/admin/api/aiclass/applications',{credentials:'include'}).then(x=>x.json()).catch(()=>null);
+if(r?.ok){
+const apps=r.applications||[];
+const newCount=apps.filter(a=>a.status==='new').length;
+const badge=document.getElementById('naic');
+if(newCount>0){badge.textContent=newCount;badge.style.display='';}else{badge.style.display='none';}
+}
+}catch(e){console.error('loadAiclassCount:',e);}
 }
 async function loadNewsAdmin(){
 document.getElementById('news-admin-list').innerHTML='<div class="ldr"><div class="spin"></div></div>';
