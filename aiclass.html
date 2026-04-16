@@ -125,6 +125,250 @@ body, html {
   gap: 14px;
 }
 
+.hero-banner {
+  background: linear-gradient(135deg, #fff8f0 0%, #fff 100%);
+  border: 2px solid #FF9800;
+  border-radius: 20px;
+  padding: 24px 20px;
+  margin-bottom: 24px;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #FF9800, #FB8C00);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.hero-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.hero-text {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.hero-expert {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.expert-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 152, 0, 0.1);
+  color: #E65100;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.expert-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.curriculum-section {
+  margin-bottom: 20px;
+}
+
+.curriculum-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed #ddd;
+}
+
+.curriculum-title svg {
+  color: #FF9800;
+}
+
+.curriculum-step {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 14px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #eee;
+}
+
+.step-number {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, #FF9800, #FB8C00);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.step-content {
+  font-size: 13px;
+  color: #444;
+  line-height: 1.5;
+}
+
+.step-content strong {
+  color: #1a1a2e;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.step-content ul {
+  margin: 8px 0 0 0;
+  padding-left: 16px;
+}
+
+.step-content li {
+  margin-bottom: 5px;
+}
+
+.step-content li svg {
+  vertical-align: middle;
+  margin-right: 4px;
+  color: #FF9800;
+}
+
+.benefits-section {
+  margin-bottom: 20px;
+}
+
+.benefits-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 14px;
+}
+
+.benefits-title svg {
+  color: #FF9800;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #eee;
+  font-size: 13px;
+  color: #444;
+  line-height: 1.5;
+}
+
+.benefit-item svg {
+  color: #10b981;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.cta-section {
+  background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.cta-highlight {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: white;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.cta-highlight svg {
+  color: #FF9800;
+}
+
+.cta-sub {
+  color: rgba(255,255,255,0.8);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.cta-urgency {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FF9800;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+.contact-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px;
+  background: #f8f8f8;
+  border-radius: 12px;
+}
+
+.contact-section svg {
+  color: #FF9800;
+}
+
+.contact-phone {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a2e;
+  text-decoration: none;
+}
+
 .info-input-group {
   display: flex;
   flex-direction: column;
@@ -484,6 +728,47 @@ body, html {
   }
 }
 
+@media (max-width: 768px) {
+  .hero-banner {
+    padding: 20px 16px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .hero-title {
+    font-size: 16px;
+  }
+  
+  .hero-text {
+    font-size: 13px;
+  }
+  
+  .curriculum-step {
+    padding: 12px;
+  }
+  
+  .step-content {
+    font-size: 12px;
+  }
+  
+  .benefits-grid {
+    gap: 8px;
+  }
+  
+  .benefit-item {
+    font-size: 12px;
+    padding: 10px;
+  }
+  
+  .cta-section {
+    padding: 16px;
+  }
+  
+  .cta-highlight {
+    font-size: 13px;
+  }
+}
+
 @media (max-width: 380px) {
   .survey-wrapper {
     padding: 12px;
@@ -588,9 +873,96 @@ body, html {
     </div>
 
     <div class="survey-content">
-      <form id="surveyForm">
+      <div class="hero-banner">
+        <div class="hero-badge">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
+          Eksklyuziv kurs
+        </div>
+        <h2 class="hero-title">Kelajak kasblarini Disney va Hyundai ekspertidan o'rganing!</h2>
+        <p class="hero-text">Hali ham sun'iy intellektdan (AI) faqat uy vazifalarini so'rash uchun foydalanyapsizmi? Maktabdoshlaringiz allaqachon AI yordamida ajoyib loyihalar yaratishni boshlab yuborishdi!</p>
+        <div class="hero-expert">
+          <div class="expert-badge">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Disney, Hyundai, Gucci eksperti
+          </div>
+          <span class="expert-name">Harry Goodwine</span>
+        </div>
         
-        <div class="info-section">
+        <div class="curriculum-section">
+          <h3 class="curriculum-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            6 oylik qiziqarli sayohat
+          </h3>
+          
+          <div class="curriculum-step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <strong>AI bilan do'stlashamiz</strong> (1-2 oylar)
+              <ul>
+                <li>Sehrli buyruqlar (Prompt): AI'ga qanday buyruq bersangiz, u sizga xuddi shunday ajoyib natija berishini o'rganasiz.</li>
+                <li>Ijodkorlik: O'zingiz xohlagan rasm, musiqa va videolarni AI yordamida bir necha soniyada yarating.</li>
+                <li>To'g'ri foydalanish: Internetda xavfsiz ishlash va AI'dan aqlli foydalanish qoidalari.</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="curriculum-step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <strong>O'z loyihangizni yarating</strong> (3-6 oylar)
+              <ul>
+                <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg> <strong>AI Kino:</strong> O'zingiz ssenariy yozib, AI yordamida multfilm yoki qisqa metrajli film chiqaring.</li>
+                <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="15" cy="13" r="1"/><circle cx="18" cy="10" r="1"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/></svg> <strong>AI O'yin (Roblox):</strong> Roblox uchun shaxsiy o'yiningizni yarating, personajlar va dunyolar yasang.</li>
+                <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> <strong>AI Dasturchi:</strong> Kelajakda kuchli IT mutaxassisi bo'lish uchun AI qanday yordam berishini ko'rib chiqing.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <div class="benefits-section">
+          <h3 class="benefits-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Nima uchun bu kursga qatnashish kerak?
+          </h3>
+          <div class="benefits-grid">
+            <div class="benefit-item">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <span>Haqiqiy tajriba: Disney va Gucci kabi brendlar qanday ishlashini o'z ko'zingiz bilan ko'rasiz.</span>
+            </div>
+            <div class="benefit-item">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <span>Atigi 20 ta joy: Guruhda bolalar kam bo'ladi, shuning uchun ustoz har biringizga alohida vaqt ajratadi.</span>
+            </div>
+            <div class="benefit-item">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              <span>Amaliyot, amaliyot va yana amaliyot: Zerikarli nazariya yo'q, faqat kompyuterda ijod qilamiz!</span>
+            </div>
+            <div class="benefit-item">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+              <span>Kuchli portfolio: Maktabni bitirguningizcha qo'lingizda tayyor ish namunalari bo'ladi.</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="cta-section">
+          <div class="cta-highlight">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <strong>Kelajakda kim bo'lishingizdan qat'i nazar, AI sizga "qanot" bo'ladi!</strong>
+          </div>
+          <p class="cta-sub">Hozirdan o'rganishni boshlang va tengdoshlaringizdan bir qadam oldinda bo'ling!</p>
+          <div class="cta-urgency">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Shoshiling! Joylar juda tez to'lib qoladi.
+          </div>
+        </div>
+        
+        <div class="contact-section">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <a href="tel:+998508182280" class="contact-phone">+998 (50) 818-22-80</a>
+        </div>
+      </div>
+      
+      <form id="surveyForm">
           <span class="info-label"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Shaxsiy ma'lumotlar</span>
           <div class="info-inputs">
             <div class="info-input-group">
