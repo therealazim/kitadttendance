@@ -135,11 +135,13 @@ body, html {
   font-size: 13px;
   color: var(--color-text-secondary);
   font-weight: 500;
+  margin-bottom: 6px;
+  display: block;
 }
 
 .info-input-group input {
   padding: 14px 16px;
-  border: 1.5px solid var(--color-border-tertiary);
+  border: 2px solid #d1d5db;
   border-radius: 12px;
   font-size: 15px;
   background: var(--color-background-primary);
@@ -150,9 +152,9 @@ body, html {
 
 .info-input-group input:focus {
   outline: none;
-  border-color: #1976D2;
-  background: rgba(25, 118, 210, 0.02);
-  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+  border-color: #FF9800;
+  background: #fffaf5;
+  box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.15);
 }
 
 .info-input-group input::placeholder {
@@ -270,7 +272,7 @@ body, html {
   align-items: center;
   gap: 12px;
   padding: 14px 16px;
-  border: 1px solid var(--color-border-tertiary);
+  border: 2px solid #d1d5db;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -278,8 +280,8 @@ body, html {
 }
 
 .option:hover {
-  background: var(--color-background-secondary);
-  border-color: var(--color-border-secondary);
+  background: #fffaf5;
+  border-color: #FF9800;
   transform: translateX(4px);
 }
 
@@ -289,8 +291,8 @@ body, html {
 
 .option input[type="radio"],
 .option input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   cursor: pointer;
   flex-shrink: 0;
   accent-color: #FF9800;
