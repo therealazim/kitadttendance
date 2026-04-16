@@ -6,19 +6,25 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body, html {
   font-family: var(--font-sans);
   color: var(--color-text-primary);
   background: var(--color-background-tertiary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .survey-wrapper {
   width: 100%;
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--color-background-tertiary) 0%, var(--color-background-primary) 100%);
-  padding: 20px;
+  background: linear-gradient(180deg, var(--color-background-tertiary) 0%, #1a1a2e 100%);
+  padding: 16px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
 }
 
@@ -26,85 +32,97 @@ body, html {
   width: 100%;
   max-width: 650px;
   background: var(--color-background-primary);
-  border-radius: var(--border-radius-lg);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: 24px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  border: 1px solid var(--color-border-tertiary);
   overflow: hidden;
+  margin: 0 auto;
 }
 
 .survey-header {
   background: linear-gradient(135deg, #FF9800 0%, #FB8C00 100%);
-  padding: 40px 30px;
+  padding: 32px 20px;
   text-align: center;
   color: white;
   position: relative;
   overflow: hidden;
 }
 
-.ai-graphic {
-  position: absolute;
-  opacity: 0.15;
-  pointer-events: none;
+.survey-header-content {
+  position: relative;
+  z-index: 2;
 }
 
-.ai-graphic-top {
-  top: -30px;
-  right: -40px;
-  width: 180px;
-  height: 180px;
+.survey-header-icon {
+  width: 64px;
+  height: 64px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  backdrop-filter: blur(10px);
 }
 
-.ai-graphic-bottom {
-  bottom: -50px;
-  left: -50px;
-  width: 200px;
-  height: 200px;
+.survey-header-icon svg {
+  width: 36px;
+  height: 36px;
+  stroke: white;
+  fill: none;
+  stroke-width: 2;
 }
 
 .survey-header h1 {
-  font-size: 32px;
-  font-weight: 500;
-  margin: 0 0 8px 0;
+  font-size: 26px;
+  font-weight: 600;
+  margin: 0 0 6px 0;
   letter-spacing: -0.5px;
-  position: relative;
-  z-index: 1;
 }
 
 .survey-header .subtitle {
-  font-size: 16px;
-  opacity: 0.95;
+  font-size: 14px;
+  opacity: 0.9;
   margin: 0;
   font-weight: 400;
-  position: relative;
-  z-index: 1;
 }
 
 .survey-content {
-  padding: 40px 30px;
+  padding: 24px 16px 32px;
 }
 
 .info-section {
-  margin-bottom: 36px;
-  padding: 24px;
+  margin-bottom: 28px;
+  padding: 20px;
   background: linear-gradient(135deg, rgba(91, 163, 208, 0.08), rgba(156, 39, 176, 0.08));
-  border: 2px solid #5BA3D0;
-  border-radius: var(--border-radius-lg);
+  border: 1px solid #5BA3D0;
+  border-radius: 16px;
 }
 
 .info-label {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
   color: #1976D2;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 16px;
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.info-label svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
 }
 
 .info-inputs {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 12px;
+  gap: 14px;
 }
 
 .info-input-group {
@@ -120,19 +138,21 @@ body, html {
 }
 
 .info-input-group input {
-  padding: 12px 14px;
-  border: 0.5px solid #5BA3D0;
-  border-radius: var(--border-radius-md);
+  padding: 14px 16px;
+  border: 1.5px solid var(--color-border-tertiary);
+  border-radius: 12px;
   font-size: 15px;
   background: var(--color-background-primary);
   color: var(--color-text-primary);
   transition: all 0.2s ease;
+  width: 100%;
 }
 
 .info-input-group input:focus {
   outline: none;
   border-color: #1976D2;
   background: rgba(25, 118, 210, 0.02);
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
 }
 
 .info-input-group input::placeholder {
@@ -140,10 +160,10 @@ body, html {
 }
 
 .question-block {
-  margin-bottom: 32px;
-  padding: 24px;
-  border-radius: var(--border-radius-lg);
-  border-left: 5px solid;
+  margin-bottom: 24px;
+  padding: 20px;
+  border-radius: 16px;
+  border-left: 4px solid;
   position: relative;
 }
 
@@ -163,19 +183,9 @@ body, html {
   border-left-color: #4CAF50;
 }
 
-.question-block.q1::before {
-  background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="none" stroke="%234CAF50" stroke-width="2"/><path d="M35 50 L45 60 L65 40" fill="none" stroke="%234CAF50" stroke-width="3" stroke-linecap="round"/></svg>') no-repeat;
-  background-size: contain;
-}
-
 .question-block.q2 {
   background: linear-gradient(135deg, rgba(255, 152, 0, 0.08), rgba(255, 193, 7, 0.08));
   border-left-color: #FF9800;
-}
-
-.question-block.q2::before {
-  background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="30" width="60" height="50" rx="5" fill="none" stroke="%23FF9800" stroke-width="2"/><circle cx="35" cy="45" r="4" fill="%23FF9800"/><circle cx="65" cy="45" r="4" fill="%23FF9800"/><path d="M35 60 Q50 70 65 60" fill="none" stroke="%23FF9800" stroke-width="2" stroke-linecap="round"/></svg>') no-repeat;
-  background-size: contain;
 }
 
 .question-block.q3 {
@@ -183,19 +193,9 @@ body, html {
   border-left-color: #E91E63;
 }
 
-.question-block.q3::before {
-  background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="35" r="8" fill="%23E91E63"/><circle cx="70" cy="35" r="8" fill="%23E91E63"/><circle cx="50" cy="65" r="8" fill="%23E91E63"/><line x1="30" y1="35" x2="50" y2="65" stroke="%23E91E63" stroke-width="1.5"/><line x1="70" y1="35" x2="50" y2="65" stroke="%23E91E63" stroke-width="1.5"/><line x1="30" y1="35" x2="70" y2="35" stroke="%23E91E63" stroke-width="1.5"/></svg>') no-repeat;
-  background-size: contain;
-}
-
 .question-block.q4 {
   background: linear-gradient(135deg, rgba(63, 81, 181, 0.08), rgba(103, 58, 183, 0.08));
   border-left-color: #3F51B5;
-}
-
-.question-block.q4::before {
-  background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40" fill="none" stroke="%233F51B5" stroke-width="2"/><circle cx="50" cy="50" r="4" fill="%233F51B5"/><line x1="50" y1="50" x2="50" y2="20" stroke="%233F51B5" stroke-width="2" stroke-linecap="round"/><line x1="50" y1="50" x2="70" y2="50" stroke="%233F51B5" stroke-width="2" stroke-linecap="round"/></svg>') no-repeat;
-  background-size: contain;
 }
 
 .question-block.q5 {
@@ -203,18 +203,15 @@ body, html {
   border-left-color: #00BCD4;
 }
 
-.question-block.q5::before {
-  background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="25" y="25" width="50" height="50" rx="5" fill="none" stroke="%2300BCD4" stroke-width="2"/><path d="M35 50 L45 60 L65 40" fill="none" stroke="%2300BCD4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat;
-  background-size: contain;
-}
-
 .question-number {
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 600;
-  margin-bottom: 12px;
-  display: inline-block;
-  padding: 6px 14px;
-  border-radius: var(--border-radius-md);
+  margin-bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 8px;
   position: relative;
   z-index: 1;
 }
@@ -244,11 +241,19 @@ body, html {
   color: #00695C;
 }
 
+.question-number svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
 .question-text {
-  font-size: 16px;
+  font-size: 15px;
   color: var(--color-text-primary);
-  margin-bottom: 18px;
-  line-height: 1.6;
+  margin-bottom: 14px;
+  line-height: 1.5;
   font-weight: 500;
   position: relative;
   z-index: 1;
@@ -257,7 +262,7 @@ body, html {
 .options-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .option {
@@ -266,7 +271,7 @@ body, html {
   gap: 12px;
   padding: 14px 16px;
   border: 1px solid var(--color-border-tertiary);
-  border-radius: var(--border-radius-md);
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
   background: var(--color-background-primary);
@@ -278,12 +283,17 @@ body, html {
   transform: translateX(4px);
 }
 
+.option:active {
+  transform: scale(0.98);
+}
+
 .option input[type="radio"],
 .option input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
   flex-shrink: 0;
+  accent-color: #FF9800;
 }
 
 .question-block.q1 .option input {
@@ -307,7 +317,7 @@ body, html {
 }
 
 .option-label {
-  font-size: 15px;
+  font-size: 14px;
   cursor: pointer;
   flex: 1;
   color: var(--color-text-primary);
@@ -317,45 +327,68 @@ body, html {
 .submit-section {
   margin-top: 32px;
   padding-top: 24px;
-  border-top: 0.5px solid var(--color-border-tertiary);
+  border-top: 1px solid var(--color-border-tertiary);
   text-align: center;
 }
 
 .submit-btn {
-  background: #FF9800;
+  background: linear-gradient(135deg, #FF9800 0%, #FB8C00 100%);
   color: white;
   border: none;
-  padding: 14px 48px;
+  padding: 16px 48px;
   font-size: 16px;
-  font-weight: 500;
-  border-radius: var(--border-radius-md);
+  font-weight: 600;
+  border-radius: 14px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   width: 100%;
-  max-width: 300px;
+  max-width: 320px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 16px rgba(255, 152, 0, 0.3);
 }
 
 .submit-btn:hover {
-  background: #FB8C00;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
 }
 
 .submit-btn:active {
-  background: #F57C00;
   transform: translateY(0);
+}
+
+.submit-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
 }
 
 .success-message {
   display: none;
   padding: 16px;
-  background: var(--color-background-secondary);
-  border-left: 3px solid #4CAF50;
-  border-radius: var(--border-radius-md);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(52, 211, 153, 0.1));
+  border: 1px solid #10b981;
+  border-left: 4px solid #10b981;
+  border-radius: 12px;
   margin-top: 16px;
   color: var(--color-text-primary);
   text-align: center;
   animation: slideIn 0.3s ease;
+  font-weight: 500;
+}
+
+.success-message svg {
+  width: 24px;
+  height: 24px;
+  stroke: #10b981;
+  fill: none;
+  stroke-width: 2;
+  margin-right: 8px;
+  vertical-align: middle;
 }
 
 @keyframes slideIn {
@@ -369,153 +402,170 @@ body, html {
   }
 }
 
-@media (max-width: 768px) {
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (min-width: 768px) {
   .survey-wrapper {
-    padding: 12px;
+    padding: 32px;
+    align-items: center;
   }
-
-  .survey-container {
-    border-radius: var(--border-radius-lg);
-  }
-
+  
   .survey-header {
-    padding: 32px 24px;
+    padding: 48px 32px;
   }
-
+  
+  .survey-header-icon {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+  }
+  
+  .survey-header-icon svg {
+    width: 44px;
+    height: 44px;
+  }
+  
   .survey-header h1 {
-    font-size: 28px;
+    font-size: 36px;
   }
-
+  
   .survey-header .subtitle {
-    font-size: 14px;
+    font-size: 16px;
   }
-
-  .ai-graphic-top {
-    width: 120px;
-    height: 120px;
-    top: -20px;
-    right: -30px;
-  }
-
-  .ai-graphic-bottom {
-    width: 140px;
-    height: 140px;
-    bottom: -30px;
-    left: -30px;
-  }
-
+  
   .survey-content {
-    padding: 28px 24px;
+    padding: 32px 28px 40px;
   }
-
+  
   .info-section {
-    padding: 20px;
+    padding: 24px;
   }
-
+  
+  .info-inputs {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  
+  .info-inputs > *:last-child:nth-child(odd) {
+    grid-column: span 2;
+  }
+  
   .question-block {
-    padding: 20px;
-    margin-bottom: 24px;
+    padding: 24px;
+    margin-bottom: 28px;
   }
-
+  
+  .question-number {
+    font-size: 12px;
+    padding: 6px 14px;
+  }
+  
   .question-text {
-    font-size: 15px;
+    font-size: 16px;
+    margin-bottom: 16px;
   }
-
+  
   .option {
-    padding: 12px 14px;
+    padding: 16px 18px;
   }
-
+  
   .option-label {
-    font-size: 14px;
-  }
-
-  .submit-btn {
-    padding: 12px 36px;
     font-size: 15px;
   }
-
-  .question-block::before {
-    width: 50px;
-    height: 50px;
+  
+  .submit-btn {
+    padding: 18px 56px;
+    font-size: 17px;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 380px) {
   .survey-wrapper {
-    padding: 8px;
+    padding: 12px;
   }
-
+  
+  .survey-container {
+    border-radius: 20px;
+  }
+  
   .survey-header {
-    padding: 28px 20px;
+    padding: 24px 16px;
   }
-
+  
+  .survey-header-icon {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 12px;
+  }
+  
+  .survey-header-icon svg {
+    width: 32px;
+    height: 32px;
+  }
+  
   .survey-header h1 {
-    font-size: 24px;
+    font-size: 22px;
   }
-
-  .ai-graphic-top {
-    width: 100px;
-    height: 100px;
-    opacity: 0.1;
+  
+  .survey-header .subtitle {
+    font-size: 13px;
   }
-
-  .ai-graphic-bottom {
-    width: 120px;
-    height: 120px;
-    opacity: 0.1;
-  }
-
+  
   .survey-content {
-    padding: 20px;
+    padding: 20px 14px 28px;
   }
-
+  
   .info-section {
     padding: 16px;
     margin-bottom: 24px;
   }
-
+  
   .info-label {
-    font-size: 12px;
+    font-size: 11px;
     margin-bottom: 12px;
   }
-
+  
   .info-input-group input {
-    padding: 11px 12px;
+    padding: 12px 14px;
     font-size: 14px;
   }
-
-  .question-number {
-    font-size: 12px;
-    padding: 5px 12px;
-  }
-
-  .question-text {
-    font-size: 14px;
-    margin-bottom: 14px;
-  }
-
+  
   .question-block {
     padding: 16px;
     margin-bottom: 20px;
   }
-
-  .question-block::before {
-    width: 40px;
-    height: 40px;
+  
+  .question-text {
+    font-size: 14px;
+    margin-bottom: 12px;
   }
-
+  
   .option {
-    padding: 11px 12px;
+    padding: 12px 14px;
     gap: 10px;
   }
-
+  
+  .option input[type="radio"],
+  .option input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+  }
+  
   .option-label {
     font-size: 13px;
   }
-
+  
   .submit-btn {
-    padding: 11px 28px;
-    font-size: 14px;
+    padding: 14px 32px;
+    font-size: 15px;
+    max-width: 100%;
+  }
+  
+  .question-block::before {
+    display: none;
   }
 }
 </style>
@@ -523,53 +573,23 @@ body, html {
 <div class="survey-wrapper">
   <div class="survey-container">
     <div class="survey-header">
-      <svg class="ai-graphic ai-graphic-top" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#FF9800;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#FB8C00;stop-opacity:1" />
-          </linearGradient>
-        </defs>
-        <circle cx="100" cy="100" r="90" fill="none" stroke="url(#grad1)" stroke-width="2"/>
-        <circle cx="100" cy="100" r="70" fill="none" stroke="url(#grad1)" stroke-width="1.5" opacity="0.6"/>
-        <circle cx="100" cy="100" r="50" fill="none" stroke="url(#grad1)" stroke-width="1" opacity="0.4"/>
-        <circle cx="60" cy="60" r="8" fill="url(#grad1)"/>
-        <circle cx="140" cy="60" r="8" fill="url(#grad1)"/>
-        <circle cx="100" cy="140" r="8" fill="url(#grad1)"/>
-        <line x1="100" y1="100" x2="60" y2="60" stroke="url(#grad1)" stroke-width="1.5" opacity="0.5"/>
-        <line x1="100" y1="100" x2="140" y2="60" stroke="url(#grad1)" stroke-width="1.5" opacity="0.5"/>
-        <line x1="100" y1="100" x2="100" y2="140" stroke="url(#grad1)" stroke-width="1.5" opacity="0.5"/>
-      </svg>
-
-      <svg class="ai-graphic ai-graphic-bottom" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#FF9800;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#FB8C00;stop-opacity:1" />
-          </linearGradient>
-        </defs>
-        <g transform="translate(100, 100)">
-          <circle r="70" fill="none" stroke="url(#grad2)" stroke-width="2"/>
-          <circle r="50" fill="none" stroke="url(#grad2)" stroke-width="1.5" opacity="0.6"/>
-          <circle r="30" fill="none" stroke="url(#grad2)" stroke-width="1" opacity="0.4"/>
-          <circle cx="0" cy="-50" r="6" fill="url(#grad2)"/>
-          <circle cx="45" cy="25" r="6" fill="url(#grad2)"/>
-          <circle cx="-45" cy="25" r="6" fill="url(#grad2)"/>
-          <line x1="0" y1="0" x2="0" y2="-50" stroke="url(#grad2)" stroke-width="1.5" opacity="0.5"/>
-          <line x1="0" y1="0" x2="45" y2="25" stroke="url(#grad2)" stroke-width="1.5" opacity="0.5"/>
-          <line x1="0" y1="0" x2="-45" y2="25" stroke="url(#grad2)" stroke-width="1.5" opacity="0.5"/>
-        </g>
-      </svg>
-
-      <h1>AI Master Kursi</h1>
-      <p class="subtitle">Uchun so'rovnoma</p>
+      <div class="survey-header-content">
+        <div class="survey-header-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+          </svg>
+        </div>
+        <h1>AI Master Kursi</h1>
+        <p class="subtitle">So'rovnoma</p>
+      </div>
     </div>
 
     <div class="survey-content">
       <form id="surveyForm">
         
         <div class="info-section">
-          <span class="info-label">📝 Shaxsiy ma'lumotlar</span>
+          <span class="info-label"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Shaxsiy ma'lumotlar</span>
           <div class="info-inputs">
             <div class="info-input-group">
               <label>Ismingiz</label>
@@ -591,7 +611,7 @@ body, html {
         </div>
 
         <div class="question-block q1">
-          <span class="question-number">1️⃣ Savol</span>
+          <span class="question-number"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>1 Savol</span>
           <div class="question-text">Siz kelajakda yaxshi taromad topaddigan kass egasi bo'lishni xohlaysizmi?</div>
           <div class="options-group">
             <label class="option">
@@ -610,7 +630,7 @@ body, html {
         </div>
 
         <div class="question-block q2">
-          <span class="question-number">2️⃣ Savol</span>
+          <span class="question-number"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>2 Savol</span>
           <div class="question-text">AI orgali nimalarni o'rganmoqchisiz?</div>
           <div class="options-group">
             <label class="option">
@@ -629,8 +649,8 @@ body, html {
         </div>
 
         <div class="question-block q3">
-          <span class="question-number">3️⃣ Savol</span>
-          <div class="question-text">Alni o'ganishdan maqsadingiz nima?</div>
+          <span class="question-number"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>3 Savol</span>
+          <div class="question-text">AI o'rganishdan maqsadingiz nima?</div>
           <div class="options-group">
             <label class="option">
               <input type="radio" name="q3" value="Portfolio" required>
@@ -648,7 +668,7 @@ body, html {
         </div>
 
         <div class="question-block q4">
-          <span class="question-number">4️⃣ Savol</span>
+          <span class="question-number"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>4 Savol</span>
           <div class="question-text">Darslar sizga qaysi vaqtda qulay?</div>
           <div class="options-group">
             <label class="option">
@@ -667,7 +687,7 @@ body, html {
         </div>
 
         <div class="question-block q5">
-          <span class="question-number">5️⃣ Savol</span>
+          <span class="question-number"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>5 Savol</span>
           <div class="question-text">Agar kurs sizga real natija (pul ishlash / skill) bersa, o'qishga tayyormisiz?</div>
           <div class="options-group">
             <label class="option">
@@ -686,8 +706,8 @@ body, html {
         </div>
 
         <div class="submit-section">
-          <button type="submit" class="submit-btn">So'rovnomani yuborish</button>
-          <div class="success-message" id="successMsg">✓ So'rovnoma muvaffaqiyatli yuborildi!</div>
+          <button type="submit" class="submit-btn"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Yuborish</button>
+          <div class="success-message" id="successMsg"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>So'rovnoma muvaffaqiyatli yuborildi!</div>
         </div>
       </form>
     </div>
