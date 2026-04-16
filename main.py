@@ -202,7 +202,7 @@ resume_url TEXT DEFAULT '',
                 await conn.execute("ALTER TABLE bootcamp_applications ADD COLUMN IF NOT EXISTS school_name TEXT DEFAULT ''")
             except: pass
             await conn.execute("""
-                CREATE TABLE IF NOT EXISTS aiclass_applications (
+CREATE TABLE IF NOT EXISTS aiclass_applications (
                     id SERIAL PRIMARY KEY,
                     name TEXT NOT NULL,
                     class TEXT DEFAULT '',
@@ -217,6 +217,9 @@ resume_url TEXT DEFAULT '',
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """)
+            try:
+                await conn.execute("ALTER TABLE aiclass_applications ADD COLUMN IF NOT EXISTS school TEXT DEFAULT ''")
+            except: pass
             await conn.execute("""
                 CREATE TABLE IF NOT EXISTS news (
                     id SERIAL PRIMARY KEY,
