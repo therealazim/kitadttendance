@@ -815,61 +815,16 @@ tr:hover { background: var(--card2); } .layout{display:flex;height:100vh} .sideb
     <span class="tt"><i class="lucide lucide-settings"></i> Maosh sozlamalari</span>
     <button class="btn bp" onclick="loadSalaryConfigs()"><i class="lucide lucide-sync"></i> Yangilash</button>
   </div>
-  
-  <!-- O'qituvchilar maosh sozlamalari -->
-  <div class="card" style="margin-top:16px">
-    <div class="card-hdr" style="background:linear-gradient(135deg,#4f8ef7,#a78bfa)">
-      <i class="lucide lucide-graduation-cap"></i> O'qituvchilar maosh sozlamalari
+  <div style="margin-top:16px">
+    <div id="salarycfg-list"></div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn bp bfull" id="save-salary-btn" onclick="saveSalaryConfigs()">
+        <span id="save-salary-icon"><i class="lucide lucide-save"></i> Saqlash</span>
+        <span id="save-salary-spinner" style="display:none; margin-left:8px">
+          <div class="ldr"><div class="spin"></div></div>
+        </span>
+      </button>
     </div>
-    <div class="card-body">
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px">
-        <div class="fg">
-          <label><i class="lucide lucide-language"></i> Koreys tili - Bazaviy maosh (so'm)</label>
-          <input type="number" class="inp" id="cfg-teacher-kr-base" placeholder="1500000">
-        </div>
-        <div class="fg">
-          <label><i class="lucide lucide-laptop"></i> IT - Bazaviy maosh (so'm)</label>
-          <input type="number" class="inp" id="cfg-teacher-it-base" placeholder="2000000">
-        </div>
-        <div class="fg">
-          <label><i class="lucide lucide-clock"></i> Bir dars uchun to'lov (so'm)</label>
-          <input type="number" class="inp" id="cfg-teacher-per-class" placeholder="150000">
-        </div>
-        <div class="fg">
-          <label><i class="lucide lucide-check-circle"></i> Davomat bonus %</label>
-          <input type="number" class="inp" id="cfg-teacher-attendance-bonus" placeholder="10">
-        </div>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:16px">
-        <div class="fg">
-          <label><i class="lucide lucide-users"></i> Guruh bonus (har guruh uchun so'm)</label>
-          <input type="number" class="inp" id="cfg-teacher-group-bonus" placeholder="100000">
-        </div>
-        <div class="fg">
-          <label><i class="lucide lucide-percent"></i> Kechikish jarima %</label>
-          <input type="number" class="inp" id="cfg-teacher-late-penalty" placeholder="5">
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Ofis xodimlari maosh sozlamalari -->
-  <div class="card" style="margin-top:16px">
-    <div class="card-hdr" style="background:linear-gradient(135deg,#10b981,#34d399)">
-      <i class="lucide lucide-briefcase"></i> Ofis xodimlari maosh sozlamalari
-    </div>
-    <div class="card-body">
-      <div id="salarycfg-list"></div>
-    </div>
-  </div>
-  
-  <div style="display:flex;gap:10px;margin-top:16px">
-    <button class="btn bp bfull" id="save-salary-btn" onclick="saveSalaryConfigs()">
-      <span id="save-salary-icon"><i class="lucide lucide-save"></i> Saqlash</span>
-      <span id="save-salary-spinner" style="display:none; margin-left:8px">
-        <div class="ldr"><div class="spin"></div></div>
-      </span>
-    </button>
   </div>
 </div>
 
@@ -2595,36 +2550,11 @@ async function downloadOfficeSalaryExcel() {
 
 // Salary Config Functions
 let SALARY_CONFIGS = [];
-let TEACHER_SALARY_CONFIG = {
-  kr_base: 1500000,
-  it_base: 2000000,
-  per_class: 150000,
-  attendance_bonus: 10,
-  group_bonus: 100000,
-  late_penalty: 5
-};
 
 async function loadSalaryConfigs() {
   const container = document.getElementById('salarycfg-list');
   container.innerHTML = '<div class="ldr"><div class="spin"></div></div>';
   
-  // Load teacher configs
-  try {
-    const tResp = await api('/admin/api/salary/teacher-configs');
-    if (tResp?.ok && tResp.config) {
-      TEACHER_SALARY_CONFIG = tResp.config;
-    }
-    document.getElementById('cfg-teacher-kr-base').value = TEACHER_SALARY_CONFIG.kr_base || 0;
-    document.getElementById('cfg-teacher-it-base').value = TEACHER_SALARY_CONFIG.it_base || 0;
-    document.getElementById('cfg-teacher-per-class').value = TEACHER_SALARY_CONFIG.per_class || 0;
-    document.getElementById('cfg-teacher-attendance-bonus').value = TEACHER_SALARY_CONFIG.attendance_bonus || 0;
-    document.getElementById('cfg-teacher-group-bonus').value = TEACHER_SALARY_CONFIG.group_bonus || 0;
-    document.getElementById('cfg-teacher-late-penalty').value = TEACHER_SALARY_CONFIG.late_penalty || 0;
-  } catch (e) {
-    console.error('Teacher config error:', e);
-  }
-  
-  // Load office configs
   const r = await api('/admin/api/salary/configs');
   if (r?.ok) {
     SALARY_CONFIGS = r.configs || [];
@@ -2684,21 +2614,7 @@ async function saveSalaryConfigs() {
     }
   });
   
-  // Get teacher configs from inputs
-  const teacherConfig = {
-    kr_base: parseInt(document.getElementById('cfg-teacher-kr-base').value) || 0,
-    it_base: parseInt(document.getElementById('cfg-teacher-it-base').value) || 0,
-    per_class: parseInt(document.getElementById('cfg-teacher-per-class').value) || 0,
-    attendance_bonus: parseInt(document.getElementById('cfg-teacher-attendance-bonus').value) || 0,
-    group_bonus: parseInt(document.getElementById('cfg-teacher-group-bonus').value) || 0,
-    late_penalty: parseInt(document.getElementById('cfg-teacher-late-penalty').value) || 0
-  };
-  
   try {
-    // Save teacher configs
-    await api('/admin/api/salary/teacher-configs', { config: teacherConfig });
-    
-    // Save office configs
     const r = await api('/admin/api/salary/configs', { configs: SALARY_CONFIGS });
     if (r?.ok) {
       successNotify('Maosh sozlamalari saqlandi!');
