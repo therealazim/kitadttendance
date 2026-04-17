@@ -530,24 +530,6 @@ tr:hover { background: var(--card2); } .layout{display:flex;height:100vh} .sideb
       </div>
     </div>
     
-    <!-- Teachers status -->
-    <div class="live-card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-        <div style="font-weight:700;font-size:14px;color:var(--gn)">
-          <i class="lucide lucide-users"></i> O'qituvchilar holati
-        </div>
-        <div style="font-size:11px;color:var(--tx2)">
-          <span id="teachers-attended-count">0</span>/<span id="teachers-total-count">0</span>
-        </div>
-      </div>
-      <div id="teachers-status-list" style="max-height:200px;overflow-y:auto">
-        <div style="text-align:center;color:var(--tx3);padding:20px">
-          <i class="lucide lucide-loader" style="font-size:20px;animation:spin 2s linear infinite"></i>
-          <div style="margin-top:8px">Yuklanmoqda...</div>
-        </div>
-      </div>
-    </div>
-    
     <!-- Upcoming classes -->
     <div class="live-card">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
@@ -1583,44 +1565,6 @@ function rLiveStats() {
         </div>
       </div>
     `).join('');
-  }
-  
-  // Render teachers status
-  const teachersStatus = liveData.teachers_status || [];
-  document.getElementById('teachers-total-count').textContent = teachersStatus.length;
-  document.getElementById('teachers-attended-count').textContent = teachersStatus.filter(t => t.attended_count > 0).length;
-  const teachersStatusList = document.getElementById('teachers-status-list');
-  
-  if (teachersStatus.length === 0) {
-    teachersStatusList.innerHTML = `
-      <div style="text-align:center;color:var(--tx3);padding:20px">
-        <i class="lucide lucide-user-x" style="font-size:24px;color:var(--tx3)"></i>
-        <div style="margin-top:8px">O'qituvchilar yo'q</div>
-      </div>
-    `;
-  } else {
-    teachersStatusList.innerHTML = teachersStatus.map((teacher, idx) => {
-      const progress = teacher.classes_count > 0 ? Math.min(100, Math.round(teacher.attended_count / teacher.classes_count * 100)) : 0;
-      const progressColor = progress >= 80 ? '#10b981' : progress >= 50 ? '#f59e0b' : '#ef4444';
-      const avatarColor = AVC[teacher.teacher_id % AVC.length];
-      const photoHtml = teacher.photo_url 
-        ? `<img src="${teacher.photo_url}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid ${avatarColor}44" onerror="this.style.display='none'">` 
-        : `<div class="teacher-avatar" style="background:${avatarColor}22;color:${avatarColor};border:2px solid ${avatarColor}44">${ini(teacher.teacher_name)}</div>`;
-      
-      return `
-        <div class="teacher-status">
-          ${photoHtml}
-          <div style="flex:1;min-width:0">
-            <div style="font-weight:600;font-size:12px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${teacher.teacher_name}</div>
-            <div style="font-size:10px;color:var(--tx2);margin-bottom:4px">${teacher.specialty || '—'}</div>
-            <div style="background:#eee;border-radius:4px;height:6px;overflow:hidden">
-              <div style="background:${progressColor};height:100%;width:${progress}%;border-radius:4px"></div>
-            </div>
-          </div>
-          <div style="font-weight:700;font-size:14px;color:${progressColor};min-width:45px;text-align:right">${progress}%</div>
-        </div>
-      `;
-    }).join('');
   }
   
   // Render upcoming classes
