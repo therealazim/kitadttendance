@@ -4152,6 +4152,46 @@ async def admin_api_salary_configs_save(request):
     except Exception as e:
         return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
 
+async def admin_api_teacher_salary_configs_get(request):
+    """Get teacher salary configurations"""
+    import json as _json
+    try:
+        async with db.pool.acquire() as conn:
+            row = await conn.fetchrow("SELECT value FROM site_config WHERE key = 'teacher_salary_config'")
+            if row and row['value']:
+                config = _json.loads(row['value'])
+            else:
+                config = {
+                    'kr_base': 1500000,
+                    'it_base': 2000000,
+                    'per_class': 150000,
+                    'attendance_bonus': 10,
+                    'group_bonus': 100000,
+                    'late_penalty': 5
+                }
+        
+        return web.Response(text=_json.dumps({'ok': True, 'config': config}), content_type='application/json')
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
+
+async def admin_api_teacher_salary_configs_save(request):
+    """Save teacher salary configurations"""
+    import json as _json
+    try:
+        data = await request.json()
+        config = data.get('config', {})
+        
+        async with db.pool.acquire() as conn:
+            await conn.execute("""
+                INSERT INTO site_config (key, value, updated_at)
+                VALUES ('teacher_salary_config', $1, NOW())
+                ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()
+            """, _json.dumps(config))
+        
+        return web.Response(text=_json.dumps({'ok': True}), content_type='application/json')
+    except Exception as e:
+        return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
+
 async def _cache_all_photos():
     """Barcha foydalanuvchilar Telegram rasmini background da cache qilish"""
     import asyncio as _as
@@ -10484,6 +10524,8 @@ async def main():
     # Salary Configs API (Korean style)
     app.router.add_get('/admin/api/salary/configs', admin_api_salary_configs_get)
     app.router.add_post('/admin/api/salary/configs', admin_api_salary_configs_save)
+    app.router.add_get('/admin/api/salary/teacher-configs', admin_api_teacher_salary_configs_get)
+    app.router.add_post('/admin/api/salary/teacher-configs', admin_api_teacher_salary_configs_save)
 
     port = int(os.environ.get("PORT", 10000))
     runner = web.AppRunner(app)
