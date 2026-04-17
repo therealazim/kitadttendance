@@ -486,7 +486,6 @@ tr:hover { background: var(--card2); } .layout{display:flex;height:100vh} .sideb
 
     <button class="rbtn" id="theme-toggle" onclick="toggleTheme()"><i class="lucide lucide-moon"></i> Dark</button>
     <button class="rbtn" onclick="fetchAll()" data-i18n="btn_refresh"><i class="lucide lucide-sync"></i> Yangilash</button>
-    <button class="rbtn" onclick="refreshPhotos()" title="Fotozni yangilash"><i class="lucide lucide-user"></i> Foto</button>
     <button class="rbtn" style="background:rgba(248,113,113,.15);color:#f87171;border:1px solid rgba(248,113,113,.3)" onclick="logout()" data-i18n="btn_logout"><i class="lucide lucide-sign-out-alt"></i> Chiqish</button>
   </div>
   <div class="content">
@@ -1497,13 +1496,6 @@ console.error('fetchAll xato:',e);
 document.getElementById('updlbl').textContent='<i class="lucide lucide-times"></i> Ulanmadi: '+e.message;
 toast('<i class="lucide lucide-times"></i> '+e.message);
 }
-}
-async function refreshPhotos(){
-toast('<i class="lucide lucide-loader" style="animation:spin 1s linear infinite"></i> Fotozlanmoqda...');
-try{
-const r=await fetch('/admin/api/user/photos');
-if(r.ok){const d=await r.json();if(d.users){for(const u of d.users){const existing=USERS.find(x=>x.user_id===u.user_id);if(existing)existing.photo_url=u.photo_url;}}rUsers(USERS);toast('<i class="lucide lucide-check"></i> '+d.count+' ta foto');}else{toast('<i class="lucide lucide-times"></i> Xato');}
-}catch(e){toast('<i class="lucide lucide-times"></i> Xato');}
 }
 function rAll(){
 try{rDash();}catch(e){console.error('rDash:',e);}
