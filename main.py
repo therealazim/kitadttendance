@@ -4944,6 +4944,7 @@ async def admin_api_data(request):
                         'teacher_id': tid,
                         'teacher_name': cls['teacher_name'],
                         'specialty': user_specialty.get(tid, ''),
+                        'photo_url': user_photo_cache.get(tid),
                         'classes_count': 0,
                         'attended_count': 0,
                         'classes': []

@@ -1603,12 +1603,13 @@ function rLiveStats() {
       const progress = teacher.classes_count > 0 ? Math.min(100, Math.round(teacher.attended_count / teacher.classes_count * 100)) : 0;
       const progressColor = progress >= 80 ? '#10b981' : progress >= 50 ? '#f59e0b' : '#ef4444';
       const avatarColor = AVC[teacher.teacher_id % AVC.length];
+      const photoHtml = teacher.photo_url 
+        ? `<img src="${teacher.photo_url}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid ${avatarColor}44" onerror="this.style.display='none'">` 
+        : `<div class="teacher-avatar" style="background:${avatarColor}22;color:${avatarColor};border:2px solid ${avatarColor}44">${ini(teacher.teacher_name)}</div>`;
       
       return `
         <div class="teacher-status">
-          <div class="teacher-avatar" style="background:${avatarColor}22;color:${avatarColor};border:2px solid ${avatarColor}44">
-            ${ini(teacher.teacher_name)}
-          </div>
+          ${photoHtml}
           <div style="flex:1;min-width:0">
             <div style="font-weight:600;font-size:12px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${teacher.teacher_name}</div>
             <div style="font-size:10px;color:var(--tx2);margin-bottom:4px">${teacher.specialty || '—'}</div>
