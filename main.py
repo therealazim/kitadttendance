@@ -188,7 +188,7 @@ class Database:
                     school TEXT DEFAULT '',
                     school_name TEXT DEFAULT '',
                     school_year TEXT DEFAULT '',
-resume_url TEXT DEFAULT '',
+                    resume_url TEXT DEFAULT '',
                     resume_name TEXT DEFAULT '',
                     status TEXT DEFAULT 'new',
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -200,7 +200,7 @@ resume_url TEXT DEFAULT '',
                 await conn.execute("ALTER TABLE bootcamp_applications ADD COLUMN IF NOT EXISTS school TEXT DEFAULT ''")
                 await conn.execute("ALTER TABLE bootcamp_applications ADD COLUMN IF NOT EXISTS school_year TEXT DEFAULT ''")
                 await conn.execute("ALTER TABLE bootcamp_applications ADD COLUMN IF NOT EXISTS school_name TEXT DEFAULT ''")
-            except: pass
+            except Exception: pass
             await conn.execute("""
 CREATE TABLE IF NOT EXISTS aiclass_applications (
                     id SERIAL PRIMARY KEY,
@@ -219,7 +219,7 @@ CREATE TABLE IF NOT EXISTS aiclass_applications (
             """)
             try:
                 await conn.execute("ALTER TABLE aiclass_applications ADD COLUMN IF NOT EXISTS school TEXT DEFAULT ''")
-            except: pass
+            except Exception: pass
             await conn.execute("""
                 CREATE TABLE IF NOT EXISTS news (
                     id SERIAL PRIMARY KEY,
@@ -238,13 +238,13 @@ CREATE TABLE IF NOT EXISTS aiclass_applications (
             for col in [('title_ru','TEXT DEFAULT \'\''),('body_ru','TEXT DEFAULT \'\''),('title_kr','TEXT DEFAULT \'\''),('body_kr','TEXT DEFAULT \'\'')]:
                 try:
                     await conn.execute(f"ALTER TABLE news ADD COLUMN IF NOT EXISTS {col[0]} {col[1]}")
-                except:
+                except Exception:
                     pass
             # Groups table migration - add student_count column if not exist
             try:
                 await conn.execute("ALTER TABLE groups ADD COLUMN IF NOT EXISTS student_count INTEGER DEFAULT 0")
                 await conn.execute("ALTER TABLE groups ADD COLUMN IF NOT EXISTS sort_order INTEGER DEFAULT 0")
-            except:
+            except Exception:
                 pass
             await conn.execute("""
                 CREATE TABLE IF NOT EXISTS site_config (
@@ -874,7 +874,7 @@ def get_text(user_id: int, key: str, **kwargs):
     if kwargs:
         try:
             text = text.format(**kwargs)
-        except:
+        except Exception:
             pass
     return text
 
@@ -1962,7 +1962,7 @@ async def admin_api_student_payments(request):
                     gid
                 )
                 months_list = [r['month'] for r in rows]
-        except: pass
+        except Exception: pass
         if month not in months_list:
             months_list.insert(0, month)
         
@@ -2142,7 +2142,7 @@ async def admin_api_user_photos(request):
                     url = f"https://api.telegram.org/file/bot{TOKEN}/{file_obj.file_path}"
                     user_photo_cache[uid] = url
                     result.append({'user_id': uid, 'photo_url': url})
-        except:
+        except Exception:
             pass
     return web.Response(text=_json.dumps({'ok': True, 'users': result, 'count': len(result)}), content_type='application/json')
 
@@ -2241,7 +2241,7 @@ async def admin_api_group_edit_schedule(request):
                     f"📆 Yangi kunlar va vaqtlar:\n{time_display}",
                     parse_mode="Markdown"
                 )
-            except:
+            except Exception:
                 pass
         return web.Response(text=_json.dumps({'ok': True}), content_type='application/json')
     except Exception as e:
@@ -2270,7 +2270,7 @@ async def admin_api_group_edit_teacher(request):
                 else:
                     old_msg = f"ℹ️ *{grp.get('group_name','Guruh')}* guruhi sizdan boshqa o'qituvchiga o'tkazildi."
                 await bot.send_message(old_tid, old_msg, parse_mode="Markdown")
-            except: pass
+            except Exception: pass
         # Yangi o'qituvchiga xabar
         try:
             new_lang = user_languages.get(new_tid, 'uz')
@@ -2289,7 +2289,7 @@ async def admin_api_group_edit_teacher(request):
                     f"⏰ Vaqt: {grp.get('time_text','—')}"
                 )
             await bot.send_message(new_tid, new_msg, parse_mode="Markdown")
-        except: pass
+        except Exception: pass
         return web.Response(text=_json.dumps({'ok': True, 'teacher_name': new_name}), content_type='application/json')
     except Exception as e:
         return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
@@ -2337,7 +2337,7 @@ async def api_submit_application(request):
             if course: msg += "\n\U0001f4da Kurs: " + str(course)
             if message: msg += "\n\U0001f4ac " + str(message)
             await bot.send_message(ADMIN_GROUP_ID, msg)
-        except: pass
+        except Exception: pass
         return web.Response(text=_json.dumps({'ok':True}), content_type='application/json')
     except Exception as e:
         return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
@@ -2379,7 +2379,7 @@ async def api_bootcamp_apply(request):
             if resume_url:
                 msg += f"\n\U0001f4c4 Resume: {resume_url}"
             await bot.send_message(ADMIN_GROUP_ID, msg)
-        except: pass
+        except Exception: pass
         return web.Response(text=_json.dumps({'ok':True}), content_type='application/json')
     except Exception as e:
         return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
@@ -2457,7 +2457,7 @@ async def api_aiclass_apply(request):
         try:
             msg = f"\U0001f916 Yangi AI Dars ariza!\n\U0001f464 {name}\n\U0001f4d5 Sinf: {class_name}\n\U0001f3eb Maktab: {school}\n\U0001f4de {phone}\n\U0001f4cb Q1: {q1}\n\U0001f4cb Q2: {', '.join(filter(None, q2))}\n\U0001f4cb Q3: {q3}\n\U0001f4cb Q4: {q4}\n\U0001f4cb Q5: {q5}"
             await bot.send_message(ADMIN_GROUP_ID, msg)
-        except: pass
+        except Exception: pass
         
         return web.Response(text=_json.dumps({'ok':True}), content_type='application/json')
     except Exception as e:
@@ -2943,7 +2943,7 @@ async def admin_api_group_create(request):
                     f"🧑\u200d🎓 O'quvchilar: {len(students)} ta"
                 )
             await bot.send_message(teacher_id, msg, parse_mode="Markdown")
-        except: pass
+        except Exception: pass
         return web.Response(text=_json.dumps({'ok': True, 'group_id': gid}), content_type='application/json')
     except Exception as e:
         logging.error(f"admin_api_group_create error: {e}")
@@ -3557,7 +3557,7 @@ async def admin_api_reports_students(request):
                 try:
                     if len(str(cell.value)) > max_length:
                         max_length = len(str(cell.value))
-                except:
+                except Exception:
                     pass
             adjusted_width = min(max_length + 2, 50)
             ws.column_dimensions[column_letter].width = adjusted_width
@@ -3640,7 +3640,7 @@ async def admin_api_reports_groups(request):
                 try:
                     if len(str(cell.value)) > max_length:
                         max_length = len(str(cell.value))
-                except:
+                except Exception:
                     pass
             adjusted_width = min(max_length + 2, 50)
             ws.column_dimensions[column_letter].width = adjusted_width
@@ -3994,7 +3994,7 @@ async def admin_api_business_report(request):
                 for e in expenses:
                     if e['expense_type'] in manual_expenses:
                         manual_expenses[e['expense_type']] = e['amount'] or 0
-        except:
+        except Exception:
             pass
         
         salary_data['total'] = salary_data['teacher_kr'] + salary_data['teacher_it'] + salary_data['office']
@@ -4582,7 +4582,7 @@ async def miniapp_api_init(request):
                         gid, now_uzb.date()
                     )
                     already_done = (row or 0) > 0
-            except:
+            except Exception:
                 pass
             
             my_groups.append({
@@ -4636,7 +4636,7 @@ async def miniapp_api_students(request):
                 )
                 for row in rows:
                     existing[row['student_name']] = row['status']
-        except:
+        except Exception:
             pass
         
         students_data = []
@@ -4969,7 +4969,7 @@ async def admin_api_data(request):
                     # 30 daqiqa oldin yoki keyin
                     if abs(cls_minutes - now_minutes) <= 30:
                         live_classes['classes_now'].append(cls)
-                except:
+                except Exception:
                     pass
             
             # Barcha bugungi darslar
@@ -5012,7 +5012,7 @@ async def admin_api_data(request):
                     # Hozir va keyingi 120 daqiqa ichida
                     if cls_minutes > now_minutes and cls_minutes - now_minutes <= 120:
                         upcoming.append(cls)
-                except:
+                except Exception:
                     pass
             
             live_classes['upcoming_classes'] = upcoming
@@ -5212,7 +5212,7 @@ async def set_initial_language(callback: types.CallbackQuery, state: FSMContext)
         await state.set_state(Registration.waiting_for_name)
         try:
             pass  # message.delete() webhook da ishlamas
-        except:
+        except Exception:
             pass
         await bot.send_message(user_id, get_text(user_id, 'ask_name'))
     except Exception as e:
@@ -5244,7 +5244,7 @@ async def set_changed_language(callback: types.CallbackQuery):
         keyboard = await main_keyboard(user_id)
         try:
             pass  # message.delete() webhook da ishlamas
-        except:
+        except Exception:
             pass
         await bot.send_message(user_id, get_text(user_id, 'language_changed'), reply_markup=keyboard)
     except Exception as e:
@@ -5319,7 +5319,7 @@ async def save_new_specialty(callback: types.CallbackQuery):
 
     try:
         pass  # message.delete() webhook da ishlamas
-    except:
+    except Exception:
         pass
     await show_profile(callback.message)
 
@@ -5328,7 +5328,7 @@ async def back_to_profile_view(callback: types.CallbackQuery):
     await callback.answer()
     try:
         pass  # message.delete() webhook da ishlamas
-    except:
+    except Exception:
         pass
     await show_profile(callback.message)
 
@@ -5382,7 +5382,7 @@ async def back_to_main_menu(callback: types.CallbackQuery):
     keyboard = await main_keyboard(user_id)
     try:
         pass  # message.delete() webhook da ishlamas
-    except:
+    except Exception:
         pass
     await bot.send_message(user_id, "🏠 Asosiy menyu", reply_markup=keyboard)
 
@@ -5810,7 +5810,7 @@ async def weekly_top(message: types.Message):
             name = user_names.get(uid, f"ID: {uid}")
             specialty = user_specialty.get(uid, '')
             specialty_display = f" [{specialty}]" if specialty else ""
-        except:
+        except Exception:
             name = f"Foydalanuvchi {uid}"
             specialty_display = ""
         
@@ -6269,7 +6269,7 @@ async def std_submit_callback(callback: types.CallbackQuery, state: FSMContext):
         # edit ishlamasa yangi xabar
         try:
             pass  # message.delete() webhook da ishlamas
-        except:
+        except Exception:
             pass
         await bot.send_message(
             callback.from_user.id,
@@ -6479,7 +6479,7 @@ async def std_late_submit(callback: types.CallbackQuery, state: FSMContext):
     except Exception:
         try:
             pass  # message.delete() webhook da ishlamas
-        except:
+        except Exception:
             pass
         await bot.send_message(callback.from_user.id, result_text,
                                reply_markup=late_kb, parse_mode="Markdown")
@@ -7168,7 +7168,7 @@ async def create_visual_timetable_img(branch_name: str):
                         
                         plt.text(day_idx + 0.5, y_pos - 0.5, f"{t_name}\n({t_val})\n{spec}", 
                                  ha='center', va='center', fontsize=8, fontweight='bold', zorder=4)
-                    except: continue
+                    except Exception: continue
 
     plt.xticks(np.arange(0.5, len(days), 1), days, fontweight='bold')
     plt.yticks(np.arange(0.5, len(time_slots), 1), time_slots[::-1], fontweight='bold')
@@ -9033,7 +9033,7 @@ async def admin_back(callback: types.CallbackQuery, state: FSMContext):
             "👨‍💼 Admin Panel\n\nKerakli bo'limni tanlang:",
             reply_markup=builder.as_markup()
         )
-    except:
+    except Exception:
         await bot.send_message(
             callback.message.chat.id,
             "👨‍💼 Admin Panel\n\nKerakli bo'limni tanlang:",
@@ -9737,7 +9737,7 @@ async def egrp_day_time_entered(message: types.Message, state: FSMContext):
                         f"📆 Yangi kunlar va vaqtlar:\n{time_display}",
                         parse_mode="Markdown"
                     )
-                except:
+                except Exception:
                     pass
             await message.answer(
                 f"✅ Dars jadvali yangilandi!\n\n"
@@ -9836,7 +9836,7 @@ async def egrp_teacher_selected(callback: types.CallbackQuery, state: FSMContext
                     f"ℹ️ *{grp['group_name']}* guruhi sizdan boshqa o'qituvchiga o'tkazildi."
                     , parse_mode="Markdown"
                 )
-            except:
+            except Exception:
                 pass
         # Yangi o'qituvchiga xabar
         try:
@@ -9848,7 +9848,7 @@ async def egrp_teacher_selected(callback: types.CallbackQuery, state: FSMContext
                 f"⏰ Vaqt: {grp.get('time_text', '—')}",
                 parse_mode="Markdown"
             )
-        except:
+        except Exception:
             pass
         await callback.message.edit_text(
             f"✅ O'qituvchi muvaffaqiyatli almashtirildi!\n\n"
@@ -10245,7 +10245,7 @@ async def check_schedule_reminders():
                                             group_id, now_uzb.date()
                                         )
                                         already_std_done = (cnt or 0) > 0
-                                except: pass
+                                except Exception: pass
                                 
                                 if not already_std_done:
                                     webapp_url = f"{BASE_URL}/miniapp?user_id={teacher_id}"
