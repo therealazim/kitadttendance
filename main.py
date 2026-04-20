@@ -10611,6 +10611,6 @@ async def admin_api_attendance_export(request):
         ])
     csv_text = output.getvalue()
 
-    resp = web.Response(body=csv_text, content_type='text/csv')
+    resp = web.Response(body=csv_text.encode('utf-8-sig'), content_type='text/csv')
     resp.headers['Content-Disposition'] = f'attachment; filename="attendance_{start}_to_{end}.csv"'
     return resp
