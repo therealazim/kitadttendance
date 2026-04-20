@@ -10538,7 +10538,8 @@ async def main():
     app.router.add_post('/admin/api/salary/configs', admin_api_salary_configs_save)
     app.router.add_get('/admin/api/salary/teacher-configs', admin_api_teacher_salary_configs_get)
     app.router.add_post('/admin/api/salary/teacher-configs', admin_api_teacher_salary_configs_save)
-
+    app.router.add_get('/admin/api/attendance/export', admin_api_attendance_export)
+ 
     port = int(os.environ.get("PORT", 10000))
     runner = web.AppRunner(app)
     await runner.setup()
