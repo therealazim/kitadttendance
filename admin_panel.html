@@ -661,21 +661,25 @@ tr:hover { background: var(--card2); } .layout{display:flex;height:100vh} .sideb
 </div>
 
 <script>
-function exportAttendance() {
-  const start = document.getElementById('startDate').value;
-  const end = document.getElementById('endDate').value;
-  if (!start || !end) { alert('Iltimos sana oralig\'ini tanlang'); return; }
-  
-  const url = `/admin/api/attendance/export?start=${start}&end=${end}`;
-  
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `attendance_${start}_to_${end}.pdf`;
-  a.target = '_blank';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-}
+(function(){
+  if (typeof window.exportAttendance === 'function') return;
+  window.exportAttendance = function() {
+    const startEl = document.getElementById('startDate');
+    const endEl = document.getElementById('endDate');
+    if (!startEl || !endEl) { alert('Iltimos Oqituvchi davomati eksport qismidagi sanalarni tanlang'); return; }
+    const start = startEl.value;
+    const end = endEl.value;
+    if (!start || !end) { alert('Iltimos sana oralig\'ini tanlang'); return; }
+    const url = '/admin/api/attendance/export?start=' + start + '&end=' + end;
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `attendance_${start}_to_${end}.pdf`;
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+})();
 </script>
     <div id="saattct"></div>
   </div>
