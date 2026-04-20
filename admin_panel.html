@@ -3628,3 +3628,22 @@ async function exportBizReport(){
 </style>
 </body>
 </html>
+    <div class="export-section" style="margin:16px 0; padding:12px; border:1px solid #eee; border-radius:8px; text-align:center;">
+      <strong>Davomat eksporti</strong><br/>
+      <input type="date" id="startDate" /> <span>—</span> <input type="date" id="endDate" />
+      <button class="submit-btn" onclick="exportAttendance()" style="margin-left:8px; padding: 10px 18px;">Eksport</button>
+    </div>
+<script>
+function exportAttendance() {
+  const start = document.getElementById('startDate').value;
+  const end = document.getElementById('endDate').value;
+  if (!start || !end) { alert('Iltimos sana oralig`ini tanlang'); return; }
+  const url = '/admin/api/attendance/export?start=' + start + '&end=' + end;
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `attendance_${start}_to_${end}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+</script>
