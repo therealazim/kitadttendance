@@ -10592,25 +10592,51 @@ async def admin_api_attendance_export(request):
         )
         params = [sd, ed]
 
-    # Fetch data - assuming app['db'] or db_pool is available
-    async with request.app['db'].pool.acquire() as conn:
-        rows = await conn.fetch(query, *params)
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+import io
 
-    # PDF formatda eksport
-    from reportlab.lib.pagesizes import A4
-    from reportlab.pdfgen import canvas
+async def admin_api_attendance_export(request):
+    if not request.headers.get('X-Admin-Auth') and not getattr(request, 'user', None):
+        return web.json_response({'ok': False, 'error': 'Unauthorized'}, status=401)
     
+    start = request.query.get('start')
+    end = request.query.get('end')
+    
+    if not start or not end:
+        return web.Response(text='Missing start or end', status=400)
+    
+    try:
+        sd = datetime.strptime(start, '%Y-%m-%d').date()
+        ed = datetime.strptime(end, '%Y-%m-%d').date()
+    except Exception:
+        return web.Response(text='Invalid date format', status=400)
+
+    query = (
+        "SELECT a.student_id, s.name AS student_name, a.date, a.status, a.class_id, a.check_in_time "
+        "FROM attendance a LEFT JOIN students s ON a.student_id = s.id "
+        "WHERE a.date BETWEEN $1 AND $2 ORDER BY a.date ASC"
+    )
+
+    async with request.app['db'].pool.acquire() as conn:
+        rows = await conn.fetch(query, sd, ed)
+
     output = io.BytesIO()
     c = canvas.Canvas(output, pagesize=A4)
-    c.drawString(100, 800, f"Davomat hisoboti: {start} - {end}")
-    y = 750
-    c.setFont("Helvetica", 10)
+    c.drawString(50, 800, f"Davomat hisoboti: {start} - {end}")
+    
+    y = 770
     c.drawString(50, y, "ID | Name | Date | Status | Class | Time")
     y -= 20
+    
     for r in rows:
         line = f"{r['student_id']} | {r['student_name']} | {str(r['date'])} | {r['status']} | {r['class_id']} | {r['check_in_time']}"
         c.drawString(50, y, line)
         y -= 20
+        if y < 50:
+            c.showPage()
+            y = 800
+            
     c.save()
     output.seek(0)
     
