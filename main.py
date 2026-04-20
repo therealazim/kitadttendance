@@ -10596,21 +10596,24 @@ async def admin_api_attendance_export(request):
     async with request.app['db'].pool.acquire() as conn:
         rows = await conn.fetch(query, *params)
 
-    # Write CSV
-    output = io.StringIO()
-    writer = csv.writer(output)
-    writer.writerow(['student_id', 'student_name', 'date', 'status', 'class_id', 'check_in_time'])
+    # PDF formatda eksport
+    from reportlab.lib.pagesizes import A4
+    from reportlab.pdfgen import canvas
+    
+    output = io.BytesIO()
+    c = canvas.Canvas(output, pagesize=A4)
+    c.drawString(100, 800, f"Davomat hisoboti: {start} - {end}")
+    y = 750
+    c.setFont("Helvetica", 10)
+    c.drawString(50, y, "ID | Name | Date | Status | Class | Time")
+    y -= 20
     for r in rows:
-        writer.writerow([
-            r['student_id'],
-            r['student_name'],
-            str(r['date']),
-            r['status'],
-            r['class_id'],
-            r['check_in_time']
-        ])
-    csv_text = output.getvalue()
-
-    resp = web.Response(body=csv_text.encode('utf-8-sig'), content_type='text/csv')
-    resp.headers['Content-Disposition'] = f'attachment; filename="attendance_{start}_to_{end}.csv"'
+        line = f"{r['student_id']} | {r['student_name']} | {str(r['date'])} | {r['status']} | {r['class_id']} | {r['check_in_time']}"
+        c.drawString(50, y, line)
+        y -= 20
+    c.save()
+    output.seek(0)
+    
+    resp = web.Response(body=output.read(), content_type='application/pdf')
+    resp.headers['Content-Disposition'] = f'attachment; filename="attendance_{start}_to_{end}.pdf"'
     return resp

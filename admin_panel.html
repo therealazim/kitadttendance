@@ -3632,12 +3632,30 @@ async function exportBizReport(){
 <div id="attendance-section" class="admin-section">
     <h3>O'quvchi davomati</h3>
     <div class="export-section" style="margin:16px 0; padding:12px; border:1px solid #eee; border-radius:8px; text-align:center;">
-      <strong>Davomat eksporti (Excel)</strong><br/>
+      <strong>Davomat eksporti (PDF)</strong><br/>
       <input type="date" id="startDate" /> <span>—</span> <input type="date" id="endDate" />
-      <button class="submit-btn" onclick="exportAttendance()" style="margin-left:8px; padding: 10px 18px;">Eksport (XLSX)</button>
+      <button class="submit-btn" onclick="exportAttendance()" style="margin-left:8px; padding: 10px 18px;">Eksport (PDF)</button>
     </div>
     <!-- Davomat ro'yxati va boshqa elementlar -->
 </div>
+
+<script>
+function exportAttendance() {
+  const start = document.getElementById('startDate').value;
+  const end = document.getElementById('endDate').value;
+  if (!start || !end) { alert('Iltimos sana oralig\'ini tanlang'); return; }
+  
+  // PDF formatiga o'zgartirildi
+  const url = `/admin/api/attendance/export?start=${start}&end=${end}&format=pdf`;
+  
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `attendance_${start}_to_${end}.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+</script>
 <script>
 function exportAttendance() {
   const start = document.getElementById('startDate').value;
