@@ -570,41 +570,59 @@ body, html {
   font-weight: 400;
 }
 
-.submit-section {
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid var(--color-border-tertiary);
-  text-align: center;
-}
+.fixed-header {
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
+   background: linear-gradient(135deg, #FF9800 0%, #FB8C00 100%);
+   padding: 16px;
+   box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+   z-index: 1000;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+ }
 
-.submit-btn {
-  background: linear-gradient(135deg, #FF9800 0%, #FB8C00 100%);
-  color: white;
-  border: none;
-  padding: 16px 48px;
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  width: 100%;
-  max-width: 320px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 4px 16px rgba(255, 152, 0, 0.3);
-  margin: 0 auto;
-}
+ .survey-wrapper {
+   padding-top: 80px;
+ }
 
-.submit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
-}
+ .submit-section {
+   margin-top: 32px;
+   padding-top: 24px;
+   border-top: 1px solid var(--color-border-tertiary);
+   text-align: center;
+   display: none;
+ }
+
+ .submit-btn {
+   background: white;
+   color: #FF9800;
+   border: none;
+   padding: 14px 40px;
+   font-size: 16px;
+   font-weight: 600;
+   border-radius: 14px;
+   cursor: pointer;
+   transition: all 0.3s ease;
+   width: 100%;
+   max-width: 300px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: 8px;
+   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+ }
+
+ .submit-btn:hover {
+   transform: translateY(-2px);
+   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+ }
 
 .submit-btn:active {
-  transform: translateY(0);
-}
+   transform: translateY(0);
+ }
 
 .submit-btn svg {
   width: 20px;
@@ -857,6 +875,10 @@ body, html {
   }
 }
 </style>
+
+<div class="fixed-header">
+  <button type="submit" form="surveyForm" class="submit-btn"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Yuborish</button>
+</div>
 
 <div class="survey-wrapper">
   <div class="survey-container">
@@ -1124,7 +1146,6 @@ body, html {
         </div>
 
         <div class="submit-section">
-          <button type="submit" class="submit-btn"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Yuborish</button>
           <div class="success-message" id="successMsg"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>So'rovnoma muvaffaqiyatli yuborildi!</div>
         </div>
       </form>
