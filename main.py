@@ -10558,58 +10558,59 @@ if __name__ == "__main__":
 import csv
 import io
 from datetime import datetime
-    async def admin_api_attendance_export(request):
-        # Admin auth check (adjust to your auth system)
-        if not request.headers.get('X-Admin-Auth') and not getattr(request, 'user', None):
-            return web.json_response({'ok': False, 'error': 'Unauthorized'}, status=401)
-        start = request.query.get('start')
-        end = request.query.get('end')
-        class_id = request.query.get('class_id') if request.query is not None else None
-        if not start or not end:
-            return web.Response(text='Missing start or end', status=400)
-        try:
-            sd = datetime.strptime(start, '%Y-%m-%d').date()
-            ed = datetime.strptime(end, '%Y-%m-%d').date()
-        except Exception:
-            return web.Response(text='Invalid date format', status=400)
 
-        # Build query
-        if class_id:
-            query = (
-                "SELECT a.student_id, s.name AS student_name, a.date, a.status, a.class_id, a.check_in_time "
-                "FROM attendance a LEFT JOIN students s ON a.student_id = s.id "
-                "WHERE a.date BETWEEN $1 AND $2 AND a.class_id = $3 "
-                "ORDER BY a.date ASC"
-            )
-            params = [sd, ed, class_id]
-        else:
-            query = (
-                "SELECT a.student_id, s.name AS student_name, a.date, a.status, a.class_id, a.check_in_time "
-                "FROM attendance a LEFT JOIN students s ON a.student_id = s.id "
-                "WHERE a.date BETWEEN $1 AND $2 "
-                "ORDER BY a.date ASC"
-            )
-            params = [sd, ed]
+async def admin_api_attendance_export(request):
+    # Admin auth check (adjust to your auth system)
+    if not request.headers.get('X-Admin-Auth') and not getattr(request, 'user', None):
+        return web.json_response({'ok': False, 'error': 'Unauthorized'}, status=401)
+    start = request.query.get('start')
+    end = request.query.get('end')
+    class_id = request.query.get('class_id') if request.query is not None else None
+    if not start or not end:
+        return web.Response(text='Missing start or end', status=400)
+    try:
+        sd = datetime.strptime(start, '%Y-%m-%d').date()
+        ed = datetime.strptime(end, '%Y-%m-%d').date()
+    except Exception:
+        return web.Response(text='Invalid date format', status=400)
 
-        # Fetch data
-        async with self.pool.acquire() as conn:
-            rows = await conn.fetch(query, *params)  # using asyncpg style
+    # Build query
+    if class_id:
+        query = (
+            "SELECT a.student_id, s.name AS student_name, a.date, a.status, a.class_id, a.check_in_time "
+            "FROM attendance a LEFT JOIN students s ON a.student_id = s.id "
+            "WHERE a.date BETWEEN $1 AND $2 AND a.class_id = $3 "
+            "ORDER BY a.date ASC"
+        )
+        params = [sd, ed, class_id]
+    else:
+        query = (
+            "SELECT a.student_id, s.name AS student_name, a.date, a.status, a.class_id, a.check_in_time "
+            "FROM attendance a LEFT JOIN students s ON a.student_id = s.id "
+            "WHERE a.date BETWEEN $1 AND $2 "
+            "ORDER BY a.date ASC"
+        )
+        params = [sd, ed]
 
-        # Write CSV
-        output = io.StringIO()
-        writer = csv.writer(output)
-        writer.writerow(['student_id', 'student_name', 'date', 'status', 'class_id', 'check_in_time'])
-        for r in rows:
-            writer.writerow([
-                r['student_id'],
-                r['student_name'],
-                str(r['date']),
-                r['status'],
-                r['class_id'],
-                r['check_in_time']
-            ])
-        csv_text = output.getvalue()
+    # Fetch data - assuming app['db'] or db_pool is available
+    async with request.app['db'].pool.acquire() as conn:
+        rows = await conn.fetch(query, *params)
 
-        resp = web.Response(body=csv_text, content_type='text/csv')
-        resp.headers['Content-Disposition'] = f'attachment; filename="attendance_{start}_to_{end}.csv"'
-        return resp
+    # Write CSV
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(['student_id', 'student_name', 'date', 'status', 'class_id', 'check_in_time'])
+    for r in rows:
+        writer.writerow([
+            r['student_id'],
+            r['student_name'],
+            str(r['date']),
+            r['status'],
+            r['class_id'],
+            r['check_in_time']
+        ])
+    csv_text = output.getvalue()
+
+    resp = web.Response(body=csv_text, content_type='text/csv')
+    resp.headers['Content-Disposition'] = f'attachment; filename="attendance_{start}_to_{end}.csv"'
+    return resp
