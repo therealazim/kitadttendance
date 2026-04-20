@@ -10554,19 +10554,20 @@ async def main():
         await bot.delete_webhook()
         await runner.cleanup()
 
-if __name__ == "__main__":
-    asyncio.run(main())
-import csv
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
 import io
-from datetime import datetime
+import csv
 
 async def admin_api_attendance_export(request):
     # Admin auth check (adjust to your auth system)
     if not request.headers.get('X-Admin-Auth') and not getattr(request, 'user', None):
         return web.json_response({'ok': False, 'error': 'Unauthorized'}, status=401)
+    
     start = request.query.get('start')
     end = request.query.get('end')
     class_id = request.query.get('class_id') if request.query is not None else None
+    
     if not start or not end:
         return web.Response(text='Missing start or end', status=400)
     try:
@@ -10593,40 +10594,17 @@ async def admin_api_attendance_export(request):
         )
         params = [sd, ed]
 
-from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
-import io
-
-async def admin_api_attendance_export(request):
-    if not request.headers.get('X-Admin-Auth') and not getattr(request, 'user', None):
-        return web.json_response({'ok': False, 'error': 'Unauthorized'}, status=401)
-    
-    start = request.query.get('start')
-    end = request.query.get('end')
-    
-    if not start or not end:
-        return web.Response(text='Missing start or end', status=400)
-    
-    try:
-        sd = datetime.strptime(start, '%Y-%m-%d').date()
-        ed = datetime.strptime(end, '%Y-%m-%d').date()
-    except Exception:
-        return web.Response(text='Invalid date format', status=400)
-
-    query = (
-        "SELECT a.student_id, s.name AS student_name, a.date, a.status, a.class_id, a.check_in_time "
-        "FROM attendance a LEFT JOIN students s ON a.student_id = s.id "
-        "WHERE a.date BETWEEN $1 AND $2 ORDER BY a.date ASC"
-    )
-
+    # Fetch data
     async with request.app['db'].pool.acquire() as conn:
-        rows = await conn.fetch(query, sd, ed)
+        rows = await conn.fetch(query, *params)
 
+    # PDF formatda eksport
     output = io.BytesIO()
     c = canvas.Canvas(output, pagesize=A4)
     c.drawString(50, 800, f"Davomat hisoboti: {start} - {end}")
     
     y = 770
+    c.setFont("Helvetica", 10)
     c.drawString(50, y, "ID | Name | Date | Status | Class | Time")
     y -= 20
     
@@ -10644,3 +10622,6 @@ async def admin_api_attendance_export(request):
     resp = web.Response(body=output.read(), content_type='application/pdf')
     resp.headers['Content-Disposition'] = f'attachment; filename="attendance_{start}_to_{end}.pdf"'
     return resp
+
+if __name__ == "__main__":
+    asyncio.run(main())
