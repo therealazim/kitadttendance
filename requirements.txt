@@ -17,7 +17,6 @@ openpyxl
 matplotlib
 numpy
 Pillow
-reportlab
 
 # Networking
 requests
