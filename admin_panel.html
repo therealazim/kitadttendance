@@ -543,9 +543,9 @@ textarea.inp { resize: vertical; }
 <!-- Loading Splash Screen -->
 <div id="loading-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#1e3a5f,#2563eb);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.5s ease;">
   <div style="background:white;border-radius:16px;padding:40px 60px;display:flex;flex-direction:column;align-items:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
-    <img src="/static/KITA_LOGO.svg" style="width:120px;height:auto;margin-bottom:20px;" alt="KITA">
+    <div style="font-size:48px;font-weight:800;color:#2563eb;margin-bottom:20px;">KITA</div>
     <div class="spinner" style="width:40px;height:40px;border:4px solid #e2e8f0;border-top:4px solid #3b82f6;border-radius:50%;animation:spin 1s linear infinite;"></div>
-    <p style="margin-top:20px;color:#64748b;font-size:14px;font-weight:500;">Yuklanmoqda...</p>
+    <p id="loading-msg" style="margin-top:20px;color:#64748b;font-size:14px;font-weight:500;">Yuklanmoqda...</p>
   </div>
 </div>
 <style>@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style>
@@ -2831,38 +2831,48 @@ console.log('Admin panel initializing...');
 setTimeout(function(){
   console.log('Running init after 500ms delay');
   try{applyLang();}catch(e){console.error('applyLang error:',e);}
-  try{fetchAll();}catch(e){
+  try{newFetchAll();}catch(e){
     console.error('fetchAll top-level error:',e);
     hideLoadingOverlay('Xatolik yuz berdi');
   }
 },500);
 
+let loadingHidden=false;
+let loadingAutoHidden=false;
+
 function hideLoadingOverlay(msg){
+  if(loadingHidden)return;
+  loadingHidden=true;
   const ol=document.getElementById('loading-overlay');
   if(!ol)return;
-  if(msg){
-    ol.querySelector('p').textContent=msg;
-    ol.querySelector('.spinner').style.display='none';
-    setTimeout(()=>{ol.style.opacity='0';setTimeout(()=>ol.remove(),500);},1500);
-  }else{
+  if(!msg){
     ol.style.opacity='0';
-    setTimeout(()=>ol.remove(),500);
+    setTimeout(()=>{ol.remove();},500);
+  }else{
+    const p=document.getElementById('loading-msg');
+    const sp=ol.querySelector('.spinner');
+    if(p)p.textContent=msg;
+    if(sp)sp.style.display='none';
+    setTimeout(()=>{ol.style.opacity='0';setTimeout(()=>{ol.remove();},500);},2000);
   }
 }
 
 const originalFetchAll=fetchAll;
-fetchAll=async function(){
-  try{
-    await originalFetchAll();
-    hideLoadingOverlay();
-  }catch(e){
-    console.error('fetchAll error:',e);
-    hideLoadingOverlay('Xatolik yuz berdi');
-  }
-};
 
-setInterval(function(){try{fetchAll();}catch(e){console.error('fetchAll interval error:',e);}},120000);
-document.addEventListener('visibilitychange',function(){if(!document.hidden)fetchAll();});
+function newFetchAll(){
+  return originalFetchAll().then(()=>{
+    hideLoadingOverlay();
+    loadingAutoHidden=true;
+  }).catch(e=>{
+    console.error('fetchAll error:',e);
+    hideLoadingOverlay('Xatolik: '+e.message);
+  });
+}
+
+setTimeout(()=>{if(!loadingAutoHidden && !loadingHidden){console.log('Auto hiding after 10s');hideLoadingOverlay('Tayyor');loadingAutoHidden=true;}},10000);
+
+setInterval(function(){try{newFetchAll();}catch(e){console.error('fetchAll interval error:',e);}},120000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden)newFetchAll();});
 async function loadApps(){
 document.getElementById('apps-table').innerHTML='<div class="ldr"><div class="spin"></div></div>';
 const r=await fetch('/admin/api/applications',{credentials:'include'}).then(x=>x.json()).catch(()=>null);
