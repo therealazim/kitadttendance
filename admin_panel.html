@@ -1601,12 +1601,12 @@ async function fetchAll(){
   try{
     console.log('D.keys:', D ? Object.keys(D) : 'D is null');
     const updlbl = document.getElementById('updlbl');
-    if(!updlbl){console.error('updlbl topilmadi');return;}
-    updlbl.textContent='Yuklanmoqda...';
+    if(!updlbl){alert('updlbl topilmadi');return;}
+    updlbl.textContent='1-fetch boshlandi...';
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     try{
-      var r = await fetch(_ap('/admin/api/data'), {signal: controller.signal});
+      var r = await fetch(_ap('/admin/api/data'), {signal: controller.signal, credentials:'include'});
     }catch(fetchErr){
       clearTimeout(timeoutId);
       if(fetchErr.name === 'AbortError'){
@@ -1620,7 +1620,8 @@ async function fetchAll(){
     }
     clearTimeout(timeoutId);
     console.log('Fetch tugadi, status:', r.status);
-if(r.status===401){document.getElementById('updlbl').textContent='<i class="lucide lucide-times"></i> Server xato 401';return;}
+if(r.status===401){document.getElementById('updlbl').textContent='401 xato';return;}
+if(r.status!==200){document.getElementById('updlbl').textContent='Status: '+r.status;return;}
 if(!r.ok)throw new Error('HTTP '+r.status);
 const txt=await r.text();
 console.log('Response length:', txt.length);
