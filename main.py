@@ -4911,6 +4911,7 @@ async def admin_api_data(request):
                     'branch': a[1],
                     'time': a[3] if len(a) > 3 else '',
                 })
+        logging.info(f"admin_api_data: today_att count = {len(today_att)}; daily log entries = {len(daily_attendance_log)}")
 
         # Haftalik statistika (oxirgi 7 kun)
         weekly = []
@@ -5031,6 +5032,7 @@ async def admin_api_data(request):
             
         except Exception as e:
             logging.error(f"live_classes error: {e}")
+        logging.info(f"admin_api_data: live_classes summary - now={len(live_classes['classes_now'])}, today={len(live_classes['today_classes'])}, upcoming={len(live_classes['upcoming_classes'])}, teachers={len(live_classes['teachers_status'])}")
 
         # Broadcast tarixi
         bc_hist = []
