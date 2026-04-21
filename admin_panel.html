@@ -1271,7 +1271,7 @@ textarea.inp { resize: vertical; }
 </div>
 <div class="toast" id="toast"></div>
 
-<script>let D=null,USERS=[],GROUPS=[],SALS=[];
+<script>console.log('Main admin JS starting...');let D=null,USERS=[],GROUPS=[],SALS=[];
 function _ap(p){return p;}
 function _ah(){
   const token = document.cookie.split('; ').find(row => row.startsWith('admin_token='))?.split('=')[1];
@@ -1279,6 +1279,7 @@ function _ah(){
 }
 // Cookie tekshiruvi server tomonida amalga oshiriladi
 let _uF='',_gid=null,_gdat=null,_cgS=[],_calY=new Date().getFullYear(),_calM=new Date().getMonth(),_calSel=null,_saBr=null,_saGid=null,_salRes=null;
+window.onerror=function(m,u,l,c,e){console.error('Global JS error:',m,'line:',l);return false;};
 const TODAY=new Date().toISOString().slice(0,10);
 const DAYS=['Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba','Yakshanba'];
 function sortDayTimes(dayTimes) {
@@ -2776,9 +2777,10 @@ async function delBr(idx){const b=D.branches[idx];if(!confirm(`"${b?.name||idx}"
 
 
 LANG='uz';
-applyLang();
-fetchAll();
-setInterval(fetchAll,120000);
+console.log('Admin panel initializing...');
+try{applyLang();}catch(e){console.error('applyLang error:',e);}
+try{fetchAll();}catch(e){console.error('fetchAll top-level error:',e);}
+setInterval(function(){try{fetchAll();}catch(e){console.error('fetchAll interval error:',e);}},120000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)fetchAll();});
 async function loadApps(){
 document.getElementById('apps-table').innerHTML='<div class="ldr"><div class="spin"></div></div>';
