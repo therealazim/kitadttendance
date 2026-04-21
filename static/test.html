@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KITA Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #0f1724; color: #fff; }
+        h1 { color: #4f8ef7; }
+        button { background: #4f8ef7; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #3a7de0; }
+        #result { margin-top: 20px; white-space: pre-wrap; background: #1a2332; padding: 20px; border-radius: 12px; overflow-x: auto; }
+        .error { color: #ef4444; }
+        .success { color: #10b981; }
+    </style>
+</head>
+<body>
+    <h1>KITA Server Test</h1>
+    <p>Bossi /admin/api/data ishlayotganini tekshirish uchun</p>
+    <button onclick="testAPI()">Test API</button>
+    <button onclick="location.reload()">Reload</button>
+    <div id="result"></div>
+    
+    <script>
+        async function testAPI() {
+            const result = document.getElementById('result');
+            result.innerHTML = '<span style="color:#fbbf24">Loading...</span>';
+            
+            try {
+                const start = Date.now();
+                const response = await fetch('/admin/api/data?t=' + start);
+                const elapsed = Date.now() - start;
+                
+                if (!response.ok) {
+                    result.innerHTML = '<span class="error">HTTP Error: ' + response.status + ' ' + response.statusText + '</span>';
+                    return;
+                }
+                
+                const data = await response.json();
+                result.innerHTML = '<span class="success">Success! (' + elapsed + 'ms)</span>\n\n' + JSON.stringify(data, null, 2).substring(0, 2000);
+            } catch(e) {
+                result.innerHTML = '<span class="error">Error: ' + e.message + '</span>';
+            }
+        }
+        
+        // Auto-test on load
+        testAPI();
+    </script>
+</body>
+</html>
