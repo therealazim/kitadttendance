@@ -1597,23 +1597,42 @@ async function checkNewNotifications() {
 }
 
 async function fetchAll(){
+  console.log('fetchAll boshlandi');
   try{
-    console.log('Admin data payload keys:', Object.keys(D));
-document.getElementById('updlbl').textContent=t('txt_loading');
-const r=await fetch(_ap('/admin/api/data'));
+    console.log('D.keys:', D ? Object.keys(D) : 'D is null');
+    const updlbl = document.getElementById('updlbl');
+    if(!updlbl){console.error('updlbl topilmadi');return;}
+    updlbl.textContent='Yuklanmoqda...';
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    try{
+      var r = await fetch(_ap('/admin/api/data'), {signal: controller.signal});
+    }catch(fetchErr){
+      clearTimeout(timeoutId);
+      if(fetchErr.name === 'AbortError'){
+        updlbl.textContent = 'Timeout - server javob bermaydi';
+        console.error('Fetch timeout');
+      }else{
+        updlbl.textContent = 'Network xato: ' + fetchErr.message;
+        console.error('Fetch error:', fetchErr);
+      }
+      return;
+    }
+    clearTimeout(timeoutId);
+    console.log('Fetch tugadi, status:', r.status);
 if(r.status===401){document.getElementById('updlbl').textContent='<i class="lucide lucide-times"></i> Server xato 401';return;}
 if(!r.ok)throw new Error('HTTP '+r.status);
 const txt=await r.text();
-try{D=JSON.parse(txt);}catch(pe){console.error('JSON parse xato:',txt.slice(0,200));throw new Error('JSON parse xato');}
+console.log('Response length:', txt.length);
+try{D=JSON.parse(txt);}catch(pe){console.error('JSON parse xato:',txt.slice(0,200));document.getElementById('updlbl').textContent='JSON xato';return;}
 USERS=D.users||[];GROUPS=(D.groups||[]).sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));window._BRANCHES=(D.branches||[]).map(b=>b.name||b).filter(Boolean);
 try{rAll();}catch(re){console.error('rAll xato:',re);document.getElementById('updlbl').textContent='<i class="lucide lucide-times"></i> Render xato: '+re.message;return;}
 applyLang();
 if(window.lucide)lucide.createIcons();
-document.getElementById('updlbl').textContent=t('txt_updated')+': '+new Date().toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit'});
+document.getElementById('updlbl').textContent='Yangilandi: '+new Date().toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit'});
 }catch(e){
 console.error('fetchAll xato:',e);
-document.getElementById('updlbl').textContent='<i class="lucide lucide-times"></i> Ulanmadi: '+e.message;
-toast('<i class="lucide lucide-times"></i> '+e.message);
+document.getElementById('updlbl').textContent='<i class="lucide lucide-times"></i> Xato: '+e.message;
 }
 }
 function rAll(){
@@ -2778,10 +2797,13 @@ async function delBr(idx){const b=D.branches[idx];if(!confirm(`"${b?.name||idx}"
 
 LANG='uz';
 console.log('Admin panel initializing...');
-try{applyLang();}catch(e){console.error('applyLang error:',e);}
-try{fetchAll();}catch(e){console.error('fetchAll top-level error:',e);}
+setTimeout(function(){
+  console.log('Running init after 500ms delay');
+  try{applyLang();}catch(e){console.error('applyLang error:',e);}
+  try{fetchAll();}catch(e){console.error('fetchAll top-level error:',e);}
+},500);
 setInterval(function(){try{fetchAll();}catch(e){console.error('fetchAll interval error:',e);}},120000);
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)fetchAll();});
+document.addEventListener('visibilitychange',function(){if(!document.hidden)fetchAll();});
 async function loadApps(){
 document.getElementById('apps-table').innerHTML='<div class="ldr"><div class="spin"></div></div>';
 const r=await fetch('/admin/api/applications',{credentials:'include'}).then(x=>x.json()).catch(()=>null);
