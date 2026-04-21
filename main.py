@@ -10554,10 +10554,28 @@ async def main():
         await bot.delete_webhook()
         await runner.cleanup()
 
-from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
-import io
-import csv
+# Lazy imports for PDF generation to avoid import-time overhead
+def _build_attendance_pdf(rows, start, end):
+    from reportlab.lib.pagesizes import A4
+    from reportlab.pdfgen import canvas
+    import io
+    output = io.BytesIO()
+    c = canvas.Canvas(output, pagesize=A4)
+    c.drawString(50, 800, f"Davomat hisoboti: {start} - {end}")
+    y = 770
+    c.setFont("Helvetica", 10)
+    c.drawString(50, y, "ID | Name | Date | Status | Class | Time")
+    y -= 20
+    for r in rows:
+        line = f"{r['student_id']} | {r['student_name']} | {str(r['date'])} | {r['status']} | {r['class_id']} | {r['check_in_time']}"
+        c.drawString(50, y, line)
+        y -= 20
+        if y < 50:
+            c.showPage()
+            y = 800
+    c.save()
+    output.seek(0)
+    return output.read()
 
 async def admin_api_attendance_export(request):
     # Admin auth check (adjust to your auth system)
