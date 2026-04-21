@@ -3658,17 +3658,3 @@ async function exportBizReport(){
 </style>
 </body>
 </html>
-<script>
-function exportAttendance() {
-  const start = document.getElementById('startDate').value;
-  const end = document.getElementById('endDate').value;
-  if (!start || !end) { alert('Iltimos sana oralig`ini tanlang'); return; }
-  const url = '/admin/api/attendance/export?start=' + start + '&end=' + end;
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `attendance_${start}_to_${end}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-}
-</script>
