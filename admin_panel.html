@@ -1648,35 +1648,6 @@ hideLoadingOverlay('Xatolik: '+e.message);
 toast('<i class="lucide lucide-times"></i> '+e.message);
 }
 }
-      return;
-    }
-    clearTimeout(timeoutId);
-    console.log('Fetch tugadi, status:', r.status);
-if(!r.ok || r.status === 401 || r.status === 403){
-  const txt = await r.text();
-  document.getElementById('updlbl').textContent='Xato: '+r.status + ' - kirmadingizmi?';
-  console.error('Auth error:', r.status, txt);
-  return;
-}
-const txt=await r.text();
-console.log('Response length:', txt.length);
-console.log('Parsing JSON, txt length:', txt ? txt.length : 'empty');
-if(!txt || txt.length === 0){console.error('Empty response');document.getElementById('updlbl').textContent='Bo\'sh javob';return;}
-try{D=JSON.parse(txt);}catch(pe){console.error('JSON parse xato:',txt.slice(0,200));document.getElementById('updlbl').textContent='JSON xato';return;}
-if(!D){console.error('D is still null after parse');document.getElementById('updlbl').textContent='D null';return;}
-if(typeof D !== 'object'){console.error('D is not object:', typeof D);document.getElementById('updlbl').textContent='Not object';return;}
-console.log('D parsed OK, keys:', Object.keys(D));
-USERS=D?.users||[];GROUPS=(D?.groups||[]).sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));window._BRANCHES=(D?.branches||[]).map(b=>b.name||b).filter(Boolean);
-if(!USERS || !GROUPS){console.error('Users or Groups null:', USERS, GROUPS);}
-try{rAll();}catch(re){console.error('rAll xato:',re);document.getElementById('updlbl').textContent='<i class="lucide lucide-times"></i> Render xato: '+re.message;return;}
-applyLang();
-if(window.lucide)lucide.createIcons();
-document.getElementById('updlbl').textContent='Yangilandi: '+new Date().toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit'});
-}catch(e){
-console.error('fetchAll xato:',e);
-document.getElementById('updlbl').textContent='<i class="lucide lucide-times"></i> Xato: '+e.message;
-}
-}
 function rAll(){
 try{rDash();}catch(e){console.error('rDash:',e);}
 try{rUsers(USERS);}catch(e){console.error('rUsers:',e);}
