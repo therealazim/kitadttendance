@@ -1607,45 +1607,44 @@ async function checkNewNotifications() {
 }
 
 let loadingHidden=false;
-let loadingAutoHidden=false;
 function hideLoadingOverlay(msg){
-  if(loadingHidden)return;
-  loadingHidden=true;
   const ol=document.getElementById('loading-overlay');
-  if(!ol)return;
-  if(!msg){
-    ol.style.opacity='0';
-    setTimeout(()=>{ol.remove();},500);
-  }else{
+  if(!ol) return;
+  if(msg){
     const p=document.getElementById('loading-msg');
-    const sp=ol.querySelector('.spinner');
-    if(p)p.textContent=msg;
-    if(sp)sp.style.display='none';
-    ol.style.opacity='0';
-    setTimeout(()=>{ol.remove();},500);
+    if(p) p.textContent=msg;
   }
+  ol.style.opacity='0';
+  setTimeout(() => { if(ol.parentNode) ol.remove(); }, 500);
 }
-setTimeout(()=>{if(!loadingAutoHidden && !loadingHidden){hideLoadingOverlay('Tayyor');loadingAutoHidden=true;}},8000);
+setTimeout(()=>{ if(!loadingHidden){ hideLoadingOverlay('Tayyor'); loadingHidden=true; } },8000);
 
 async function fetchAll(){
 try{
-document.getElementById('updlbl').textContent=t('txt_loading');
-const r=await fetch(_ap('/admin/api/data'));
-if(r.status===401){document.getElementById('updlbl').textContent='<i class="lucide lucide-times"></i> Server xato 401';hideLoadingOverlay('Login kerak');return;}
-if(!r.ok)throw new Error('HTTP '+r.status);
-const txt=await r.text();
-try{D=JSON.parse(txt);}catch(pe){console.error('JSON parse xato:',txt.slice(0,200));throw new Error('JSON parse xato');}
-USERS=D.users||[];GROUPS=(D.groups||[]).sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));window._BRANCHES=(D.branches||[]).map(b=>b.name||b).filter(Boolean);
-try{rAll();}catch(re){console.error('rAll xato:',re);document.getElementById('updlbl').textContent='<i class="lucide lucide-times"></i> Render xato: '+re.message;return;}
+document.getElementById('updlbl').textContent = 'Yuklanmoqda...';
+const response = await fetch('/admin/api/data');
+if(response.status === 401 || response.status === 403){
+  console.error('Auth error:', response.status);
+  document.getElementById('updlbl').textContent = 'Ruxsat yo\'q!';
+  hideLoadingOverlay('Ruxsat yo\'q');
+  return;
+}
+if(!response.ok){ throw new Error('HTTP ' + response.status); }
+const text = await response.text();
+D = JSON.parse(text);
+USERS = D?.users || [];
+GROUPS = (D?.groups || []).sort((a,b) => (a.sort_order||0) - (b.sort_order||0));
+window._BRANCHES = (D?.branches || []).map(b => b.name || b).filter(Boolean);
+rAll();
 applyLang();
-if(window.lucide)lucide.createIcons();
-document.getElementById('updlbl').textContent=t('txt_updated')+': '+new Date().toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit'});
+if(window.lucide) lucide.createIcons();
+document.getElementById('updlbl').textContent = 'Yangilandi: ' + new Date().toLocaleTimeString('uz-UZ', {hour:'2-digit', minute:'2-digit'});
 hideLoadingOverlay();
 }catch(e){
-console.error('fetchAll xato:',e);
-document.getElementById('updlbl').textContent='<i class="lucide lucide-times"></i> Ulanmadi: '+e.message;
-hideLoadingOverlay('Xatolik: '+e.message);
-toast('<i class="lucide lucide-times"></i> '+e.message);
+console.error('fetchAll xato:', e);
+document.getElementById('updlbl').textContent = 'Xatolik: ' + e.message;
+hideLoadingOverlay('Xatolik: ' + e.message);
+toast('<i class="lucide lucide-times"></i> ' + e.message);
 }
 }
 function rAll(){
