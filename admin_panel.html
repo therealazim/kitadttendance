@@ -1,303 +1,568 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KITA Admin</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background: #0f1724; color: #edf2ff; padding: 16px; }
-        .container { max-width: 1400px; margin: 0 auto; }
-        
-        /* Header */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
-        h1 { font-size: 24px; color: #4f8ef7; display: flex; align-items: center; gap: 8px; }
-        .status-bar { display: flex; gap: 12px; align-items: center; }
-        .status { background: #1a2332; padding: 8px 16px; border-radius: 8px; font-size: 13px; color: #8899b0; }
-        button { background: #4f8ef7; border: none; padding: 8px 16px; border-radius: 8px; color: white; cursor: pointer; font-size: 13px; font-weight: 500; }
-        button:hover { background: #3a7de0; }
-        
-        /* Cards */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
-        .stat-card { background: #1a2332; border-radius: 12px; padding: 20px; text-align: center; border: 1px solid #2d3a4a; }
-        .stat-value { font-size: 32px; font-weight: bold; color: #4f8ef7; }
-        .stat-label { font-size: 12px; color: #8899b0; margin-top: 8px; }
-        
-        /* Tables */
-        .card { background: #1a2332; border-radius: 12px; margin-bottom: 24px; border: 1px solid #2d3a4a; overflow: hidden; }
-        .card-header { padding: 16px 20px; border-bottom: 1px solid #2d3a4a; }
-        .card-header h2 { font-size: 18px; color: #4f8ef7; display: flex; align-items: center; gap: 8px; }
-        .table-wrapper { overflow-x: auto; padding: 0; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #2d3a4a; }
-        th { background: #212f42; color: #4f8ef7; font-weight: 600; font-size: 13px; }
-        td { font-size: 13px; }
-        tr:hover { background: #1e2a3a; }
-        
-        /* Badges */
-        .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
-        .badge-active { background: #10b98120; color: #10b981; }
-        .badge-blocked { background: #ef444420; color: #ef4444; }
-        .badge-IT { background: #4f8ef720; color: #4f8ef7; }
-        .badge-Koreys\ tili { background: #8b5cf620; color: #a78bfa; }
-        .badge-Ofis\ xodimi { background: #f59e0b20; color: #fbbf24; }
-        
-        /* Loading & Error */
-        .loading { text-align: center; padding: 40px; color: #8899b0; }
-        .error { background: #ef444420; color: #ef4444; padding: 20px; border-radius: 12px; text-align: center; margin: 20px; }
-        
-        /* Tabs */
-        .tabs { display: flex; gap: 4px; padding: 0 20px; border-bottom: 1px solid #2d3a4a; }
-        .tab { background: none; border: none; padding: 12px 20px; color: #8899b0; cursor: pointer; font-size: 13px; border-radius: 8px 8px 0 0; }
-        .tab.active { color: #4f8ef7; border-bottom: 2px solid #4f8ef7; background: #212f42; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        
-        /* Logs */
-        .debug-log { background: #0a0f17; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; margin-top: 16px; max-height: 150px; overflow-y: auto; }
-    </style>
+<meta charset="UTF-8">
+<link rel="icon" href="/static/KITA_LOGO.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KITA Admin</title>
+<script src="https://unpkg.com/lucide@latest" async defer></script>
+<style>
+/* ========== STYLES (original styles saqlangan) ========== */
+[class*="lucide-"]:not(svg) { font-size: 0; height: 0; overflow: hidden; }
+svg.lucide { display: inline-block !important; }
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f8fafc;--sb:#ffffff;--card:#ffffff;--card2:#f1f5f9;--bg2:#f1f5f9;--bd:#e2e8f0;--bd2:#cbd5e1;--ac:#3b82f6;--ac2:#2563eb;--gn:#10b981;--gr:#10b981;--rd:#ef4444;--og:#f59e0b;--pu:#8b5cf6;--tx:#0f172a;--tx2:#64748b;--tx3:#94a3b8;--sbw:240px;--shadow:0 1px 3px rgba(0,0,0,0.08);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.1);--radius:12px}
+[data-theme="dark"]{--bg:#0c0f14;--sb:#161b22;--card:#1c2128;--card2:#21262d;--bg2:#21262d;--bd:#30363d;--bd2:#484f58;--ac:#58a6ff;--ac2:#388bfd;--gn:#3fb950;--rd:#f85149;--og:#d29922;--pu:#a371f7;--tx:#f0f6fc;--tx2:#8b949e;--tx3:#6e7681}
+html,body{height:100%}body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);font-size:13px;overflow:hidden}
+.layout{display:flex;height:100vh}
+.sidebar{width:var(--sbw);min-width:var(--sbw);background:var(--sb);border-right:1px solid var(--bd);display:flex;flex-direction:column;z-index:100}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.logo{padding:12px 16px;border-bottom:1px solid var(--bd);text-align:center}
+.logo img{height:40px}
+.sbnav{flex:1;padding:12px;overflow-y:auto}
+.sbsec{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--tx3);padding:12px 8px 4px}
+.sbi{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:500;color:var(--tx2);border:none;background:none;width:100%;text-align:left;margin-bottom:2px}
+.sbi:hover{background:var(--card2);color:var(--tx)}
+.sbi.on{background:rgba(59,130,246,.12);color:var(--ac)}
+.sbi .ico{width:24px;font-size:18px}
+.sbi .lbl{flex:1}
+.sbi .bdg{background:var(--ac);color:#fff;padding:2px 8px;border-radius:20px;font-size:10px}
+.sbfoot{padding:12px;border-top:1px solid var(--bd);text-align:center}
+#clock{font-size:20px;font-weight:700}
+.topbar{background:var(--sb);border-bottom:1px solid var(--bd);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.mbtn{display:none;background:none;border:none;font-size:20px;cursor:pointer}
+#pgtitle{font-size:16px;font-weight:700;flex:1}
+.online{display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:#10b981}
+.rbtn{background:var(--card2);border:1px solid var(--bd);padding:6px 14px;border-radius:8px;cursor:pointer;font-size:12px}
+.content{flex:1;overflow-y:auto;padding:20px}
+.page{display:none}
+.page.on{display:block}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+.sc{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px}
+.sc .sv{font-size:28px;font-weight:800}
+.sc .sl{font-size:11px;color:var(--tx2)}
+.tw{background:var(--card);border:1px solid var(--bd);border-radius:12px;overflow:auto}
+.th{padding:14px 16px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between}
+.tt{font-weight:700}
+table{width:100%;border-collapse:collapse}
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--bd)}
+th{background:var(--card2);font-weight:600}
+.btn{padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:4px}
+.bp{background:var(--ac);color:#fff}
+.bd{background:rgba(239,68,68,.12);color:#f87171}
+.bs{background:rgba(16,185,129,.12);color:#34d399}
+.bpu{background:rgba(139,92,246,.12);color:#a78bfa}
+.bg{background:var(--card2);color:var(--tx2)}
+.bfull{width:100%;justify-content:center}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:1000}
+.overlay.open{display:flex}
+.modal{background:var(--card);border-radius:16px;padding:24px;width:500px;max-width:90%;max-height:90vh;overflow-y:auto}
+.mt{font-size:18px;font-weight:800;margin-bottom:20px}
+.fg{margin-bottom:16px}
+.lbl{display:block;font-size:11px;font-weight:600;color:var(--tx2);margin-bottom:4px}
+.inp{width:100%;background:var(--card2);border:1px solid var(--bd);border-radius:8px;padding:10px 12px;font-size:13px}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:10px 16px;z-index:2000;opacity:0;transition:0.2s}
+.toast.show{opacity:1}
+.empty{text-align:center;padding:40px;color:var(--tx2)}
+.spin{width:20px;height:20px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin 0.6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:768px){.sidebar{position:fixed;transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.mbtn{display:block}.sg{grid-template-columns:repeat(2,1fr)}}
+</style>
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <h1>📊 KITA Admin Panel</h1>
-        <div class="status-bar">
-            <span class="status" id="statusText">Yuklanmoqda...</span>
-            <button onclick="loadAllData()">🔄 Yangilash</button>
-        </div>
+<div class="layout">
+<div class="sidebar" id="sidebar">
+  <div class="logo"><img src="/static/black_logo.svg" id="logo-img" alt="KITA"></div>
+  <div class="sbnav">
+    <div class="sbsec">Asosiy</div>
+    <button class="sbi on" onclick="showPage('dash',this)"><span class="ico">📊</span><span class="lbl">Dashboard</span></button>
+    <button class="sbi" onclick="showPage('users',this)"><span class="ico">👥</span><span class="lbl">Foydalanuvchilar</span><span class="bdg" id="userCount">0</span></button>
+    <button class="sbi" onclick="showPage('groups',this)"><span class="ico">📚</span><span class="lbl">Guruhlar</span><span class="bdg" id="groupCount">0</span></button>
+    <div class="sbsec">Nazorat</div>
+    <button class="sbi" onclick="showPage('attendance',this)"><span class="ico">📍</span><span class="lbl">O'qituvchi davomat</span></button>
+    <button class="sbi" onclick="showPage('payments',this)"><span class="ico">💰</span><span class="lbl">To'lovlar</span></button>
+    <button class="sbi" onclick="showPage('branches',this)"><span class="ico">🏢</span><span class="lbl">Filiallar</span></button>
+    <div class="sbsec">Amallar</div>
+    <button class="sbi" onclick="showPage('broadcast',this)"><span class="ico">📢</span><span class="lbl">Xabar yuborish</span></button>
+    <button class="sbi" onclick="showPage('salary',this)"><span class="ico">💰</span><span class="lbl">Maosh hisoblash</span></button>
+  </div>
+  <div class="sbfoot"><div id="clock">--:--</div></div>
+</div>
+<div class="movov" id="movov" onclick="closeSidebar()"></div>
+<div class="main">
+  <div class="topbar">
+    <button class="mbtn" onclick="toggleSidebar()">☰</button>
+    <div id="pgtitle">Dashboard</div>
+    <div class="online"><div class="dot"></div><span id="updateLabel">Yangilandi</span></div>
+    <button class="rbtn" onclick="toggleTheme()">🌙 Dark</button>
+    <button class="rbtn" onclick="fetchAllData()">🔄 Yangilash</button>
+    <button class="rbtn" style="background:rgba(239,68,68,.15);color:#f87171" onclick="logout()">🚪 Chiqish</button>
+  </div>
+  <div class="content">
+    <!-- Dashboard -->
+    <div class="page on" id="page-dash">
+      <div class="sg" id="dashStats"></div>
+      <div class="tw"><div class="th"><span class="tt">📊 So'nggi faoliyat</span></div><div id="dashContent"></div></div>
     </div>
     
-    <div class="stats-grid" id="statsGrid">
-        <div class="stat-card"><div class="stat-value">-</div><div class="stat-label">Foydalanuvchilar</div></div>
-        <div class="stat-card"><div class="stat-value">-</div><div class="stat-label">Guruhlar</div></div>
-        <div class="stat-card"><div class="stat-value">-</div><div class="stat-label">Bugungi davomat</div></div>
-        <div class="stat-card"><div class="stat-value">-</div><div class="stat-label">Filiallar</div></div>
+    <!-- Users -->
+    <div class="page" id="page-users">
+      <div class="tw">
+        <div class="th"><span class="tt">👥 Foydalanuvchilar</span><span class="tm" id="usersTotal"></span></div>
+        <div style="overflow-x:auto"><table><thead><tr><th>ID</th><th>Ism</th><th>Mutaxassislik</th><th>Bu oy</th><th>Holat</th><th>Amallar</th></tr></thead><tbody id="usersTable"></tbody></table></div>
+      </div>
     </div>
     
-    <div class="card">
-        <div class="tabs">
-            <button class="tab active" onclick="showTab('users')">👥 Foydalanuvchilar</button>
-            <button class="tab" onclick="showTab('groups')">📚 Guruhlar</button>
-            <button class="tab" onclick="showTab('attendance')">📍 Bugungi davomat</button>
-        </div>
-        
-        <div id="tab-users" class="tab-content active">
-            <div class="table-wrapper">
-                <div id="usersTable" class="loading">Yuklanmoqda...</div>
-            </div>
-        </div>
-        
-        <div id="tab-groups" class="tab-content">
-            <div class="table-wrapper">
-                <div id="groupsTable" class="loading">Yuklanmoqda...</div>
-            </div>
-        </div>
-        
-        <div id="tab-attendance" class="tab-content">
-            <div class="table-wrapper">
-                <div id="attendanceTable" class="loading">Yuklanmoqda...</div>
-            </div>
-        </div>
+    <!-- Groups -->
+    <div class="page" id="page-groups">
+      <div style="margin-bottom:12px"><button class="btn bp" onclick="openCreateGroupModal()">➕ Yangi guruh</button></div>
+      <div class="tw">
+        <div class="th"><span class="tt">📚 Guruhlar</span><span class="tm" id="groupsTotal"></span></div>
+        <div style="overflow-x:auto"><table><thead><tr><th>ID</th><th>Guruh nomi</th><th>Filial</th><th>Fan</th><th>O'qituvchi</th><th>O'quvchilar</th><th>Amallar</th></tr></thead><tbody id="groupsTable"></tbody></table></div>
+      </div>
     </div>
     
-    <div class="debug-log" id="debugLog">
-        [DEBUG] Sahifa yuklandi
+    <!-- Attendance -->
+    <div class="page" id="page-attendance">
+      <div style="margin-bottom:12px"><input type="date" id="attDate" class="inp" style="width:auto;display:inline-block"><button class="btn bp" onclick="loadAttendance()">Ko'rsatish</button></div>
+      <div class="tw"><div class="th"><span class="tt">📍 Bugungi davomat</span></div><div style="overflow-x:auto"><table><thead><tr><th>O'qituvchi</th><th>Fan</th><th>Filial</th><th>Vaqt</th></tr></thead><tbody id="attendanceTable"></tbody></table></div></div>
     </div>
+    
+    <!-- Payments -->
+    <div class="page" id="page-payments">
+      <div class="tw"><div class="th"><span class="tt">💰 To'lovlar</span></div><div id="paymentsContent"></div></div>
+    </div>
+    
+    <!-- Branches -->
+    <div class="page" id="page-branches">
+      <div class="tw"><div class="th"><span class="tt">🏢 Filiallar</span></div><div id="branchesList"></div></div>
+    </div>
+    
+    <!-- Broadcast -->
+    <div class="page" id="page-broadcast">
+      <div class="tw"><div class="th"><span class="tt">📢 Xabar yuborish</span></div>
+        <div style="padding:20px">
+          <div class="fg"><label class="lbl">Kimga</label><select id="broadcastTo" class="inp"><option value="">Barcha</option><option value="IT">IT o'qituvchilar</option><option value="Koreys tili">Koreys tili o'qituvchilar</option><option value="Ofis xodimi">Ofis xodimlari</option></select></div>
+          <div class="fg"><label class="lbl">Xabar matni</label><textarea id="broadcastText" class="inp" rows="4" placeholder="Xabar matni..."></textarea></div>
+          <button class="btn bp" onclick="sendBroadcast()">📤 Yuborish</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Salary -->
+    <div class="page" id="page-salary">
+      <div class="tw"><div class="th"><span class="tt">💰 Maosh hisoblash</span></div>
+        <div style="padding:20px">
+          <div class="fg"><label class="lbl">Mutaxassislik</label><select id="salarySpec" class="inp"><option value="">Tanlang</option><option value="IT">IT</option><option value="Koreys tili">Koreys tili</option></select></div>
+          <div class="fg"><label class="lbl">O'qituvchi</label><select id="salaryTeacher" class="inp"><option value="">Avval fan tanlang</option></select></div>
+          <button class="btn bp" onclick="calculateSalary()">🧮 Hisoblash</button>
+          <div id="salaryResult" style="margin-top:20px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Create Group Modal -->
+<div class="overlay" id="createGroupModal">
+  <div class="modal">
+    <div class="mt">➕ Yangi guruh</div>
+    <div class="fg"><label class="lbl">Guruh nomi</label><input type="text" id="newGroupName" class="inp"></div>
+    <div class="fg"><label class="lbl">Filial</label><select id="newGroupBranch" class="inp"></select></div>
+    <div class="fg"><label class="lbl">Fan turi</label><select id="newGroupType" class="inp"><option value="IT">IT</option><option value="Koreys tili">Koreys tili</option></select></div>
+    <div class="fg"><label class="lbl">O'qituvchi</label><select id="newGroupTeacher" class="inp"></select></div>
+    <div class="fg"><label class="lbl">Dars kunlari (vergul bilan)</label><input type="text" id="newGroupDays" class="inp" placeholder="Dushanba,Chorshanba,Juma"></div>
+    <div class="fg"><label class="lbl">Dars vaqti</label><input type="text" id="newGroupTime" class="inp" placeholder="14:00"></div>
+    <div style="display:flex;gap:12px;justify-content:flex-end">
+      <button class="btn bg" onclick="closeModal('createGroupModal')">Bekor</button>
+      <button class="btn bp" onclick="createGroup()">Yaratish</button>
+    </div>
+  </div>
 </div>
 
 <script>
-// Debug log
-function debug(msg) {
-    const logDiv = document.getElementById('debugLog');
-    if (logDiv) {
-        logDiv.innerHTML += `\n[${new Date().toLocaleTimeString()}] ${msg}`;
-        logDiv.scrollTop = logDiv.scrollHeight;
-    }
-    console.log(msg);
-}
-
-debug('Script boshlandi');
-
-// Global data
+// ========== GLOBAL VARIABLES ==========
 let appData = null;
+let currentPage = 'dash';
+let theme = localStorage.getItem('theme') || 'light';
 
-// Tab switching
-function showTab(tabName) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+// ========== UTILITY FUNCTIONS ==========
+function toast(msg, type) {
+    const t = document.getElementById('toast');
+    t.innerHTML = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+}
+
+function openModal(id) {
+    document.getElementById(id).classList.add('open');
+}
+
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('movov').classList.toggle('show');
+}
+
+function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('movov').classList.remove('show');
+}
+
+function toggleTheme() {
+    theme = theme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('theme', theme);
+    document.documentElement.setAttribute('data-theme', theme);
+    const logo = document.getElementById('logo-img');
+    if (logo) logo.src = theme === 'dark' ? '/static/white_logo.svg' : '/static/black_logo.svg';
+}
+
+// Clock
+function updateClock() {
+    const now = new Date();
+    document.getElementById('clock').innerHTML = now.toLocaleTimeString('uz-UZ', {hour:'2-digit', minute:'2-digit'});
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// Page navigation
+function showPage(page, btn) {
+    currentPage = page;
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+    document.getElementById(`page-${page}`).classList.add('on');
+    document.querySelectorAll('.sbi').forEach(b => b.classList.remove('on'));
+    if (btn) btn.classList.add('on');
     
-    if (tabName === 'users') {
-        document.querySelector('.tab').classList.add('active');
-        document.getElementById('tab-users').classList.add('active');
-    } else if (tabName === 'groups') {
-        document.querySelectorAll('.tab')[1].classList.add('active');
-        document.getElementById('tab-groups').classList.add('active');
-    } else if (tabName === 'attendance') {
-        document.querySelectorAll('.tab')[2].classList.add('active');
-        document.getElementById('tab-attendance').classList.add('active');
+    const titles = {dash:'Dashboard', users:'Foydalanuvchilar', groups:'Guruhlar', attendance:'O\'qituvchi davomat', payments:'To\'lovlar', branches:'Filiallar', broadcast:'Xabar yuborish', salary:'Maosh hisoblash'};
+    document.getElementById('pgtitle').innerHTML = titles[page] || page;
+    
+    if (page === 'attendance') {
+        document.getElementById('attDate').value = new Date().toISOString().slice(0,10);
+        loadAttendance();
     }
 }
 
-// Format number
-function formatNumber(n) {
-    return n ? n.toLocaleString() : '0';
+// ========== DATA FETCHING ==========
+async function fetchAllData() {
+    try {
+        document.getElementById('updateLabel').innerHTML = 'Yuklanmoqda...';
+        const response = await fetch('/admin/api/data');
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const data = await response.json();
+        appData = data;
+        
+        // Update counts
+        document.getElementById('userCount').innerHTML = data.users?.length || 0;
+        document.getElementById('groupCount').innerHTML = data.groups?.length || 0;
+        document.getElementById('usersTotal').innerHTML = `${data.users?.length || 0} ta`;
+        document.getElementById('groupsTotal').innerHTML = `${data.groups?.length || 0} ta`;
+        
+        // Render
+        renderDashboard();
+        renderUsers();
+        renderGroups();
+        renderBranches();
+        
+        document.getElementById('updateLabel').innerHTML = `Yangilandi ${new Date().toLocaleTimeString()}`;
+    } catch(e) {
+        console.error('Fetch error:', e);
+        toast('❌ Xatolik: ' + e.message);
+        document.getElementById('updateLabel').innerHTML = 'Xatolik';
+    }
 }
 
-// Render users table
-function renderUsers(users) {
-    if (!users || users.length === 0) {
-        document.getElementById('usersTable').innerHTML = '<div class="loading">Hech qanday foydalanuvchi topilmadi</div>';
+// ========== RENDER FUNCTIONS ==========
+function renderDashboard() {
+    if (!appData) return;
+    const users = appData.users || [];
+    const groups = appData.groups || [];
+    const attendance = appData.today_attendance || [];
+    const branches = appData.branches || [];
+    
+    document.getElementById('dashStats').innerHTML = `
+        <div class="sc"><div class="sv">${users.length}</div><div class="sl">Foydalanuvchilar</div></div>
+        <div class="sc"><div class="sv">${groups.length}</div><div class="sl">Guruhlar</div></div>
+        <div class="sc"><div class="sv">${attendance.length}</div><div class="sl">Bugungi davomat</div></div>
+        <div class="sc"><div class="sv">${branches.length}</div><div class="sl">Filiallar</div></div>
+    `;
+    
+    // Today's attendance list
+    const userMap = {};
+    users.forEach(u => userMap[u.user_id] = u);
+    let html = '<div style="padding:16px"><table><thead><tr><th>O\'qituvchi</th><th>Filial</th><th>Vaqt</th></tr></thead><tbody>';
+    attendance.forEach(a => {
+        const user = userMap[a.user_id];
+        html += `<tr><td>${user?.name || a.user_id}</td><td>${a.branch}</td><td>${a.time}</td></tr>`;
+    });
+    html += '</tbody></table></div>';
+    document.getElementById('dashContent').innerHTML = html || '<div class="empty">Bugun davomat yo\'q</div>';
+}
+
+function renderUsers() {
+    if (!appData) return;
+    const users = appData.users || [];
+    if (users.length === 0) {
+        document.getElementById('usersTable').innerHTML = '<tr><td colspan="6"><div class="empty">Hech qanday foydalanuvchi yo\'q</div></td></tr>';
         return;
     }
     
-    const html = `
-        <table>
-            <thead>
-                <tr><th>ID</th><th>Ism</th><th>Mutaxassislik</th><th>Bu oy</th><th>Holat</th></tr>
-            </thead>
-            <tbody>
-                ${users.map(u => `
-                    <tr>
-                        <td>${u.user_id}</td>
-                        <td><strong>${u.name || '-'}</strong></td>
-                        <td><span class="badge badge-${u.specialty || 'active'}">${u.specialty || '-'}</span></td>
-                        <td>${u.attendance_count || 0}</td>
-                        <td><span class="badge badge-${u.status === 'active' ? 'active' : 'blocked'}">${u.status === 'active' ? 'Faol' : u.status}</span></td>
-                    </tr>
-                `).join('')}
-            </tbody>
-        </table>
-    `;
+    let html = '';
+    users.forEach(u => {
+        const specClass = u.specialty === 'IT' ? 'bp' : u.specialty === 'Koreys tili' ? 'bpu' : 'bg';
+        html += `<tr>
+            <td>${u.user_id}</td>
+            <td><strong>${u.name || '-'}</strong></td>
+            <td><span class="btn ${specClass}" style="padding:2px 10px">${u.specialty || '-'}</span></td>
+            <td>${u.attendance_count || 0}</td>
+            <td><span class="btn bs" style="padding:2px 10px">${u.status === 'active' ? 'Faol' : u.status}</span></td>
+            <td><button class="btn bg" onclick="viewUser(${u.user_id})">👁 Ko\'rish</button></td>
+        </tr>`;
+    });
     document.getElementById('usersTable').innerHTML = html;
 }
 
-// Render groups table
-function renderGroups(groups) {
-    if (!groups || groups.length === 0) {
-        document.getElementById('groupsTable').innerHTML = '<div class="loading">Hech qanday guruh topilmadi</div>';
+function renderGroups() {
+    if (!appData) return;
+    const groups = appData.groups || [];
+    if (groups.length === 0) {
+        document.getElementById('groupsTable').innerHTML = '<tr><td colspan="7"><div class="empty">Hech qanday guruh yo\'q</div></td></tr>';
         return;
     }
     
-    const html = `
-        <table>
-            <thead>
-                <tr><th>ID</th><th>Guruh nomi</th><th>Filial</th><th>Fan</th><th>O'qituvchi</th><th>O'quvchilar</th></tr>
-            </thead>
-            <tbody>
-                ${groups.map(g => `
-                    <tr>
-                        <td>${g.id}</td>
-                        <td><strong>${g.group_name || '-'}</strong></td>
-                        <td>${g.branch || '-'}</td>
-                        <td><span class="badge badge-${g.lesson_type || 'active'}">${g.lesson_type || '-'}</span></td>
-                        <td>${g.teacher_name || '-'}</td>
-                        <td>${g.student_count || 0}</td>
-                    </tr>
-                `).join('')}
-            </tbody>
-        </table>
-    `;
+    let html = '';
+    groups.forEach(g => {
+        const typeClass = g.lesson_type === 'IT' ? 'bp' : 'bpu';
+        html += `<tr>
+            <td>${g.id}</td>
+            <td><strong>${g.group_name || '-'}</strong></td>
+            <td>${g.branch || '-'}</td>
+            <td><span class="btn ${typeClass}" style="padding:2px 10px">${g.lesson_type || '-'}</span></td>
+            <td>${g.teacher_name || '-'}</td>
+            <td>${g.student_count || 0}</td>
+            <td><button class="btn bg" onclick="viewGroup(${g.id})">✏️ Tahrirlash</button></td>
+        </tr>`;
+    });
     document.getElementById('groupsTable').innerHTML = html;
 }
 
-// Render attendance table
-function renderAttendance(attendance, users) {
-    if (!attendance || attendance.length === 0) {
-        document.getElementById('attendanceTable').innerHTML = '<div class="loading">Bugun davomat yo\'q</div>';
+function renderBranches() {
+    if (!appData) return;
+    const branches = appData.branches || [];
+    if (branches.length === 0) {
+        document.getElementById('branchesList').innerHTML = '<div class="empty">Hech qanday filial yo\'q</div>';
         return;
     }
     
-    // Create user map for quick lookup
-    const userMap = {};
-    if (users) {
-        users.forEach(u => { userMap[u.user_id] = u; });
-    }
-    
-    const html = `
-        <table>
-            <thead>
-                <tr><th>O'qituvchi</th><th>Fan</th><th>Filial</th><th>Vaqt</th></tr>
-            </thead>
-            <tbody>
-                ${attendance.map(a => {
-                    const user = userMap[a.user_id] || {};
-                    return `
-                        <tr>
-                            <td><strong>${user.name || a.user_id}</strong></td>
-                            <td><span class="badge badge-${user.specialty || 'active'}">${user.specialty || '-'}</span></td>
-                            <td>${a.branch || '-'}</td>
-                            <td>${a.time || '-'}</td>
-                        </tr>
-                    `;
-                }).join('')}
-            </tbody>
-        </table>
-    `;
-    document.getElementById('attendanceTable').innerHTML = html;
+    let html = '<div style="padding:16px"><div style="display:grid;gap:8px">';
+    branches.forEach(b => {
+        html += `<div style="background:var(--card2);padding:12px;border-radius:8px">
+            <strong>${b.name}</strong><br>
+            <span style="font-size:11px;color:var(--tx2)">📍 ${b.lat}, ${b.lon}</span>
+        </div>`;
+    });
+    html += '</div></div>';
+    document.getElementById('branchesList').innerHTML = html;
 }
 
-// Update stats
-function updateStats(users, groups, attendance, branches) {
-    document.getElementById('statsGrid').innerHTML = `
-        <div class="stat-card"><div class="stat-value">${users?.length || 0}</div><div class="stat-label">Foydalanuvchilar</div></div>
-        <div class="stat-card"><div class="stat-value">${groups?.length || 0}</div><div class="stat-label">Guruhlar</div></div>
-        <div class="stat-card"><div class="stat-value">${attendance?.length || 0}</div><div class="stat-label">Bugungi davomat</div></div>
-        <div class="stat-card"><div class="stat-value">${branches?.length || 0}</div><div class="stat-label">Filiallar</div></div>
-    `;
-}
-
-// Main load function
-async function loadAllData() {
-    debug('loadAllData() boshlandi');
-    document.getElementById('statusText').textContent = 'Yuklanmoqda...';
+async function loadAttendance() {
+    const date = document.getElementById('attDate').value;
+    if (!date) return;
     
     try {
-        debug('Fetching /admin/api/data...');
-        const response = await fetch('/admin/api/data');
-        debug(`Response status: ${response.status}`);
+        const response = await fetch(`/admin/api/attendance?date=${date}`);
+        const data = await response.json();
+        const attendance = data.attendance || [];
         
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        if (attendance.length === 0) {
+            document.getElementById('attendanceTable').innerHTML = '<tr><td colspan="4"><div class="empty">Bu kunda davomat yo\'q</div></td></tr>';
+            return;
         }
         
-        const text = await response.text();
-        debug(`Response length: ${text.length} bytes`);
+        // Get user names
+        const users = appData?.users || [];
+        const userMap = {};
+        users.forEach(u => userMap[u.user_id] = u);
         
-        appData = JSON.parse(text);
-        debug('JSON parse successful');
-        
-        const users = appData.users || [];
-        const groups = appData.groups || [];
-        const attendance = appData.today_attendance || [];
-        const branches = appData.branches || [];
-        
-        debug(`Users: ${users.length}, Groups: ${groups.length}, Attendance: ${attendance.length}, Branches: ${branches.length}`);
-        
-        updateStats(users, groups, attendance, branches);
-        renderUsers(users);
-        renderGroups(groups);
-        renderAttendance(attendance, users);
-        
-        document.getElementById('statusText').textContent = `Yangilandi: ${new Date().toLocaleTimeString()}`;
-        debug('loadAllData() tugadi');
-        
+        let html = '';
+        attendance.forEach(a => {
+            const user = userMap[a.user_id];
+            const specClass = user?.specialty === 'IT' ? 'bp' : user?.specialty === 'Koreys tili' ? 'bpu' : 'bg';
+            html += `<tr>
+                <td><strong>${user?.name || a.user_id}</strong></td>
+                <td><span class="btn ${specClass}" style="padding:2px 10px">${user?.specialty || '-'}</span></td>
+                <td>${a.branch}</td>
+                <td>${a.time || '-'}</td>
+            </tr>`;
+        });
+        document.getElementById('attendanceTable').innerHTML = html;
     } catch(e) {
-        debug(`XATOLIK: ${e.message}`);
-        document.getElementById('statusText').textContent = `Xatolik: ${e.message}`;
-        document.getElementById('usersTable').innerHTML = `<div class="error">❌ Xatolik: ${e.message}</div>`;
-        document.getElementById('groupsTable').innerHTML = `<div class="error">❌ Xatolik: ${e.message}</div>`;
-        document.getElementById('attendanceTable').innerHTML = `<div class="error">❌ Xatolik: ${e.message}</div>`;
+        console.error('Load attendance error:', e);
+        document.getElementById('attendanceTable').innerHTML = '<tr><td colspan="4"><div class="empty">Xatolik yuz berdi</div></td></tr>';
     }
 }
 
-// Auto-refresh every 60 seconds
-setInterval(() => {
-    loadAllData();
-}, 60000);
+// ========== GROUP CRUD ==========
+async function openCreateGroupModal() {
+    // Load branches
+    if (appData?.branches) {
+        const select = document.getElementById('newGroupBranch');
+        select.innerHTML = appData.branches.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+    }
+    // Load teachers
+    if (appData?.users) {
+        const teachers = appData.users.filter(u => u.specialty === 'IT' || u.specialty === 'Koreys tili');
+        const select = document.getElementById('newGroupTeacher');
+        select.innerHTML = '<option value="">Tanlang...</option>' + teachers.map(t => `<option value="${t.user_id}">${t.name} (${t.specialty})</option>`).join('');
+    }
+    openModal('createGroupModal');
+}
 
-// Start
-debug('DOMContentLoaded - loadAllData() chaqirilmoqda');
-document.addEventListener('DOMContentLoaded', loadAllData);
+async function createGroup() {
+    const name = document.getElementById('newGroupName').value.trim();
+    const branch = document.getElementById('newGroupBranch').value;
+    const type = document.getElementById('newGroupType').value;
+    const teacherId = document.getElementById('newGroupTeacher').value;
+    const daysRaw = document.getElementById('newGroupDays').value;
+    const time = document.getElementById('newGroupTime').value;
+    
+    if (!name) { toast('Guruh nomini kiriting'); return; }
+    if (!branch) { toast('Filialni tanlang'); return; }
+    if (!daysRaw) { toast('Dars kunlarini kiriting'); return; }
+    
+    const days = daysRaw.split(',').map(d => d.trim());
+    const dayTimes = {};
+    days.forEach(d => { dayTimes[d] = time; });
+    
+    try {
+        const response = await fetch('/admin/api/group/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                group_name: name,
+                branch: branch,
+                lesson_type: type,
+                teacher_id: teacherId ? parseInt(teacherId) : null,
+                day_times: dayTimes,
+                students: []
+            })
+        });
+        const result = await response.json();
+        if (result.ok) {
+            toast('✅ Guruh yaratildi');
+            closeModal('createGroupModal');
+            fetchAllData();
+        } else {
+            toast('❌ Xatolik: ' + (result.error || 'Noma\'lum'));
+        }
+    } catch(e) {
+        toast('❌ Xatolik: ' + e.message);
+    }
+}
+
+// ========== BROADCAST ==========
+async function sendBroadcast() {
+    const to = document.getElementById('broadcastTo').value;
+    const text = document.getElementById('broadcastText').value.trim();
+    
+    if (!text) { toast('Xabar matnini kiriting'); return; }
+    if (!confirm(`${to ? to : 'Barcha foydalanuvchilar'}ga yuborilsinmi?`)) return;
+    
+    try {
+        const response = await fetch('/admin/api/broadcast', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: text, specialty: to })
+        });
+        const result = await response.json();
+        if (result.ok) {
+            toast(`✅ Yuborildi: ${result.sent} ta, Xato: ${result.failed || 0}`);
+            document.getElementById('broadcastText').value = '';
+        } else {
+            toast('❌ Xatolik: ' + (result.error || 'Noma\'lum'));
+        }
+    } catch(e) {
+        toast('❌ Xatolik: ' + e.message);
+    }
+}
+
+// ========== SALARY ==========
+async function loadSalaryTeachers() {
+    const spec = document.getElementById('salarySpec').value;
+    if (!spec) return;
+    
+    try {
+        const response = await fetch(`/admin/api/teachers?specialty=${encodeURIComponent(spec)}`);
+        const teachers = await response.json();
+        const select = document.getElementById('salaryTeacher');
+        select.innerHTML = '<option value="">Tanlang...</option>' + teachers.map(t => `<option value="${t.user_id}">${t.name}</option>`).join('');
+    } catch(e) {
+        console.error('Load teachers error:', e);
+    }
+}
+
+async function calculateSalary() {
+    const spec = document.getElementById('salarySpec').value;
+    const teacherId = document.getElementById('salaryTeacher').value;
+    
+    if (!spec || !teacherId) { toast('Fan va o\'qituvchini tanlang'); return; }
+    
+    try {
+        const response = await fetch('/admin/api/salary', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                specialty: spec,
+                teacher_id: parseInt(teacherId),
+                branches: []
+            })
+        });
+        const result = await response.json();
+        if (result.ok) {
+            document.getElementById('salaryResult').innerHTML = `
+                <div style="background:var(--card2);padding:16px;border-radius:12px;text-align:center">
+                    <div style="font-size:24px;font-weight:800;color:var(--ac)">${result.net?.toLocaleString() || 0} so'm</div>
+                    <div style="font-size:12px;color:var(--tx2)">Qo'lga tegadigan oylik</div>
+                    <div style="margin-top:12px;font-size:11px">Jami: ${result.total_gross?.toLocaleString() || 0} so'm | Soliq: ${result.tax?.toLocaleString() || 0} so'm</div>
+                </div>
+            `;
+        } else {
+            document.getElementById('salaryResult').innerHTML = `<div class="empty">❌ ${result.error || 'Xatolik'}</div>`;
+        }
+    } catch(e) {
+        toast('❌ Xatolik: ' + e.message);
+    }
+}
+
+document.getElementById('salarySpec').addEventListener('change', loadSalaryTeachers);
+
+// ========== LOGOUT ==========
+async function logout() {
+    await fetch('/admin/logout', { method: 'POST' });
+    window.location.href = '/admin';
+}
+
+// ========== INIT ==========
+function initTheme() {
+    if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.getElementById('logo-img').src = '/static/white_logo.svg';
+    }
+}
+
+initTheme();
+fetchAllData();
+
+// Auto refresh every 30 seconds
+setInterval(fetchAllData, 30000);
 </script>
 </body>
 </html>
