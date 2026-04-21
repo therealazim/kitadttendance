@@ -4853,82 +4853,93 @@ async def admin_api_data(request):
         today_str = now_uzb.strftime('%Y-%m-%d')
         this_month = now_uzb.strftime('%Y-%m')
 
-        # Pre-process attendance log into more efficient data structures (do this ONCE)
-        logging.info(f"admin_api_data: daily log entries = {len(daily_attendance_log)}")
+        # DAILY_ATTENDANCE_LOG ni xavfsiz qayta ishlash
+        safe_attendance_log = []
+        for item in daily_attendance_log:
+            try:
+                if len(item) >= 3:
+                    safe_attendance_log.append(item)
+            except Exception:
+                continue
         
         # Build efficient lookup structures
-        month_att_count = {}  # {uid: count}
-        today_att_list = []   # today's attendance
-        daily_counts = {}     # {date: count} for weekly stats
+        month_att_count = {}
+        today_att_list = []
+        daily_counts = {}
         
-        for a in daily_attendance_log:
-            uid, branch, date_str, *rest = a
-            time_str = rest[0] if rest else ''
-            
-            # Monthly count
-            if date_str.startswith(this_month):
-                month_att_count[uid] = month_att_count.get(uid, 0) + 1
-            
-            # Today's attendance
-            if date_str == today_str:
-                today_att_list.append({
-                    'user_id': uid,
-                    'branch': branch,
-                    'time': time_str,
-                })
-            
-            # Daily counts for weekly stats
-            daily_counts[date_str] = daily_counts.get(date_str, 0) + 1
+        for a in safe_attendance_log:
+            try:
+                uid, branch, date_str = a[0], a[1], a[2]
+                time_str = a[3] if len(a) > 3 else ''
+                
+                # Monthly count
+                if date_str.startswith(this_month):
+                    month_att_count[uid] = month_att_count.get(uid, 0) + 1
+                
+                # Today's attendance
+                if date_str == today_str:
+                    today_att_list.append({
+                        'user_id': uid,
+                        'branch': branch,
+                        'time': time_str,
+                    })
+                
+                # Daily counts for weekly stats
+                daily_counts[date_str] = daily_counts.get(date_str, 0) + 1
+            except Exception as e:
+                logging.warning(f"Skipping malformed attendance entry: {a}, error: {e}")
+                continue
 
         # Foydalanuvchilar (arxivdagilar ham)
         users_data = []
-        skipped_users = []
-        logging.info(f"admin_api_data: user_ids count = {len(user_ids)}")
         for uid in user_ids:
-            name = user_names.get(uid, '')
-            if not name:
-                skipped_users.append({'uid': uid, 'name': name, 'reason': 'no name'})
+            try:
+                name = user_names.get(uid, '')
+                if not name:
+                    continue
+                is_archived = '[ARXIV]' in name
+                clean_name = name.replace('[ARXIV]', '').strip()
+                month_att = month_att_count.get(uid, 0)
+                users_data.append({
+                    'user_id': uid,
+                    'name': clean_name,
+                    'specialty': user_specialty.get(uid, ''),
+                    'language': user_languages.get(uid, 'uz'),
+                    'status': 'archived' if is_archived else user_status.get(uid, 'active'),
+                    'attendance_count': month_att,
+                    'photo_url': user_photo_cache.get(uid),
+                })
+            except Exception as e:
+                logging.warning(f"Error processing user {uid}: {e}")
                 continue
-            # Arxivlangan foydalanuvchini aniqlash
-            is_archived = '[ARXIV]' in name
-            clean_name = name.replace('[ARXIV]', '').strip()
-            month_att = month_att_count.get(uid, 0)
-            users_data.append({
-                'user_id': uid,
-                'name': clean_name,
-                'specialty': user_specialty.get(uid, ''),
-                'language': user_languages.get(uid, 'uz'),
-                'status': 'archived' if is_archived else user_status.get(uid, 'active'),
-                'attendance_count': month_att,
-                'photo_url': user_photo_cache.get(uid),
-            })
-        logging.info(f"admin_api_data: returning {len(users_data)} users, skipped {len(skipped_users)} users")
-        if skipped_users:
-            logging.info(f"admin_api_data: skipped users: {skipped_users}")
+        
         users_data.sort(key=lambda x: x['name'])
 
         # Guruhlar
         groups_data = []
         for gid, gdata in groups.items():
-            students = group_students.get(gid, [])
-            tid = gdata.get('teacher_id')
-            groups_data.append({
-                'id': gid,
-                'group_name': gdata.get('group_name', ''),
-                'branch': gdata.get('branch', ''),
-                'lesson_type': gdata.get('lesson_type', ''),
-                'teacher_id': tid,
-                'teacher_name': user_names.get(tid, '—') if tid else '—',
-                'days': gdata.get('days', []),
-                'day_times': gdata.get('day_times', {}),
-                'students': students,
-                'student_count': len(students),
-                'sort_order': gdata.get('sort_order', 0),
-            })
+            try:
+                students = group_students.get(gid, [])
+                tid = gdata.get('teacher_id')
+                groups_data.append({
+                    'id': gid,
+                    'group_name': gdata.get('group_name', ''),
+                    'branch': gdata.get('branch', ''),
+                    'lesson_type': gdata.get('lesson_type', ''),
+                    'teacher_id': tid,
+                    'teacher_name': user_names.get(tid, '—') if tid else '—',
+                    'days': gdata.get('days', []),
+                    'day_times': gdata.get('day_times', {}),
+                    'students': students,
+                    'student_count': len(students),
+                    'sort_order': gdata.get('sort_order', 0),
+                })
+            except Exception as e:
+                logging.warning(f"Error processing group {gid}: {e}")
+                continue
 
         # Bugungi davomat
         today_att = today_att_list
-        logging.info(f"admin_api_data: today_att count = {len(today_att)}")
 
         # Haftalik statistika (oxirgi 7 kun)
         weekly = []
@@ -4939,21 +4950,7 @@ async def admin_api_data(request):
             dow = (now_uzb - timedelta(days=i)).weekday()
             weekly.append({'day': weekday_names[dow], 'count': count, 'date': d})
 
-        # Load day_times from lessons table if missing (fallback for groups without schedule)
-        try:
-            async with db.pool.acquire() as conn:
-                lesson_rows = await conn.fetch("SELECT group_id, day, time FROM lessons")
-                for lr in lesson_rows:
-                    gid = lr['group_id']
-                    if gid in groups:
-                        if 'day_times' not in groups[gid] or not groups[gid].get('day_times'):
-                            groups[gid]['day_times'] = {}
-                        if lr['day'] and lr['time']:
-                            groups[gid]['day_times'][lr['day']] = lr['time']
-        except Exception as e:
-            logging.error(f"load day_times from lessons: {e}")
-
-        # Live class data - dars jadvali va hozirgi darslar
+        # Live class data
         live_classes = {'classes_now': [], 'today_classes': [], 'teachers_status': [], 'upcoming_classes': []}
         try:
             current_time = now_uzb.time()
@@ -4961,66 +4958,61 @@ async def admin_api_data(request):
             current_minute = now_uzb.minute
             current_day_name = now_uzb.strftime('%A')
             
-            # Convert English day names to Uzbek
             day_map = {
                 'Monday': 'Dushanba', 'Tuesday': 'Seshanba', 'Wednesday': 'Chorshanba',
                 'Thursday': 'Payshanba', 'Friday': 'Juma', 'Saturday': 'Shanba', 'Sunday': 'Yakshanba'
             }
             uz_day = day_map.get(current_day_name, current_day_name)
             
-            # Build teacher attendance lookup for today (ONE scan)
-            teacher_att_lookup = {}  # {teacher_id: (attended, time)}
+            teacher_att_lookup = {}
             for a in today_att:
                 user_id = a['user_id']
                 if user_id not in teacher_att_lookup:
                     teacher_att_lookup[user_id] = (True, a.get('time', ''))
             
-            # Jami darslar (bugun uchun)
             all_classes = []
             for gid, gdata in groups.items():
-                day_times = gdata.get('day_times', {})
-                if uz_day in day_times:
-                    time_str = day_times[uz_day]
-                    teacher_id = gdata.get('teacher_id')
-                    teacher_name = user_names.get(teacher_id, '—') if teacher_id else '—'
-                    
-                    # O'qituvchi davomat tekshirish (now using lookup)
-                    teacher_attended, teacher_attend_time = teacher_att_lookup.get(teacher_id, (False, ''))
-                    
-                    class_info = {
-                        'group_id': gid,
-                        'group_name': gdata.get('group_name', ''),
-                        'branch': gdata.get('branch', ''),
-                        'lesson_type': gdata.get('lesson_type', ''),
-                        'teacher_id': teacher_id,
-                        'teacher_name': teacher_name,
-                        'time': time_str,
-                        'student_count': len(group_students.get(gid, [])),
-                        'teacher_attended': teacher_attended,
-                        'teacher_attend_time': teacher_attend_time
-                    }
-                    all_classes.append(class_info)
+                try:
+                    day_times = gdata.get('day_times', {})
+                    if uz_day in day_times:
+                        time_str = day_times[uz_day]
+                        teacher_id = gdata.get('teacher_id')
+                        teacher_name = user_names.get(teacher_id, '—') if teacher_id else '—'
+                        
+                        teacher_attended, teacher_attend_time = teacher_att_lookup.get(teacher_id, (False, ''))
+                        
+                        class_info = {
+                            'group_id': gid,
+                            'group_name': gdata.get('group_name', ''),
+                            'branch': gdata.get('branch', ''),
+                            'lesson_type': gdata.get('lesson_type', ''),
+                            'teacher_id': teacher_id,
+                            'teacher_name': teacher_name,
+                            'time': time_str,
+                            'student_count': len(group_students.get(gid, [])),
+                            'teacher_attended': teacher_attended,
+                            'teacher_attend_time': teacher_attend_time
+                        }
+                        all_classes.append(class_info)
+                except Exception as e:
+                    logging.warning(f"Error processing class {gid}: {e}")
+                    continue
             
-            # Vaqt bo'yicha tartiblash
             all_classes.sort(key=lambda x: x['time'])
             
-            # Hozirgi darslar (hozir vaqt + - 30 daqiqa)
             for cls in all_classes:
                 try:
                     cls_hour, cls_minute = map(int, cls['time'].split(':'))
                     cls_minutes = cls_hour * 60 + cls_minute
                     now_minutes = current_hour * 60 + current_minute
                     
-                    # 30 daqiqa oldin yoki keyin
                     if abs(cls_minutes - now_minutes) <= 30:
                         live_classes['classes_now'].append(cls)
                 except Exception:
                     pass
             
-            # Barcha bugungi darslar
             live_classes['today_classes'] = all_classes
             
-            # O'qituvchilar holati
             teachers_status = {}
             for cls in all_classes:
                 tid = cls['teacher_id']
@@ -5046,7 +5038,6 @@ async def admin_api_data(request):
             
             live_classes['teachers_status'] = list(teachers_status.values())
             
-            # Keyingi darslar (keyingi 2 soat ichida)
             upcoming = []
             for cls in all_classes:
                 try:
@@ -5054,7 +5045,6 @@ async def admin_api_data(request):
                     cls_minutes = cls_hour * 60 + cls_minute
                     now_minutes = current_hour * 60 + current_minute
                     
-                    # Hozir va keyingi 120 daqiqa ichida
                     if cls_minutes > now_minutes and cls_minutes - now_minutes <= 120:
                         upcoming.append(cls)
                 except Exception:
@@ -5064,8 +5054,6 @@ async def admin_api_data(request):
             
         except Exception as e:
             logging.error(f"live_classes error: {e}")
-        logging.info(f"admin_api_data: live_classes summary - now={len(live_classes['classes_now'])}, today={len(live_classes['today_classes'])}, upcoming={len(live_classes['upcoming_classes'])}, teachers={len(live_classes['teachers_status'])}")
-
 
         # Broadcast tarixi
         bc_hist = []
@@ -5085,10 +5073,9 @@ async def admin_api_data(request):
         except Exception as e:
             logging.error(f"broadcast_history fetch: {e}")
 
-        # Dashboard: faol guruhlar o'quvchilar soni (total) vs to'laganlar (paid)
+        # Pay stats
         pay_stats = {'paid': 0, 'total': 0, 'amount': 0}
         try:
-            # Jami o'quvchilar soni - faol guruhlardagi
             total_studs = sum(len(group_students.get(gid, [])) for gid in groups)
             async with db.pool.acquire() as conn:
                 ps = await conn.fetchrow(
