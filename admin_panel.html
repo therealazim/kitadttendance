@@ -435,6 +435,92 @@ tr:hover { background: var(--card2); } .layout{display:flex;height:100vh} .sideb
   animation: spin 0.8s linear infinite;
   display: inline-block;
 }
+
+/* TABLE & CONTENT STYLES */
+.tw { border: 1px solid var(--bd); border-radius: var(--radius); background: var(--card); padding: 16px; margin-bottom: 12px; }
+.th { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; font-weight: 600; font-size: 14px; }
+.tt { flex: 1; color: var(--tx); }
+.tm { font-size: 11px; color: var(--tx2); }
+table { width: 100%; border-collapse: collapse; }
+table thead { background: var(--card2); }
+table thead th { padding: 8px 12px; text-align: left; font-weight: 600; color: var(--tx); font-size: 11px; text-transform: uppercase; border-bottom: 1px solid var(--bd); }
+table tbody td { padding: 10px 12px; font-size: 12px; color: var(--tx); border-bottom: 1px solid var(--bd); }
+table tbody tr:last-child td { border-bottom: none; }
+
+/* GRID LAYOUTS */
+.g2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.g3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.sg { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.gsal { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; align-items: start; }
+.gbr { display: grid; grid-template-columns: 1fr 300px; gap: 16px; }
+
+/* FORM ELEMENTS */
+.fb { background: var(--card2); border: 1px solid var(--bd); border-radius: var(--radius); padding: 16px; }
+.ft { font-weight: 700; font-size: 13px; color: var(--ac); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.fg { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.fg label { font-weight: 500; font-size: 12px; color: var(--tx); }
+.inp { background: var(--card); border: 1px solid var(--bd); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 12px; color: var(--tx); font-family: 'Plus Jakarta Sans', sans-serif; width: 100%; }
+.inp:focus { outline: none; border-color: var(--ac); box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1); }
+[data-theme="dark"] .inp:focus { box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.2); }
+textarea.inp { resize: vertical; }
+
+/* BUTTONS */
+.btn { background: var(--card2); border: 1px solid var(--bd); border-radius: var(--radius-sm); padding: 8px 14px; font-size: 12px; cursor: pointer; font-weight: 500; color: var(--tx); transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px; }
+.btn:hover { background: var(--bd); }
+.btn.bp { background: var(--ac); color: #fff; border-color: var(--ac); }
+.btn.bp:hover { background: var(--ac2); border-color: var(--ac2); }
+.btn.bg { background: rgba(79, 142, 247, 0.1); color: var(--ac); }
+.btn.bg:hover { background: rgba(79, 142, 247, 0.2); }
+.btn.bd { background: rgba(239, 68, 68, 0.1); color: var(--rd); }
+.btn.bd:hover { background: rgba(239, 68, 68, 0.2); }
+.btn.bfull { width: 100%; justify-content: center; }
+.fb2 { background: var(--card); border: 1px solid var(--bd); border-radius: var(--radius-sm); padding: 8px 14px; font-size: 12px; cursor: pointer; color: var(--tx2); transition: all 0.15s; display: inline-block; }
+.fb2:hover { border-color: var(--ac); color: var(--ac); }
+.fb2.on { background: rgba(79, 142, 247, 0.15); color: var(--ac); border-color: var(--ac); font-weight: 600; }
+
+/* SEARCH ROW */
+.sr { display: flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--bd); border-radius: var(--radius-sm); padding: 8px 12px; margin-bottom: 12px; }
+.sr i { color: var(--tx2); }
+.sr input { background: none; border: none; padding: 0; flex: 1; color: var(--tx); font-size: 12px; }
+.sr input::placeholder { color: var(--tx3); }
+.sr input:focus { outline: none; }
+
+/* FILTER ROW */
+.frow { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+
+/* STAT CARD */
+.sc { background: var(--card); border: 1px solid var(--bd); border-radius: var(--radius); padding: 12px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.si { font-size: 28px; margin-bottom: 4px; }
+.sv { font-weight: 700; font-size: 18px; color: var(--tx); }
+.sl { font-size: 11px; color: var(--tx2); margin-top: 4px; }
+
+/* SALARY/BRANCH STYLES */
+.salbr { background: var(--card); border: 1px solid var(--bd); border-radius: var(--radius-sm); padding: 8px 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+.stdi { background: var(--card2); padding: 8px 12px; border-radius: var(--radius-sm); margin-bottom: 6px; font-size: 12px; display: flex; align-items: center; gap: 8px; }
+.brit { background: var(--card); border: 1px solid var(--bd); padding: 10px 12px; border-radius: var(--radius-sm); margin-bottom: 8px; }
+
+/* PAGINATION & STATUS */
+.ldr { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; color: var(--tx2); text-align: center; }
+.empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; color: var(--tx2); }
+.ei { font-size: 32px; margin-bottom: 12px; opacity: 0.5; }
+
+/* INLINE & UTILITY */
+.fr2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.badge { display: inline-block; background: var(--ac); color: #fff; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 600; }
+
+/* TAB STYLES */
+.tabrow { display: flex; gap: 8px; margin-bottom: 12px; border-bottom: 1px solid var(--bd); }
+.tab { background: none; border: none; padding: 10px 14px; border-bottom: 2px solid transparent; color: var(--tx2); cursor: pointer; font-size: 13px; font-weight: 500; }
+.tab:hover { color: var(--tx); }
+.tab.on { color: var(--ac); border-bottom-color: var(--ac); }
+
+/* SALARY TAB */
+.salary-tab { display: none; }
+.salary-tab.on { display: block; }
+
+/* MODAL/DIALOG */
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 999; }
+.modal { background: var(--card); border-radius: var(--radius); padding: 20px; max-height: 80vh; overflow-y: auto; }
 </style>
 </head>
 <body>
