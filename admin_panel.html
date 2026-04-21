@@ -1620,9 +1620,12 @@ async function fetchAll(){
     }
     clearTimeout(timeoutId);
     console.log('Fetch tugadi, status:', r.status);
-if(r.status===401){document.getElementById('updlbl').textContent='401 xato';return;}
-if(r.status!==200){document.getElementById('updlbl').textContent='Status: '+r.status;return;}
-if(!r.ok)throw new Error('HTTP '+r.status);
+if(!r.ok || r.status === 401 || r.status === 403){
+  const txt = await r.text();
+  document.getElementById('updlbl').textContent='Xato: '+r.status + ' - kirmadingizmi?';
+  console.error('Auth error:', r.status, txt);
+  return;
+}
 const txt=await r.text();
 console.log('Response length:', txt.length);
 console.log('Parsing JSON, txt length:', txt ? txt.length : 'empty');
