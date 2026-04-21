@@ -1606,27 +1606,14 @@ async function checkNewNotifications() {
   }
 }
 
-let loadingHidden=false;
-function hideLoadingOverlay(msg){
-  const ol=document.getElementById('loading-overlay');
-  if(!ol) return;
-  if(msg){
-    const p=document.getElementById('loading-msg');
-    if(p) p.textContent=msg;
-  }
-  ol.style.opacity='0';
-  setTimeout(() => { if(ol.parentNode) ol.remove(); }, 500);
-}
-setTimeout(()=>{ if(!loadingHidden){ hideLoadingOverlay('Tayyor'); loadingHidden=true; } },8000);
-
 async function fetchAll(){
 try{
 document.getElementById('updlbl').textContent = 'Yuklanmoqda...';
 const response = await fetch('/admin/api/data');
 if(response.status === 401 || response.status === 403){
-  console.error('Auth error:', response.status);
-  document.getElementById('updlbl').textContent = 'Ruxsat yo\'q!';
-  hideLoadingOverlay('Ruxsat yo\'q');
+  document.getElementById('updlbl').innerHTML = '<span style="color:#f87171">Ruxsat yo\'q! Refresh tugmasini bosing</span>';
+  const ol = document.getElementById('loading-overlay');
+  if(ol) { ol.querySelector('#loading-msg').textContent = 'Login kerak'; ol.style.opacity = '0'; setTimeout(() => ol.remove(), 1000); }
   return;
 }
 if(!response.ok){ throw new Error('HTTP ' + response.status); }
@@ -1639,14 +1626,26 @@ rAll();
 applyLang();
 if(window.lucide) lucide.createIcons();
 document.getElementById('updlbl').textContent = 'Yangilandi: ' + new Date().toLocaleTimeString('uz-UZ', {hour:'2-digit', minute:'2-digit'});
-hideLoadingOverlay();
+const ol = document.getElementById('loading-overlay');
+if(ol) { ol.style.opacity = '0'; setTimeout(() => ol.remove(), 500); }
 }catch(e){
 console.error('fetchAll xato:', e);
-document.getElementById('updlbl').textContent = 'Xatolik: ' + e.message;
-hideLoadingOverlay('Xatolik: ' + e.message);
-toast('<i class="lucide lucide-times"></i> ' + e.message);
+document.getElementById('updlbl').innerHTML = '<span style="color:#f87171">Xatolik - Refresh tugmasini bosing</span>';
+const ol = document.getElementById('loading-overlay');
+if(ol) { ol.querySelector('#loading-msg').textContent = 'Xatolik'; ol.style.opacity = '0'; setTimeout(() => ol.remove(), 1000); }
+toast('<i class="lucide lucide-refresh-cw"></i> Refresh tugmasini bosing');
 }
 }
+
+// Auto-hide after 5 seconds NO MATTER WHAT
+setTimeout(() => {
+  const ol = document.getElementById('loading-overlay');
+  if(ol) { ol.querySelector('#loading-msg').textContent = 'Server javob bermayapti...'; }
+}, 5000);
+setTimeout(() => {
+  const ol = document.getElementById('loading-overlay');
+  if(ol) { ol.style.opacity = '0'; setTimeout(() => ol.remove(), 500); }
+}, 10000);
 function rAll(){
 try{rDash();}catch(e){console.error('rDash:',e);}
 try{rUsers(USERS);}catch(e){console.error('rUsers:',e);}
@@ -2819,12 +2818,8 @@ async function delBr(idx){const b=D.branches[idx];if(!confirm(`"${b?.name||idx}"
 LANG='uz';
 console.log('Admin panel initializing...');
 setTimeout(function(){
-  console.log('Running init after 500ms delay');
   try{applyLang();}catch(e){console.error('applyLang error:',e);}
-  try{fetchAll();}catch(e){
-    console.error('fetchAll top-level error:',e);
-    hideLoadingOverlay('Xatolik yuz berdi');
-  }
+  fetchAll();
 },500);
 
 setInterval(function(){try{fetchAll();}catch(e){console.error('fetchAll interval error:',e);}},120000);
