@@ -1606,28 +1606,48 @@ async function checkNewNotifications() {
   }
 }
 
+let loadingHidden=false;
+let loadingAutoHidden=false;
+function hideLoadingOverlay(msg){
+  if(loadingHidden)return;
+  loadingHidden=true;
+  const ol=document.getElementById('loading-overlay');
+  if(!ol)return;
+  if(!msg){
+    ol.style.opacity='0';
+    setTimeout(()=>{ol.remove();},500);
+  }else{
+    const p=document.getElementById('loading-msg');
+    const sp=ol.querySelector('.spinner');
+    if(p)p.textContent=msg;
+    if(sp)sp.style.display='none';
+    ol.style.opacity='0';
+    setTimeout(()=>{ol.remove();},500);
+  }
+}
+setTimeout(()=>{if(!loadingAutoHidden && !loadingHidden){hideLoadingOverlay('Tayyor');loadingAutoHidden=true;}},8000);
+
 async function fetchAll(){
-  console.log('=== fetchAll START ===');
-  try{
-    console.log('D.keys:', D ? Object.keys(D) : 'D is null');
-    const updlbl = document.getElementById('updlbl');
-    console.log('updlbl element:', updlbl);
-    if(!updlbl){alert('updlbl topilmadi');return;}
-    updlbl.textContent='1-fetch boshlandi...';
-    console.log('Starting fetch to /admin/api/data');
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
-    try{
-      var r = await fetch(_ap('/admin/api/data'), {signal: controller.signal, credentials:'include'});
-    }catch(fetchErr){
-      clearTimeout(timeoutId);
-      if(fetchErr.name === 'AbortError'){
-        updlbl.textContent = 'Timeout - server javob bermaydi';
-        console.error('Fetch timeout');
-      }else{
-        updlbl.textContent = 'Network xato: ' + fetchErr.message;
-        console.error('Fetch error:', fetchErr);
-      }
+try{
+document.getElementById('updlbl').textContent=t('txt_loading');
+const r=await fetch(_ap('/admin/api/data'));
+if(r.status===401){document.getElementById('updlbl').textContent='<i class="lucide lucide-times"></i> Server xato 401';hideLoadingOverlay('Login kerak');return;}
+if(!r.ok)throw new Error('HTTP '+r.status);
+const txt=await r.text();
+try{D=JSON.parse(txt);}catch(pe){console.error('JSON parse xato:',txt.slice(0,200));throw new Error('JSON parse xato');}
+USERS=D.users||[];GROUPS=(D.groups||[]).sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));window._BRANCHES=(D.branches||[]).map(b=>b.name||b).filter(Boolean);
+try{rAll();}catch(re){console.error('rAll xato:',re);document.getElementById('updlbl').textContent='<i class="lucide lucide-times"></i> Render xato: '+re.message;return;}
+applyLang();
+if(window.lucide)lucide.createIcons();
+document.getElementById('updlbl').textContent=t('txt_updated')+': '+new Date().toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit'});
+hideLoadingOverlay();
+}catch(e){
+console.error('fetchAll xato:',e);
+document.getElementById('updlbl').textContent='<i class="lucide lucide-times"></i> Ulanmadi: '+e.message;
+hideLoadingOverlay('Xatolik: '+e.message);
+toast('<i class="lucide lucide-times"></i> '+e.message);
+}
+}
       return;
     }
     clearTimeout(timeoutId);
@@ -2831,48 +2851,14 @@ console.log('Admin panel initializing...');
 setTimeout(function(){
   console.log('Running init after 500ms delay');
   try{applyLang();}catch(e){console.error('applyLang error:',e);}
-  try{newFetchAll();}catch(e){
+  try{fetchAll();}catch(e){
     console.error('fetchAll top-level error:',e);
     hideLoadingOverlay('Xatolik yuz berdi');
   }
 },500);
 
-let loadingHidden=false;
-let loadingAutoHidden=false;
-
-function hideLoadingOverlay(msg){
-  if(loadingHidden)return;
-  loadingHidden=true;
-  const ol=document.getElementById('loading-overlay');
-  if(!ol)return;
-  if(!msg){
-    ol.style.opacity='0';
-    setTimeout(()=>{ol.remove();},500);
-  }else{
-    const p=document.getElementById('loading-msg');
-    const sp=ol.querySelector('.spinner');
-    if(p)p.textContent=msg;
-    if(sp)sp.style.display='none';
-    setTimeout(()=>{ol.style.opacity='0';setTimeout(()=>{ol.remove();},500);},2000);
-  }
-}
-
-const originalFetchAll=fetchAll;
-
-function newFetchAll(){
-  return originalFetchAll().then(()=>{
-    hideLoadingOverlay();
-    loadingAutoHidden=true;
-  }).catch(e=>{
-    console.error('fetchAll error:',e);
-    hideLoadingOverlay('Xatolik: '+e.message);
-  });
-}
-
-setTimeout(()=>{if(!loadingAutoHidden && !loadingHidden){console.log('Auto hiding after 10s');hideLoadingOverlay('Tayyor');loadingAutoHidden=true;}},10000);
-
-setInterval(function(){try{newFetchAll();}catch(e){console.error('fetchAll interval error:',e);}},120000);
-document.addEventListener('visibilitychange',function(){if(!document.hidden)newFetchAll();});
+setInterval(function(){try{fetchAll();}catch(e){console.error('fetchAll interval error:',e);}},120000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden)fetchAll();});
 async function loadApps(){
 document.getElementById('apps-table').innerHTML='<div class="ldr"><div class="spin"></div></div>';
 const r=await fetch('/admin/api/applications',{credentials:'include'}).then(x=>x.json()).catch(()=>null);
