@@ -1597,12 +1597,14 @@ async function checkNewNotifications() {
 }
 
 async function fetchAll(){
-  console.log('fetchAll boshlandi');
+  console.log('=== fetchAll START ===');
   try{
     console.log('D.keys:', D ? Object.keys(D) : 'D is null');
     const updlbl = document.getElementById('updlbl');
+    console.log('updlbl element:', updlbl);
     if(!updlbl){alert('updlbl topilmadi');return;}
     updlbl.textContent='1-fetch boshlandi...';
+    console.log('Starting fetch to /admin/api/data');
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     try{
