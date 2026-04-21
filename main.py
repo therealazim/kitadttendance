@@ -10616,28 +10616,9 @@ async def admin_api_attendance_export(request):
     async with request.app['db'].pool.acquire() as conn:
         rows = await conn.fetch(query, *params)
 
-    # PDF formatda eksport
-    output = io.BytesIO()
-    c = canvas.Canvas(output, pagesize=A4)
-    c.drawString(50, 800, f"Davomat hisoboti: {start} - {end}")
-    
-    y = 770
-    c.setFont("Helvetica", 10)
-    c.drawString(50, y, "ID | Name | Date | Status | Class | Time")
-    y -= 20
-    
-    for r in rows:
-        line = f"{r['student_id']} | {r['student_name']} | {str(r['date'])} | {r['status']} | {r['class_id']} | {r['check_in_time']}"
-        c.drawString(50, y, line)
-        y -= 20
-        if y < 50:
-            c.showPage()
-            y = 800
-            
-    c.save()
-    output.seek(0)
-    
-    resp = web.Response(body=output.read(), content_type='application/pdf')
+    # PDF export in a worker thread to avoid blocking the event loop
+    pdf_bytes = await asyncio.to_thread(_build_attendance_pdf, rows, start, end)
+    resp = web.Response(body=pdf_bytes, content_type='application/pdf')
     resp.headers['Content-Disposition'] = f'attachment; filename="attendance_{start}_to_{end}.pdf"'
     return resp
 
