@@ -1606,46 +1606,55 @@ async function checkNewNotifications() {
   }
 }
 
+// Debug: log fetch start
+const _startFetch = Date.now();
+
 async function fetchAll(){
+console.log('fetchAll called at', Date.now() - _startFetch, 'ms');
 try{
-document.getElementById('updlbl').textContent = 'Yuklanmoqda...';
-const response = await fetch('/admin/api/data');
+document.getElementById('updlbl').textContent = 'Fetching...';
+const response = await fetch('/admin/api/data' + '?t=' + Date.now()); // cache bypass
+console.log('Response status:', response.status);
 if(response.status === 401 || response.status === 403){
-  document.getElementById('updlbl').innerHTML = '<span style="color:#f87171">Ruxsat yo\'q! Refresh tugmasini bosing</span>';
-  const ol = document.getElementById('loading-overlay');
-  if(ol) { ol.querySelector('#loading-msg').textContent = 'Login kerak'; ol.style.opacity = '0'; setTimeout(() => ol.remove(), 1000); }
+  document.getElementById('updlbl').innerHTML = '<span style="color:#f87171">Login required</span>';
+  hideOverlay();
   return;
 }
 if(!response.ok){ throw new Error('HTTP ' + response.status); }
 const text = await response.text();
+console.log('Response text length:', text.length);
 D = JSON.parse(text);
+console.log('Parsed D, users:', D?.users?.length, 'groups:', D?.groups?.length);
 USERS = D?.users || [];
 GROUPS = (D?.groups || []).sort((a,b) => (a.sort_order||0) - (b.sort_order||0));
-window._BRANCHES = (D?.branches || []).map(b => b.name || b).filter(Boolean);
-rAll();
-applyLang();
-if(window.lucide) lucide.createIcons();
-document.getElementById('updlbl').textContent = 'Yangilandi: ' + new Date().toLocaleTimeString('uz-UZ', {hour:'2-digit', minute:'2-digit'});
-const ol = document.getElementById('loading-overlay');
-if(ol) { ol.style.opacity = '0'; setTimeout(() => ol.remove(), 500); }
+window._BRANCHES = (D?.branches || [])/*.map(b => b.name || b)*/.filter(Boolean);
+console.log('Calling rAll()...');
+try{rAll();}catch(re){console.error('rAll error:',re);}
+console.log('rAll done, calling applyLang()...');
+try{applyLang();}catch(al){console.error('applyLang error:',al);}
+if(window.lucide)lucide.createIcons();
+document.getElementById('updlbl').textContent = 'Ready: ' + new Date().toLocaleTimeString();
+hideOverlay();
 }catch(e){
-console.error('fetchAll xato:', e);
-document.getElementById('updlbl').innerHTML = '<span style="color:#f87171">Xatolik - Refresh tugmasini bosing</span>';
-const ol = document.getElementById('loading-overlay');
-if(ol) { ol.querySelector('#loading-msg').textContent = 'Xatolik'; ol.style.opacity = '0'; setTimeout(() => ol.remove(), 1000); }
-toast('<i class="lucide lucide-refresh-cw"></i> Refresh tugmasini bosing');
+console.error('fetchAll error:', e);
+document.getElementById('updlbl').textContent = 'Error: ' + e.message;
+hideOverlay();
 }
 }
 
-// Auto-hide after 5 seconds NO MATTER WHAT
+function hideOverlay(){
+const ol = document.getElementById('loading-overlay');
+if(ol){ ol.style.opacity='0'; setTimeout(()=>ol.remove(),500); }
+}
+
+// Auto-hide after 5 seconds anyway
 setTimeout(() => {
   const ol = document.getElementById('loading-overlay');
-  if(ol) { ol.querySelector('#loading-msg').textContent = 'Server javob bermayapti...'; }
-}, 5000);
+  if(ol){ ol.querySelector('#loading-msg').textContent='Wait...'; }
+}, 8000);
 setTimeout(() => {
-  const ol = document.getElementById('loading-overlay');
-  if(ol) { ol.style.opacity = '0'; setTimeout(() => ol.remove(), 500); }
-}, 10000);
+  hideOverlay();
+}, 12000);
 function rAll(){
 try{rDash();}catch(e){console.error('rDash:',e);}
 try{rUsers(USERS);}catch(e){console.error('rUsers:',e);}
