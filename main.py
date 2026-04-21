@@ -4853,6 +4853,33 @@ async def admin_api_data(request):
         today_str = now_uzb.strftime('%Y-%m-%d')
         this_month = now_uzb.strftime('%Y-%m')
 
+        # Pre-process attendance log into more efficient data structures (do this ONCE)
+        logging.info(f"admin_api_data: daily log entries = {len(daily_attendance_log)}")
+        
+        # Build efficient lookup structures
+        month_att_count = {}  # {uid: count}
+        today_att_list = []   # today's attendance
+        daily_counts = {}     # {date: count} for weekly stats
+        
+        for a in daily_attendance_log:
+            uid, branch, date_str, *rest = a
+            time_str = rest[0] if rest else ''
+            
+            # Monthly count
+            if date_str.startswith(this_month):
+                month_att_count[uid] = month_att_count.get(uid, 0) + 1
+            
+            # Today's attendance
+            if date_str == today_str:
+                today_att_list.append({
+                    'user_id': uid,
+                    'branch': branch,
+                    'time': time_str,
+                })
+            
+            # Daily counts for weekly stats
+            daily_counts[date_str] = daily_counts.get(date_str, 0) + 1
+
         # Foydalanuvchilar (arxivdagilar ham)
         users_data = []
         skipped_users = []
@@ -4865,10 +4892,7 @@ async def admin_api_data(request):
             # Arxivlangan foydalanuvchini aniqlash
             is_archived = '[ARXIV]' in name
             clean_name = name.replace('[ARXIV]', '').strip()
-            month_att = len([
-                a for a in daily_attendance_log
-                if a[0] == uid and a[2].startswith(this_month)
-            ])
+            month_att = month_att_count.get(uid, 0)
             users_data.append({
                 'user_id': uid,
                 'name': clean_name,
@@ -4903,24 +4927,31 @@ async def admin_api_data(request):
             })
 
         # Bugungi davomat
-        today_att = []
-        for a in daily_attendance_log:
-            if a[2] == today_str:
-                today_att.append({
-                    'user_id': a[0],
-                    'branch': a[1],
-                    'time': a[3] if len(a) > 3 else '',
-                })
-        logging.info(f"admin_api_data: today_att count = {len(today_att)}; daily log entries = {len(daily_attendance_log)}")
+        today_att = today_att_list
+        logging.info(f"admin_api_data: today_att count = {len(today_att)}")
 
         # Haftalik statistika (oxirgi 7 kun)
         weekly = []
         weekday_names = ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya']
         for i in range(6, -1, -1):
             d = (now_uzb - timedelta(days=i)).strftime('%Y-%m-%d')
-            count = len([a for a in daily_attendance_log if a[2] == d])
+            count = daily_counts.get(d, 0)
             dow = (now_uzb - timedelta(days=i)).weekday()
             weekly.append({'day': weekday_names[dow], 'count': count, 'date': d})
+
+        # Load day_times from lessons table if missing (fallback for groups without schedule)
+        try:
+            async with db.pool.acquire() as conn:
+                lesson_rows = await conn.fetch("SELECT group_id, day, time FROM lessons")
+                for lr in lesson_rows:
+                    gid = lr['group_id']
+                    if gid in groups:
+                        if 'day_times' not in groups[gid] or not groups[gid].get('day_times'):
+                            groups[gid]['day_times'] = {}
+                        if lr['day'] and lr['time']:
+                            groups[gid]['day_times'][lr['day']] = lr['time']
+        except Exception as e:
+            logging.error(f"load day_times from lessons: {e}")
 
         # Live class data - dars jadvali va hozirgi darslar
         live_classes = {'classes_now': [], 'today_classes': [], 'teachers_status': [], 'upcoming_classes': []}
@@ -4937,6 +4968,13 @@ async def admin_api_data(request):
             }
             uz_day = day_map.get(current_day_name, current_day_name)
             
+            # Build teacher attendance lookup for today (ONE scan)
+            teacher_att_lookup = {}  # {teacher_id: (attended, time)}
+            for a in today_att:
+                user_id = a['user_id']
+                if user_id not in teacher_att_lookup:
+                    teacher_att_lookup[user_id] = (True, a.get('time', ''))
+            
             # Jami darslar (bugun uchun)
             all_classes = []
             for gid, gdata in groups.items():
@@ -4946,14 +4984,8 @@ async def admin_api_data(request):
                     teacher_id = gdata.get('teacher_id')
                     teacher_name = user_names.get(teacher_id, '—') if teacher_id else '—'
                     
-                    # O'qituvchi davomat tekshirish
-                    teacher_attended = False
-                    teacher_attend_time = ''
-                    for a in today_att:
-                        if a['user_id'] == teacher_id:
-                            teacher_attended = True
-                            teacher_attend_time = a.get('time', '')
-                            break
+                    # O'qituvchi davomat tekshirish (now using lookup)
+                    teacher_attended, teacher_attend_time = teacher_att_lookup.get(teacher_id, (False, ''))
                     
                     class_info = {
                         'group_id': gid,
@@ -5033,6 +5065,7 @@ async def admin_api_data(request):
         except Exception as e:
             logging.error(f"live_classes error: {e}")
         logging.info(f"admin_api_data: live_classes summary - now={len(live_classes['classes_now'])}, today={len(live_classes['today_classes'])}, upcoming={len(live_classes['upcoming_classes'])}, teachers={len(live_classes['teachers_status'])}")
+
 
         # Broadcast tarixi
         bc_hist = []
