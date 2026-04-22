@@ -9952,6 +9952,7 @@ async def main():
     
     # Admin API routes
     admin_routes = [
+        ('/admin/api/data', admin_api_data),
         ('/admin/api/attendance', admin_api_attendance),
         ('/admin/api/user/status', admin_api_user_status),
         ('/admin/api/broadcast', admin_api_broadcast),
