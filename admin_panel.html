@@ -1898,7 +1898,12 @@ const [h,m]=(t||'0:0').split(':').map(Number);
 return h*60+(m||0);
 }
 function rAtt(att){
-const dateStr=document.getElementById('attd').value;
+const attDateEl = document.getElementById('attd');
+const attSumEl = document.getElementById('attsum');
+const attTbEl = document.getElementById('atttb');
+const attTtEl = document.getElementById('atttt');
+if (!attDateEl || !attSumEl || !attTbEl || !attTtEl) return;
+const dateStr = attDateEl.value;
 const dow=new Date(dateStr+'T00:00:00').getDay();
 const WMAP=['Yakshanba','Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba'];
 const dayName=WMAP[dow];
