@@ -10426,7 +10426,8 @@ async def handle_static(request):
 
 
 async def main():
-    await db.create_pool()
+    if not await db.create_pool():
+        raise RuntimeError("PostgreSQL bilan bog'lanishda xatolik yuz berdi")
     await db.init_tables()
     await db.load_branches()
     await db.load_configurations()
