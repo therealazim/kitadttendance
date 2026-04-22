@@ -3650,6 +3650,32 @@ async function exportBizReport(){
     stroke-width: 2px;
 }
 #theme-toggle{background:rgba(99,102,241,.15);color:#6366f1;border:1px solid rgba(99,102,241,.3)}
+
+/* Scroll + spacing polish */
+html, body { height: 100%; }
+body { overflow: auto; }
+.layout { height: 100dvh; min-height: 100vh; }
+.main { min-height: 0; }
+.content {
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain;
+    scrollbar-gutter: stable;
+    padding: 20px 22px 28px;
+}
+.page { padding-bottom: 12px; }
+
+/* Section/table spacing */
+.tw, .fb, .live-card, .sc { margin-bottom: 16px !important; }
+.th { padding: 12px 16px; }
+th { padding: 10px 14px; }
+td { padding: 11px 14px; line-height: 1.45; }
+.attsum { margin-bottom: 16px; }
+.sg, .g2, .live-stats-grid { gap: 16px; }
+
+@media (max-width: 650px) {
+    .content { padding: 14px; }
+    th, td { padding: 9px 10px; }
+}
 </style>
 </body>
 </html>
