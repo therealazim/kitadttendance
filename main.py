@@ -10043,7 +10043,7 @@ async def main():
     
     # Bot webhookni o'rnatish
     webhook_url = f"{BASE_URL}/webhook"
-    await bot.session.set_webhook(webhook_url)
+    await bot.set_webhook(webhook_url)
     
     # Web serverni boshlash
     port = int(os.environ.get("PORT", 10000))
