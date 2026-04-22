@@ -10653,7 +10653,7 @@ async def admin_api_users(request):
         return web.Response(text=_json.dumps({'ok': True, 'users': users_data}, ensure_ascii=False), content_type='application/json')
     except Exception as e:
         logging.error(f"admin_api_users error: {e}", exc_info=True)
-return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
+        return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
 
 
 if __name__ == "__main__":
