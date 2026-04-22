@@ -10383,30 +10383,25 @@ async def main():
     await db.load_configurations()
     await db.load_to_ram()
 
-    # Barcha foydalanuvchilar tilini 'uz' ga o'zgartirish (bir martalik migration)
     try:
         async with db.pool.acquire() as conn:
             updated = await conn.execute(
                 "UPDATE users SET language = 'uz' WHERE language != 'uz'"
             )
             logging.info(f"✅ Til migration: {updated}")
-        # RAM dagi user_languages ham yangilash
         for uid in list(user_languages.keys()):
             user_languages[uid] = 'uz'
     except Exception as e:
         logging.error(f"Til migration xato: {e}")
 
-    # Background tasklar
     asyncio.create_task(check_schedule_reminders())
     asyncio.create_task(_cache_all_photos())
     asyncio.create_task(update_all_keyboards())
 
-    # Webhook URL
     WEBHOOK_HOST = BASE_URL
     WEBHOOK_PATH = f"/webhook/{TOKEN}"
     WEBHOOK_URL  = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
 
-    # Webhookni o'rnatamiz
     await bot.set_webhook(
         url=WEBHOOK_URL,
         drop_pending_updates=True,
@@ -10414,16 +10409,13 @@ async def main():
     )
     logging.info(f"✅ Webhook o'rnatildi: {WEBHOOK_URL}")
 
-    # aiohttp server
     from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 
     app = web.Application()
 
-    # Telegram update handler
     SimpleRequestHandler(dispatcher=dp, bot=bot).register(app, path=WEBHOOK_PATH)
     setup_application(app, dp, bot=bot)
 
-    # Qo'shimcha routelar (health check, status)
     app.router.add_get('/static/{filename}', handle_static)
     app.router.add_get('/', handle)
     
@@ -10502,7 +10494,7 @@ async def main():
     app.router.add_post('/admin/api/aiclass/application/delete', admin_api_aiclass_application_delete)
     app.router.add_get('/admin/api/news', admin_api_news_get)
     app.router.add_post('/admin/api/news/save', admin_api_news_save)
-    app.router.add_post('/admin/api/news/delete', admin_api_news_delete)  # Public - sayt uchun
+    app.router.add_post('/admin/api/news/delete', admin_api_news_delete)
     app.router.add_get('/api/partners', api_get_partners)
     app.router.add_get('/api/branches/map', api_branches_map)
     app.router.add_get('/admin/api/partners', admin_api_partners_get)
@@ -10542,25 +10534,20 @@ async def main():
     app.router.add_get('/admin/api/report/daily_pdf', admin_api_daily_pdf)
     app.router.add_get('/admin/api/branch/groups', admin_api_branch_groups)
     app.router.add_get('/admin/api/schedule/view', admin_api_schedule_view)
-    
-    # Hisobot API endpoint'lari
     app.router.add_get('/admin/api/reports/attendance', admin_api_reports_attendance)
     app.router.add_get('/admin/api/reports/groups', admin_api_reports_groups)
     app.router.add_get('/admin/api/reports/students', admin_api_reports_students)
     app.router.add_get('/admin/api/reports/payments', admin_api_reports_payments)
     app.router.add_get('/admin/api/reports/branches', admin_api_reports_branches)
     app.router.add_get('/admin/api/reports/general', admin_api_reports_general)
-    
-    # Business Report API (Korean style)
     app.router.add_get('/admin/api/business/report', admin_api_business_report)
     app.router.add_post('/admin/api/business/expenses', admin_api_business_expenses_save)
-    
-    # Salary Configs API (Korean style)
     app.router.add_get('/admin/api/salary/configs', admin_api_salary_configs_get)
     app.router.add_post('/admin/api/salary/configs', admin_api_salary_configs_save)
     app.router.add_get('/admin/api/salary/teacher-configs', admin_api_teacher_salary_configs_get)
     app.router.add_post('/admin/api/salary/teacher-configs', admin_api_teacher_salary_configs_save)
     app.router.add_get('/admin/api/attendance/export', admin_api_attendance_export)
+    app.router.add_get('/admin/api/users', admin_api_users)
  
     port = int(os.environ.get("PORT", 10000))
     runner = web.AppRunner(app)
@@ -10569,14 +10556,13 @@ async def main():
     await site.start()
     logging.info(f"✅ Web server {port}-portda ishga tushdi")
 
-    # Server ishlayversin
     try:
         await asyncio.Event().wait()
     finally:
         await bot.delete_webhook()
         await runner.cleanup()
 
-# Lazy imports for PDF generation to avoid import-time overhead
+
 def _build_attendance_pdf(rows, start, end):
     from reportlab.lib.pagesizes import A4
     from reportlab.pdfgen import canvas
@@ -10623,9 +10609,216 @@ async def admin_api_users(request):
         return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
 
 async def main():
+    await db.create_pool()
     await db.init_tables()
     await db.load_branches()
     await db.load_configurations()
-    await load_to_ram()
-    # ... (rest of the initialization)
+    await db.load_to_ram()
+
+    try:
+        async with db.pool.acquire() as conn:
+            updated = await conn.execute(
+                "UPDATE users SET language = 'uz' WHERE language != 'uz'"
+            )
+            logging.info(f"✅ Til migration: {updated}")
+        for uid in list(user_languages.keys()):
+            user_languages[uid] = 'uz'
+    except Exception as e:
+        logging.error(f"Til migration xato: {e}")
+
+    asyncio.create_task(check_schedule_reminders())
+    asyncio.create_task(_cache_all_photos())
+    asyncio.create_task(update_all_keyboards())
+
+    WEBHOOK_HOST = BASE_URL
+    WEBHOOK_PATH = f"/webhook/{TOKEN}"
+    WEBHOOK_URL  = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
+
+    await bot.set_webhook(
+        url=WEBHOOK_URL,
+        drop_pending_updates=True,
+        allowed_updates=["message", "callback_query", "inline_query"]
+    )
+    logging.info(f"✅ Webhook o'rnatildi: {WEBHOOK_URL}")
+
+    from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
+
+    app = web.Application()
+
+    SimpleRequestHandler(dispatcher=dp, bot=bot).register(app, path=WEBHOOK_PATH)
+    setup_application(app, dp, bot=bot)
+
+    app.router.add_get('/static/{filename}', handle_static)
+    app.router.add_get('/', handle)
+    
+    async def handle_register(request):
+        import os
+        html_path = os.path.join(os.path.dirname(__file__), 'royxatdan_otish.html')
+        try:
+            with open(html_path, 'r', encoding='utf-8') as f:
+                html = f.read()
+            return web.Response(text=html, content_type='text/html', charset='utf-8')
+        except FileNotFoundError:
+            return web.Response(text='File not found', status=404)
+    
+    app.router.add_get('/register', handle_register)
+    
+    async def handle_aiclass(request):
+        import os
+        html_path = os.path.join(os.path.dirname(__file__), 'aiclass.html')
+        try:
+            with open(html_path, 'r', encoding='utf-8') as f:
+                html = f.read()
+            return web.Response(text=html, content_type='text/html', charset='utf-8')
+        except FileNotFoundError:
+            return web.Response(text='File not found', status=404)
+    
+    app.router.add_get('/aiclass', handle_aiclass)
+    import os as _os
+    if _os.path.isdir('static'):
+        app.router.add_static('/static', path='static', name='static')
+    if _os.path.isdir('docs'):
+        app.router.add_static('/docs', path='docs', name='docs')
+    app.router.add_get('/health', health_check)
+    app.router.add_get('/admin', admin_panel_page)
+    app.router.add_post('/admin/login', admin_login)
+    app.router.add_post('/admin/logout', admin_logout)
+    app.router.add_get('/admin/api/data', admin_api_data)
+    app.router.add_get('/admin/api/attendance', admin_api_attendance)
+    app.router.add_post('/admin/api/user/status', admin_api_user_status)
+    app.router.add_post('/admin/api/broadcast', admin_api_broadcast)
+    app.router.add_post('/admin/api/branch/add', admin_api_branch_add)
+    app.router.add_get('/admin/api/report/{type}', admin_api_report)
+    app.router.add_get('/admin/api/stats', admin_api_stats)
+    app.router.add_get('/admin/api/teachers', admin_api_teachers_list)
+    app.router.add_get('/admin/api/student_att', admin_api_student_att)
+    app.router.add_get('/admin/api/payments/summary', admin_api_payments_summary)
+    app.router.add_get('/admin/api/student_payments', admin_api_student_payments)
+    app.router.add_post('/admin/api/payment/save', miniapp_save_payment)
+    app.router.add_post('/admin/api/salary', admin_api_salary_calc)
+    app.router.add_post('/admin/api/office/salary', admin_api_office_salary_calc)
+    app.router.add_post('/admin/api/office/salary/excel', admin_api_office_salary_excel)
+    app.router.add_get('/admin/api/office/employees', admin_api_office_employees_list)
+    app.router.add_get('/admin/api/salary/structure', admin_api_salary_structure)
+    app.router.add_post('/admin/api/group/delete', admin_api_group_delete)
+    app.router.add_post('/admin/api/user/delete', admin_api_user_delete)
+    app.router.add_post('/admin/api/user/restore', admin_api_user_restore)
+    app.router.add_post('/admin/api/user/permanent-delete', admin_api_user_permanent_delete)
+    app.router.add_get('/admin/api/user/stats', admin_api_user_stats)
+    app.router.add_get('/admin/api/user/photos', admin_api_user_photos)
+    app.router.add_get('/admin/api/group/detail', admin_api_group_detail)
+    app.router.add_post('/admin/api/group/edit/schedule', admin_api_group_edit_schedule)
+    app.router.add_post('/admin/api/group/edit/teacher', admin_api_group_edit_teacher)
+    app.router.add_post('/admin/api/group/edit/branch', admin_api_group_edit_branch)
+    app.router.add_post('/admin/api/group/edit/name', admin_api_group_edit_name)
+    app.router.add_get('/api/site/config', admin_api_site_config_get)
+    app.router.add_post('/api/apply', api_submit_application)
+    app.router.add_post('/api/bootcamp/apply', api_bootcamp_apply)
+    app.router.add_get('/admin/api/applications', admin_api_applications_get)
+    app.router.add_post('/admin/api/application/status', admin_api_application_status)
+    app.router.add_post('/admin/api/application/delete', admin_api_application_delete)
+    app.router.add_get('/admin/api/bootcamp/applications', admin_api_bootcamp_applications_get)
+    app.router.add_post('/admin/api/bootcamp/application/status', admin_api_bootcamp_application_status)
+    app.router.add_post('/admin/api/bootcamp/application/delete', admin_api_bootcamp_application_delete)
+    app.router.add_post('/api/aiclass/apply', api_aiclass_apply)
+    app.router.add_get('/admin/api/aiclass/applications', admin_api_aiclass_applications_get)
+    app.router.add_post('/admin/api/aiclass/application/status', admin_api_aiclass_application_status)
+    app.router.add_post('/admin/api/aiclass/application/delete', admin_api_aiclass_application_delete)
+    app.router.add_get('/admin/api/news', admin_api_news_get)
+    app.router.add_post('/admin/api/news/save', admin_api_news_save)
+    app.router.add_post('/admin/api/news/delete', admin_api_news_delete)
+    app.router.add_get('/api/partners', api_get_partners)
+    app.router.add_get('/api/branches/map', api_branches_map)
+    app.router.add_get('/admin/api/partners', admin_api_partners_get)
+    app.router.add_post('/admin/api/partners/save', admin_api_partners_save)
+    app.router.add_post('/admin/api/partners/delete', admin_api_partners_delete)
+    app.router.add_get('/admin/api/site/config', admin_api_site_config_get)
+    app.router.add_post('/admin/api/site/config', admin_api_site_config_save)
+    app.router.add_post('/admin/api/upload/image', admin_api_upload_image)
+    app.router.add_post('/api/upload/resume', api_upload_resume)
+    resumes_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'resumes')
+    os.makedirs(resumes_dir, exist_ok=True)
+    app.router.add_static('/resumes', path='resumes', name='resumes')
+    app.router.add_post('/admin/api/group/reorder', admin_api_group_reorder)
+    app.router.add_post('/admin/api/group/create', admin_api_group_create)
+    app.router.add_get('/admin/api/group/excel', admin_api_group_excel)
+    app.router.add_post('/admin/api/student/add', admin_api_student_add)
+    app.router.add_post('/admin/api/student/edit', admin_api_student_edit)
+    app.router.add_post('/admin/api/student/delete', admin_api_student_delete)
+    app.router.add_post('/admin/api/branch/delete', admin_api_branch_delete)
+    app.router.add_post('/admin/api/branch/update', admin_api_branch_update)
+    app.router.add_get('/teacher', miniapp_teacher_page)
+    app.router.add_get('/teacher/api/profile/photo', miniapp_get_profile_photo)
+    app.router.add_post('/teacher/api/profile/update', miniapp_update_profile)
+    app.router.add_post('/teacher/api/lang/change', miniapp_change_lang)
+    app.router.add_get('/teacher/api/data', miniapp_teacher_data)
+    app.router.add_get('/teacher/api/group/students', miniapp_group_students)
+    app.router.add_post('/teacher/api/payment/save', miniapp_save_payment)
+    app.router.add_post('/teacher/api/student/add', miniapp_add_student)
+    app.router.add_post('/teacher/api/student/delete', miniapp_del_student)
+    app.router.add_get('/teacher/api/group/attendance', miniapp_group_att_history)
+    app.router.add_get('/miniapp', miniapp_page)
+    app.router.add_get('/miniapp/api/init', miniapp_api_init)
+    app.router.add_get('/miniapp/api/students', miniapp_api_students)
+    app.router.add_post('/miniapp/api/submit', miniapp_api_submit)
+    app.router.add_post('/admin/api/salary/excel', admin_api_salary_excel)
+    app.router.add_get('/admin/api/report/monthly', admin_api_monthly_excel)
+    app.router.add_get('/admin/api/report/daily_pdf', admin_api_daily_pdf)
+    app.router.add_get('/admin/api/branch/groups', admin_api_branch_groups)
+    app.router.add_get('/admin/api/schedule/view', admin_api_schedule_view)
+    app.router.add_get('/admin/api/reports/attendance', admin_api_reports_attendance)
+    app.router.add_get('/admin/api/reports/groups', admin_api_reports_groups)
+    app.router.add_get('/admin/api/reports/students', admin_api_reports_students)
+    app.router.add_get('/admin/api/reports/payments', admin_api_reports_payments)
+    app.router.add_get('/admin/api/reports/branches', admin_api_reports_branches)
+    app.router.add_get('/admin/api/reports/general', admin_api_reports_general)
+    app.router.add_get('/admin/api/business/report', admin_api_business_report)
+    app.router.add_post('/admin/api/business/expenses', admin_api_business_expenses_save)
+    app.router.add_get('/admin/api/salary/configs', admin_api_salary_configs_get)
+    app.router.add_post('/admin/api/salary/configs', admin_api_salary_configs_save)
+    app.router.add_get('/admin/api/salary/teacher-configs', admin_api_teacher_salary_configs_get)
+    app.router.add_post('/admin/api/salary/teacher-configs', admin_api_teacher_salary_configs_save)
+    app.router.add_get('/admin/api/attendance/export', admin_api_attendance_export)
+    app.router.add_get('/admin/api/users', admin_api_users)
+ 
+    port = int(os.environ.get("PORT", 10000))
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, '0.0.0.0', port)
+    await site.start()
+    logging.info(f"✅ Web server {port}-portda ishga tushdi")
+
+    try:
+        await asyncio.Event().wait()
+    finally:
+        await bot.delete_webhook()
+        await runner.cleanup()
+
+
+async def admin_api_users(request):
+    """Admin: Barcha foydalanuvchilar ro'yxati"""
+    import json as _json
+    if not _check_admin_request(request):
+        return web.Response(text=_json.dumps({'ok': False, 'error': 'Unauthorized'}), content_type='application/json')
+    
+    try:
+        users_raw = await db.get_all_users()
+        users_data = []
+        for u in users_raw:
+            users_data.append({
+                'user_id': u['user_id'],
+                'full_name': u['full_name'],
+                'specialty': u['specialty'],
+                'status': u['status'],
+                'language': u['language'],
+                'created_at': str(u['created_at'])
+            })
+        return web.Response(text=_json.dumps({'ok': True, 'users': users_data}, ensure_ascii=False), content_type='application/json')
+    except Exception as e:
+        logging.error(f"admin_api_users error: {e}", exc_info=True)
+        return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
 
