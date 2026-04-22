@@ -10063,7 +10063,7 @@ async def main():
     finally:
         await on_shutdown()
 
-if __name__ == "__main__":
+if __name__ == "__main__" and False:
     logging.info("Bot ishga tushmoqda...")
     try:
         asyncio.run(main())
