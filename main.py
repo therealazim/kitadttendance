@@ -9927,10 +9927,9 @@ async def on_shutdown():
 
 async def main():
     global bot, dp
-    
-    # Startup handle
-    dp.startup.register(on_startup)
-    dp.shutdown.register(on_shutdown)
+    # Bu webhook oqimida dp.startup hook avtomatik ishlamaydi.
+    # Shuning uchun DB init va RAM cache'ni qo'lda startupda ishga tushiramiz.
+    await on_startup()
     
     # Web app yaratish
     app = web.Application()
@@ -10061,6 +10060,8 @@ async def main():
         await asyncio.sleep(float('inf'))
     except KeyboardInterrupt:
         pass
+    finally:
+        await on_shutdown()
 
 if __name__ == "__main__":
     logging.info("Bot ishga tushmoqda...")
