@@ -9855,55 +9855,184 @@ async def egrp_teacher_selected(callback: types.CallbackQuery, state: FSMContext
             f"Guruh: {grp['group_name']}\n"
             f"Yangi o'qituvchi: {new_teacher_name}"
         )
-    except Exception as e:
-        logging.error(f"egrp_teacher_selected error: {e}")
-        await callback.answer(f"❌ Xatolik: {e}", show_alert=True)
-    await state.clear()
-
-@dp.callback_query(F.data.startswith("grp_update_students_"))
-async def grp_update_students_start(callback: types.CallbackQuery, state: FSMContext):
-    if not check_admin(callback.message.chat.id):
-        await callback.answer("Ruxsat yo'q!")
-        return
-    try:
-
-        group_id = int(callback.data.replace("grp_update_students_", ""))
-
-    except (ValueError, KeyError):
-
-        await callback.answer("Xatolik!", show_alert=True)
-
-        return
-    # Mavjud o'quvchilar bilan shablon Excel yuboramiz
-    try:
-        async with db.pool.acquire() as conn:
-            grp = await conn.fetchrow("SELECT * FROM groups WHERE id=$1", group_id)
-            students = await conn.fetch("SELECT * FROM group_students WHERE group_id=$1 ORDER BY id", group_id)
-        wb = openpyxl.Workbook()
-        ws = wb.active
-        ws.title = "O'quvchilar"
-        ws["A1"] = f"Guruh: {grp['group_name']} | {grp['branch']}"
-        ws["A1"].font = Font(bold=True, size=13, color="FFFFFF")
-        ws["A1"].fill = PatternFill("solid", fgColor="4472C4")
-        ws.merge_cells("A1:B1")
-        for col, h in enumerate(["Ism Familiya", "Telefon raqami"], 1):
-            cell = ws.cell(row=2, column=col, value=h)
-            cell.font = Font(bold=True, color="FFFFFF")
-            cell.fill = PatternFill("solid", fgColor="2E86AB")
-            cell.alignment = Alignment(horizontal="center")
-        for idx, std in enumerate(students, 1):
-            ws.cell(row=2+idx, column=1, value=std["student_name"])
-            ws.cell(row=2+idx, column=2, value=std["student_phone"])
-        ws.column_dimensions["A"].width = 30
-        ws.column_dimensions["B"].width = 20
-        buf = io.BytesIO()
-        wb.save(buf)
-        buf.seek(0)
-        await state.update_data(excel_upload_group_id=group_id)
-        await state.set_state(ExcelUploadGroup.waiting_file)
-        builder = InlineKeyboardBuilder()
-        builder.row(InlineKeyboardButton(text="Bekor qilish", callback_data=f"grp_view_{group_id}"))
         await callback.message.answer_document(
+            types.BufferedInputFile(buf.getvalue(), filename=f"oquvchilar_{grp['group_name']}.xlsx"),
+            caption="Iltimos, o'quvchi ma'lumotlarini to'ldiring va qaytadan yuboring"
+        )
+    except Exception as e:
+        logging.error(f"grp_update_students error: {e}")
+        await callback.answer(f"Xatolik: {e}", show_alert=True)
+
+# ═══════════════════════════════════════════════════════════════
+# MAIN START - Bot va Web Server
+# ═══════════════════════════════════════════════════════════════
+
+async def on_startup():
+    """Bot va web serverini boshlash"""
+    # PostgreSQL bilan ulanish
+    if not await db.create_pool():
+        raise RuntimeError("PostgreSQL bilan bog'lana olmadik")
+    
+    # Jadvallarni yaratish
+    await db.init_tables()
+    
+    # Branchlarni va konfiguratsiyalarni yuklash
+    await db.load_branches()
+    await db.load_configurations()
+    
+    # RAM ga ma'lumotlarni yuklash
+    await db.load_to_ram()
+    
+    logging.info("✅ Bot ishga tushdi!")
+
+async def on_shutdown():
+    """Bot to'xtatilganda"""
+    if db.pool:
+        await db.pool.close()
+    logging.info("Bot to'xtatildi")
+
+async def main():
+    global bot, dp
+    
+    # Startup handle
+    dp.startup.register(on_startup)
+    dp.shutdown.register(on_shutdown)
+    
+    # Web app yaratish
+    app = web.Application()
+    
+    # Public routes
+    app.router.add_get('/', handle)
+    app.router.add_post('/api/submit_application', api_submit_application)
+    app.router.add_post('/api/bootcamp_apply', api_bootcamp_apply)
+    app.router.add_post('/api/aiclass_apply', api_aiclass_apply)
+    app.router.add_get('/api/news', api_get_news)
+    app.router.add_get('/api/partners', api_get_partners)
+    app.router.add_get('/api/branches_map', api_branches_map)
+    app.router.add_post('/api/upload_resume', api_upload_resume)
+    
+    # Admin panel routes
+    app.router.add_get('/admin', admin_panel_page)
+    app.router.add_post('/admin/login', admin_login)
+    app.router.add_post('/admin/logout', admin_logout)
+    
+    # Admin API routes
+    admin_routes = [
+        ('/admin/api/attendance', admin_api_attendance),
+        ('/admin/api/user/status', admin_api_user_status),
+        ('/admin/api/broadcast', admin_api_broadcast),
+        ('/admin/api/branch/add', admin_api_branch_add),
+        ('/admin/api/report/{type}', admin_api_report),
+        ('/admin/api/stats', admin_api_stats),
+        ('/admin/api/salary/calc', admin_api_salary_calc),
+        ('/admin/api/office/salary/calc', admin_api_office_salary_calc),
+        ('/admin/api/office/salary/excel', admin_api_office_salary_excel),
+        ('/admin/api/office/employees_list', admin_api_office_employees_list),
+        ('/admin/api/salary/structure', admin_api_salary_structure),
+        ('/admin/api/teachers/list', admin_api_teachers_list),
+        ('/admin/api/payments/summary', admin_api_payments_summary),
+        ('/admin/api/student/payments', admin_api_student_payments),
+        ('/admin/api/student/att', admin_api_student_att),
+        ('/admin/api/user/delete', admin_api_user_delete),
+        ('/admin/api/user/restore', admin_api_user_restore),
+        ('/admin/api/user/permanent_delete', admin_api_user_permanent_delete),
+        ('/admin/api/user/photos', admin_api_user_photos),
+        ('/admin/api/user/stats', admin_api_user_stats),
+        ('/admin/api/group/detail', admin_api_group_detail),
+        ('/admin/api/group/edit_schedule', admin_api_group_edit_schedule),
+        ('/admin/api/group/edit_teacher', admin_api_group_edit_teacher),
+        ('/admin/api/group/edit_branch', admin_api_group_edit_branch),
+        ('/admin/api/group/edit_name', admin_api_group_edit_name),
+        ('/admin/api/student/add', admin_api_student_add),
+        ('/admin/api/student/edit', admin_api_student_edit),
+        ('/admin/api/student/delete', admin_api_student_delete),
+        ('/admin/api/group/create', admin_api_group_create),
+        ('/admin/api/group/excel', admin_api_group_excel),
+        ('/admin/api/branch/delete', admin_api_branch_delete),
+        ('/admin/api/branch/update', admin_api_branch_update),
+        ('/admin/api/salary/excel', admin_api_salary_excel),
+        ('/admin/api/monthly_excel', admin_api_monthly_excel),
+        ('/admin/api/daily_pdf', admin_api_daily_pdf),
+        ('/admin/api/branch_groups', admin_api_branch_groups),
+        ('/admin/api/schedule_view', admin_api_schedule_view),
+        ('/admin/api/bootcamp_applications', admin_api_bootcamp_applications_get),
+        ('/admin/api/bootcamp_application/status', admin_api_bootcamp_application_status),
+        ('/admin/api/bootcamp_application/delete', admin_api_bootcamp_application_delete),
+        ('/admin/api/aiclass_applications', admin_api_aiclass_applications_get),
+        ('/admin/api/aiclass_application/status', admin_api_aiclass_application_status),
+        ('/admin/api/aiclass_application/delete', admin_api_aiclass_application_delete),
+        ('/admin/api/applications', admin_api_applications_get),
+        ('/admin/api/application/status', admin_api_application_status),
+        ('/admin/api/application/delete', admin_api_application_delete),
+        ('/admin/api/news/save', admin_api_news_save),
+        ('/admin/api/news/delete', admin_api_news_delete),
+        ('/admin/api/news', admin_api_news_get),
+        ('/admin/api/partners', admin_api_partners_get),
+        ('/admin/api/partners/save', admin_api_partners_save),
+        ('/admin/api/partners/delete', admin_api_partners_delete),
+        ('/admin/api/site_config', admin_api_site_config_get),
+        ('/admin/api/site_config/save', admin_api_site_config_save),
+        ('/admin/api/upload_image', admin_api_upload_image),
+        ('/admin/api/reports/attendance', admin_api_reports_attendance),
+        ('/admin/api/reports/students', admin_api_reports_students),
+        ('/admin/api/reports/groups', admin_api_reports_groups),
+        ('/admin/api/reports/payments', admin_api_reports_payments),
+        ('/admin/api/reports/branches', admin_api_reports_branches),
+        ('/admin/api/reports/general', admin_api_reports_general),
+        ('/admin/api/business_report', admin_api_business_report),
+        ('/admin/api/business_expenses_save', admin_api_business_expenses_save),
+        ('/admin/api/salary_configs', admin_api_salary_configs_get),
+        ('/admin/api/salary_configs/save', admin_api_salary_configs_save),
+        ('/admin/api/teacher_salary_configs', admin_api_teacher_salary_configs_get),
+        ('/admin/api/teacher_salary_configs/save', admin_api_teacher_salary_configs_save),
+    ]
+    
+    for route, handler in admin_routes:
+        if '{' in route:
+            app.router.add_get(route, handler)
+        else:
+            app.router.add_post(route, handler)
+            app.router.add_get(route, handler)
+    
+    # Static files
+    static_path = os.path.join(os.path.dirname(__file__), 'static')
+    if os.path.exists(static_path):
+        app.router.add_static('/static', static_path)
+    
+    # Webhook handler
+    async def webhook_handler(request):
+        update = types.Update(**await request.json())
+        await dp.feed_update(bot, update)
+        return web.Response(text="ok")
+    
+    app.router.add_post('/webhook', webhook_handler)
+    
+    # Bot webhookni o'rnatish
+    webhook_url = f"{BASE_URL}/webhook"
+    await bot.session.set_webhook(webhook_url)
+    
+    # Web serverni boshlash
+    port = int(os.environ.get("PORT", 10000))
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
+    
+    logging.info(f"✅ Web server {port}-portda ishga tushdi!")
+    logging.info(f"✅ Webhook: {webhook_url}")
+    
+    # Dispatcher poling yoki webhook bilan ishlaydi
+    try:
+        await asyncio.sleep(float('inf'))
+    except KeyboardInterrupt:
+        pass
+
+if __name__ == "__main__":
+    logging.info("Bot ishga tushmoqda...")
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logging.info("Bot to'xtatildi")
             types.BufferedInputFile(buf.read(), filename=f"oquvchilar_{grp['group_name']}.xlsx"),
             caption=(
                 f"📋 {grp['group_name']} guruhi o'quvchilari ro'yxati\n\n"
