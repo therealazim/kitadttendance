@@ -3655,6 +3655,18 @@ async function exportBizReport(){
 html, body { height: 100%; }
 body { overflow: auto; }
 .layout { height: 100dvh; min-height: 100vh; }
+.sidebar {
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+}
+.sbnav {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
 .main { min-height: 0; }
 .content {
     overflow-y: auto !important;
