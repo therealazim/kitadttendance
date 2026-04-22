@@ -582,10 +582,12 @@ tr:hover { background: var(--card2); } .layout{display:flex;height:100vh} .sideb
   </div>
   <div class="tw">
     <div class="th"><span class="tt">Foydalanuvchilar</span><span class="tm" id="ucnt"></span></div>
-    <div style="overflow-x:auto"><table>
-      <thead><tr><th>Ism</th><th>Fan</th><th>Bu oy</th><th>Holat</th><th>Amallar</th></tr></thead>
-      <tbody id="utb"></tbody>
-    </table></div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>Ism</th><th>Fan</th><th>Bu oy</th><th>Holat</th><th>Amallar</th></tr></thead>
+        <tbody id="utb"></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
@@ -622,11 +624,22 @@ tr:hover { background: var(--card2); } .layout{display:flex;height:100vh} .sideb
 </div>
   <div class="attsum" id="attsum"></div>
   <div class="tw">
-    <div class="th"><span class="tt" id="atttt">Davomat</span></div>
-    <div style="overflow-x:auto"><table>
-      <thead><tr><th>O'qituvchi</th><th>Fan</th><th>Filial</th><th>Dars boshlanish</th><th>Vaqt</th><th>Holat</th></tr></thead>
-      <tbody id="atttb"></tbody>
-    </table></div>
+    <div class="th"><span class="tt">Foydalanuvchilar</span><span class="tm" id="ucnt"></span></div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Ism</th>
+            <th>Fan</th>
+            <th>Bu oy</th>
+            <th>Holat</th>
+            <th>Amallar</th>
+          </tr>
+        </thead>
+        <tbody id="utb"></tbody>
+      </table>
+    </div>
+  </div>
   </div>
 </div>
 
@@ -1136,12 +1149,18 @@ tr:hover { background: var(--card2); } .layout{display:flex;height:100vh} .sideb
 </div>
 <div class="toast" id="toast"></div>
 
-<script>let D=null,USERS=[],GROUPS=[],SALS=[];
-function _ap(p){return p;}
-function _ah(){
-  const token = document.cookie.split('; ').find(row => row.startsWith('admin_token='))?.split('=')[1];
-  return token ? { 'Authorization': 'Bearer ' + token } : {};
+<script>
+// ========== TUZATILGAN FUNKSIYALAR ==========
+function _ap(p){ 
+    if (!p) return '/';
+    return p.startsWith('/') ? p : '/' + p; 
 }
+
+function _ah(){
+    return {};
+}
+
+let D=null,USERS=[],GROUPS=[],SALS=[];
 // Cookie tekshiruvi server tomonida amalga oshiriladi
 let _uF='',_gid=null,_gdat=null,_cgS=[],_calY=new Date().getFullYear(),_calM=new Date().getMonth(),_calSel=null,_saBr=null,_saGid=null,_salRes=null;
 const TODAY=new Date().toISOString().slice(0,10);
@@ -1460,25 +1479,39 @@ async function checkNewNotifications() {
   }
 }
 
+// ========== TUZATILGAN fetchAll FUNKSIYASI ==========
 async function fetchAll(){
 try{
-document.getElementById('updlbl').textContent=t('txt_loading');
-const r=await fetch(_ap('/admin/api/data'));
-if(r.status===401){document.getElementById('updlbl').textContent='<i class="lucide lucide-times"></i> Server xato 401';return;}
-if(!r.ok)throw new Error('HTTP '+r.status);
-const txt=await r.text();
-try{D=JSON.parse(txt);}catch(pe){console.error('JSON parse xato:',txt.slice(0,200));throw new Error('JSON parse xato');}
-USERS=D.users||[];GROUPS=(D.groups||[]).sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));window._BRANCHES=(D.branches||[]).map(b=>b.name||b).filter(Boolean);
-try{rAll();}catch(re){console.error('rAll xato:',re);document.getElementById('updlbl').textContent='<i class="lucide lucide-times"></i> Render xato: '+re.message;return;}
-applyLang();
-if(window.lucide)lucide.createIcons();
-document.getElementById('updlbl').textContent=t('txt_updated')+': '+new Date().toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit'});
-}catch(e){
-console.error('fetchAll xato:',e);
-document.getElementById('updlbl').textContent='<i class="lucide lucide-times"></i> Ulanmadi: '+e.message;
+document.getElementById('updlbl').textContent = 'Yuklanmoqda...';
+const r = await fetch('/admin/api/data', { credentials: 'include' });
+if(r.status===401 || r.status===403){ 
+    document.getElementById('updlbl').textContent = 'Ruxsat yo\'q!';
+    window.location.href = '/admin';
+    return;
+}
+if(!r.ok) throw new Error('HTTP '+r.status);
+const txt = await r.text();
+if(!txt || txt.length === 0) throw new Error('Bo\'sh javob');
+try{
+    D = JSON.parse(txt);
+} catch(pe){
+    console.error('JSON parse xato:', txt.slice(0,200));
+    throw new Error('JSON parse xato: ' + pe.message);
+}
+USERS = D.users || [];
+GROUPS = (D.groups || []).sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));
+window._BRANCHES = (D.branches || []).map(b=>b.name||b).filter(Boolean);
+try{ rAll(); } catch(re){ console.error('rAll xato:', re); }
+try{ applyLang(); } catch(e){ console.error('applyLang error:', e); }
+if(window.lucide) lucide.createIcons();
+document.getElementById('updlbl').textContent = 'Yangilandi: '+new Date().toLocaleTimeString('uz-UZ');
+} catch(e){
+console.error('fetchAll xato:', e);
+document.getElementById('updlbl').textContent = 'Xatolik: '+e.message;
 toast('<i class="lucide lucide-times"></i> '+e.message);
 }
 }
+
 function rAll(){
 try{rDash();}catch(e){console.error('rDash:',e);}
 try{rUsers(USERS);}catch(e){console.error('rUsers:',e);}
@@ -1682,7 +1715,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function rUsers(list){
 document.getElementById('ucnt').textContent=list.length+' ta';const tb=document.getElementById('utb');
-if(!list.length){tb.innerHTML=`<tr><td colspan="5"><div class="empty"><div class="ei"><i class="lucide lucide-user"></i></div>${t('txt_no_data')}</div></td></tr>`;return;}
+if(!list.length){tb.innerHTML=`<tr><td colspan="5"><div class="empty"><div class="ei"><i class="lucide lucide-user"></i></div>${t('txt_no_data')}</div></td></td>`;return;}
 tb.innerHTML=list.map(u=>{
 const c=AVC[u.user_id%AVC.length],sb=SBG[u.specialty]||'bno';
 const isB=u.status==='blocked',isDel=u.status==='deleted',isArch=u.status==='archived';
@@ -1736,7 +1769,7 @@ tb.innerHTML=list.map(g=>{
 const t=USERS.find(u=>u.user_id===g.teacher_id);const sb=SBG[g.lesson_type]||'bno';
 const dt=Object.entries(sortDayTimes(g.day_times||{})).map(([d,ti])=>`<span class="dtag">${d.slice(0,2)} ${ti}</span>`).join('')||(g.days||[]).map(d=>`<span class="dtag">${d.slice(0,2)}</span>`).join('');
 const dragIcon=_grpSortMode?'<span style="color:var(--tx3);cursor:grab" draggable="true" ondragstart="dragG(event,'+g.id+')" ondragover="allowDrop(event)" ondrop="dropG(event,'+g.id+')">☰</span>':'';
-return`<tr><td>${dragIcon}</td><td><b>${g.group_name}</b></td><td><span class="b ${sb}">${g.lesson_type||'—'}</span></td><td style="font-size:11px;white-space:nowrap">${g.branch}</td><td style="font-size:11px">${t?t.name:'—'}</td><td style="text-align:center"><b>${(g.students||[]).length}</b></td><td><div style="display:flex;flex-wrap:wrap;gap:2px">${dt}</div></td><td><div style="display:flex;gap:3px"><button class="btn bg" style="font-size:10px;padding:4px 9px" onclick="oGM(${g.id})"><i class="lucide lucide-edit"></i> Edit</button><button class="btn bd" style="font-size:10px;padding:4px 9px" onclick="delG(${g.id})"><i class="lucide lucide-trash"></i></button></div></td></tr>`;
+return`<tr><td>${dragIcon}</td><td><b>${g.group_name}</b></td><td><span class="b ${sb}">${g.lesson_type||'—'}</span></td><td style="font-size:11px;white-space:nowrap">${g.branch}</td><td style="font-size:11px">${t?t.name:'—'}</td><td style="text-align:center"><b>${(g.students||[]).length}</b></td><td><div style="display:flex;flex-wrap:wrap;gap:2px">${dt}</div></td><td><div style="display:flex;gap:3px"><button class="btn bg" style="font-size:10px;padding:4px 9px" onclick="oGM(${g.id})"><i class="lucide lucide-edit"></i> Edit</button><button class="btn bd" style="font-size:10px;padding:4px 9px" onclick="delG(${g.id})"><i class="lucide lucide-trash"></i></button></div></td><tr>`;
 }).join('');
 }
 async function oGM(gid){
@@ -2028,7 +2061,7 @@ ${r.students.map((s,i)=>`
 style="font-size:11px;padding:4px 10px;border-radius:20px;font-weight:700;cursor:pointer;border:none;${s.paid?'background:rgba(16,185,129,.15);color:#34d399':'background:rgba(239,68,68,.12);color:#f87171'}">
 ${s.paid?t('lbl_paid'):t('lbl_unpaid')}
 </button>
-</td>
+</div>
 <td style="font-weight:700;color:${s.paid?'#34d399':'var(--tx2)'}">${s.paid?fmt(s.amount)+' so\'m':'—'}</td>
 <td style="font-size:11px;color:var(--tx2)">${s.note||'—'}</td>
 <td><button onclick="editPay(${_payGid},this.dataset.nm,this.dataset.ph,${s.paid},${s.amount||0},this.dataset.nt)" data-nm="${s.name}" data-ph="${s.phone}" data-nt="${s.note||''}" class="btn bg" style="font-size:10px;padding:3px 8px"><i class="lucide lucide-edit"></i></button></td>
@@ -2639,10 +2672,13 @@ async function saveEditBr(){const idx=parseInt(document.getElementById('br-edit-
 async function delBr(idx){const b=D.branches[idx];if(!confirm(`"${b?.name||idx}" o'chirilsinmi?`))return;const r=await api('/admin/api/branch/delete',{index:idx});if(r?.ok){successNotify(tr("Filial o'chirildi"));await fetchAll();}else toast('<i class="lucide lucide-times"></i> Xatolik');}
 
 
+// ========== TUZATILGAN SAHIFA YUKLASH ==========
 LANG='uz';
-applyLang();
-fetchAll();
-setInterval(fetchAll,120000);
+setTimeout(function() {
+    try{ applyLang(); } catch(e){ console.error('applyLang init error:', e); }
+    try{ fetchAll(); } catch(e){ console.error('fetchAll init error:', e); }
+}, 100);
+setInterval(fetchAll, 120000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)fetchAll();});
 async function loadApps(){
 document.getElementById('apps-table').innerHTML='<div class="ldr"><div class="spin"></div></div>';
@@ -2672,8 +2708,10 @@ document.getElementById('apps-table').innerHTML=`
 <option value="enrolled" ${a.status==='enrolled'?'selected':''}>Yozildi</option>
 <option value="cancelled" ${a.status==='cancelled'?'selected':''}>Bekor</option>
 </select>
-</td>
-<td><button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="deleteApp(${a.id})"><i class="lucide lucide-trash"></i></button></td>
+</div>
+<td style="white-space:nowrap">
+<button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="deleteApp(${a.id})"><i class="lucide lucide-trash"></i></button>
+</div>
 </tr>`).join('')}</tbody></table>`;
 }
 async function exportAppsExcel(){
@@ -2730,13 +2768,13 @@ document.getElementById('bootcamp-table').innerHTML=`
 <div style="margin-bottom:12px"><button class="btn bp" onclick="exportBootcampExcel()"><i class="lucide lucide-download"></i> Excel yuklab olish</button></div>
 <table><thead><tr><th>#</th><th>Ism</th><th>Telefon</th><th>Ta'lim</th><th>Yo'nalish</th><th>Sana</th><th>Holat</th><th>Amal</th></tr></thead>
 <tbody>${apps.map((a,i)=>`<tr>
-<td>${i+1}</td>
-<td><b>${a.fname} ${a.lname}</b>${a.about?`<br><small style="color:var(--tx2)">${a.about.substring(0,50)}</small>`:''}</td>
-<td><a href="tel:${a.phone}" style="color:var(--ac)">${a.phone}</a></td>
-<td>${schoolLabel[a.school]||a.school||'—'}${a.school_name?' - '+a.school_name:''}${a.school_year?' ('+a.school_year+')':''}</td>
-<td>${trackLabel[a.track]||a.track||'—'}</td>
+<td style="white-space:nowrap">${i+1}</td>
+<td style="white-space:nowrap"><b>${a.fname} ${a.lname}</b>${a.about?`<br><small style="color:var(--tx2)">${a.about.substring(0,50)}</small>`:''}</td>
+<td style="white-space:nowrap"><a href="tel:${a.phone}" style="color:var(--ac)">${a.phone}</a></td>
+<td style="white-space:nowrap">${schoolLabel[a.school]||a.school||'—'}${a.school_name?' - '+a.school_name:''}${a.school_year?' ('+a.school_year+')':''}</td>
+<td style="white-space:nowrap">${trackLabel[a.track]||a.track||'—'}</td>
 <td style="font-size:11px">${a.created_at}</td>
-<td><span style="background:${statusColor[a.status]||'#888'};color:white;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700">${statusLabel[a.status]||a.status}</span></td>
+<td style="white-space:nowrap"><span style="background:${statusColor[a.status]||'#888'};color:white;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700">${statusLabel[a.status]||a.status}</span></td>
 <td style="white-space:nowrap">
 <button class="btn bp" style="font-size:10px;padding:4px 8px" onclick="viewBootcampApp(${a.id})"><i class="lucide lucide-eye"></i></button>
 <select onchange="updateBootcampStatus(${a.id},this.value)" style="font-size:11px;padding:3px 6px;border-radius:6px;border:1px solid var(--bd);background:var(--bg);color:var(--tx)">
@@ -2746,8 +2784,8 @@ document.getElementById('bootcamp-table').innerHTML=`
 <option value="cancelled" ${a.status==='cancelled'?'selected':''}>Bekor</option>
 </select>
 <button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="deleteBootcampApp(${a.id})"><i class="lucide lucide-trash"></i></button>
-</td>
-</tr>`).join('')}</tbody></table>`;
+</div>
+</td>`).join('')}</tbody></table>`;
 }
 async function viewBootcampApp(id){
 const r=await fetch('/admin/api/bootcamp/applications',{credentials:'include'}).then(x=>x.json()).catch(()=>null);
@@ -2837,17 +2875,17 @@ let html='<table border="1" style="border-collapse:collapse;font-family:Arial,sa
 apps.forEach(a=>{
 const skills=a.skills?a.skills.split(',').map(s=>skillLabels[s]||s).join(', '):'';
 html+=`<tr>
-<td>${a.fname||''}</td>
-<td>${a.lname||''}</td>
-<td>${a.phone||''}</td>
-<td>${a.email||''}</td>
-<td>${a.dob||''}</td>
-<td>${schoolLabel[a.school]||a.school||''} ${a.school_name||''} ${a.school_year||''}</td>
-<td>${trackLabel[a.track]||a.track||''}</td>
-<td>${(a.about||'').substring(0,100)}</td>
-<td>${skills}</td>
-<td>${statusLabel[a.status]||a.status}</td>
-<td>${a.created_at}</td>
+<td style="white-space:nowrap">${a.fname||''}</td>
+<td style="white-space:nowrap">${a.lname||''}</td>
+<td style="white-space:nowrap">${a.phone||''}</td>
+<td style="white-space:nowrap">${a.email||''}</td>
+<td style="white-space:nowrap">${a.dob||''}</td>
+<td style="white-space:nowrap">${schoolLabel[a.school]||a.school||''} ${a.school_name||''} ${a.school_year||''}</td>
+<td style="white-space:nowrap">${trackLabel[a.track]||a.track||''}</td>
+<td style="white-space:nowrap">${(a.about||'').substring(0,100)}</td>
+<td style="white-space:nowrap">${skills}</td>
+<td style="white-space:nowrap">${statusLabel[a.status]||a.status}</td>
+<td style="white-space:nowrap">${a.created_at}</td>
 </tr>`;
 });
 html+='</tbody></table>';
@@ -2884,27 +2922,27 @@ const statusLabel={'new':'Yangi','contacted':'Bog\u2019lanildi','enrolled':'Yozi
 document.getElementById('aiclass-table').innerHTML=`
 <table><thead><tr><th>#</th><th>Ism</th><th>Sinf</th><th>Maktab</th><th>Telefon</th><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th><th>Q5</th><th>Sana</th><th>Holat</th><th>Amal</th></tr></thead>
 <tbody>${apps.map((a,i)=>`<tr>
-<td>${i+1}</td>
-<td><b>${a.name}</b></td>
-<td>${a.class||'—'}</td>
-<td>${a.school||'—'}</td>
-<td><a href="tel:${a.phone}" style="color:var(--ac)">${a.phone}</a></td>
+<td style="white-space:nowrap">${i+1}</td>
+<td style="white-space:nowrap"><b>${a.name}</b></td>
+<td style="white-space:nowrap">${a.class||'—'}</td>
+<td style="white-space:nowrap">${a.school||'—'}</td>
+<td style="white-space:nowrap"><a href="tel:${a.phone}" style="color:var(--ac)">${a.phone}</a></td>
 <td style="font-size:11px">${a.q1||'—'}</td>
 <td style="font-size:11px">${a.q2||'—'}</td>
 <td style="font-size:11px">${a.q3||'—'}</td>
 <td style="font-size:11px">${a.q4||'—'}</td>
 <td style="font-size:11px">${a.q5||'—'}</td>
 <td style="font-size:11px">${a.created_at}</td>
-<td><span style="background:${statusColor[a.status]||'#888'};color:white;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700">${statusLabel[a.status]||a.status}</span></td>
+<td style="white-space:nowrap"><span style="background:${statusColor[a.status]||'#888'};color:white;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700">${statusLabel[a.status]||a.status}</span></td>
 <td style="white-space:nowrap">
 <button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="deleteAiclassApp(${a.id})"><i class="lucide lucide-trash"></i></button>
-</td>
-</tr>`).join('')}</tbody></table>`;
+</div>
+</td>`).join('')}</tbody></tr>`;
 }
 async function deleteAiclassApp(id){
 if(!confirm('Bu arizani o\'chirishni xohlaysizmi?'))return;
 const r=await fetch('/admin/api/aiclass/application/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id}),credentials:'include'}).then(x=>x.json()).catch(()=>null);
-if(r?.ok){toast('<i class="lucide lucide-check"></i> Ariza o\'chirildi');loadAiclassApps();}else toast('<i class="lucide lucide-times"></i> Xato');
+if(r?.ok){toast('<i class="lucide lucide-check"></i> Ariza o\'chirildi');loadAiclassApps();}else toast('<i class="lucide lucide-times</i> Xato');
 }
 async function loadAiclassCount(){
 try{
@@ -3121,7 +3159,6 @@ setTimeout(()=>msg.textContent='',3000);
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const iconMap = {
-        // Lug'atda yo'q nomlarni Lucide standartiga moslash
         'map-marker-alt': 'map-pin',
         'map-pin': 'map-pin',
         'map-marked-alt': 'map',
@@ -3484,7 +3521,7 @@ async function loadBizReport(){
       </tr>`;
     });
     studentsHtml += `<tr style="background:var(--card2);font-weight:800">
-      <td style="padding:8px">JAMI</td>
+      <td style="padding:8px">JAMI</div>
       <td style="padding:8px;text-align:center">${totalKorean}</td>
       <td style="padding:8px;text-align:center">${totalIT}</td>
       <td style="padding:8px;text-align:center;color:var(--ac)">${totalAll}</td>
@@ -3501,27 +3538,27 @@ async function loadBizReport(){
       attHtml += `<tr>
         <td style="padding:8px">${t.name || '—'}</td>
         <td style="padding:8px;text-align:center"><span class="b ${specBadge}">${t.specialty || '—'}</span></td>
-        <td style="padding:8px;text-align:center">${t.attendance_count} kun</td>
-        <td style="padding:8px;text-align:center;color:${statusColor};font-weight:700">${t.late_minutes} daq</td>
-        <td style="padding:8px;text-align:center"><span style="color:${statusColor};font-weight:600">${statusText}</span></td>
+        <td style="padding:8px;text-align:center">${t.attendance_count} kun</div>
+        <td style="padding:8px;text-align:center;color:${statusColor};font-weight:700">${t.late_minutes} daq</div>
+        <td style="padding:8px;text-align:center"><span style="color:${statusColor};font-weight:600">${statusText}</span></div>
       </tr>`;
     });
-    if(!attHtml) attHtml = '<tr><td colspan="5" style="padding:8px;text-align:center;color:var(--tx3)">Ma\'lumot yo\'q</td></tr>';
+    if(!attHtml) attHtml = '<tr><td colspan="5" style="padding:8px;text-align:center;color:var(--tx3)">Ma\'lumot yo\'q</div></tr>';
     document.getElementById('biz-att-tb').innerHTML = attHtml;
     
     // Update expenses table
     const exp = r.manual_expenses || {};
     const salaries = r.salaries || {};
     let expHtml = `
-      <tr><td style="padding:8px">O'qituvchi maoshi (Koreys)</td><td style="padding:8px;text-align:right">${fmt(salaries.teacher_kr || 0)}</td></tr>
-      <tr><td style="padding:8px">O'qituvchi maoshi (IT)</td><td style="padding:8px;text-align:right">${fmt(salaries.teacher_it || 0)}</td></tr>
-      <tr><td style="padding:8px">Office xodimlar</td><td style="padding:8px;text-align:right">${fmt(salaries.office || 0)}</td></tr>
-      <tr style="background:rgba(255,255,255,.03)"><td colspan="2" style="padding:4px"></td></tr>
-      <tr><td style="padding:8px">Ijara</td><td style="padding:8px;text-align:right">${fmt(exp.rent || 0)}</td></tr>
-      <tr><td style="padding:8px">Kommunal</td><td style="padding:8px;text-align:right">${fmt(exp.utilities || 0)}</td></tr>
-      <tr><td style="padding:8px">Buxgalteriya</td><td style="padding:8px;text-align:right">${fmt(exp.accounting || 0)}</td></tr>
-      <tr><td style="padding:8px">Reklama</td><td style="padding:8px;text-align:right">${fmt(exp.marketing || 0)}</td></tr>
-      <tr><td style="padding:8px">Boshqa</td><td style="padding:8px;text-align:right">${fmt(exp.other || 0)}</td></tr>
+      <tr><td style="padding:8px">O'qituvchi maoshi (Koreys)</td><td style="padding:8px;text-align:right">${fmt(salaries.teacher_kr || 0)}</div></tr>
+      <tr><td style="padding:8px">O'qituvchi maoshi (IT)</td><td style="padding:8px;text-align:right">${fmt(salaries.teacher_it || 0)}</div></tr>
+      <tr><td style="padding:8px">Office xodimlar</div><td style="padding:8px;text-align:right">${fmt(salaries.office || 0)}</div></tr>
+      <tr style="background:rgba(255,255,255,.03)"><td colspan="2" style="padding:4px"></div></tr>
+      <tr><td style="padding:8px">Ijara</div><td style="padding:8px;text-align:right">${fmt(exp.rent || 0)}</div></tr>
+      <tr><td style="padding:8px">Kommunal</div><td style="padding:8px;text-align:right">${fmt(exp.utilities || 0)}</div></tr>
+      <tr><td style="padding:8px">Buxgalteriya</div><td style="padding:8px;text-align:right">${fmt(exp.accounting || 0)}</div></tr>
+      <tr><td style="padding:8px">Reklama</div><td style="padding:8px;text-align:right">${fmt(exp.marketing || 0)}</div></tr>
+      <tr><td style="padding:8px">Boshqa</div><td style="padding:8px;text-align:right">${fmt(exp.other || 0)}</div></tr>
     `;
     document.getElementById('biz-expenses-tb').innerHTML = expHtml;
     document.getElementById('biz-exp-total').textContent = fmt(r.summary.total_expenses);

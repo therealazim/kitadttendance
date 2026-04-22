@@ -188,7 +188,7 @@ class Database:
                     school TEXT DEFAULT '',
                     school_name TEXT DEFAULT '',
                     school_year TEXT DEFAULT '',
-resume_url TEXT DEFAULT '',
+                    resume_url TEXT DEFAULT '',
                     resume_name TEXT DEFAULT '',
                     status TEXT DEFAULT 'new',
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -200,7 +200,7 @@ resume_url TEXT DEFAULT '',
                 await conn.execute("ALTER TABLE bootcamp_applications ADD COLUMN IF NOT EXISTS school TEXT DEFAULT ''")
                 await conn.execute("ALTER TABLE bootcamp_applications ADD COLUMN IF NOT EXISTS school_year TEXT DEFAULT ''")
                 await conn.execute("ALTER TABLE bootcamp_applications ADD COLUMN IF NOT EXISTS school_name TEXT DEFAULT ''")
-            except: pass
+            except Exception: pass
             await conn.execute("""
 CREATE TABLE IF NOT EXISTS aiclass_applications (
                     id SERIAL PRIMARY KEY,
@@ -219,7 +219,7 @@ CREATE TABLE IF NOT EXISTS aiclass_applications (
             """)
             try:
                 await conn.execute("ALTER TABLE aiclass_applications ADD COLUMN IF NOT EXISTS school TEXT DEFAULT ''")
-            except: pass
+            except Exception: pass
             await conn.execute("""
                 CREATE TABLE IF NOT EXISTS news (
                     id SERIAL PRIMARY KEY,
@@ -238,13 +238,13 @@ CREATE TABLE IF NOT EXISTS aiclass_applications (
             for col in [('title_ru','TEXT DEFAULT \'\''),('body_ru','TEXT DEFAULT \'\''),('title_kr','TEXT DEFAULT \'\''),('body_kr','TEXT DEFAULT \'\'')]:
                 try:
                     await conn.execute(f"ALTER TABLE news ADD COLUMN IF NOT EXISTS {col[0]} {col[1]}")
-                except:
+                except Exception:
                     pass
             # Groups table migration - add student_count column if not exist
             try:
                 await conn.execute("ALTER TABLE groups ADD COLUMN IF NOT EXISTS student_count INTEGER DEFAULT 0")
                 await conn.execute("ALTER TABLE groups ADD COLUMN IF NOT EXISTS sort_order INTEGER DEFAULT 0")
-            except:
+            except Exception:
                 pass
             await conn.execute("""
                 CREATE TABLE IF NOT EXISTS site_config (
@@ -350,6 +350,18 @@ CREATE TABLE IF NOT EXISTS aiclass_applications (
                     website_url TEXT DEFAULT '',
                     sort_order INT DEFAULT 0,
                     created_at TIMESTAMP DEFAULT NOW()
+                )
+            """)
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS notifications (
+                    id SERIAL PRIMARY KEY,
+                    type TEXT NOT NULL,
+                    title TEXT NOT NULL,
+                    text TEXT NOT NULL,
+                    icon TEXT DEFAULT 'info',
+                    read BOOLEAN DEFAULT FALSE,
+                    created_at TIMESTAMP DEFAULT NOW(),
+                    expires_at TIMESTAMP DEFAULT NOW() + INTERVAL '30 days'
                 )
             """)
             logging.info("✅ Jadvallar yaratildi!")
@@ -874,7 +886,7 @@ def get_text(user_id: int, key: str, **kwargs):
     if kwargs:
         try:
             text = text.format(**kwargs)
-        except:
+        except Exception:
             pass
     return text
 
@@ -1962,7 +1974,7 @@ async def admin_api_student_payments(request):
                     gid
                 )
                 months_list = [r['month'] for r in rows]
-        except: pass
+        except Exception: pass
         if month not in months_list:
             months_list.insert(0, month)
         
@@ -2142,7 +2154,7 @@ async def admin_api_user_photos(request):
                     url = f"https://api.telegram.org/file/bot{TOKEN}/{file_obj.file_path}"
                     user_photo_cache[uid] = url
                     result.append({'user_id': uid, 'photo_url': url})
-        except:
+        except Exception:
             pass
     return web.Response(text=_json.dumps({'ok': True, 'users': result, 'count': len(result)}), content_type='application/json')
 
@@ -2241,7 +2253,7 @@ async def admin_api_group_edit_schedule(request):
                     f"📆 Yangi kunlar va vaqtlar:\n{time_display}",
                     parse_mode="Markdown"
                 )
-            except:
+            except Exception:
                 pass
         return web.Response(text=_json.dumps({'ok': True}), content_type='application/json')
     except Exception as e:
@@ -2270,7 +2282,7 @@ async def admin_api_group_edit_teacher(request):
                 else:
                     old_msg = f"ℹ️ *{grp.get('group_name','Guruh')}* guruhi sizdan boshqa o'qituvchiga o'tkazildi."
                 await bot.send_message(old_tid, old_msg, parse_mode="Markdown")
-            except: pass
+            except Exception: pass
         # Yangi o'qituvchiga xabar
         try:
             new_lang = user_languages.get(new_tid, 'uz')
@@ -2289,7 +2301,7 @@ async def admin_api_group_edit_teacher(request):
                     f"⏰ Vaqt: {grp.get('time_text','—')}"
                 )
             await bot.send_message(new_tid, new_msg, parse_mode="Markdown")
-        except: pass
+        except Exception: pass
         return web.Response(text=_json.dumps({'ok': True, 'teacher_name': new_name}), content_type='application/json')
     except Exception as e:
         return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
@@ -2337,7 +2349,7 @@ async def api_submit_application(request):
             if course: msg += "\n\U0001f4da Kurs: " + str(course)
             if message: msg += "\n\U0001f4ac " + str(message)
             await bot.send_message(ADMIN_GROUP_ID, msg)
-        except: pass
+        except Exception: pass
         return web.Response(text=_json.dumps({'ok':True}), content_type='application/json')
     except Exception as e:
         return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
@@ -2379,7 +2391,7 @@ async def api_bootcamp_apply(request):
             if resume_url:
                 msg += f"\n\U0001f4c4 Resume: {resume_url}"
             await bot.send_message(ADMIN_GROUP_ID, msg)
-        except: pass
+        except Exception: pass
         return web.Response(text=_json.dumps({'ok':True}), content_type='application/json')
     except Exception as e:
         return web.Response(text=_json.dumps({'ok':False,'error':str(e)}), content_type='application/json')
@@ -2457,7 +2469,7 @@ async def api_aiclass_apply(request):
         try:
             msg = f"\U0001f916 Yangi AI Dars ariza!\n\U0001f464 {name}\n\U0001f4d5 Sinf: {class_name}\n\U0001f3eb Maktab: {school}\n\U0001f4de {phone}\n\U0001f4cb Q1: {q1}\n\U0001f4cb Q2: {', '.join(filter(None, q2))}\n\U0001f4cb Q3: {q3}\n\U0001f4cb Q4: {q4}\n\U0001f4cb Q5: {q5}"
             await bot.send_message(ADMIN_GROUP_ID, msg)
-        except: pass
+        except Exception: pass
         
         return web.Response(text=_json.dumps({'ok':True}), content_type='application/json')
     except Exception as e:
@@ -2943,7 +2955,7 @@ async def admin_api_group_create(request):
                     f"🧑\u200d🎓 O'quvchilar: {len(students)} ta"
                 )
             await bot.send_message(teacher_id, msg, parse_mode="Markdown")
-        except: pass
+        except Exception: pass
         return web.Response(text=_json.dumps({'ok': True, 'group_id': gid}), content_type='application/json')
     except Exception as e:
         logging.error(f"admin_api_group_create error: {e}")
@@ -3557,7 +3569,7 @@ async def admin_api_reports_students(request):
                 try:
                     if len(str(cell.value)) > max_length:
                         max_length = len(str(cell.value))
-                except:
+                except Exception:
                     pass
             adjusted_width = min(max_length + 2, 50)
             ws.column_dimensions[column_letter].width = adjusted_width
@@ -3640,7 +3652,7 @@ async def admin_api_reports_groups(request):
                 try:
                     if len(str(cell.value)) > max_length:
                         max_length = len(str(cell.value))
-                except:
+                except Exception:
                     pass
             adjusted_width = min(max_length + 2, 50)
             ws.column_dimensions[column_letter].width = adjusted_width
@@ -3994,7 +4006,7 @@ async def admin_api_business_report(request):
                 for e in expenses:
                     if e['expense_type'] in manual_expenses:
                         manual_expenses[e['expense_type']] = e['amount'] or 0
-        except:
+        except Exception:
             pass
         
         salary_data['total'] = salary_data['teacher_kr'] + salary_data['teacher_it'] + salary_data['office']
@@ -4582,7 +4594,7 @@ async def miniapp_api_init(request):
                         gid, now_uzb.date()
                     )
                     already_done = (row or 0) > 0
-            except:
+            except Exception:
                 pass
             
             my_groups.append({
@@ -4636,7 +4648,7 @@ async def miniapp_api_students(request):
                 )
                 for row in rows:
                     existing[row['student_name']] = row['status']
-        except:
+        except Exception:
             pass
         
         students_data = []
@@ -4841,75 +4853,104 @@ async def admin_api_data(request):
         today_str = now_uzb.strftime('%Y-%m-%d')
         this_month = now_uzb.strftime('%Y-%m')
 
+        # DAILY_ATTENDANCE_LOG ni xavfsiz qayta ishlash
+        safe_attendance_log = []
+        for item in daily_attendance_log:
+            try:
+                if len(item) >= 3:
+                    safe_attendance_log.append(item)
+            except Exception:
+                continue
+        
+        # Build efficient lookup structures
+        month_att_count = {}
+        today_att_list = []
+        daily_counts = {}
+        
+        for a in safe_attendance_log:
+            try:
+                uid, branch, date_str = a[0], a[1], a[2]
+                time_str = a[3] if len(a) > 3 else ''
+                
+                # Monthly count
+                if date_str.startswith(this_month):
+                    month_att_count[uid] = month_att_count.get(uid, 0) + 1
+                
+                # Today's attendance
+                if date_str == today_str:
+                    today_att_list.append({
+                        'user_id': uid,
+                        'branch': branch,
+                        'time': time_str,
+                    })
+                
+                # Daily counts for weekly stats
+                daily_counts[date_str] = daily_counts.get(date_str, 0) + 1
+            except Exception as e:
+                logging.warning(f"Skipping malformed attendance entry: {a}, error: {e}")
+                continue
+
         # Foydalanuvchilar (arxivdagilar ham)
         users_data = []
-        skipped_users = []
-        logging.info(f"admin_api_data: user_ids count = {len(user_ids)}")
         for uid in user_ids:
-            name = user_names.get(uid, '')
-            if not name:
-                skipped_users.append({'uid': uid, 'name': name, 'reason': 'no name'})
+            try:
+                name = user_names.get(uid, '')
+                if not name:
+                    continue
+                is_archived = '[ARXIV]' in name
+                clean_name = name.replace('[ARXIV]', '').strip()
+                month_att = month_att_count.get(uid, 0)
+                users_data.append({
+                    'user_id': uid,
+                    'name': clean_name,
+                    'specialty': user_specialty.get(uid, ''),
+                    'language': user_languages.get(uid, 'uz'),
+                    'status': 'archived' if is_archived else user_status.get(uid, 'active'),
+                    'attendance_count': month_att,
+                    'photo_url': user_photo_cache.get(uid),
+                })
+            except Exception as e:
+                logging.warning(f"Error processing user {uid}: {e}")
                 continue
-            # Arxivlangan foydalanuvchini aniqlash
-            is_archived = '[ARXIV]' in name
-            clean_name = name.replace('[ARXIV]', '').strip()
-            month_att = len([
-                a for a in daily_attendance_log
-                if a[0] == uid and a[2].startswith(this_month)
-            ])
-            users_data.append({
-                'user_id': uid,
-                'name': clean_name,
-                'specialty': user_specialty.get(uid, ''),
-                'language': user_languages.get(uid, 'uz'),
-                'status': 'archived' if is_archived else user_status.get(uid, 'active'),
-                'attendance_count': month_att,
-                'photo_url': user_photo_cache.get(uid),
-            })
-        logging.info(f"admin_api_data: returning {len(users_data)} users, skipped {len(skipped_users)} users")
-        if skipped_users:
-            logging.info(f"admin_api_data: skipped users: {skipped_users}")
+        
         users_data.sort(key=lambda x: x['name'])
 
         # Guruhlar
         groups_data = []
         for gid, gdata in groups.items():
-            students = group_students.get(gid, [])
-            tid = gdata.get('teacher_id')
-            groups_data.append({
-                'id': gid,
-                'group_name': gdata.get('group_name', ''),
-                'branch': gdata.get('branch', ''),
-                'lesson_type': gdata.get('lesson_type', ''),
-                'teacher_id': tid,
-                'teacher_name': user_names.get(tid, '—') if tid else '—',
-                'days': gdata.get('days', []),
-                'day_times': gdata.get('day_times', {}),
-                'students': students,
-                'student_count': len(students),
-                'sort_order': gdata.get('sort_order', 0),
-            })
+            try:
+                students = group_students.get(gid, [])
+                tid = gdata.get('teacher_id')
+                groups_data.append({
+                    'id': gid,
+                    'group_name': gdata.get('group_name', ''),
+                    'branch': gdata.get('branch', ''),
+                    'lesson_type': gdata.get('lesson_type', ''),
+                    'teacher_id': tid,
+                    'teacher_name': user_names.get(tid, '—') if tid else '—',
+                    'days': gdata.get('days', []),
+                    'day_times': gdata.get('day_times', {}),
+                    'students': students,
+                    'student_count': len(students),
+                    'sort_order': gdata.get('sort_order', 0),
+                })
+            except Exception as e:
+                logging.warning(f"Error processing group {gid}: {e}")
+                continue
 
         # Bugungi davomat
-        today_att = []
-        for a in daily_attendance_log:
-            if a[2] == today_str:
-                today_att.append({
-                    'user_id': a[0],
-                    'branch': a[1],
-                    'time': a[3] if len(a) > 3 else '',
-                })
+        today_att = today_att_list
 
         # Haftalik statistika (oxirgi 7 kun)
         weekly = []
         weekday_names = ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya']
         for i in range(6, -1, -1):
             d = (now_uzb - timedelta(days=i)).strftime('%Y-%m-%d')
-            count = len([a for a in daily_attendance_log if a[2] == d])
+            count = daily_counts.get(d, 0)
             dow = (now_uzb - timedelta(days=i)).weekday()
             weekly.append({'day': weekday_names[dow], 'count': count, 'date': d})
 
-        # Live class data - dars jadvali va hozirgi darslar
+        # Live class data
         live_classes = {'classes_now': [], 'today_classes': [], 'teachers_status': [], 'upcoming_classes': []}
         try:
             current_time = now_uzb.time()
@@ -4917,65 +4958,61 @@ async def admin_api_data(request):
             current_minute = now_uzb.minute
             current_day_name = now_uzb.strftime('%A')
             
-            # Convert English day names to Uzbek
             day_map = {
                 'Monday': 'Dushanba', 'Tuesday': 'Seshanba', 'Wednesday': 'Chorshanba',
                 'Thursday': 'Payshanba', 'Friday': 'Juma', 'Saturday': 'Shanba', 'Sunday': 'Yakshanba'
             }
             uz_day = day_map.get(current_day_name, current_day_name)
             
-            # Jami darslar (bugun uchun)
+            teacher_att_lookup = {}
+            for a in today_att:
+                user_id = a['user_id']
+                if user_id not in teacher_att_lookup:
+                    teacher_att_lookup[user_id] = (True, a.get('time', ''))
+            
             all_classes = []
             for gid, gdata in groups.items():
-                day_times = gdata.get('day_times', {})
-                if uz_day in day_times:
-                    time_str = day_times[uz_day]
-                    teacher_id = gdata.get('teacher_id')
-                    teacher_name = user_names.get(teacher_id, '—') if teacher_id else '—'
-                    
-                    # O'qituvchi davomat tekshirish
-                    teacher_attended = False
-                    teacher_attend_time = ''
-                    for a in today_att:
-                        if a['user_id'] == teacher_id:
-                            teacher_attended = True
-                            teacher_attend_time = a.get('time', '')
-                            break
-                    
-                    class_info = {
-                        'group_id': gid,
-                        'group_name': gdata.get('group_name', ''),
-                        'branch': gdata.get('branch', ''),
-                        'lesson_type': gdata.get('lesson_type', ''),
-                        'teacher_id': teacher_id,
-                        'teacher_name': teacher_name,
-                        'time': time_str,
-                        'student_count': len(group_students.get(gid, [])),
-                        'teacher_attended': teacher_attended,
-                        'teacher_attend_time': teacher_attend_time
-                    }
-                    all_classes.append(class_info)
+                try:
+                    day_times = gdata.get('day_times', {})
+                    if uz_day in day_times:
+                        time_str = day_times[uz_day]
+                        teacher_id = gdata.get('teacher_id')
+                        teacher_name = user_names.get(teacher_id, '—') if teacher_id else '—'
+                        
+                        teacher_attended, teacher_attend_time = teacher_att_lookup.get(teacher_id, (False, ''))
+                        
+                        class_info = {
+                            'group_id': gid,
+                            'group_name': gdata.get('group_name', ''),
+                            'branch': gdata.get('branch', ''),
+                            'lesson_type': gdata.get('lesson_type', ''),
+                            'teacher_id': teacher_id,
+                            'teacher_name': teacher_name,
+                            'time': time_str,
+                            'student_count': len(group_students.get(gid, [])),
+                            'teacher_attended': teacher_attended,
+                            'teacher_attend_time': teacher_attend_time
+                        }
+                        all_classes.append(class_info)
+                except Exception as e:
+                    logging.warning(f"Error processing class {gid}: {e}")
+                    continue
             
-            # Vaqt bo'yicha tartiblash
             all_classes.sort(key=lambda x: x['time'])
             
-            # Hozirgi darslar (hozir vaqt + - 30 daqiqa)
             for cls in all_classes:
                 try:
                     cls_hour, cls_minute = map(int, cls['time'].split(':'))
                     cls_minutes = cls_hour * 60 + cls_minute
                     now_minutes = current_hour * 60 + current_minute
                     
-                    # 30 daqiqa oldin yoki keyin
                     if abs(cls_minutes - now_minutes) <= 30:
                         live_classes['classes_now'].append(cls)
-                except:
+                except Exception:
                     pass
             
-            # Barcha bugungi darslar
             live_classes['today_classes'] = all_classes
             
-            # O'qituvchilar holati
             teachers_status = {}
             for cls in all_classes:
                 tid = cls['teacher_id']
@@ -5001,7 +5038,6 @@ async def admin_api_data(request):
             
             live_classes['teachers_status'] = list(teachers_status.values())
             
-            # Keyingi darslar (keyingi 2 soat ichida)
             upcoming = []
             for cls in all_classes:
                 try:
@@ -5009,10 +5045,9 @@ async def admin_api_data(request):
                     cls_minutes = cls_hour * 60 + cls_minute
                     now_minutes = current_hour * 60 + current_minute
                     
-                    # Hozir va keyingi 120 daqiqa ichida
                     if cls_minutes > now_minutes and cls_minutes - now_minutes <= 120:
                         upcoming.append(cls)
-                except:
+                except Exception:
                     pass
             
             live_classes['upcoming_classes'] = upcoming
@@ -5038,10 +5073,9 @@ async def admin_api_data(request):
         except Exception as e:
             logging.error(f"broadcast_history fetch: {e}")
 
-        # Dashboard: faol guruhlar o'quvchilar soni (total) vs to'laganlar (paid)
+        # Pay stats
         pay_stats = {'paid': 0, 'total': 0, 'amount': 0}
         try:
-            # Jami o'quvchilar soni - faol guruhlardagi
             total_studs = sum(len(group_students.get(gid, [])) for gid in groups)
             async with db.pool.acquire() as conn:
                 ps = await conn.fetchrow(
@@ -5212,7 +5246,7 @@ async def set_initial_language(callback: types.CallbackQuery, state: FSMContext)
         await state.set_state(Registration.waiting_for_name)
         try:
             pass  # message.delete() webhook da ishlamas
-        except:
+        except Exception:
             pass
         await bot.send_message(user_id, get_text(user_id, 'ask_name'))
     except Exception as e:
@@ -5244,7 +5278,7 @@ async def set_changed_language(callback: types.CallbackQuery):
         keyboard = await main_keyboard(user_id)
         try:
             pass  # message.delete() webhook da ishlamas
-        except:
+        except Exception:
             pass
         await bot.send_message(user_id, get_text(user_id, 'language_changed'), reply_markup=keyboard)
     except Exception as e:
@@ -5319,7 +5353,7 @@ async def save_new_specialty(callback: types.CallbackQuery):
 
     try:
         pass  # message.delete() webhook da ishlamas
-    except:
+    except Exception:
         pass
     await show_profile(callback.message)
 
@@ -5328,7 +5362,7 @@ async def back_to_profile_view(callback: types.CallbackQuery):
     await callback.answer()
     try:
         pass  # message.delete() webhook da ishlamas
-    except:
+    except Exception:
         pass
     await show_profile(callback.message)
 
@@ -5382,7 +5416,7 @@ async def back_to_main_menu(callback: types.CallbackQuery):
     keyboard = await main_keyboard(user_id)
     try:
         pass  # message.delete() webhook da ishlamas
-    except:
+    except Exception:
         pass
     await bot.send_message(user_id, "🏠 Asosiy menyu", reply_markup=keyboard)
 
@@ -5810,7 +5844,7 @@ async def weekly_top(message: types.Message):
             name = user_names.get(uid, f"ID: {uid}")
             specialty = user_specialty.get(uid, '')
             specialty_display = f" [{specialty}]" if specialty else ""
-        except:
+        except Exception:
             name = f"Foydalanuvchi {uid}"
             specialty_display = ""
         
@@ -6269,7 +6303,7 @@ async def std_submit_callback(callback: types.CallbackQuery, state: FSMContext):
         # edit ishlamasa yangi xabar
         try:
             pass  # message.delete() webhook da ishlamas
-        except:
+        except Exception:
             pass
         await bot.send_message(
             callback.from_user.id,
@@ -6479,7 +6513,7 @@ async def std_late_submit(callback: types.CallbackQuery, state: FSMContext):
     except Exception:
         try:
             pass  # message.delete() webhook da ishlamas
-        except:
+        except Exception:
             pass
         await bot.send_message(callback.from_user.id, result_text,
                                reply_markup=late_kb, parse_mode="Markdown")
@@ -7168,7 +7202,7 @@ async def create_visual_timetable_img(branch_name: str):
                         
                         plt.text(day_idx + 0.5, y_pos - 0.5, f"{t_name}\n({t_val})\n{spec}", 
                                  ha='center', va='center', fontsize=8, fontweight='bold', zorder=4)
-                    except: continue
+                    except Exception: continue
 
     plt.xticks(np.arange(0.5, len(days), 1), days, fontweight='bold')
     plt.yticks(np.arange(0.5, len(time_slots), 1), time_slots[::-1], fontweight='bold')
@@ -9033,7 +9067,7 @@ async def admin_back(callback: types.CallbackQuery, state: FSMContext):
             "👨‍💼 Admin Panel\n\nKerakli bo'limni tanlang:",
             reply_markup=builder.as_markup()
         )
-    except:
+    except Exception:
         await bot.send_message(
             callback.message.chat.id,
             "👨‍💼 Admin Panel\n\nKerakli bo'limni tanlang:",
@@ -9737,7 +9771,7 @@ async def egrp_day_time_entered(message: types.Message, state: FSMContext):
                         f"📆 Yangi kunlar va vaqtlar:\n{time_display}",
                         parse_mode="Markdown"
                     )
-                except:
+                except Exception:
                     pass
             await message.answer(
                 f"✅ Dars jadvali yangilandi!\n\n"
@@ -9836,7 +9870,7 @@ async def egrp_teacher_selected(callback: types.CallbackQuery, state: FSMContext
                     f"ℹ️ *{grp['group_name']}* guruhi sizdan boshqa o'qituvchiga o'tkazildi."
                     , parse_mode="Markdown"
                 )
-            except:
+            except Exception:
                 pass
         # Yangi o'qituvchiga xabar
         try:
@@ -9848,7 +9882,7 @@ async def egrp_teacher_selected(callback: types.CallbackQuery, state: FSMContext
                 f"⏰ Vaqt: {grp.get('time_text', '—')}",
                 parse_mode="Markdown"
             )
-        except:
+        except Exception:
             pass
         await callback.message.edit_text(
             f"✅ O'qituvchi muvaffaqiyatli almashtirildi!\n\n"
@@ -10374,7 +10408,7 @@ async def check_schedule_reminders():
                                             group_id, now_uzb.date()
                                         )
                                         already_std_done = (cnt or 0) > 0
-                                except: pass
+                                except Exception: pass
                                 
                                 if not already_std_done:
                                     webapp_url = f"{BASE_URL}/miniapp?user_id={teacher_id}"
@@ -10478,30 +10512,25 @@ async def main():
     await db.load_configurations()
     await db.load_to_ram()
 
-    # Barcha foydalanuvchilar tilini 'uz' ga o'zgartirish (bir martalik migration)
     try:
         async with db.pool.acquire() as conn:
             updated = await conn.execute(
                 "UPDATE users SET language = 'uz' WHERE language != 'uz'"
             )
             logging.info(f"✅ Til migration: {updated}")
-        # RAM dagi user_languages ham yangilash
         for uid in list(user_languages.keys()):
             user_languages[uid] = 'uz'
     except Exception as e:
         logging.error(f"Til migration xato: {e}")
 
-    # Background tasklar
     asyncio.create_task(check_schedule_reminders())
     asyncio.create_task(_cache_all_photos())
     asyncio.create_task(update_all_keyboards())
 
-    # Webhook URL
     WEBHOOK_HOST = BASE_URL
     WEBHOOK_PATH = f"/webhook/{TOKEN}"
     WEBHOOK_URL  = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
 
-    # Webhookni o'rnatamiz
     await bot.set_webhook(
         url=WEBHOOK_URL,
         drop_pending_updates=True,
@@ -10509,16 +10538,13 @@ async def main():
     )
     logging.info(f"✅ Webhook o'rnatildi: {WEBHOOK_URL}")
 
-    # aiohttp server
     from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 
     app = web.Application()
 
-    # Telegram update handler
     SimpleRequestHandler(dispatcher=dp, bot=bot).register(app, path=WEBHOOK_PATH)
     setup_application(app, dp, bot=bot)
 
-    # Qo'shimcha routelar (health check, status)
     app.router.add_get('/static/{filename}', handle_static)
     app.router.add_get('/', handle)
     
@@ -10597,7 +10623,7 @@ async def main():
     app.router.add_post('/admin/api/aiclass/application/delete', admin_api_aiclass_application_delete)
     app.router.add_get('/admin/api/news', admin_api_news_get)
     app.router.add_post('/admin/api/news/save', admin_api_news_save)
-    app.router.add_post('/admin/api/news/delete', admin_api_news_delete)  # Public - sayt uchun
+    app.router.add_post('/admin/api/news/delete', admin_api_news_delete)
     app.router.add_get('/api/partners', api_get_partners)
     app.router.add_get('/api/branches/map', api_branches_map)
     app.router.add_get('/admin/api/partners', admin_api_partners_get)
@@ -10637,24 +10663,19 @@ async def main():
     app.router.add_get('/admin/api/report/daily_pdf', admin_api_daily_pdf)
     app.router.add_get('/admin/api/branch/groups', admin_api_branch_groups)
     app.router.add_get('/admin/api/schedule/view', admin_api_schedule_view)
-    
-    # Hisobot API endpoint'lari
     app.router.add_get('/admin/api/reports/attendance', admin_api_reports_attendance)
     app.router.add_get('/admin/api/reports/groups', admin_api_reports_groups)
     app.router.add_get('/admin/api/reports/students', admin_api_reports_students)
     app.router.add_get('/admin/api/reports/payments', admin_api_reports_payments)
     app.router.add_get('/admin/api/reports/branches', admin_api_reports_branches)
     app.router.add_get('/admin/api/reports/general', admin_api_reports_general)
-    
-    # Business Report API (Korean style)
     app.router.add_get('/admin/api/business/report', admin_api_business_report)
     app.router.add_post('/admin/api/business/expenses', admin_api_business_expenses_save)
-    
-    # Salary Configs API (Korean style)
     app.router.add_get('/admin/api/salary/configs', admin_api_salary_configs_get)
     app.router.add_post('/admin/api/salary/configs', admin_api_salary_configs_save)
     app.router.add_get('/admin/api/salary/teacher-configs', admin_api_teacher_salary_configs_get)
     app.router.add_post('/admin/api/salary/teacher-configs', admin_api_teacher_salary_configs_save)
+    app.router.add_get('/admin/api/users', admin_api_users)
 
     port = int(os.environ.get("PORT", 10000))
     runner = web.AppRunner(app)
@@ -10663,12 +10684,59 @@ async def main():
     await site.start()
     logging.info(f"✅ Web server {port}-portda ishga tushdi")
 
-    # Server ishlayversin
     try:
         await asyncio.Event().wait()
     finally:
         await bot.delete_webhook()
         await runner.cleanup()
 
+
+def _build_attendance_pdf(rows, start, end):
+    from reportlab.lib.pagesizes import A4
+    from reportlab.pdfgen import canvas
+    import io
+    output = io.BytesIO()
+    c = canvas.Canvas(output, pagesize=A4)
+    c.drawString(50, 800, f"Davomat hisoboti: {start} - {end}")
+    y = 770
+    c.setFont("Helvetica", 10)
+    c.drawString(50, y, "ID | Name | Date | Status | Class | Time")
+    y -= 20
+    for r in rows:
+        line = f"{r['student_id']} | {r['student_name']} | {str(r['date'])} | {r['status']} | {r['class_id']} | {r['check_in_time']}"
+        c.drawString(50, y, line)
+        y -= 20
+        if y < 50:
+            c.showPage()
+            y = 800
+    c.save()
+    output.seek(0)
+    return output.read()
+
+async def admin_api_users(request):
+    """Admin: Barcha foydalanuvchilar ro'yxati"""
+    import json as _json
+    if not _check_admin_request(request):
+        return web.Response(text=_json.dumps({'ok': False, 'error': 'Unauthorized'}), content_type='application/json')
+    
+    try:
+        users_raw = await db.get_all_users()
+        users_data = []
+        for u in users_raw:
+            users_data.append({
+                'user_id': u['user_id'],
+                'full_name': u['full_name'],
+                'specialty': u['specialty'],
+                'status': u['status'],
+                'language': u['language'],
+                'created_at': str(u['created_at'])
+            })
+        return web.Response(text=_json.dumps({'ok': True, 'users': users_data}, ensure_ascii=False), content_type='application/json')
+    except Exception as e:
+        logging.error(f"admin_api_users error: {e}", exc_info=True)
+return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
+
+
 if __name__ == "__main__":
     asyncio.run(main())
+

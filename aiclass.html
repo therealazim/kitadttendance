@@ -570,40 +570,48 @@ body, html {
   font-weight: 400;
 }
 
-.submit-section {
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid var(--color-border-tertiary);
-  text-align: center;
-}
+.fixed-header {
+   display: none;
+ }
 
-.submit-btn {
-  background: linear-gradient(135deg, #FF9800 0%, #FB8C00 100%);
-  color: white;
-  border: none;
-  padding: 16px 48px;
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  width: 100%;
-  max-width: 320px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 4px 16px rgba(255, 152, 0, 0.3);
-}
+ .survey-wrapper {
+   padding-top: 0;
+ }
 
-.submit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
-}
+ .submit-section {
+   margin-top: 32px;
+   padding-top: 24px;
+   border-top: 1px solid var(--color-border-tertiary);
+   text-align: center;
+   display: block;
+ }
+
+   .submit-btn {
+     background: linear-gradient(135deg, #FF9800 0%, #FB8C00 100%);
+     color: white;
+     border: none;
+     padding: 16px 48px;
+     font-size: 16px;
+     font-weight: 600;
+     border-radius: 14px;
+     cursor: pointer;
+     transition: all 0.3s ease;
+     width: 100%;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     gap: 8px;
+     box-shadow: 0 4px 16px rgba(255, 152, 0, 0.3);
+   }
+
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+  }
 
 .submit-btn:active {
-  transform: translateY(0);
-}
+   transform: translateY(0);
+ }
 
 .submit-btn svg {
   width: 20px;
@@ -845,11 +853,10 @@ body, html {
     font-size: 13px;
   }
   
-  .submit-btn {
-    padding: 14px 32px;
-    font-size: 15px;
-    max-width: 100%;
-  }
+   .submit-btn {
+     padding: 14px 32px;
+     font-size: 15px;
+   }
   
   .question-block::before {
     display: none;
@@ -873,6 +880,11 @@ body, html {
     </div>
 
     <div class="survey-content">
+      <!-- 1.png Image - At the top -->
+      <div style="background: white; padding: 0; border-radius: 16px; margin-bottom: 28px; overflow: hidden; border: 2px solid #FF9800;">
+        <img src="https://raw.githubusercontent.com/therealazim/kitadttendance/main/portfolio/1.png" alt="Portfolio 1" style="width: 100%; height: 450px; border-radius: 8px; object-fit: cover;">
+      </div>
+
       <div style="background: white; padding: 24px 20px; border-radius: 16px; margin-bottom: 28px; border-left: 4px solid #FF9800;">
         <h2 style="color: #1a2a6c; border-bottom: 2px solid #FF9800; padding-bottom: 12px; margin-bottom: 16px; font-size: 18px;">AI Multimedia Kontent Mutaxassislarini Tayyorlash va Portfolio Yaratish Jarayoni</h2>
         
@@ -981,9 +993,14 @@ body, html {
               <td style="border: 1px solid #ddd; padding: 10px;">Veb sahifa, app strukturasi, avtomatlashtirish, API integratsiya.</td>
             </tr>
           </tbody>
-        </table>
+         </table>
 
-        <div style="padding: 14px; background: #fff8f0; border-left: 4px solid #FF9800; border-radius: 8px; margin-top: 20px; font-style: italic; color: #666; font-size: 13px; text-align: center;">
+        <div style="padding: 20px; background: linear-gradient(135deg, rgba(255, 152, 0, 0.08), rgba(255, 193, 7, 0.08)); border: 2px solid #FF9800; border-radius: 12px; margin-top: 20px; margin-bottom: 16px; text-align: center;">
+          <div style="font-size: 14px; color: #666; margin-bottom: 8px; font-weight: 500;">💰 Kurs To'lovi</div>
+          <div style="font-size: 24px; font-weight: 700; color: #E65100;">800,000 UZS</div>
+        </div>
+
+        <div style="padding: 14px; background: #fff8f0; border-left: 4px solid #FF9800; border-radius: 8px; font-style: italic; color: #666; font-size: 13px; text-align: center;">
           Future of UZB - Harry Goodwine | Korea & Europe Developer Network
         </div>
       </div>
@@ -992,53 +1009,17 @@ body, html {
       <div style="background: white; padding: 24px 20px; border-radius: 16px; margin-bottom: 28px; border-top: 4px solid #FF9800;">
         <h3 style="color: #FF9800; margin-top: 0; margin-bottom: 20px; font-size: 16px; text-align: center;">🎬 Harry Goodwine ning Asarlari va Loyihalari</h3>
         
-        <!-- Portfolio Gallery Preview -->
-        <div style="background: white; border-radius: 12px; padding: 0; margin-bottom: 20px; border: 2px solid #FF9800; overflow: hidden;">
-          <img src="portfolio_gallery.png" alt="Harry Goodwine Portfolio Gallery" style="width: 100%; height: auto; display: block; border-radius: 10px;">
-        </div>
-        
-        <div style="display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 20px;">
-          <!-- Image 1 -->
-          <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%); border-radius: 12px; padding: 16px; text-align: center;">
-            <img src="https://ibb.co/dsPjjyrD" alt="Yuqori Darajadagi Loyihalar" style="width: 100%; max-height: 300px; border-radius: 8px; object-fit: cover;">
-            <p style="color: white; margin-top: 12px; font-size: 13px;">Yuqori Darajadagi Loyihalar - AI Rassom va AI Dasturchi</p>
-          </div>
+         <div style="display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 20px;">
+           <!-- Image 3 (3.png) -->
+           <div style="background: white; border-radius: 12px; padding: 0; overflow: hidden; border: 1px solid #ddd;">
+             <img src="https://raw.githubusercontent.com/therealazim/kitadttendance/main/portfolio/3.png" alt="Portfolio 3" style="width: 100%; height: 450px; border-radius: 8px; object-fit: cover;">
+           </div>
 
-          <!-- Image 2 -->
-          <div style="background: white; border-radius: 12px; padding: 16px; border: 1px solid #ddd;">
-            <img src="https://ibb.co/zWghh9tc" alt="Harry Goodwine Music" style="width: 100%; max-height: 300px; border-radius: 8px; object-fit: cover;">
-            <p style="color: #1a2a6c; margin-top: 12px; font-size: 13px; font-weight: 500;">Musiqa va Entertainment Loyihalari</p>
-          </div>
-
-          <!-- Image 3 -->
-          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 16px;">
-            <img src="https://ibb.co/h1rvvqm0" alt="Harry Goodwine Career" style="width: 100%; max-height: 350px; border-radius: 8px; object-fit: cover;">
-            <p style="color: white; margin-top: 12px; font-size: 13px;">Harry Goodwine ning Uzun Faoliyat Tarixi</p>
-          </div>
-
-          <!-- Image 4 -->
-          <div style="background: white; border-radius: 12px; padding: 16px; border: 2px solid #FF9800;">
-            <img src="https://ibb.co/jvfxdp7F" alt="Roblox Uzbek Kingdom" style="width: 100%; max-height: 300px; border-radius: 8px; object-fit: cover;">
-            <p style="color: #FF9800; margin-top: 12px; font-size: 13px; font-weight: 600;">🎮 Roblox Uzbek Kingdom - AI O'yin Loyihasi</p>
-          </div>
-
-          <!-- Image 5 -->
-          <div style="background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%); border-radius: 12px; padding: 16px;">
-            <img src="https://ibb.co/Q7DhbzKp" alt="Lizebekistan Project" style="width: 100%; max-height: 300px; border-radius: 8px; object-fit: cover;">
-            <p style="color: white; margin-top: 12px; font-size: 13px;">🎥 Lizebekistan - AI Video va Metaverse Loyihasi</p>
-          </div>
-        </div>
-
-        <div style="background: #fffaf5; padding: 16px; border-left: 4px solid #FF9800; border-radius: 8px; font-size: 13px; line-height: 1.7; color: #555;">
-          <p><strong style="color: #1a2a6c;">Kurs davomida shu kabi loyihalar yaratishni o'rganasiz:</strong></p>
-          <ul style="margin: 10px 0 0 20px; padding: 0;">
-            <li>AI yordamida musiqa, video va film yaratish</li>
-            <li>Roblox da interaktiv o'yinlar yaratish</li>
-            <li>Metaverse loyihalari uchun kontent dizayn qilish</li>
-            <li>AI developer bo'lib kuchli portfolio yaratish</li>
-            <li>Global brendlar bilan ishlash tajribasini olish</li>
-          </ul>
-        </div>
+           <!-- Image 2 -->
+           <div style="background: white; border-radius: 12px; padding: 0; overflow: hidden; border: 1px solid #ddd;">
+             <img src="https://raw.githubusercontent.com/therealazim/kitadttendance/main/portfolio/2.png" alt="Portfolio 2" style="width: 100%; height: 450px; border-radius: 8px; object-fit: cover;">
+           </div>
+         </div>
       </div>
 
       <form id="surveyForm">
@@ -1158,10 +1139,10 @@ body, html {
           </div>
         </div>
 
-        <div class="submit-section">
+         <div class="submit-section">
           <button type="submit" class="submit-btn"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Yuborish</button>
           <div class="success-message" id="successMsg"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>So'rovnoma muvaffaqiyatli yuborildi!</div>
-        </div>
+         </div>
       </form>
     </div>
   </div>

@@ -18,5 +18,7 @@ matplotlib
 numpy
 Pillow
 
-# Networking
-requests
+ # Networking
+ requests
+
+reportlab
