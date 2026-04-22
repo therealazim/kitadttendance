@@ -10599,50 +10599,33 @@ def _build_attendance_pdf(rows, start, end):
     output.seek(0)
     return output.read()
 
-async def admin_api_attendance_export(request):
-    # Admin auth check (adjust to your auth system)
-    if not request.headers.get('X-Admin-Auth') and not getattr(request, 'user', None):
-        return web.json_response({'ok': False, 'error': 'Unauthorized'}, status=401)
+async def admin_api_users(request):
+    """Admin: Barcha foydalanuvchilar ro'yxati"""
+    import json as _json
+    if not _check_admin_request(request):
+        return web.Response(text=_json.dumps({'ok': False, 'error': 'Unauthorized'}), content_type='application/json')
     
-    start = request.query.get('start')
-    end = request.query.get('end')
-    class_id = request.query.get('class_id') if request.query is not None else None
-    
-    if not start or not end:
-        return web.Response(text='Missing start or end', status=400)
     try:
-        sd = datetime.strptime(start, '%Y-%m-%d').date()
-        ed = datetime.strptime(end, '%Y-%m-%d').date()
-    except Exception:
-        return web.Response(text='Invalid date format', status=400)
+        users_raw = await db.get_all_users()
+        users_data = []
+        for u in users_raw:
+            users_data.append({
+                'user_id': u['user_id'],
+                'full_name': u['full_name'],
+                'specialty': u['specialty'],
+                'status': u['status'],
+                'language': u['language'],
+                'created_at': str(u['created_at'])
+            })
+        return web.Response(text=_json.dumps({'ok': True, 'users': users_data}, ensure_ascii=False), content_type='application/json')
+    except Exception as e:
+        logging.error(f"admin_api_users error: {e}", exc_info=True)
+        return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
 
-    # Build query
-    if class_id:
-        query = (
-            "SELECT a.student_id, s.name AS student_name, a.date, a.status, a.class_id, a.check_in_time "
-            "FROM attendance a LEFT JOIN students s ON a.student_id = s.id "
-            "WHERE a.date BETWEEN $1 AND $2 AND a.class_id = $3 "
-            "ORDER BY a.date ASC"
-        )
-        params = [sd, ed, class_id]
-    else:
-        query = (
-            "SELECT a.student_id, s.name AS student_name, a.date, a.status, a.class_id, a.check_in_time "
-            "FROM attendance a LEFT JOIN students s ON a.student_id = s.id "
-            "WHERE a.date BETWEEN $1 AND $2 "
-            "ORDER BY a.date ASC"
-        )
-        params = [sd, ed]
+async def main():
+    await db.init_tables()
+    await db.load_branches()
+    await db.load_configurations()
+    await load_to_ram()
+    # ... (rest of the initialization)
 
-    # Fetch data
-    async with request.app['db'].pool.acquire() as conn:
-        rows = await conn.fetch(query, *params)
-
-    # PDF export in a worker thread to avoid blocking the event loop
-    pdf_bytes = await asyncio.to_thread(_build_attendance_pdf, rows, start, end)
-    resp = web.Response(body=pdf_bytes, content_type='application/pdf')
-    resp.headers['Content-Disposition'] = f'attachment; filename="attendance_{start}_to_{end}.pdf"'
-    return resp
-
-if __name__ == "__main__":
-    asyncio.run(main())
