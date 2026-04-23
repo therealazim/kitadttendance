@@ -3724,8 +3724,19 @@ html, body {
     flex: 1;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch;
-    padding: 20px 24px 28px 28px; /* Sidebar bilan oraliq uchun 28px */
+    /* Chap tomonda 28px oraliq, qolganlari esa 20px */
+    padding: 20px 20px 20px 28px; 
     box-sizing: border-box;
+}
+
+/* Har bir sahifa ichidagi asosiy bloklarga margin qo'shamiz */
+.page > div {
+    margin-bottom: 20px;
+}
+
+/* Jadval va kartalar uchun oraliqni to'g'irlash */
+.tw, .fb, .card, .live-card {
+    margin-bottom: 20px !important;
 }
 .page { 
     display: none !important; 
