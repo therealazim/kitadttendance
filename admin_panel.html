@@ -427,6 +427,16 @@ tr:hover { background: var(--card2); } .layout{display:flex;height:100vh} .sideb
   animation: spin 0.8s linear infinite;
   display: inline-block;
 }
+.ldr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: var(--tx3);
+}
+.asc{display:flex;flex-direction:column;align-items:center;gap:2px}
+.asv{font-size:28px;font-weight:800}
+.asl{font-size:11px;color:var(--tx2)}
 </style>
 </head>
 <body>
@@ -616,23 +626,24 @@ tr:hover { background: var(--card2); } .layout{display:flex;height:100vh} .sideb
 </div>
   <div class="attsum" id="attsum"></div>
   <div class="tw">
-    <div class="th"><span class="tt">Foydalanuvchilar</span><span class="tm" id="ucnt"></span></div>
+    <div class="th"><span class="tt">Foydalanuvchilar</span><span class="tm" id="attcnt"></span></div>
     <div style="overflow-x:auto">
       <table>
-        <thead>
+        <thead id="atttt">
           <tr>
             <th>Ism</th>
             <th>Fan</th>
-            <th>Bu oy</th>
+            <th>Filial</th>
+            <th>Dars vaqti</th>
+            <th>Kelgan vaqti</th>
             <th>Holat</th>
-            <th>Amallar</th>
           </tr>
         </thead>
-        <tbody id="utb"></tbody>
+        <tbody id="atttb"></tbody>
       </table>
     </div>
   </div>
-  </div>
+</div>
 </div>
 
 <!-- O'QUVCHI DAVOMAT - 3 bosqich -->
@@ -1812,12 +1823,12 @@ if(r?.ok){toast('<i class="lucide lucide-check"></i> Filial o\'zgartirildi');awa
 else toast('<i class="lucide lucide-times"></i> '+(r?.error||'Xatolik'));
 }
 async function saveSch(gid){const dt={};DAYS.forEach(d=>{const v=(document.getElementById('sc'+d.replace(/\s/g,''))||{}).value?.trim();if(v)dt[d]=v;});if(!Object.keys(dt).length){toast('<i class="lucide lucide-exclamation-triangle"></i> Kamida 1 kun kerak');return;}const r=await api('/admin/api/group/edit/schedule',{group_id:gid,day_times:dt});if(r?.ok){successNotify('Jadval saqlandi');await oGM(gid);}else toast('<i class="lucide lucide-times"></i> '+(r?.error||'Xatolik'));}
-async function saveT(gid){const tid=parseInt(document.getElementById('newte').value);if(!tid){toast("<i class='lucide ti-exclamation-triangle'></i> O'qituvchi tanlang");return;}const r=await api('/admin/api/group/edit/teacher',{group_id:gid,teacher_id:tid});if(r?.ok){successNotify(tr("O'qituvchi o'zgartirildi"));await fetchAll();await oGM(gid);}else toast('<i class="lucide lucide-times"></i> Xatolik');}
+async function saveT(gid){const tid=parseInt(document.getElementById('newte').value);if(!tid){toast("<i class=\"lucide lucide-exclamation-triangle\"></i> O'qituvchi tanlang");return;}const r=await api('/admin/api/group/edit/teacher',{group_id:gid,teacher_id:tid});if(r?.ok){successNotify(tr("O'qituvchi o'zgartirildi"));await fetchAll();await oGM(gid);}else toast('<i class="lucide lucide-times"></i> Xatolik');}
 async function delG(gid){const g=GROUPS.find(x=>x.id===gid);if(!confirm(`"${g?.group_name||gid}" o'chirilsinmi?`))return;const r=await api('/admin/api/group/delete',{group_id:gid});if(r?.ok){successNotify(tr("O'chirildi"));cM('gm');await fetchAll();}else toast('<i class="lucide lucide-times"></i> Xatolik');}
 async function dlGE(gid){toast('<i class="lucide lucide-spinner"></i>...',4000);const r=await fetch(`/admin/api/group/excel?id=${gid}`);if(!r.ok){toast('<i class="lucide lucide-times"></i> Xatolik');return;}const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`oquvchilar_${gid}.xlsx`;a.click();URL.revokeObjectURL(url);toast('<i class="lucide lucide-check"></i> Yuklab olindi');}
 function eStM(sid,gid,nm,ph){document.getElementById('esid').value=sid;document.getElementById('esgid').value=gid;document.getElementById('esnm').value=nm;document.getElementById('esph').value=ph;oM('esm');}
 async function saveS(){const sid=parseInt(document.getElementById('esid').value);const gid=parseInt(document.getElementById('esgid').value);const nm=document.getElementById('esnm').value.trim();const ph=document.getElementById('esph').value.trim();if(!nm||!ph){toast('<i class="lucide lucide-exclamation-triangle"></i> Ism va telefon kerak');return;}const r=await api('/admin/api/student/edit',{student_id:sid,name:nm,phone:ph});if(r?.ok){successNotify(tr('Saqlandi'));cM('esm');await oGM(gid);}else toast('<i class="lucide lucide-times"></i> Xatolik');}
-async function addS(gid){const nm=prompt("O'quvchi ismi:");if(!nm?.trim())return;const ph=prompt("Telefon:");if(!ph?.trim())return;const r=await api('/admin/api/student/add',{group_id:gid,name:nm.trim(),phone:ph.trim()});if(r?.ok){toast("<i class='lucide ti-check'></i> Qo'shildi");await oGM(gid);}else toast('<i class="lucide lucide-times"></i> '+(r?.error||'Xatolik'));}
+async function addS(gid){const nm=prompt("O'quvchi ismi:");if(!nm?.trim())return;const ph=prompt("Telefon:");if(!ph?.trim())return;const r=await api('/admin/api/student/add',{group_id:gid,name:nm.trim(),phone:ph.trim()});if(r?.ok){toast("<i class=\"lucide lucide-check\"></i> Qo'shildi");await oGM(gid);}else toast('<i class="lucide lucide-times"></i> '+(r?.error||'Xatolik'));}
 async function rmS(sid,gid){if(!confirm("O'quvchini guruhdan chiqarishni tasdiqlaysizmi?"))return;const r=await api('/admin/api/student/delete',{student_id:sid});if(r?.ok){toast('<i class="lucide lucide-check"></i> O\'quvchi guruhdan chiqarildi');await oGM(gid);}else toast('<i class="lucide lucide-times"></i> Xatolik');}
 function oCG(){
 document.getElementById('cgnm').value='';_cgS=[];document.getElementById('cgstds').innerHTML='';document.getElementById('cgtimes').innerHTML='';
@@ -2653,7 +2664,7 @@ async function saveSalaryConfigs() {
 }
 
 function rBrs(){const br=D.branches||[];document.getElementById('brcnt').textContent=br.length+' ta';document.getElementById('brlist').innerHTML=br.length?br.map((b,i)=>`<div class="brit"><div class="brnum">${i+1}</div><div style="flex:1"><div style="font-size:12px;font-weight:600">${b.name}</div><div style="font-size:10px;color:var(--tx2)"><i class="lucide lucide-map-marker-alt"></i> ${b.lat?.toFixed(4)||'?'}, ${b.lon?.toFixed(4)||'?'}</div></div><div style="display:flex;gap:4px"><a href="https://yandex.com/maps/?pt=${b.lon},${b.lat}&z=17" target="_blank" class="btn bg" style="font-size:10px;padding:3px 8px"><i class="lucide lucide-map"></i></a><button class="btn" style="font-size:10px;padding:3px 8px;background:rgba(79,142,247,.15);color:var(--ac);border:1px solid rgba(79,142,247,.3)" onclick="editBr(${i})"><i class="lucide lucide-edit"></i></button><button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="delBr(${i})"><i class="lucide lucide-trash"></i></button></div></div>`).join(''):'<div class="empty"><div class="ei"><i class="lucide lucide-building"></i></div>Filiallar yo\u2019q</div>';}
-async function addBr(){const nm=document.getElementById('brnm').value.trim();const lt=parseFloat(document.getElementById('brlt').value);const ln=parseFloat(document.getElementById('brln').value);if(!nm||isNaN(lt)||isNaN(ln)){toast("<i class='lucide ti-exclamation-triangle'></i> Barcha maydonlarni to'ldiring!");return;}document.getElementById('add-branch-icon').style.display='none';document.getElementById('add-branch-spin').style.display='inline-block';try{const r=await api('/admin/api/branch/add',{name:nm,lat:lt,lon:ln});if(r?.ok){successNotify('Yangi filial qoshildi!');['brnm','brlt','brln'].forEach(id=>document.getElementById(id).value='');await fetchAll();}else toast('<i class="lucide lucide-times"></i> Xatolik');}finally{document.getElementById('add-branch-icon').style.display='inline-block';document.getElementById('add-branch-spin').style.display='none';}}
+async function addBr(){const nm=document.getElementById('brnm').value.trim();const lt=parseFloat(document.getElementById('brlt').value);const ln=parseFloat(document.getElementById('brln').value);if(!nm||isNaN(lt)||isNaN(ln)){toast("<i class=\"lucide lucide-exclamation-triangle\"></i> Barcha maydonlarni to'ldiring!");return;}document.getElementById('add-branch-icon').style.display='none';document.getElementById('add-branch-spin').style.display='inline-block';try{const r=await api('/admin/api/branch/add',{name:nm,lat:lt,lon:ln});if(r?.ok){successNotify('Yangi filial qoshildi!');['brnm','brlt','brln'].forEach(id=>document.getElementById(id).value='');await fetchAll();}else toast('<i class="lucide lucide-times"></i> Xatolik');}finally{document.getElementById('add-branch-icon').style.display='inline-block';document.getElementById('add-branch-spin').style.display='none';}}
 function editBr(idx){const b=D.branches[idx];if(!b)return;document.getElementById('brnm-edit').value=b.name;document.getElementById('brlt-edit').value=b.lat;document.getElementById('brln-edit').value=b.lon;document.getElementById('br-edit-idx').value=idx;document.getElementById('br-edit-form').style.display='block';document.getElementById('br-add-form').style.display='none';}
 function cancelEditBr(){document.getElementById('br-edit-form').style.display='none';document.getElementById('br-add-form').style.display='block';['brnm-edit','brlt-edit','brln-edit'].forEach(id=>document.getElementById(id).value='');document.getElementById('br-edit-idx').value='';}
 async function saveEditBr(){const idx=parseInt(document.getElementById('br-edit-idx').value);const nm=document.getElementById('brnm-edit').value.trim();const lt=parseFloat(document.getElementById('brlt-edit').value);const ln=parseFloat(document.getElementById('brln-edit').value);if(!nm||isNaN(lt)||isNaN(ln)){toast("<i class='lucide lucide-alert-triangle'></i> Barcha maydonlarni to'ldiring!");return;}const r=await api('/admin/api/branch/update',{index:idx,name:nm,lat:lt,lon:ln});if(r?.ok){successNotify('Filial yangilandi');cancelEditBr();await fetchAll();}else toast('<i class="lucide lucide-times"></i> Xatolik: '+(r?.error||''));}
