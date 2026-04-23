@@ -34,6 +34,7 @@ import traceback
 # --- LOGGING ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
+
 def escape_md(text: str) -> str:
     """Markdown uchun xavfli belgilarni escape qilish"""
     if not text:
