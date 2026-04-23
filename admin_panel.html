@@ -3711,11 +3711,27 @@ html, body {
 
 .content {
     flex: 1;
-    overflow-y: auto !important; /* Faqat shu yerda scroll bo'ladi */
+    overflow-y: scroll !important; /* "auto" o'rniga "scroll" - har doim scrollbar joyini ajratadi */
     overflow-x: hidden;
-    padding: 20px 28px 40px 28px; /* Sidebar va o'ng tomon bilan 28px oraliq */
+    padding: 20px 24px 28px 28px;
     box-sizing: border-box;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain; /* Scrollni boshqa elementlarga o'tkazmaydi */
+    scrollbar-width: thin; /* Firefox uchun */
+}
+
+/* Scrollbar dizayni (barcha brauzerlar uchun) */
+.content::-webkit-scrollbar {
+    width: 10px;
+    background: var(--bg);
+}
+.content::-webkit-scrollbar-thumb {
+    background: var(--bd2);
+    border-radius: 5px;
+    border: 2px solid var(--bg);
+}
+.content::-webkit-scrollbar-thumb:hover {
+    background: var(--ac);
 }
 
 .page {
