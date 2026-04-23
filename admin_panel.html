@@ -3666,7 +3666,7 @@ async function exportBizReport(){
 }
 #theme-toggle{background:rgba(99,102,241,.15);color:#6366f1;border:1px solid rgba(99,102,241,.3)}
 
-/* --- TO'G'RILANGAN LAYOUT --- */
+/* Layout va Scroll tuzatish */
 html, body {
     height: 100%;
     margin: 0;
@@ -3695,26 +3695,32 @@ html, body {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    min-width: 0;
+    overflow: hidden;
     background: var(--bg);
 }
 
 .content {
     flex: 1;
-    display: block; /* Flex emas, block qilib qo'yamiz */
-    overflow-y: auto !important; /* Scroll aynan shu yerda bo'ladi */
+    overflow-y: auto !important;
     padding: 24px 28px;
     box-sizing: border-box;
-    height: 100%; /* Balandlikni ota elementdan oladi */
+    width: 100%; /* Qo'shildi */
 }
 
 .page {
     display: none !important;
-    width: 100%;
+    width: 100%; /* Majburiy width */
 }
 
 .page.on {
     display: block !important;
+}
+
+/* Har bir sahifa tarkibiga width: 100% beramiz */
+.page > * {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    margin-bottom: 24px !important;
 }
 
 /* Scrollbar dizayni */
