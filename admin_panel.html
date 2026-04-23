@@ -3704,28 +3704,22 @@ html, body {
     overflow-y: auto !important;
     padding: 24px 28px;
     box-sizing: border-box;
-    width: 100%; /* Qo'shildi */
+    width: 100%;
+    min-height: 100vh;
 }
 
 .page {
     display: none !important;
-    width: 100%; /* Majburiy width */
+    width: 100%;
 }
 
 .page.on {
     display: block !important;
 }
 
-/* Har bir sahifa tarkibiga width: 100% beramiz */
-.page > * {
-    width: 100% !important;
-    box-sizing: border-box !important;
-    margin-bottom: 24px !important;
-}
-
-/* Scrollbar dizayni */
+/* Scrollbar */
 .content::-webkit-scrollbar { width: 12px; }
-.content::-webkit-scrollbar-thumb { background: #555; border-radius: 6px; border: 3px solid var(--bg); }
+.content::-webkit-scrollbar-thumb { background: #555; border-radius: 6px; }
 .content::-webkit-scrollbar-track { background: var(--bg); }
 </style>
 </body>
