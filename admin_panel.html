@@ -3671,7 +3671,7 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Brauzerning asosiy scrollini o'chiramiz */
+    overflow: hidden; /* Asosiy scrollni o'chiramiz */
 }
 
 .layout {
@@ -3687,6 +3687,8 @@ html, body {
     background: var(--sb);
     border-right: 1px solid var(--bd);
     z-index: 100;
+    overflow-y: auto; /* Sidebarning o'zi ham scroll bo'lishi mumkin */
+    overflow-x: hidden;
 }
 
 .main {
@@ -3699,29 +3701,26 @@ html, body {
 }
 
 .topbar {
-    height: 60px; /* Aniq balandlik */
+    height: 60px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    padding: 0 20px;
+    padding: 0 28px; /* Kontent bilan moslash uchun */
     border-bottom: 1px solid var(--bd);
 }
 
 .content {
     flex: 1;
-    overflow-y: auto !important; /* Faqat shu yerda scroll bo'lishi shart */
+    overflow-y: auto !important; /* Faqat shu yerda scroll bo'ladi */
     overflow-x: hidden;
-    padding-top: 20px;
-    padding-bottom: 40px;
-    padding-left: 28px;  /* Sidebar va kontent orasidagi masofa */
-    padding-right: 28px; /* O'ng tomondan ham chiroyli masofa */
+    padding: 20px 28px 40px 28px; /* Sidebar va o'ng tomon bilan 28px oraliq */
     box-sizing: border-box;
     -webkit-overflow-scrolling: touch;
 }
 
 .page {
     display: none !important;
-    height: auto !important; /* Balandlikni cheklamaymiz */
+    height: auto !important;
     width: 100%;
 }
 
@@ -3729,25 +3728,14 @@ html, body {
     display: block !important;
 }
 
-/* Har bir blok orasidagi masofa */
-.tw, .fb, .card, .live-card, .sg, .gsal, .gbr {
-    margin-bottom: 24px !important;
-}
+/* Scrollbar dizayni (ixtiyoriy) */
+.content::-webkit-scrollbar { width: 8px; }
+.content::-webkit-scrollbar-track { background: transparent; }
+.content::-webkit-scrollbar-thumb { background: var(--bd2); border-radius: 4px; }
 
 /* Mobil moslashuv */
 @media (max-width: 650px) {
-    .sidebar {
-        position: fixed;
-        left: -100%;
-        transition: 0.3s;
-    }
-    .sidebar.mopen {
-        left: 0;
-    }
-    .content {
-        padding-left: 16px;
-        padding-right: 16px;
-    }
+    .content { padding-left: 16px; padding-right: 16px; }
 }
 </style>
 </body>
