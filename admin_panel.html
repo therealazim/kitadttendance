@@ -3686,6 +3686,15 @@ body { overflow: hidden; height: 100vh; }
     overflow: hidden;
     flex-shrink: 0;
 }
+/* Scroll + spacing polish */
+html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; }
+.layout { height: 100vh; display: flex; flex-direction: row; }
+.sidebar {
+    width: var(--sbw);
+    height: 100vh;
+    overflow: hidden;
+    flex-shrink: 0;
+}
 .main { 
     flex: 1;
     display: flex;
@@ -3693,6 +3702,22 @@ body { overflow: hidden; height: 100vh; }
     min-width: 0;
     height: 100vh;
     overflow: hidden;
+}
+.content {
+    flex: 1;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    padding: 20px 28px 28px 28px; /* Chap tomonda 28px joy */
+    height: 100%;
+    box-sizing: border-box;
+}
+.page { 
+    display: none !important; 
+    padding-bottom: 20px;
+    min-height: 100%;
+}
+.page.on { 
+    display: block !important; 
 }
 .content {
     flex: 1;
