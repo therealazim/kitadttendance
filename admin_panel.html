@@ -1521,13 +1521,13 @@ toast('<i class="lucide lucide-times"></i> '+e.message);
 }
 
 function rAll(){
-try{rDash();}catch(e){console.error('rDash:',e);}
-try{rUsers(USERS);}catch(e){console.error('rUsers:',e);}
-try{rGroups(GROUPS);}catch(e){console.error('rGroups:',e);}
-try{rAtt(D.today_attendance||[]);}catch(e){console.error('rAtt:',e);}
-try{rBrs();}catch(e){console.error('rBrs:',e);}
-try{rBcH();}catch(e){console.error('rBcH:',e);}
-try{rSaBrs();}catch(e){console.error('rSaBrs:',e);}
+try{rDash(); console.log('rDash render success');}catch(e){console.error('rDash:',e);}
+try{rUsers(USERS); console.log('rUsers render success');}catch(e){console.error('rUsers:',e);}
+try{rGroups(GROUPS); console.log('rGroups render success');}catch(e){console.error('rGroups:',e);}
+try{rAtt(D.today_attendance||[]); console.log('rAtt render success');}catch(e){console.error('rAtt:',e);}
+try{rBrs(); console.log('rBrs render success');}catch(e){console.error('rBrs:',e);}
+try{rBcH(); console.log('rBcH render success');}catch(e){console.error('rBcH:',e);}
+try{rSaBrs(); console.log('rSaBrs render success');}catch(e){console.error('rSaBrs:',e);}
 try{
 document.getElementById('nbu').textContent=USERS.filter(u=>u.status!=='blocked'&&u.status!=='deleted').length;
 document.getElementById('nbg').textContent=GROUPS.length;
