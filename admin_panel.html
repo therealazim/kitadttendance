@@ -3701,24 +3701,25 @@ html, body {
 
 .content {
     flex: 1;
-    overflow-y: auto !important; /* Scroll aynan shu yerda bo'ladi */
+    overflow-y: scroll !important; /* "auto" o'rniga "scroll" majburiy scrollbar uchun */
     padding: 24px 28px;
     box-sizing: border-box;
-}
-
-.page {
-    display: none !important;
-    width: 100%;
-}
-
-.page.on {
-    display: block !important;
+    height: 100vh; /* Viewport balandligini to'liq olsin */
 }
 
 /* Scrollbar dizayni */
-.content::-webkit-scrollbar { width: 8px; }
-.content::-webkit-scrollbar-thumb { background: var(--bd2); border-radius: 4px; }
-.content::-webkit-scrollbar-track { background: transparent; }
+.content::-webkit-scrollbar {
+    width: 12px; /* Scrollbar qalinligi */
+    background: #f1f1f1;
+}
+.content::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 6px;
+    border: 3px solid #f1f1f1; /* Scrollbar'ni vizual ajratish uchun */
+}
+.content::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
 </style>
 </body>
 </html>
