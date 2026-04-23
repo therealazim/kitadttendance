@@ -1294,10 +1294,17 @@ news_admin:()=>'<i class="lucide lucide-newspaper"></i> '+t('nav_news'),site:()=
   aiclass:()=>'<i class="lucide lucide-brain"></i> AI Dars Ariza'
 };
 function gp(n,el){
+  console.log("gp() chaqirildi, sahifa:", n);
   document.querySelectorAll('.sbi').forEach(b=>b.classList.remove('on'));
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
   el.classList.add('on');
-  document.getElementById('pg-'+n).classList.add('on');
+  const targetPage = document.getElementById('pg-'+n);
+  if (targetPage) {
+    targetPage.classList.add('on');
+    console.log("Sahifa topildi va 'on' klassi qo'shildi:", 'pg-'+n);
+  } else {
+    console.error("Sahifa topilmadi:", 'pg-'+n);
+  }
   window._curPage=n;
   const tf=TITLES[n];
   document.getElementById('pgtitle').innerHTML=(typeof tf==='function'?tf():tf)||n;
@@ -1488,6 +1495,7 @@ async function fetchAll(){
 try{
 document.getElementById('updlbl').textContent = 'Yuklanmoqda...';
 const r = await fetch('/admin/api/data', { credentials: 'include' });
+console.log("fetchAll() javobi status:", r.status);
 if(r.status===401 || r.status===403){ 
     document.getElementById('updlbl').textContent = 'Ruxsat yo\'q!';
     window.location.href = '/admin';
@@ -1495,9 +1503,11 @@ if(r.status===401 || r.status===403){
 }
 if(!r.ok) throw new Error('HTTP '+r.status);
 const txt = await r.text();
+console.log("JSON javob uzunligi:", txt.length);
 if(!txt || txt.length === 0) throw new Error('Bo\'sh javob');
 try{
     D = JSON.parse(txt);
+    console.log("D obyektlari:", Object.keys(D));
 } catch(pe){
     console.error('JSON parse xato:', txt.slice(0,200));
     throw new Error('JSON parse xato: ' + pe.message);
