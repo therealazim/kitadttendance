@@ -3666,18 +3666,19 @@ async function exportBizReport(){
 }
 #theme-toggle{background:rgba(99,102,241,.15);color:#6366f1;border:1px solid rgba(99,102,241,.3)}
 
-/* --- TO'G'RILANGAN LAYOUT KODLARI --- */
+/* --- TO'G'RILANGAN LAYOUT --- */
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Asosiy scrollni o'chiramiz */
+    overflow: hidden;
 }
 
 .layout {
     display: flex;
     height: 100vh;
     width: 100vw;
+    overflow: hidden;
 }
 
 .sidebar {
@@ -3686,9 +3687,7 @@ html, body {
     flex-shrink: 0;
     background: var(--sb);
     border-right: 1px solid var(--bd);
-    z-index: 100;
-    overflow-y: auto; /* Sidebarning o'zi ham scroll bo'lishi mumkin */
-    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .main {
@@ -3696,47 +3695,19 @@ html, body {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    min-width: 0;
+    overflow: hidden;
     background: var(--bg);
-}
-
-.topbar {
-    height: 60px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    padding: 0 28px; /* Kontent bilan moslash uchun */
-    border-bottom: 1px solid var(--bd);
 }
 
 .content {
     flex: 1;
-    overflow-y: scroll !important; /* "auto" o'rniga "scroll" - har doim scrollbar joyini ajratadi */
-    overflow-x: hidden;
-    padding: 20px 24px 28px 28px;
+    overflow-y: auto !important; /* Scroll aynan shu yerda bo'ladi */
+    padding: 24px 28px;
     box-sizing: border-box;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: contain; /* Scrollni boshqa elementlarga o'tkazmaydi */
-    scrollbar-width: thin; /* Firefox uchun */
-}
-
-/* Scrollbar dizayni (barcha brauzerlar uchun) */
-.content::-webkit-scrollbar {
-    width: 10px;
-    background: var(--bg);
-}
-.content::-webkit-scrollbar-thumb {
-    background: var(--bd2);
-    border-radius: 5px;
-    border: 2px solid var(--bg);
-}
-.content::-webkit-scrollbar-thumb:hover {
-    background: var(--ac);
 }
 
 .page {
     display: none !important;
-    height: auto !important;
     width: 100%;
 }
 
@@ -3744,15 +3715,10 @@ html, body {
     display: block !important;
 }
 
-/* Scrollbar dizayni (ixtiyoriy) */
+/* Scrollbar dizayni */
 .content::-webkit-scrollbar { width: 8px; }
-.content::-webkit-scrollbar-track { background: transparent; }
 .content::-webkit-scrollbar-thumb { background: var(--bd2); border-radius: 4px; }
-
-/* Mobil moslashuv */
-@media (max-width: 650px) {
-    .content { padding-left: 16px; padding-right: 16px; }
-}
+.content::-webkit-scrollbar-track { background: transparent; }
 </style>
 </body>
 </html>
