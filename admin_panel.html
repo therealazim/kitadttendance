@@ -3663,9 +3663,9 @@ async function exportBizReport(){
 #theme-toggle{background:rgba(99,102,241,.15);color:#6366f1;border:1px solid rgba(99,102,241,.3)}
 
 /* Scroll + spacing polish */
-html, body { height: 100%; }
-body { overflow: auto; }
-.layout { height: 100dvh; min-height: 100vh; }
+html, body { height: 100%; min-height: 100dvh; }
+body { overflow: auto; -webkit-overflow-scrolling: touch; }
+.layout { height: 100dvh; min-height: 100vh; display: flex; flex-direction: column; }
 .sidebar {
     height: 100dvh;
     min-height: 0;
@@ -3678,11 +3678,15 @@ body { overflow: auto; }
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
 }
-.main { min-height: 0; }
+.main { 
+    min-height: 0; 
+    overflow: hidden;
+}
 .content {
+    flex: 1;
     overflow-y: auto !important;
     overscroll-behavior-y: contain;
-    scrollbar-gutter: stable;
+    -webkit-overflow-scrolling: touch;
     padding: 20px 22px 28px;
 }
 .page { padding-bottom: 12px; }
