@@ -3699,7 +3699,8 @@ body { overflow: auto; -webkit-overflow-scrolling: touch; }
     -webkit-overflow-scrolling: touch;
     padding: 20px 22px 28px;
 }
-.page { display: none; padding-bottom: 12px; }
+.page { display: none !important; padding-bottom: 12px; }
+.page.on { display: block !important; }
 
 /* Section/table spacing */
 .tw, .fb, .live-card, .sc { margin-bottom: 16px !important; }
