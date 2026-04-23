@@ -3695,31 +3695,32 @@ html, body {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    overflow: hidden;
+    min-width: 0;
     background: var(--bg);
 }
 
 .content {
     flex: 1;
-    overflow-y: scroll !important; /* "auto" o'rniga "scroll" majburiy scrollbar uchun */
+    display: block; /* Flex emas, block qilib qo'yamiz */
+    overflow-y: auto !important; /* Scroll aynan shu yerda bo'ladi */
     padding: 24px 28px;
     box-sizing: border-box;
-    height: 100vh; /* Viewport balandligini to'liq olsin */
+    height: 100%; /* Balandlikni ota elementdan oladi */
+}
+
+.page {
+    display: none !important;
+    width: 100%;
+}
+
+.page.on {
+    display: block !important;
 }
 
 /* Scrollbar dizayni */
-.content::-webkit-scrollbar {
-    width: 12px; /* Scrollbar qalinligi */
-    background: #f1f1f1;
-}
-.content::-webkit-scrollbar-thumb {
-    background: #888; 
-    border-radius: 6px;
-    border: 3px solid #f1f1f1; /* Scrollbar'ni vizual ajratish uchun */
-}
-.content::-webkit-scrollbar-thumb:hover {
-    background: #555; 
-}
+.content::-webkit-scrollbar { width: 12px; }
+.content::-webkit-scrollbar-thumb { background: #555; border-radius: 6px; border: 3px solid var(--bg); }
+.content::-webkit-scrollbar-track { background: var(--bg); }
 </style>
 </body>
 </html>
