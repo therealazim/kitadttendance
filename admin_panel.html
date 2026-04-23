@@ -3700,12 +3700,16 @@ body { overflow: auto; -webkit-overflow-scrolling: touch; }
 }
 .page { 
     display: none !important; 
-    padding-bottom: 12px;
+    padding-bottom: 20px;
     height: auto;
     min-height: 100%;
 }
 .page.on { 
     display: block !important; 
+}
+/* Barcha sahifalar ichidagi asosiy konteynerlar uchun scroll va padding */
+.page > div:not(.sidebar):not(.main):not(.content) {
+    margin-bottom: 16px;
 }
 
 /* Section/table spacing */
