@@ -1294,17 +1294,11 @@ news_admin:()=>'<i class="lucide lucide-newspaper"></i> '+t('nav_news'),site:()=
   aiclass:()=>'<i class="lucide lucide-brain"></i> AI Dars Ariza'
 };
 function gp(n,el){
-  console.log("gp() chaqirildi, sahifa:", n);
   document.querySelectorAll('.sbi').forEach(b=>b.classList.remove('on'));
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
   el.classList.add('on');
-  const targetPage = document.getElementById('pg-'+n);
-  if (targetPage) {
-    targetPage.classList.add('on');
-    console.log("Sahifa topildi va 'on' klassi qo'shildi:", 'pg-'+n);
-  } else {
-    console.error("Sahifa topilmadi:", 'pg-'+n);
-  }
+  document.getElementById('pg-'+n).classList.add('on');
+  document.querySelector('.content').scrollTop = 0; // SCROLL NI TEPAGA QAYTARISH
   window._curPage=n;
   const tf=TITLES[n];
   document.getElementById('pgtitle').innerHTML=(typeof tf==='function'?tf():tf)||n;
@@ -3682,13 +3676,24 @@ body { overflow: auto; -webkit-overflow-scrolling: touch; }
     overflow: hidden;
     flex-shrink: 0;
 }
-.main { 
+.main {
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-width: 0;
-    height: 100vh;
     overflow: hidden;
+    height: 100vh;
+}
+.content {
+    flex: 1;
+    overflow-y: auto !important;
+    padding: 20px;
+    -webkit-overflow-scrolling: touch;
+}
+.page { 
+    display: none !important; 
+}
+.page.on { 
+    display: block !important; 
 }
 .content {
     flex: 1;
