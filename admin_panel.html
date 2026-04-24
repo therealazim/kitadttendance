@@ -8,6 +8,7 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <style>@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');*{margin:0;padding:0;box-sizing:border-box}:root{--bg:#f8fafc;--sb:#ffffff;--card:#ffffff;--card2:#f1f5f9;--bg2:#f1f5f9;--bd:#e2e8f0;--bd2:#cbd5e1;--ac:#3b82f6;--ac2:#2563eb;--gn:#10b981;--gr:#10b981;--rd:#ef4444;--og:#f59e0b;--pu:#8b5cf6;--tx:#0f172a;--tx2:#64748b;--tx3:#94a3b8;--sbw:240px;--shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -2px rgba(0,0,0,0.05);--radius:12px;--radius-sm:8px;--radius-lg:16px}[data-theme="dark"]{--bg:#0c0f14;--sb:#161b22;--card:#1c2128;--card2:#21262d;--bg2:#21262d;--bd:#30363d;--bd2:#484f58;--ac:#58a6ff;--ac2:#388bfd;--gn:#3fb950;--rd:#f85149;--og:#d29922;--pu:#a371f7;--tx:#f0f6fc;--tx2:#8b949e;--tx3:#6e7681;--shadow:0 1px 3px rgba(0,0,0,0.3),0 1px 2px rgba(0,0,0,0.2);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.4),0 4px 6px -2px rgba(0,0,0,0.3)}html,body{height:100%}body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);font-size:13px;overflow:hidden;-webkit-font-smoothing:antialiased}
+@media(max-width:650px){body{overflow:auto !important;height:auto !important;}.layout{height:auto !important;min-height:100dvh;}.main{overflow:visible !important;}.content{overflow-y:visible !important;}}
 .card-hover,.tw,.fb,.salbr,.stdi,.brit,.class-now,.teacher-status,.upcoming-item,.live-card,tr{transition:all 0.25s cubic-bezier(0.4,0,0.2,1)}
 .card-hover:hover,.tw:hover,.fb:hover,.salbr:hover,.stdi:hover,.brit:hover,.class-now:hover,.teacher-status:hover,.upcoming-item:hover,.live-card:hover,tr:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
 tr:hover{background:var(--card2)}
@@ -20,113 +21,226 @@ tr:hover{background:var(--card2)}
 }
 /* Table rows */
 tr:hover { background: var(--card2); } .layout{display:flex;height:100vh} .sidebar{width:var(--sbw);min-width:var(--sbw);background:var(--sb);border-right:1px solid var(--bd);display:flex;flex-direction:column;transition:transform .25s;z-index:100} .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0} .logo{display:flex;align-items:center;justify-content:center;padding:6px 10px;border-bottom:1px solid var(--bd);overflow:hidden} .logo h1{font-size:17px;font-weight:800;color:#1f2937}[data-theme="dark"] .logo h1{background:linear-gradient(135deg,#4f8ef7,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent} .logo p{font-size:9px;color:var(--tx3);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px} .sbnav{flex:1;padding:8px;overflow-y:auto} .sbsec{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);padding:10px 8px 4px} .sbi{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;color:var(--tx2);border:none;background:none;width:100%;text-align:left;font-family:'Inter',sans-serif;margin-bottom:2px;transition:all .1s} .sbi:hover{background:var(--card);color:var(--tx)} .sbi.on{background:rgba(79,142,247,.13);color:var(--ac);font-weight:600} .sbi .ico{font-size:18px;width:24px;height:24px;text-align:center;flex-shrink:0;line-height:24px;} .sbi .lbl{flex:1} .sbi .bdg{font-size:9px;background:var(--ac);color:#fff;padding:1px 6px;border-radius:20px;font-weight:700} .sbfoot{padding:10px 12px;border-top:1px solid var(--bd);text-align:center} #clock{font-size:22px;font-weight:800;color:var(--tx2);font-variant-numeric:tabular-nums} #cldate{font-size:10px;color:var(--tx3);margin-top:2px} .topbar{background:var(--sb);border-bottom:1px solid var(--bd);padding:10px 18px;display:flex;align-items:center;gap:10px;flex-shrink:0} .mbtn{display:none;background:none;border:none;color:var(--tx2);font-size:20px;cursor:pointer;padding:2px 5px} #pgtitle{font-size:14px;font-weight:700;flex:1} .online{display:flex;align-items:center;gap:6px} .dot{width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 6px rgba(16,185,129,.5)} #updlbl{font-size:10px;color:var(--tx3)} .rbtn{background:var(--card2);border:1px solid var(--bd2);color:var(--tx2);padding:5px 12px;border-radius:7px;cursor:pointer;font-size:11px;font-family:'Inter',sans-serif;white-space:nowrap} .rbtn:hover{color:var(--tx)} .content{flex:1;overflow-y:auto;padding:16px 18px} .page{display:none;animation:fin .18s ease} .page.on{display:block} @keyframes fin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}} .sg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px} .sc{background:var(--card);border:1px solid var(--bd);border-radius:11px;padding:15px;position:relative;overflow:hidden} .sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--cc,linear-gradient(90deg,var(--ac),var(--pu)))} .sc.cgn{--cc:linear-gradient(90deg,var(--gn),#34d399)} .sc.cog{--cc:linear-gradient(90deg,var(--og),#fbbf24)} .sc.crd{--cc:linear-gradient(90deg,var(--rd),#f87171)} .sc .si{font-size:20px;margin-bottom:7px}.sc .sv{font-size:26px;font-weight:800;line-height:1;margin-bottom:3px}.sc .sl{font-size:10px;color:var(--tx2)} .tw{background:var(--card);border:1px solid var(--bd);border-radius:11px;overflow:hidden;margin-bottom:13px} .th{padding:11px 15px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;flex-wrap:wrap} .tt{font-size:13px;font-weight:700;flex:1}.tm{font-size:10px;color:var(--tx2)} table{width:100%;border-collapse:collapse} thead tr{background:var(--card2)} th{padding:8px 13px;text-align:left;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--tx3);border-bottom:1px solid var(--bd);white-space:nowrap} td{padding:9px 13px;font-size:12px;border-bottom:1px solid var(--bd);vertical-align:middle} tr:last-child td{border-bottom:none} tr:hover td{background:rgba(255,255,255,.015)} .b{font-size:9px;font-weight:600;padding:2px 8px;border-radius:20px;display:inline-block;white-space:nowrap} .bit{background:rgba(79,142,247,.12);color:#4f8ef7;border:1px solid rgba(79,142,247,.25)} .bkr{background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.25)} .bof{background:rgba(16,185,129,.12);color:#34d399;border:1px solid rgba(16,185,129,.25)} .bok{background:rgba(16,185,129,.12);color:#34d399;border:1px solid rgba(16,185,129,.25)} .bbl{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.25)} .bdel{background:rgba(255,255,255,.04);color:var(--tx3);border:1px solid var(--bd)} .bno{background:rgba(255,255,255,.05);color:var(--tx2);border:1px solid var(--bd)} .btn{padding:5px 12px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:all .12s;display:inline-flex;align-items:center;gap:4px;white-space:nowrap} .btn:disabled{opacity:.45;cursor:not-allowed} .bp{background:var(--ac);color:#fff}.bp:hover:not(:disabled){background:#3a7de0} .bd{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.25)}.bd:hover{background:rgba(239,68,68,.22)} .bs{background:rgba(16,185,129,.12);color:#34d399;border:1px solid rgba(16,185,129,.25)}.bs:hover{background:rgba(16,185,129,.22)} .bw{background:rgba(245,158,11,.12);color:#fbbf24;border:1px solid rgba(245,158,11,.25)}.bw:hover{background:rgba(245,158,11,.22)} .bg{background:var(--card2);color:var(--tx2);border:1px solid var(--bd2)}.bg:hover{color:var(--tx)} .bpu{background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.25)}.bpu:hover{background:rgba(139,92,246,.22)} .bfull{width:100%;justify-content:center;padding:9px 16px;font-size:12px} .fb{background:var(--card);border:1px solid var(--bd);border-radius:11px;padding:15px;margin-bottom:13px} .ft{font-size:13px;font-weight:700;margin-bottom:13px} .fr2{display:grid;grid-template-columns:1fr 1fr;gap:11px} .fg{margin-bottom:11px}.fg:last-child{margin-bottom:0} label,.lbl{display:block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--tx2);margin-bottom:5px} .inp{width:100%;background:var(--card2);border:1px solid var(--bd2);border-radius:8px;padding:8px 11px;color:var(--tx);font-size:12px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s} .inp:focus{border-color:var(--ac)} select.inp{cursor:pointer} textarea.inp{resize:vertical;min-height:85px} input[type=date].inp,input[type=month].inp{color-scheme:dark} .overlay{position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.78);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px} .overlay.open{display:flex} .modal{background:var(--sb);border:1px solid var(--bd2);border-radius:15px;padding:20px;width:500px;max-width:100%;max-height:92vh;overflow-y:auto;animation:mpop .17s ease} .modal.mlg{width:660px} @keyframes mpop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}} .mt{font-size:15px;font-weight:800;margin-bottom:16px} .mr{display:flex;justify-content:space-between;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--bd)} .mr:last-of-type{border-bottom:none} .mk{font-size:11px;color:var(--tx2);flex-shrink:0} .mv{font-size:11px;font-weight:500;text-align:right;word-break:break-word;max-width:65%} .msec{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--tx3);margin:11px 0 5px} .mact{display:flex;gap:7px;margin-top:14px;flex-wrap:wrap} .mact .btn{flex:1;justify-content:center;padding:8px} .tabrow{display:flex;gap:2px;border-bottom:1px solid var(--bd);margin-bottom:14px;overflow-x:auto} .tab{padding:7px 14px;font-size:11px;font-weight:600;color:var(--tx2);cursor:pointer;border:none;background:none;font-family:'Inter',sans-serif;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .1s;white-space:nowrap} .tab.on{color:var(--ac);border-bottom-color:var(--ac)} .sr{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--bd);border-radius:9px;padding:7px 12px;margin-bottom:9px} .sr input{background:none;border:none;outline:none;color:var(--tx);font-size:12px;flex:1;font-family:'Inter',sans-serif} .sr input::placeholder{color:var(--tx3)} .frow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:11px} .fb2{padding:4px 12px;border-radius:20px;font-size:10px;cursor:pointer;border:1px solid var(--bd2);background:var(--card2);color:var(--tx2);font-family:'Inter',sans-serif;transition:all .1s} .fb2.on{background:var(--ac);color:#fff;border-color:var(--ac)} .g2{display:grid;grid-template-columns:1fr 1fr;gap:13px} .gsal{display:grid;grid-template-columns:360px 1fr;gap:14px;align-items:start} .gbr{display:grid;grid-template-columns:1fr 290px;gap:13px;align-items:start} .empty{text-align:center;padding:36px 20px;color:var(--tx3);font-size:12px} .empty .ei{font-size:30px;margin-bottom:7px} .ldr{display:flex;align-items:center;justify-content:center;gap:9px;padding:36px;color:var(--tx3)} .spin{width:20px;height:20px;border:2px solid var(--card2);border-top-color:var(--ac);border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0} @keyframes sp{to{transform:rotate(360deg)}} .toast{position:fixed;bottom:20px;right:20px;background:var(--card);color:var(--tx);border:1px solid var(--bd2);border-radius:9px;padding:10px 17px;font-size:12px;z-index:9999;opacity:0;transform:translateY(6px);transition:.22s;pointer-events:none;max-width:300px;box-shadow:0 4px 12px rgba(0,0,0,0.15)} .toast.show{opacity:1;transform:translateY(0)} .avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0} .rnk{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--bd)} .rnk:last-child{border-bottom:none} .rn{width:26px;font-size:12px;font-weight:800;color:var(--tx2)} .dtag{font-size:9px;padding:2px 7px;border-radius:20px;background:rgba(79,142,247,.1);color:var(--ac);border:1px solid rgba(79,142,247,.2);display:inline-block;white-space:nowrap;margin:1px} .attsum{display:flex;gap:8px;margin-bottom:12px} .asc{flex:1;background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px;text-align:center} .asv{font-size:22px;font-weight:800;line-height:1}.asl{font-size:10px;color:var(--tx2);margin-top:3px} .stdi{display:flex;align-items:center;gap:9px;padding:9px 14px;border-bottom:1px solid var(--bd)} .stdi:last-child{border-bottom:none} .salbr{background:var(--card2);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:10px} .salbrt{font-size:11px;font-weight:700;color:var(--ac);margin-bottom:10px} .resbox{background:linear-gradient(135deg,rgba(79,142,247,.08),rgba(139,92,246,.08));border:1px solid rgba(79,142,247,.18);border-radius:11px;padding:16px;text-align:center;margin-top:12px} .bcit{background:var(--card);border:1px solid var(--bd);border-radius:9px;padding:11px;margin-bottom:7px} .bcmt{font-size:10px;color:var(--tx3);margin-bottom:4px} .brit{display:flex;align-items:center;gap:11px;padding:10px 14px;border-bottom:1px solid var(--bd)} .brit:last-child{border-bottom:none} .brnum{width:26px;height:26px;background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--ac)} .inf{background:rgba(79,142,247,.07);border:1px solid rgba(79,142,247,.14);border-radius:8px;padding:9px 12px;font-size:11px;color:var(--tx2);margin-bottom:11px} .schcard{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:13px;margin-bottom:9px} .calday{padding:7px 4px;text-align:center;font-size:11px;border-radius:6px;cursor:pointer;border:1px solid transparent;user-select:none} .calday:hover{background:rgba(79,142,247,.1);border-color:rgba(79,142,247,.2)} .calday.tod{border-color:var(--ac);color:var(--ac);font-weight:700} .calday.sel{background:var(--ac);color:#fff;font-weight:700} .calday.ot{color:var(--tx3)} .calnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px} .calnav button{background:none;border:none;color:var(--tx2);cursor:pointer;font-size:18px;padding:4px 8px} .calnav span{font-size:13px;font-weight:700} .movov{display:none;position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.5)} @media(max-width:900px){:root{--sbw:200px}.sg{grid-template-columns:repeat(2,1fr)}.g2,.gsal,.gbr{grid-template-columns:1fr}.fr2{grid-template-columns:1fr}} @media(max-width:650px){.sidebar{position:fixed;top:0;left:0;height:100%;transform:translateX(-100%)}.sidebar.mopen{transform:translateX(0)}.movov.show{display:block}.mbtn{display:block}.sg{grid-template-columns:1fr 1fr}.content{padding:12px}th,td{padding:7px 9px}table{font-size:11px}.g2,.gsal,.gbr,.fr2{grid-template-columns:1fr}.mact{flex-direction:column}.modal{width:100%;border-radius:12px}}::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--card2);border-radius:2px}.lucide{color:var(--ac);}
-/* Ikonlar uchun umumiy sozlama */
+/* Ikonlar uchun umumiy sozlama — yengil, ingichka, CRM stilida */
 .lucide, svg.lucide {
-  width: 1.2em;
-  height: 1.2em;
+  width: 1.15em;
+  height: 1.15em;
   display: inline-block;
   vertical-align: middle;
-  stroke-width: 2px;
-  stroke: #1f2937;
+  stroke-width: 1.5px;
+  stroke: currentColor;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.2s, opacity 0.2s;
 }
 [data-theme="dark"] .lucide, [data-theme="dark"] svg.lucide {
-  stroke: #edf2ff;
+  stroke: currentColor;
+  opacity: 0.9;
 }
-/* Kontakt qismidagi ikonalar rangi ko'rinishi uchun */
-.contact-icon .lucide { color: var(--blue) !important; }
-/* Sidebar ikonalar rangi (agar kerak bo'lsa) */
-.sidebar .lucide { color: var(--ac); }
-/* Tugmalar ichidagi ikonalar ham qora */
-.btn .lucide, .apply-btn .lucide, .nav-btn .lucide { color: #1f2937 !important; stroke: #1f2937 !important; }
-[data-theme="dark"] .btn .lucide, [data-theme="dark"] .apply-btn .lucide, [data-theme="dark"] .nav-btn .lucide { color: #fff !important; stroke: #fff !important; }
+/* Sidebar ikonalar — ozgina kattaroq va rangli */
+.sidebar .sbi .ico .lucide {
+  width: 1.3em;
+  height: 1.3em;
+  stroke-width: 1.5px;
+  color: var(--ac);
+  stroke: var(--ac);
+}
+.sidebar .sbi.on .ico .lucide {
+  stroke-width: 1.75px;
+}
+/* Topbar tugma ikonalari */
+.rbtn .lucide {
+  width: 1em;
+  height: 1em;
+  stroke-width: 1.5px;
+  stroke: currentColor;
+  color: currentColor;
+}
+/* Tugmalar ichidagi ikonalar */
+.btn .lucide, .apply-btn .lucide, .nav-btn .lucide {
+  color: inherit !important;
+  stroke: currentColor !important;
+  stroke-width: 1.5px;
+}
+/* Kontakt qismidagi ikonalar */
+.contact-icon .lucide { color: var(--ac) !important; stroke: var(--ac) !important; }
+/* Katta ikonlar (stat card, live) */
+.sc .si .lucide { width: 1.6em; height: 1.6em; stroke-width: 1.4px; }
+/* Xavfli tugmalar */
+.bd .lucide { stroke: #f87171; color: #f87171; }
+.bs .lucide { stroke: #34d399; color: #34d399; }
+.bw .lucide { stroke: #fbbf24; color: #fbbf24; }
+.bp .lucide { stroke: #fff; color: #fff; }
 
 /* Notification Styles */
 .notif-btn { position: relative; }
+/* ── Notification badge ── */
 .notif-badge {
   position: absolute;
-  top: -4px;
-  right: -4px;
+  top: -5px; right: -5px;
   background: #ef4444;
-  color: white;
-  font-size: 10px;
-  font-weight: 700;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
   padding: 2px 5px;
   border-radius: 10px;
-  min-width: 18px;
+  min-width: 17px;
   text-align: center;
   animation: pulse 2s infinite;
+  border: 2px solid var(--sb, #fff);
+  line-height: 1.2;
 }
-.notif-panel {
-  display: none;
+
+/* ── Fullscreen notif overlay ── */
+.notif-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 14px 14px 0 14px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+.notif-overlay.show {
+  pointer-events: all;
+  opacity: 1;
+}
+/* Frosted blur backdrop */
+.notif-backdrop {
   position: absolute;
-  top: 50px;
-  right: 140px;
-  width: 340px;
-  max-height: 450px;
-  background: var(--bg);
-  border: 1px solid var(--bd);
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-  z-index: 1000;
-  overflow: hidden;
+  inset: 0;
+  background: rgba(0,0,0,0.28);
+  backdrop-filter: blur(8px) saturate(140%);
+  -webkit-backdrop-filter: blur(8px) saturate(140%);
+  cursor: pointer;
+  transition: opacity 0.22s ease;
 }
-.notif-panel.show { display: block; animation: slideIn 0.2s ease; }
+/* The popup card */
+.notif-popup {
+  position: relative;
+  z-index: 1;
+  width: 360px;
+  max-width: calc(100vw - 28px);
+  max-height: calc(100dvh - 80px);
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--glass-bg, rgba(255,255,255,0.72));
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid var(--glass-border, rgba(255,255,255,0.6));
+  box-shadow: 0 24px 60px rgba(0,0,0,0.22), 0 4px 16px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.8);
+  transform: translateY(-10px) scale(0.97);
+  transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1), opacity 0.22s ease;
+  opacity: 0;
+}
+.notif-overlay.show .notif-popup {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+[data-theme="dark"] .notif-popup {
+  background: rgba(22,27,36,0.82);
+  border-color: rgba(255,255,255,0.1);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+/* Notif header */
 .notif-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
+  padding: 14px 16px 12px;
   border-bottom: 1px solid var(--bd);
-  font-weight: 600;
-  font-size: 13px;
+  flex-shrink: 0;
+}
+.notif-header-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 700; color: var(--tx);
 }
 .notif-clear {
-  background: none;
-  border: none;
-  color: var(--ac);
-  font-size: 11px;
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.2);
+  color: #f87171;
+  font-size: 10px;
+  font-weight: 600;
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  transition: background 0.15s;
+  font-family: inherit;
 }
-.notif-clear:hover { background: var(--card); }
-.notif-list {
-  max-height: 380px;
-  overflow-y: auto;
-}
+.notif-clear:hover { background: rgba(239,68,68,0.2); }
+/* Notif list */
+.notif-list { overflow-y: auto; flex: 1; }
 .notif-empty {
   text-align: center;
-  padding: 30px;
+  padding: 40px 20px;
   color: var(--tx3);
   font-size: 13px;
 }
+/* Each notif row */
 .notif-item {
   display: flex;
-  gap: 12px;
+  align-items: flex-start;
+  gap: 11px;
   padding: 12px 16px;
   border-bottom: 1px solid var(--bd);
   cursor: pointer;
   transition: background 0.15s;
+  position: relative;
 }
-.notif-item:hover { background: var(--card); }
-.notif-item.unread { background: rgba(79,142,247,0.08); }
+.notif-item:last-child { border-bottom: none; }
+.notif-item:hover { background: rgba(79,142,247,0.06); }
+.notif-item.unread { background: rgba(79,142,247,0.07); }
+.notif-item.unread::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--ac);
+  border-radius: 0 2px 2px 0;
+}
+/* Icon circle */
 .notif-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 38px; height: 38px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
+  font-size: 16px;
 }
 .notif-icon.application { background: rgba(16,185,129,0.15); color: #10b981; }
-.notif-icon.warning { background: rgba(245,158,11,0.15); color: #f59e0b; }
-.notif-icon.info { background: rgba(59,130,246,0.15); color: #3b82f6; }
-.notif-icon.payment { background: rgba(139,92,246,0.15); color: #8b5cf6; }
-.notif-content { flex: 1; min-width: 0; }
-.notif-title { font-weight: 600; font-size: 13px; margin-bottom: 2px; }
-.notif-text { font-size: 12px; color: var(--tx2); line-height: 1.4; }
-.notif-time { font-size: 10px; color: var(--tx3); margin-top: 4px; }
+.notif-icon.warning     { background: rgba(245,158,11,0.15);  color: #f59e0b; }
+.notif-icon.info        { background: rgba(59,130,246,0.15);  color: #3b82f6; }
+.notif-icon.payment     { background: rgba(139,92,246,0.15);  color: #8b5cf6; }
+/* Text */
+.notif-content  { flex: 1; min-width: 0; }
+.notif-title    { font-weight: 600; font-size: 12.5px; margin-bottom: 2px; color: var(--tx); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.notif-text     { font-size: 11.5px; color: var(--tx2); line-height: 1.45; }
+.notif-time     { font-size: 10px; color: var(--tx3); margin-top: 3px; }
+/* Unread dot */
+.notif-unread-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--ac);
+  flex-shrink: 0;
+  margin-top: 5px;
+  box-shadow: 0 0 6px var(--ac);
+}
+
+@media(max-width:650px){
+  .notif-overlay{ padding: 8px 8px 0; align-items: flex-end; }
+  .notif-popup{ width: 100%; max-width: 100%; border-radius: 20px 20px 0 0; max-height: 75dvh; transform: translateY(40px) scale(1); }
+  .notif-overlay.show .notif-popup{ transform: translateY(0) scale(1); }
+  .topbar{flex-wrap:nowrap;padding:8px 10px;gap:6px;overflow-x:auto;}
+  .topbar .rbtn span{display:none;}
+  #pgtitle{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px;}
+  .online #updlbl{display:none;}
+  .live-stats-grid{grid-template-columns:1fr !important;}
+}
 
 /* Live Statistics Animations */
 @keyframes pulse {
@@ -563,7 +677,7 @@ body::before {
 }
 
 /* Cards Glass */
-.sc, .tw, .fb, .live-card, .modal, .notif-panel, .schcard, .bcit, .asc {
+.sc, .tw, .fb, .live-card, .modal, .notif-popup, .schcard, .bcit, .asc {
   background: var(--glass-bg) !important;
   backdrop-filter: var(--glass-blur) !important;
   -webkit-backdrop-filter: var(--glass-blur) !important;
@@ -691,14 +805,6 @@ thead tr {
   backdrop-filter: blur(4px);
 }
 
-/* Notification Panel Glass */
-.notif-panel {
-  background: var(--glass-bg) !important;
-  backdrop-filter: var(--glass-blur) !important;
-  -webkit-backdrop-filter: var(--glass-blur) !important;
-  border: 1px solid var(--glass-border) !important;
-  box-shadow: var(--glass-shadow-lg) !important;
-}
 
 /* Toast Glass */
 .toast {
@@ -862,15 +968,7 @@ thead tr {
     <div id="pgtitle">Dashboard</div>
     <div class="online"><div class="dot"></div><span id="updlbl">Yuklanmoqda...</span></div>
     <button class="rbtn notif-btn" id="notif-btn" onclick="toggleNotifPanel()" title="Bildirishnomalar"><i class="lucide lucide-bell"></i><span class="notif-badge" id="notif-badge" style="display:none">0</span></button>
-    <div class="notif-panel" id="notif-panel">
-      <div class="notif-header">
-        <span>Bildirishnomalar</span>
-        <button class="notif-clear" onclick="clearNotifs()">Hammasini o'chirish</button>
-      </div>
-      <div class="notif-list" id="notif-list">
-        <div class="notif-empty">Xozircha bildirishnoma yo'q</div>
-      </div>
-    </div>
+
 
     <button class="rbtn" id="theme-toggle" onclick="toggleTheme()"><i class="lucide lucide-moon"></i> Dark</button>
     <button class="rbtn" onclick="fetchAll()" data-i18n="btn_refresh"><i class="lucide lucide-sync"></i> Yangilash</button>
@@ -1553,7 +1651,65 @@ if(el_attd) el_attd.value=TODAY;
 (function tick(){const n=new Date();document.getElementById('clock').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');document.getElementById('cldate').textContent=n.toLocaleDateString('uz-UZ',{weekday:'short',day:'numeric',month:'short'});setTimeout(tick,9000);})();
 function tSb(){document.getElementById('sb').classList.toggle('mopen');document.getElementById('movov').classList.toggle('show');}
 function cSb(){document.getElementById('sb').classList.remove('mopen');document.getElementById('movov').classList.remove('show');}
-function toggleTheme(){const html=document.documentElement;const btn=document.getElementById('theme-toggle');const logo=document.getElementById('theme-logo');if(html.getAttribute('data-theme')==='dark'){html.setAttribute('data-theme','light');localStorage.setItem('theme','light');btn.innerHTML='<i class="lucide lucide-moon"></i> Dark';logo.src='/static/black_logo.svg';}else{html.setAttribute('data-theme','dark');localStorage.setItem('theme','dark');btn.innerHTML='<i class="lucide lucide-sun"></i> Light';logo.src='/static/white_logo.svg';}}
+function toggleTheme(){
+  const html=document.documentElement;
+  const btn=document.getElementById('theme-toggle');
+  const logo=document.getElementById('theme-logo');
+  const isDark=html.getAttribute('data-theme')==='dark';
+  
+  // Create overlay animation
+  const anim=document.createElement('div');
+  anim.id='theme-anim-overlay';
+  anim.style.cssText='position:fixed;inset:0;z-index:99999;pointer-events:none;display:flex;align-items:center;justify-content:center;overflow:hidden;';
+  
+  if(isDark){
+    // Going to LIGHT → Sunrise animation
+    anim.innerHTML=`
+      <style>
+        @keyframes sunriseRay{0%{opacity:0;transform:scaleY(0) translateX(-50%)}60%{opacity:1;transform:scaleY(1) translateX(-50%)}100%{opacity:0;transform:scaleY(1) translateX(-50%)}}
+        @keyframes sunriseSun{0%{opacity:0;transform:translate(-50%,-50%) scale(0.2)}50%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.3)}}
+        @keyframes sunriseGlow{0%{opacity:0;transform:scaleX(0)}50%{opacity:1;transform:scaleX(1)}100%{opacity:0}}
+        @keyframes sunriseBg{0%{opacity:0}40%{opacity:1}100%{opacity:0}}
+      </style>
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(255,180,60,0.6),rgba(255,120,40,0.3),transparent);animation:sunriseBg 0.9s ease forwards;"></div>
+      <div style="position:absolute;bottom:0;left:50%;width:220px;height:3px;background:linear-gradient(90deg,transparent,rgba(255,180,0,0.9),transparent);transform-origin:left;animation:sunriseGlow 0.9s ease forwards;"></div>
+      <div style="position:absolute;bottom:10px;left:50%;width:64px;height:64px;background:radial-gradient(circle,#fff9c4,#ffd740,#ff9800);border-radius:50%;box-shadow:0 0 40px 20px rgba(255,200,50,0.5);transform:translate(-50%,-50%);animation:sunriseSun 0.9s ease forwards;"></div>
+      ${[0,30,60,90,120,150,210,240,270,300,330].map(a=>`<div style="position:absolute;bottom:42px;left:50%;width:3px;height:${18+Math.random()*12}px;background:rgba(255,215,0,0.7);border-radius:2px;transform-origin:bottom center;transform:rotate(${a}deg) translateX(-50%);animation:sunriseRay 0.9s ease ${Math.random()*0.1}s forwards;"></div>`).join('')}
+    `;
+  } else {
+    // Going to DARK → Moon/Sunset animation
+    anim.innerHTML=`
+      <style>
+        @keyframes moonRise{0%{opacity:0;transform:translate(-50%,40px) scale(0.5)}60%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.1)}}
+        @keyframes starTwinkle{0%{opacity:0;transform:scale(0)}50%{opacity:1;transform:scale(1)}100%{opacity:0}}
+        @keyframes darkBg{0%{opacity:0}40%{opacity:1}100%{opacity:0}}
+        @keyframes moonGlow{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
+      </style>
+      <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(15,20,50,0.85),rgba(40,10,60,0.7),transparent);animation:darkBg 0.9s ease forwards;"></div>
+      <div style="position:absolute;top:30%;left:50%;width:56px;height:56px;animation:moonRise 0.9s ease forwards;">
+        <div style="width:56px;height:56px;background:radial-gradient(circle at 35% 35%,#fff9e0,#ffd700);border-radius:50%;box-shadow:0 0 30px 10px rgba(255,220,100,0.4);clip-path:polygon(0 0,100% 0,100% 100%,30% 100%,0 100%);"></div>
+      </div>
+      ${Array.from({length:20},(_,i)=>`<div style="position:absolute;top:${Math.random()*70}%;left:${Math.random()*100}%;width:${2+Math.random()*3}px;height:${2+Math.random()*3}px;background:#fff;border-radius:50%;animation:starTwinkle 0.9s ease ${Math.random()*0.4}s forwards;"></div>`).join('')}
+    `;
+  }
+  
+  document.body.appendChild(anim);
+  setTimeout(()=>{
+    if(isDark){
+      html.setAttribute('data-theme','light');
+      localStorage.setItem('theme','light');
+      btn.innerHTML='<i class="lucide lucide-moon"></i> Dark';
+      logo.src='/static/black_logo.svg';
+    } else {
+      html.setAttribute('data-theme','dark');
+      localStorage.setItem('theme','dark');
+      btn.innerHTML='<i class="lucide lucide-sun"></i> Light';
+      logo.src='/static/white_logo.svg';
+    }
+    if(window.lucide)lucide.createIcons();
+  },350);
+  setTimeout(()=>anim.remove(),950);
+}
 (function(){const t=localStorage.getItem('theme');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');document.getElementById('theme-toggle').innerHTML='<i class="lucide lucide-sun"></i> Light';document.getElementById('theme-logo').src='/static/white_logo.svg';}})();
 let LANG='uz';
 
@@ -1733,24 +1889,32 @@ async function initNotifications() {
 
 function updateNotifBadge() {
   const badge = document.getElementById('notif-badge');
+  const headerCount = document.getElementById('notif-unread-count');
   const unread = notifs.filter(n => !n.read).length;
   if (unread > 0) {
-    badge.textContent = unread > 99 ? '99+' : unread;
+    const label = unread > 99 ? '99+' : unread;
+    badge.textContent = label;
     badge.style.display = 'inline-block';
+    if (headerCount) { headerCount.textContent = label; headerCount.style.display = 'inline-block'; }
   } else {
     badge.style.display = 'none';
+    if (headerCount) headerCount.style.display = 'none';
   }
 }
 
-function addNotif(type, title, text, icon = 'info') {
+function addNotif(type, title, text, icon = 'info', page = null, detail = null) {
+  const now = new Date();
   const notif = {
     id: Date.now(),
     type,
     title,
     text,
+    detail,
+    page,
     icon,
     read: false,
-    time: new Date().toLocaleTimeString('uz-UZ', {hour: '2-digit', minute: '2-digit'})
+    time: now.toLocaleTimeString('uz-UZ', {hour: '2-digit', minute: '2-digit'}),
+    date: now.toLocaleDateString('uz-UZ', {day:'numeric', month:'short'})
   };
   notifs.unshift(notif);
   if (notifs.length > 50) notifs.pop();
@@ -1760,35 +1924,104 @@ function addNotif(type, title, text, icon = 'info') {
   
   // Show browser notification if permitted
   if (notifPermission === 'granted') {
-    new Notification(title, {
+    const bn = new Notification(title, {
       body: text,
       icon: '/static/favicon.ico',
-      tag: notif.id
+      tag: String(notif.id)
     });
+    bn.onclick = () => { window.focus(); openNotifDetail(notif.id); bn.close(); };
   }
 }
 
 function renderNotifList() {
   const list = document.getElementById('notif-list');
   if (notifs.length === 0) {
-    list.innerHTML = '<div class="notif-empty">Xozircha bildirishnoma yo\'q</div>';
+    list.innerHTML = '<div class="notif-empty"><div style="font-size:32px;margin-bottom:8px">🔔</div>Xozircha bildirishnoma yo\'q</div>';
     return;
   }
-  
   list.innerHTML = notifs.map(n => `
-    <div class="notif-item ${n.read ? '' : 'unread'}" onclick="markRead(${n.id})">
-      <div class="notif-icon ${n.icon}">
-        <i class="lucide lucide-${n.icon === 'application' ? 'user-plus' : n.icon === 'payment' ? 'credit-card' : n.icon === 'warning' ? 'alert-triangle' : 'info'}"></i>
+    <div class="notif-item ${n.read ? '' : 'unread'}" onclick="openNotifDetail(${n.id})" data-notif-id="${n.id}">
+      <div class="notif-icon ${n.type||n.icon}">
+        <i class="lucide lucide-${n.type==='application'||n.icon==='application' ? 'user-plus' : n.type==='payment'||n.icon==='payment' ? 'credit-card' : n.type==='warning'||n.icon==='warning' ? 'alert-triangle' : 'bell'}"></i>
       </div>
       <div class="notif-content">
         <div class="notif-title">${n.title}</div>
         <div class="notif-text">${n.text}</div>
-        <div class="notif-time">${n.time}</div>
+        <div class="notif-time"><i class="lucide lucide-clock" style="font-size:9px"></i> ${n.time}${n.date?' · '+n.date:''}</div>
       </div>
+      ${!n.read ? '<div style="width:8px;height:8px;border-radius:50%;background:var(--ac);flex-shrink:0;margin-top:4px;box-shadow:0 0 6px var(--ac)"></div>' : ''}
     </div>
   `).join('');
-  
   if (window.lucide) lucide.createIcons();
+}
+
+function openNotifDetail(id) {
+  const n = notifs.find(x => x.id === id);
+  if (!n) return;
+  // Mark as read
+  n.read = true;
+  updateNotifBadge();
+  renderNotifList();
+  // Close notif overlay
+  closeNotifPanel();
+  
+  // Icon mapping
+  const iconMap = {
+    application: {ico:'user-plus', col:'#10b981', bg:'rgba(16,185,129,0.15)', label:'Ariza'},
+    payment: {ico:'credit-card', col:'#8b5cf6', bg:'rgba(139,92,246,0.15)', label:'To\'lov'},
+    warning: {ico:'alert-triangle', col:'#f59e0b', bg:'rgba(245,158,11,0.15)', label:'Ogohlantirish'},
+    info: {ico:'info', col:'#3b82f6', bg:'rgba(59,130,246,0.15)', label:'Ma\'lumot'},
+  };
+  const ic = iconMap[n.type||n.icon] || iconMap.info;
+  
+  // Build action buttons based on type
+  let actions = '';
+  if (n.type === 'application' || n.icon === 'application') {
+    const page = n.page || (n.title?.toLowerCase().includes('bootcamp') ? 'bootcamp' : n.title?.toLowerCase().includes('ai') ? 'aiclass' : 'applies');
+    const pageBtn = document.querySelector(`.sbi[onclick*="${page}"]`);
+    actions = `<button class="btn bp" onclick="document.getElementById('notif-detail-overlay').remove();gp('${page}',document.querySelector('.sbi[onclick*=\\'${page}\\']'))" style="flex:1"><i class="lucide lucide-external-link"></i> Arizalarga o'tish</button>`;
+  } else if (n.type === 'payment' || n.icon === 'payment') {
+    actions = `<button class="btn bp" onclick="document.getElementById('notif-detail-overlay').remove();gp('payments',document.querySelector('.sbi[onclick*=payments]'))" style="flex:1"><i class="lucide lucide-credit-card"></i> To'lovlarga o'tish</button>`;
+  }
+  
+  const overlay = document.createElement('div');
+  overlay.id = 'notif-detail-overlay';
+  overlay.className = 'overlay open';
+  overlay.style.zIndex = '9999';
+  overlay.innerHTML = `
+    <div class="modal" style="max-width:400px;width:100%">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:44px;height:44px;border-radius:12px;background:${ic.bg};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <i class="lucide lucide-${ic.ico}" style="font-size:22px;color:${ic.col}"></i>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:${ic.col};margin-bottom:2px">${ic.label}</div>
+            <div style="font-size:15px;font-weight:800;color:var(--tx)">${n.title}</div>
+          </div>
+        </div>
+        <button class="btn bg" onclick="document.getElementById('notif-detail-overlay').remove()" style="padding:6px 10px;font-size:16px">×</button>
+      </div>
+      
+      <div style="background:var(--card2);border:1px solid var(--bd);border-radius:10px;padding:16px;margin-bottom:16px">
+        <div style="font-size:13px;color:var(--tx);line-height:1.6">${n.text}</div>
+        ${n.detail ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--bd);font-size:12px;color:var(--tx2)">${n.detail}</div>` : ''}
+      </div>
+      
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--tx3);margin-bottom:16px">
+        <i class="lucide lucide-clock" style="font-size:12px"></i>
+        ${n.time}${n.date?' · '+n.date:''}
+      </div>
+      
+      <div style="display:flex;gap:8px">
+        ${actions}
+        <button class="btn bg" onclick="document.getElementById('notif-detail-overlay').remove()" style="${actions?'':'flex:1;'}">Yopish</button>
+      </div>
+    </div>
+  `;
+  overlay.addEventListener('click', e => { if(e.target===overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+  if(window.lucide) lucide.createIcons();
 }
 
 function markRead(id) {
@@ -1807,40 +2040,66 @@ function clearNotifs() {
 }
 
 function toggleNotifPanel() {
-  const panel = document.getElementById('notif-panel');
-  panel.classList.toggle('show');
-  // Mark all as read
+  const overlay = document.getElementById('notif-overlay');
+  const isShown = overlay.classList.contains('show');
+  if (isShown) {
+    closeNotifPanel();
+  } else {
+    openNotifPanel();
+  }
+}
+
+function openNotifPanel() {
+  const overlay = document.getElementById('notif-overlay');
+  // Mark all as read when opened
   notifs.forEach(n => n.read = true);
   updateNotifBadge();
   renderNotifList();
+  overlay.classList.add('show');
+  // Prevent body scroll on mobile
+  document.body.style.overflow = 'hidden';
 }
 
-// Close notification panel when clicking outside
-document.addEventListener('click', function(e) {
-  const panel = document.getElementById('notif-panel');
-  const btn = document.getElementById('notif-btn');
-  if (!panel.contains(e.target) && !btn.contains(e.target)) {
-    panel.classList.remove('show');
+function closeNotifPanel() {
+  const overlay = document.getElementById('notif-overlay');
+  overlay.classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+function handleNotifOverlayClick(e) {
+  // Close if clicking backdrop (not the popup)
+  if (!document.getElementById('notif-popup').contains(e.target)) {
+    closeNotifPanel();
   }
+}
+
+// Keyboard close
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeNotifPanel();
 });
 
 async function checkNewNotifications() {
   try {
-    // Check for new applications
     const bootResp = await fetch('/admin/api/bootcamp/applications', {credentials: 'include'}).then(r => r.json()).catch(() => null);
     const aicResp = await fetch('/admin/api/aiclass/applications', {credentials: 'include'}).then(r => r.json()).catch(() => null);
+    const appResp = await fetch('/admin/api/applications', {credentials: 'include'}).then(r => r.json()).catch(() => null);
     
     if (bootResp?.applications) {
       const newApps = bootResp.applications.filter(a => a.status === 'new');
       if (newApps.length > 0) {
-        addNotif('application', 'Yangi Bootcamp ariza!', `${newApps.length} ta yangi ariza keldi`, 'application');
+        addNotif('application', `🎓 Yangi Bootcamp ariza`, `${newApps.length} ta yangi ariza ko'rib chiqilishi kutilmoqda`, 'application', 'bootcamp', newApps.map(a=>a.name||a.full_name||'Noma\'lum').join(', '));
       }
     }
-    
     if (aicResp?.applications) {
       const newAic = aicResp.applications.filter(a => a.status === 'new');
       if (newAic.length > 0) {
-        addNotif('application', 'Yangi AI Dars ariza!', `${newAic.length} ta yangi ariza keldi`, 'application');
+        addNotif('application', `🤖 Yangi AI Dars ariza`, `${newAic.length} ta yangi ariza kutilmoqda`, 'application', 'aiclass', newAic.map(a=>a.name||a.full_name||'Noma\'lum').join(', '));
+      }
+    }
+    if (appResp?.applications) {
+      const newGen = appResp.applications.filter(a => a.status === 'new');
+      if (newGen.length > 0) {
+        addNotif('application', `📋 Yangi ariza`, `${newGen.length} ta yangi ariza`, 'application', 'applies');
       }
     }
   } catch (e) {
@@ -1851,7 +2110,24 @@ async function checkNewNotifications() {
 async function fetchAll(){
 try{
 document.getElementById('updlbl').textContent=t('txt_loading');
-const r=await fetch(_ap('/admin/api/data'));
+// Timeout for mobile networks (15s)
+const controller = new AbortController();
+const tid = setTimeout(() => controller.abort(), 15000);
+let r;
+try {
+  r = await fetch(_ap('/admin/api/data'), {signal: controller.signal});
+} catch(fetchErr) {
+  if(fetchErr.name === 'AbortError') {
+    document.getElementById('updlbl').textContent='⚠️ Ulanish vaqti tugadi';
+    // Clear any stuck spinners
+    ['classes-now-list','upcoming-classes-list','today-schedule-list'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el && el.querySelector('.lucide-loader')) el.innerHTML = '<div style="text-align:center;color:var(--tx3);padding:16px">Server javob bermadi</div>';
+    });
+    return;
+  }
+  throw fetchErr;
+} finally { clearTimeout(tid); }
 if(r.status===401){document.getElementById('updlbl').textContent='<i class="lucide lucide-times"></i> Server xato 401';return;}
 if(!r.ok)throw new Error('HTTP '+r.status);
 const txt=await r.text();
@@ -1863,8 +2139,13 @@ if(window.lucide)lucide.createIcons();
 document.getElementById('updlbl').textContent=t('txt_updated')+': '+new Date().toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit'});
 }catch(e){
 console.error('fetchAll xato:',e);
-document.getElementById('updlbl').textContent='<i class="lucide lucide-times"></i> Ulanmadi: '+e.message;
+document.getElementById('updlbl').textContent='⚠️ Ulanmadi';
 toast('<i class="lucide lucide-times"></i> '+e.message);
+// Clear stuck spinners on error
+['classes-now-list','upcoming-classes-list','today-schedule-list'].forEach(id => {
+  const el = document.getElementById(id);
+  if(el && el.querySelector('.lucide-loader')) el.innerHTML = '<div style="text-align:center;color:var(--tx3);padding:16px">Ulanish xatosi</div>';
+});
 }
 }
 function rAll(){
@@ -2066,6 +2347,20 @@ function stopLiveRefresh() {
 document.addEventListener('DOMContentLoaded', () => {
   startLiveRefresh();
   initNotifications();
+  // Mobile: detect and apply mobile-specific tweaks
+  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth <= 650;
+  if (isMobile) {
+    document.body.classList.add('is-mobile');
+    // Ensure live stat loading spinners don't get stuck
+    setTimeout(() => {
+      ['classes-now-list','upcoming-classes-list','today-schedule-list'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.querySelector('.lucide-loader')) {
+          el.innerHTML = '<div style="text-align:center;color:var(--tx3);padding:16px;font-size:12px">Ma\'lumot yo\'q</div>';
+        }
+      });
+    }, 8000); // 8s timeout fallback for mobile
+  }
 });
 
 function rUsers(list){
@@ -4135,15 +4430,6 @@ async function exportBizReport(){
   to   { opacity: 1; backdrop-filter: blur(12px) saturate(140%); }
 }
 
-/* === NOTIFICATION PANEL — dropdown spring === */
-.notif-panel.show {
-  animation: dropSpring 0.38s var(--spring-soft) both;
-}
-@keyframes dropSpring {
-  0%  { opacity: 0; transform: translateY(-12px) scale(0.96); filter: blur(4px); }
-  60% { opacity: 1; filter: blur(0); }
-  100%{ opacity: 1; transform: translateY(0) scale(1); }
-}
 
 /* === TOAST — slide up with spring === */
 .toast.show {
@@ -4528,5 +4814,25 @@ tr:hover .avatar, .stdi:hover .avatar, .rnk:hover .avatar {
   });
 })();
 </script>
+
+<!-- Notification fullscreen overlay -->
+<div class="notif-overlay" id="notif-overlay" onclick="handleNotifOverlayClick(event)">
+  <div class="notif-backdrop"></div>
+  <div class="notif-popup" id="notif-popup">
+    <div class="notif-header">
+      <div class="notif-header-title">
+        <i class="lucide lucide-bell"></i>
+        <span>Bildirishnomalar</span>
+        <span id="notif-unread-count" style="font-size:10px;font-weight:700;background:var(--ac);color:#fff;padding:1px 7px;border-radius:20px;display:none"></span>
+      </div>
+      <button class="notif-clear" onclick="clearNotifs()">Hammasini o'chirish</button>
+    </div>
+    <div class="notif-list" id="notif-list">
+      <div class="notif-empty"><div style="font-size:32px;margin-bottom:8px">🔔</div>Xozircha bildirishnoma yo'q</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
 </body>
 </html>
