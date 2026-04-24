@@ -435,6 +435,394 @@ tr:hover { background: var(--card2); } .layout{display:flex;height:100vh} .sideb
   animation: spin 0.8s linear infinite;
   display: inline-block;
 }
+
+/* ============================================
+   APPLE LIQUID GLASS DESIGN SYSTEM
+   ============================================ */
+
+/* Light mode glass variables */
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-bg-hover: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.75);
+  --glass-border-subtle: rgba(255, 255, 255, 0.45);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255,255,255,0.9);
+  --glass-shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255,255,255,0.95);
+  --glass-blur: blur(24px) saturate(180%);
+  --glass-blur-sm: blur(12px) saturate(160%);
+  --glass-shine: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.3) 40%, rgba(255,255,255,0.1) 100%);
+  --glass-shine-edge: linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 100%);
+  --bg: linear-gradient(135deg, #e8f4fd 0%, #f0e8ff 30%, #fde8f4 60%, #e8fdf4 100%);
+  --sb: rgba(255,255,255,0.6);
+  --card: rgba(255,255,255,0.55);
+  --card2: rgba(255,255,255,0.35);
+  --bd: rgba(255,255,255,0.7);
+  --bd2: rgba(200,210,230,0.5);
+}
+
+/* Dark mode glass variables */
+[data-theme="dark"] {
+  --glass-bg: rgba(28, 33, 40, 0.65);
+  --glass-bg-hover: rgba(38, 45, 55, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-border-subtle: rgba(255, 255, 255, 0.07);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.08);
+  --glass-shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.55), 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+  --glass-shine: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 40%, rgba(255,255,255,0.01) 100%);
+  --glass-blur: blur(24px) saturate(200%);
+  --bg: radial-gradient(ellipse at 20% 20%, rgba(59,130,246,0.12) 0%, transparent 50%), radial-gradient(ellipse at 80% 80%, rgba(139,92,246,0.1) 0%, transparent 50%), #090d14;
+  --sb: rgba(16, 20, 30, 0.7);
+  --card: rgba(28, 33, 45, 0.65);
+  --card2: rgba(20, 25, 38, 0.55);
+  --bd: rgba(255,255,255,0.1);
+  --bd2: rgba(255,255,255,0.08);
+}
+
+/* Animated background */
+body {
+  background: var(--bg) !important;
+  background-attachment: fixed !important;
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse 600px 400px at 10% 20%, rgba(99,179,237,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 600px at 90% 10%, rgba(167,139,250,0.15) 0%, transparent 70%),
+    radial-gradient(ellipse 700px 400px at 50% 90%, rgba(52,211,153,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 500px at 80% 50%, rgba(251,146,60,0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: bgShift 20s ease-in-out infinite alternate;
+}
+
+@keyframes bgShift {
+  0% { opacity: 0.8; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.05); }
+}
+
+/* Sidebar Glass */
+.sidebar {
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border-right: 1px solid var(--glass-border) !important;
+  box-shadow: 2px 0 20px rgba(0,0,0,0.06), inset -1px 0 0 rgba(255,255,255,0.5) !important;
+  position: relative;
+  z-index: 100;
+}
+
+.sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: var(--glass-shine-edge);
+  pointer-events: none;
+}
+
+/* Logo area */
+.logo {
+  background: rgba(255,255,255,0.15) !important;
+  border-bottom: 1px solid var(--glass-border-subtle) !important;
+  backdrop-filter: blur(4px);
+}
+
+/* Sidebar nav items */
+.sbi {
+  backdrop-filter: blur(4px);
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+.sbi:hover {
+  background: var(--glass-bg-hover) !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.6) !important;
+  border: 1px solid var(--glass-border) !important;
+  transform: none !important;
+}
+
+.sbi.on {
+  background: linear-gradient(135deg, rgba(79,142,247,0.22) 0%, rgba(139,92,246,0.18) 100%) !important;
+  border: 1px solid rgba(79,142,247,0.3) !important;
+  box-shadow: 0 4px 16px rgba(79,142,247,0.2), inset 0 1px 0 rgba(255,255,255,0.4) !important;
+  backdrop-filter: blur(12px);
+}
+
+/* Topbar Glass */
+.topbar {
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06), inset 0 -1px 0 rgba(255,255,255,0.4) !important;
+  position: relative;
+  z-index: 50;
+}
+
+/* Cards Glass */
+.sc, .tw, .fb, .live-card, .modal, .notif-panel, .schcard, .bcit, .asc {
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glass shine layer on cards */
+.sc::after, .tw::after, .fb::after, .live-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 50%;
+  background: var(--glass-shine);
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0.5;
+}
+
+/* Hover glass effect */
+.sc:hover, .tw:hover, .fb:hover, .live-card:hover {
+  background: var(--glass-bg-hover) !important;
+  box-shadow: var(--glass-shadow-lg) !important;
+  border-color: var(--glass-border) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Stat card top accent — glassmorphism glow */
+.sc::before {
+  z-index: 2;
+  height: 2px;
+  opacity: 0.9;
+  filter: brightness(1.2);
+}
+
+/* Buttons Glass */
+.btn, .rbtn, .fb2 {
+  backdrop-filter: blur(8px) saturate(150%);
+  -webkit-backdrop-filter: blur(8px) saturate(150%);
+  transition: all 0.18s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before, .rbtn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.25) 0%, transparent 100%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.bp {
+  background: linear-gradient(135deg, rgba(59,130,246,0.9) 0%, rgba(99,102,241,0.85) 100%) !important;
+  border: 1px solid rgba(255,255,255,0.3) !important;
+  box-shadow: 0 4px 16px rgba(59,130,246,0.35), inset 0 1px 0 rgba(255,255,255,0.3) !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.bp:hover {
+  background: linear-gradient(135deg, rgba(79,150,266,0.95) 0%, rgba(109,112,251,0.9) 100%) !important;
+  box-shadow: 0 6px 24px rgba(59,130,246,0.5), inset 0 1px 0 rgba(255,255,255,0.4) !important;
+  transform: translateY(-1px) !important;
+}
+
+.rbtn {
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.5) !important;
+}
+
+.rbtn:hover {
+  background: var(--glass-bg-hover) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6) !important;
+}
+
+/* Input Glass */
+.inp, .sr {
+  background: rgba(255,255,255,0.35) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.04), inset 0 -1px 0 rgba(255,255,255,0.5) !important;
+}
+
+[data-theme="dark"] .inp, [data-theme="dark"] .sr {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), inset 0 -1px 0 rgba(255,255,255,0.05) !important;
+}
+
+.inp:focus {
+  border-color: rgba(79,142,247,0.6) !important;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.04), 0 0 0 3px rgba(79,142,247,0.15), inset 0 -1px 0 rgba(255,255,255,0.5) !important;
+  background: rgba(255,255,255,0.55) !important;
+}
+
+/* Table Glass */
+thead tr {
+  background: rgba(255,255,255,0.25) !important;
+  backdrop-filter: blur(4px);
+}
+
+[data-theme="dark"] thead tr {
+  background: rgba(255,255,255,0.04) !important;
+}
+
+/* Modal Glass */
+.modal {
+  box-shadow: var(--glass-shadow-lg) !important;
+  border: 1px solid var(--glass-border) !important;
+}
+
+.overlay {
+  background: rgba(0,0,0,0.45) !important;
+  backdrop-filter: blur(12px) saturate(140%) !important;
+}
+
+/* Badges Glass */
+.b, .bdg {
+  backdrop-filter: blur(4px);
+}
+
+/* Notification Panel Glass */
+.notif-panel {
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow-lg) !important;
+}
+
+/* Toast Glass */
+.toast {
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow-lg) !important;
+}
+
+/* Salbr, stdi, brit, rnk glass rows */
+.salbr, .teacher-status {
+  background: rgba(255,255,255,0.3) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255,255,255,0.5) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.6) !important;
+}
+
+[data-theme="dark"] .salbr, [data-theme="dark"] .teacher-status {
+  background: rgba(255,255,255,0.05) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+/* Pill badges shimmer effect */
+.bit, .bkr, .bof, .bok, .bbl, .bdel, .bno {
+  backdrop-filter: blur(6px);
+  position: relative;
+}
+
+/* Content area */
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Layout base z-index */
+.layout {
+  position: relative;
+  z-index: 1;
+}
+
+/* Live badge glass */
+.live-badge {
+  background: rgba(16,185,129,0.2) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(16,185,129,0.35) !important;
+  box-shadow: 0 0 12px rgba(16,185,129,0.2) !important;
+}
+
+/* Scrollbar glass */
+::-webkit-scrollbar-thumb {
+  background: rgba(148,163,184,0.4) !important;
+  backdrop-filter: blur(4px);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.1) !important;
+}
+
+/* Tab row glass */
+.tab.on {
+  position: relative;
+}
+
+.tab.on::after {
+  background: linear-gradient(90deg, rgba(79,142,247,0.8), rgba(139,92,246,0.8)) !important;
+  box-shadow: 0 0 8px rgba(79,142,247,0.4);
+}
+
+/* Filter buttons glass */
+.fb2 {
+  background: rgba(255,255,255,0.4) !important;
+  border: 1px solid rgba(255,255,255,0.6) !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.7) !important;
+}
+
+.fb2.on {
+  background: linear-gradient(135deg, rgba(79,142,247,0.85), rgba(99,102,241,0.8)) !important;
+  border-color: rgba(79,142,247,0.4) !important;
+  box-shadow: 0 4px 16px rgba(79,142,247,0.3), inset 0 1px 0 rgba(255,255,255,0.3) !important;
+}
+
+.fb2:hover:not(.on) {
+  background: rgba(255,255,255,0.6) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+}
+
+[data-theme="dark"] .fb2 {
+  background: rgba(255,255,255,0.07) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+[data-theme="dark"] .fb2:hover:not(.on) {
+  background: rgba(255,255,255,0.12) !important;
+}
+
+/* Sidebar footer glass */
+.sbfoot {
+  background: rgba(255,255,255,0.2) !important;
+  border-top: 1px solid var(--glass-border) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+/* Resbox glass */
+.resbox {
+  background: linear-gradient(135deg, rgba(79,142,247,0.12), rgba(139,92,246,0.1)) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(79,142,247,0.2) !important;
+  box-shadow: 0 4px 20px rgba(79,142,247,0.1), inset 0 1px 0 rgba(255,255,255,0.3) !important;
+}
+
+/* brnum glass */
+.brnum {
+  background: rgba(79,142,247,0.15) !important;
+  backdrop-filter: blur(6px) !important;
+  border: 1px solid rgba(79,142,247,0.25) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3) !important;
+}
+
+/* Avatar glass */
+.avatar {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.3) !important;
+}
 </style>
 </head>
 <body>
@@ -3624,7 +4012,521 @@ async function exportBizReport(){
     vertical-align: middle;
     stroke-width: 2px;
 }
-#theme-toggle{background:rgba(99,102,241,.15);color:#6366f1;border:1px solid rgba(99,102,241,.3)}
+#theme-toggle{background:rgba(99,102,241,.18)!important;color:#6366f1!important;border:1px solid rgba(99,102,241,.3)!important;backdrop-filter:blur(8px)!important;box-shadow:0 2px 8px rgba(99,102,241,.15),inset 0 1px 0 rgba(255,255,255,.4)!important}
+.live-card{background:var(--glass-bg)!important;backdrop-filter:var(--glass-blur)!important;-webkit-backdrop-filter:var(--glass-blur)!important;border:1px solid var(--glass-border)!important;border-radius:16px!important;box-shadow:var(--glass-shadow)!important;position:relative;overflow:hidden;padding:16px;transition:all .3s cubic-bezier(.25,.46,.45,.94)}
+@keyframes glassPageIn{from{opacity:0;transform:translateY(6px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
 </style>
+
+<!-- ========== APPLE-STYLE ANIMATION SYSTEM ========== -->
+<style>
+/* === SPRING PHYSICS EASING (Apple's cubic-bezier) === */
+:root {
+  --spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --spring-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-apple: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* === PAGE TRANSITION — iOS style slide+fade === */
+.page { display: none; }
+.page.on { display: block; }
+.page.apple-enter {
+  animation: applePageEnter 0.45s var(--ease-out-expo) both;
+}
+.page.apple-exit {
+  animation: applePageExit 0.3s var(--ease-apple) both;
+}
+@keyframes applePageEnter {
+  0%  { opacity: 0; transform: translateY(18px) scale(0.98); filter: blur(4px); }
+  100%{ opacity: 1; transform: translateY(0) scale(1);       filter: blur(0); }
+}
+@keyframes applePageExit {
+  0%  { opacity: 1; transform: translateY(0) scale(1); }
+  100%{ opacity: 0; transform: translateY(-8px) scale(1.01); }
+}
+
+/* === SIDEBAR ITEM — spring press === */
+.sbi {
+  transform-origin: left center;
+  will-change: transform;
+}
+.sbi:active {
+  transform: scale(0.96) !important;
+  transition: transform 0.1s var(--ease-decelerate) !important;
+}
+.sbi.on {
+  animation: sbiActivate 0.4s var(--spring-soft) both;
+}
+@keyframes sbiActivate {
+  0%  { transform: scale(0.95); opacity: 0.7; }
+  60% { transform: scale(1.03); }
+  100%{ transform: scale(1);    opacity: 1; }
+}
+
+/* === CARDS — staggered entrance on page load === */
+.sc, .tw, .fb, .live-card, .asc {
+  animation: cardRise 0.5s var(--ease-out-expo) both;
+  will-change: transform, opacity;
+}
+.sc:nth-child(1), .tw:nth-child(1), .live-card:nth-child(1) { animation-delay: 0.05s; }
+.sc:nth-child(2), .tw:nth-child(2), .live-card:nth-child(2) { animation-delay: 0.1s; }
+.sc:nth-child(3), .tw:nth-child(3), .live-card:nth-child(3) { animation-delay: 0.15s; }
+.sc:nth-child(4), .tw:nth-child(4), .live-card:nth-child(4) { animation-delay: 0.2s; }
+@keyframes cardRise {
+  0%  { opacity: 0; transform: translateY(20px) scale(0.97); filter: blur(2px); }
+  100%{ opacity: 1; transform: translateY(0) scale(1);       filter: blur(0); }
+}
+
+/* === HOVER — Apple's "lift" with shadow bloom === */
+.sc, .tw, .fb, .live-card {
+  transition:
+    transform 0.35s var(--spring-soft),
+    box-shadow 0.35s var(--ease-apple),
+    background 0.25s var(--ease-apple),
+    border-color 0.25s var(--ease-apple) !important;
+}
+.sc:hover, .fb:hover, .live-card:hover {
+  transform: translateY(-4px) scale(1.008) !important;
+  box-shadow:
+    0 24px 60px rgba(0,0,0,0.12),
+    0 8px 20px rgba(0,0,0,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.95) !important;
+}
+.tw:hover {
+  transform: translateY(-2px) !important;
+  box-shadow:
+    0 16px 40px rgba(0,0,0,0.1),
+    0 4px 12px rgba(0,0,0,0.06),
+    inset 0 1px 0 rgba(255,255,255,0.9) !important;
+}
+
+/* === BUTTON — Apple's haptic spring press === */
+.btn, .rbtn, .fb2 {
+  transition:
+    transform 0.15s var(--ease-decelerate),
+    box-shadow 0.25s var(--ease-apple),
+    background 0.2s var(--ease-apple),
+    opacity 0.15s ease !important;
+  will-change: transform;
+}
+.btn:hover, .rbtn:hover, .fb2:hover {
+  transform: scale(1.04) translateY(-1px);
+}
+.btn:active, .rbtn:active, .fb2:active {
+  transform: scale(0.94) !important;
+  transition: transform 0.08s var(--ease-decelerate) !important;
+}
+
+/* === MODAL — iOS sheet spring entrance === */
+.overlay.open .modal {
+  animation: modalSpring 0.45s var(--spring-soft) both;
+}
+@keyframes modalSpring {
+  0%  { opacity: 0; transform: scale(0.88) translateY(30px); filter: blur(8px); }
+  60% { opacity: 1; filter: blur(0); }
+  100%{ opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+}
+.overlay {
+  animation: overlayIn 0.3s var(--ease-decelerate) both;
+}
+@keyframes overlayIn {
+  from { opacity: 0; backdrop-filter: blur(0px); }
+  to   { opacity: 1; backdrop-filter: blur(12px) saturate(140%); }
+}
+
+/* === NOTIFICATION PANEL — dropdown spring === */
+.notif-panel.show {
+  animation: dropSpring 0.38s var(--spring-soft) both;
+}
+@keyframes dropSpring {
+  0%  { opacity: 0; transform: translateY(-12px) scale(0.96); filter: blur(4px); }
+  60% { opacity: 1; filter: blur(0); }
+  100%{ opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* === TOAST — slide up with spring === */
+.toast.show {
+  animation: toastSpring 0.4s var(--spring-soft) both;
+}
+@keyframes toastSpring {
+  0%  { opacity: 0; transform: translateY(20px) scale(0.92); }
+  60% { transform: translateY(-4px) scale(1.02); }
+  100%{ opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* === TABLE ROWS — staggered reveal === */
+tbody tr {
+  animation: rowReveal 0.4s var(--ease-out-expo) both;
+  transition: background 0.2s var(--ease-apple), transform 0.2s var(--spring-soft), box-shadow 0.2s ease !important;
+}
+tbody tr:nth-child(1)  { animation-delay: 0.04s; }
+tbody tr:nth-child(2)  { animation-delay: 0.07s; }
+tbody tr:nth-child(3)  { animation-delay: 0.10s; }
+tbody tr:nth-child(4)  { animation-delay: 0.13s; }
+tbody tr:nth-child(5)  { animation-delay: 0.16s; }
+tbody tr:nth-child(6)  { animation-delay: 0.19s; }
+tbody tr:nth-child(7)  { animation-delay: 0.22s; }
+tbody tr:nth-child(8)  { animation-delay: 0.25s; }
+tbody tr:nth-child(n+9){ animation-delay: 0.28s; }
+@keyframes rowReveal {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+tbody tr:hover {
+  transform: scale(1.005) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06) !important;
+  z-index: 2;
+  position: relative;
+}
+
+/* === STAT VALUE COUNT-UP FLASH === */
+.sc .sv {
+  transition: transform 0.3s var(--spring-soft), opacity 0.2s ease;
+}
+.sc .sv.update-flash {
+  animation: numPop 0.4s var(--spring-soft);
+}
+@keyframes numPop {
+  0%  { transform: scale(0.8); opacity: 0.5; }
+  60% { transform: scale(1.12); }
+  100%{ transform: scale(1);   opacity: 1; }
+}
+
+/* === SIDEBAR — slide in on mobile === */
+.sidebar {
+  transition: transform 0.4s var(--spring-soft), box-shadow 0.4s ease !important;
+}
+.sidebar.mopen {
+  animation: sidebarSlide 0.4s var(--spring-soft) both;
+}
+@keyframes sidebarSlide {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+/* === INPUT FOCUS — gentle expand === */
+.inp {
+  transition: border-color 0.2s ease, box-shadow 0.3s var(--ease-out-expo), transform 0.2s var(--spring-soft) !important;
+}
+.inp:focus {
+  transform: scale(1.008);
+}
+
+/* === BADGE — pop in === */
+.bdg, .notif-badge {
+  animation: badgePop 0.4s var(--spring-soft) both;
+}
+@keyframes badgePop {
+  0%  { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.25); }
+  100%{ transform: scale(1);   opacity: 1; }
+}
+
+/* === ICON HOVER — subtle rotate/scale === */
+.sbi:hover .ico {
+  transform: scale(1.15);
+  transition: transform 0.3s var(--spring-soft);
+}
+.sbi .ico {
+  transition: transform 0.3s var(--spring-soft);
+}
+
+/* === LIVE DOT — pulse glow === */
+.live-dot, .dot {
+  animation: livePulse 2s ease-in-out infinite;
+}
+@keyframes livePulse {
+  0%, 100% { transform: scale(1);    box-shadow: 0 0 0 0 rgba(16,185,129,0.5); }
+  50%       { transform: scale(1.2); box-shadow: 0 0 0 6px rgba(16,185,129,0); }
+}
+
+/* === FILTER BUTTONS — ripple on active === */
+.fb2.on {
+  animation: filterPop 0.35s var(--spring-soft) both;
+}
+@keyframes filterPop {
+  0%  { transform: scale(0.9); }
+  60% { transform: scale(1.06); }
+  100%{ transform: scale(1); }
+}
+
+/* === TAB SWITCH === */
+.tab {
+  transition: color 0.2s ease, border-color 0.3s var(--ease-out-expo) !important;
+  position: relative;
+  overflow: hidden;
+}
+.tab::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 100%;
+  height: 2px;
+  background: var(--ac);
+  border-radius: 2px 2px 0 0;
+  transition: transform 0.3s var(--spring-soft);
+}
+.tab.on::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+/* === SPINNER — smooth rotation === */
+.spin {
+  animation: smoothSpin 0.8s linear infinite;
+}
+@keyframes smoothSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* === AVATAR — scale on hover === */
+.avatar {
+  transition: transform 0.3s var(--spring-soft), box-shadow 0.3s ease;
+}
+tr:hover .avatar, .stdi:hover .avatar, .rnk:hover .avatar {
+  transform: scale(1.12);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15) !important;
+}
+
+/* === CALENDAR DAY — spring select === */
+.calday {
+  transition: transform 0.25s var(--spring-soft), background 0.2s ease, border-color 0.2s ease !important;
+}
+.calday:hover {
+  transform: scale(1.1);
+}
+.calday.sel {
+  animation: calSelect 0.35s var(--spring-soft) both;
+}
+@keyframes calSelect {
+  0%  { transform: scale(0.85); }
+  60% { transform: scale(1.12); }
+  100%{ transform: scale(1); }
+}
+
+/* === EMPTY STATE — float === */
+.empty .ei {
+  display: inline-block;
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+/* === PROGRESS RING — smooth stroke === */
+.progress-ring .progress {
+  transition: stroke-dashoffset 1.2s var(--ease-out-expo) !important;
+}
+
+/* === LOGO — subtle breathe === */
+.logo img {
+  transition: transform 0.4s var(--spring-soft), filter 0.3s ease;
+}
+.logo:hover img {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+/* === UPCOMING ITEM — bounce remove === */
+.upcoming-item {
+  animation: upcomingIn 0.4s var(--spring-soft) both;
+}
+@keyframes upcomingIn {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* === TOPBAR BUTTONS GROUP — stagger in === */
+.topbar .rbtn:nth-child(1) { animation: topbarBtn 0.4s var(--ease-out-expo) 0.1s both; }
+.topbar .rbtn:nth-child(2) { animation: topbarBtn 0.4s var(--ease-out-expo) 0.15s both; }
+.topbar .rbtn:nth-child(3) { animation: topbarBtn 0.4s var(--ease-out-expo) 0.2s both; }
+@keyframes topbarBtn {
+  from { opacity: 0; transform: translateY(-8px) scale(0.9); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* === SEARCH BAR — expand on focus === */
+.sr {
+  transition: transform 0.3s var(--spring-soft), box-shadow 0.3s var(--ease-out-expo) !important;
+}
+.sr:focus-within {
+  transform: scale(1.01);
+  box-shadow: 0 0 0 3px rgba(79,142,247,0.18), 0 8px 24px rgba(0,0,0,0.08) !important;
+}
+</style>
+
+<script>
+(function() {
+  /* === Apple-style page transition JS override === */
+  const origGp = window.gp;
+  if (typeof origGp === 'function') {
+    window.gp = function(pageId, btn) {
+      // Exit current page
+      const current = document.querySelector('.page.on');
+      if (current && current.id !== 'pg-' + pageId) {
+        current.classList.add('apple-exit');
+        setTimeout(() => {
+          current.classList.remove('apple-exit');
+        }, 300);
+      }
+      // Call original
+      origGp(pageId, btn);
+      // Entrance animation on new page
+      const next = document.getElementById('pg-' + pageId);
+      if (next) {
+        next.classList.remove('apple-enter');
+        void next.offsetWidth; // reflow
+        next.classList.add('apple-enter');
+        setTimeout(() => next.classList.remove('apple-enter'), 500);
+      }
+    };
+  }
+
+  /* === Ripple effect on buttons === */
+  function addRipple(el) {
+    el.addEventListener('pointerdown', function(e) {
+      const r = document.createElement('span');
+      const rect = el.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height) * 1.4;
+      r.style.cssText = `
+        position:absolute;pointer-events:none;border-radius:50%;
+        width:${size}px;height:${size}px;
+        left:${e.clientX - rect.left - size/2}px;
+        top:${e.clientY - rect.top - size/2}px;
+        background:rgba(255,255,255,0.35);
+        transform:scale(0);
+        animation:rippleApple 0.5s var(--ease-out-expo) forwards;
+        z-index:10;
+      `;
+      const oldPos = getComputedStyle(el).position;
+      if (oldPos === 'static') el.style.position = 'relative';
+      el.style.overflow = 'hidden';
+      el.appendChild(r);
+      r.addEventListener('animationend', () => r.remove());
+    });
+  }
+
+  // Inject ripple keyframe once
+  const rkf = document.createElement('style');
+  rkf.textContent = '@keyframes rippleApple{to{transform:scale(1);opacity:0}}';
+  document.head.appendChild(rkf);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Add ripple to all interactive elements
+    document.querySelectorAll('.btn, .rbtn, .sbi, .fb2, .tab').forEach(addRipple);
+
+    // Observe new buttons added dynamically
+    const mo = new MutationObserver(muts => {
+      muts.forEach(m => m.addedNodes.forEach(n => {
+        if (n.nodeType === 1) {
+          n.querySelectorAll && n.querySelectorAll('.btn, .rbtn, .sbi, .fb2').forEach(addRipple);
+          if (n.matches && n.matches('.btn, .rbtn, .sbi, .fb2')) addRipple(n);
+        }
+      }));
+    });
+    mo.observe(document.body, { childList: true, subtree: true });
+
+    /* === Number ticker for stat cards === */
+    function animateCount(el, target) {
+      const start = parseFloat(el.textContent.replace(/[^0-9.]/g, '')) || 0;
+      const end = parseFloat(target) || 0;
+      const duration = 900;
+      const startTime = performance.now();
+      const suffix = el.textContent.replace(/[0-9.]/g, '');
+      function tick(now) {
+        const t = Math.min((now - startTime) / duration, 1);
+        // Apple's ease-out-expo approximation
+        const eased = t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+        const val = start + (end - start) * eased;
+        el.textContent = (Number.isInteger(end) ? Math.round(val) : val.toFixed(1)) + suffix;
+        if (t < 1) requestAnimationFrame(tick);
+        else el.textContent = target;
+      }
+      requestAnimationFrame(tick);
+    }
+
+    // Watch for stat card value changes
+    const svObs = new MutationObserver(muts => {
+      muts.forEach(m => {
+        if (m.target.classList && m.target.classList.contains('sv')) {
+          m.target.classList.remove('update-flash');
+          void m.target.offsetWidth;
+          m.target.classList.add('update-flash');
+        }
+      });
+    });
+    document.querySelectorAll('.sv').forEach(el => {
+      svObs.observe(el, { childList: true, characterData: true, subtree: true });
+    });
+
+    /* === Smooth modal close with animation === */
+    document.querySelectorAll('.overlay').forEach(overlay => {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+          const modal = overlay.querySelector('.modal');
+          if (modal) {
+            modal.style.animation = 'modalClose 0.28s var(--ease-apple) both';
+            overlay.style.animation = 'overlayOut 0.28s var(--ease-apple) both';
+          }
+        }
+      });
+    });
+    const mcloseKf = document.createElement('style');
+    mcloseKf.textContent = `
+      @keyframes modalClose {
+        from { opacity:1; transform:scale(1); }
+        to   { opacity:0; transform:scale(0.92) translateY(16px); filter:blur(4px); }
+      }
+      @keyframes overlayOut {
+        from { opacity:1; }
+        to   { opacity:0; }
+      }
+    `;
+    document.head.appendChild(mcloseKf);
+
+    /* === Scroll-triggered card reveal === */
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.animation = 'cardRise 0.5s var(--ease-out-expo) both';
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('.sc, .asc, .schcard, .bcit').forEach(el => io.observe(el));
+    }
+
+    /* === Sidebar item click haptic-like feedback === */
+    document.querySelectorAll('.sbi').forEach(btn => {
+      btn.addEventListener('click', function() {
+        this.style.transform = 'scale(0.95)';
+        setTimeout(() => { this.style.transform = ''; }, 120);
+      });
+    });
+
+    /* === Glass shimmer on hover — mouse tracking === */
+    document.querySelectorAll('.sc, .live-card, .tw, .modal').forEach(card => {
+      card.addEventListener('mousemove', function(e) {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        card.style.setProperty('--mx', x + '%');
+        card.style.setProperty('--my', y + '%');
+        card.style.background = `
+          radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,0.25) 0%, transparent 60%),
+          var(--glass-bg)
+        `;
+      });
+      card.addEventListener('mouseleave', function() {
+        card.style.background = '';
+      });
+    });
+  });
+})();
+</script>
 </body>
 </html>
