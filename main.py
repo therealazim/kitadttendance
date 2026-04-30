@@ -1178,6 +1178,13 @@ async def get_student_attendance_kb(group_id, selected_indices):
     ))
     return builder.as_markup()
 
+async def managment_page(request):
+    """Management university page"""
+    html_path = os.path.join(os.path.dirname(__file__), 'managment_univ.html')
+    with open(html_path, 'r', encoding='utf-8') as f:
+        html = f.read()
+    return web.Response(text=html, content_type='text/html', charset='utf-8')
+
 async def handle(request):
     """Asosiy sahifa — KITA landing page"""
     import os
@@ -10028,6 +10035,9 @@ async def main():
         else:
             app.router.add_post(route, handler)
             app.router.add_get(route, handler)
+    
+    # Managment page
+    app.router.add_get('/managment', managment_page)
     
     # Static files
     static_path = os.path.join(os.path.dirname(__file__), 'static')

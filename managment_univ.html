@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Hancom Academy — Koreys Tili · IT · AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════════════════
+   RESET & TOKENS
+═══════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FAF8F3;
+  --ink:#0E0C08;
+  --mid:#6E6A60;
+  --red:#C8300A;
+  --gold:#C9A84C;
+  --kr:#003478;   /* korean blue */
+  --it:#1B4332;   /* it green */
+  --ai:#4A0E8F;   /* ai purple */
+  --line:rgba(14,12,8,.1);
+  --fh:'DM Serif Display',serif;
+  --fs:'Syne',sans-serif;
+  --fb:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--fb);background:var(--cream);color:var(--ink);overflow-x:hidden;cursor:none}
+
+/* ── CURSOR ── */
+#cur,#cur2{position:fixed;border-radius:50%;pointer-events:none;z-index:9999;top:0;left:0}
+#cur{width:8px;height:8px;background:var(--red);transform:translate(-50%,-50%);transition:width .3s,height .3s,background .3s,opacity .3s}
+#cur2{width:36px;height:36px;border:1.5px solid var(--red);transform:translate(-50%,-50%);opacity:.4;transition:width .4s,height .4s,opacity .4s,border-color .4s;transition-timing-function:cubic-bezier(.16,1,.3,1)}
+body:hover #cur{opacity:1}
+.hov-zone:hover ~ * #cur,.hov-zone:hover #cur{display:none}
+.cursor-big #cur{width:48px;height:48px;background:var(--gold);opacity:.7}
+.cursor-big #cur2{width:64px;height:64px;opacity:.2}
+
+/* ── GRAIN ── */
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.028'/%3E%3C/svg%3E");pointer-events:none;z-index:9000}
+
+/* ── TICKER ── */
+.ticker{background:var(--ink);padding:11px 0;overflow:hidden}
+.tk-r{display:flex;width:max-content;animation:tkanim 28s linear infinite}
+.tk-r span{white-space:nowrap;font-family:var(--fs);font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);padding:0 32px;border-right:1px solid rgba(255,255,255,.08)}
+.tk-r .a{color:var(--gold)}
+.tk-r .b{color:#6BA5FF}
+.tk-r .c{color:#A78BFA}
+@keyframes tkanim{to{transform:translateX(-50%)}}
+
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:800;
+  height:64px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 52px;
+  background:rgba(250,248,243,.92);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--line);
+}
+.nlogo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.nlogo-h{font-family:var(--fh);font-size:1.6rem;line-height:1;letter-spacing:.01em}
+.nlogo-h span{color:var(--red)}
+.nlogo-d{width:1px;height:28px;background:var(--line)}
+.nlogo-s{font-family:var(--fs);font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);line-height:1.4}
+.nlinks{display:flex;align-items:center;gap:36px}
+.nlinks a{font-family:var(--fs);font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color .2s}
+.nlinks a:hover{color:var(--ink)}
+.ncta{background:var(--red)!important;color:#fff!important;padding:10px 22px;border-radius:100px!important;font-size:.72rem!important;transition:background .2s!important,transform .15s!important}
+.ncta:hover{background:#a82508!important;transform:translateY(-1px)!important}
+.nbg{display:none;flex-direction:column;gap:5px;cursor:none;padding:4px}
+.nbg span{width:20px;height:1.5px;background:var(--ink);display:block}
+
+/* ═══════════════════════════════════════════════════════
+   HERO — SPLIT SCREEN
+═══════════════════════════════════════════════════════ */
+.hero{
+  display:grid;grid-template-columns:1fr 1fr;
+  min-height:calc(100vh - 64px - 40px);
+  position:relative;overflow:hidden;
+}
+/* LEFT – dark */
+.hero-l{
+  background:var(--ink);
+  padding:72px 52px;
+  display:flex;flex-direction:column;justify-content:space-between;
+  position:relative;overflow:hidden;
+}
+/* large korean character watermark */
+.hero-l::before{
+  content:'한';
+  position:absolute;right:-40px;top:-20px;
+  font-size:38rem;line-height:1;
+  color:rgba(255,255,255,.025);
+  font-family:serif;pointer-events:none;
+}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--fs);font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(255,255,255,.35);margin-bottom:32px;width:fit-content;
+}
+.hero-tag::before{content:'';width:20px;height:1px;background:var(--gold)}
+.hero-tag span{color:var(--gold)}
+h1.hero-h{
+  font-family:var(--fh);
+  font-size:clamp(3.5rem,6.5vw,6.5rem);
+  line-height:.95;letter-spacing:-.01em;
+  color:#fff;margin-bottom:20px;
+}
+h1.hero-h em{font-style:italic;color:var(--gold)}
+.hero-desc{
+  font-size:.98rem;line-height:1.75;
+  color:rgba(255,255,255,.45);
+  max-width:380px;margin-bottom:44px;
+}
+.hero-desc strong{color:rgba(255,255,255,.8)}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn-solid{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:var(--ink);font-family:var(--fs);font-weight:700;font-size:.8rem;letter-spacing:.04em;text-transform:uppercase;padding:14px 28px;border-radius:100px;text-decoration:none;transition:background .2s,transform .15s}
+.btn-solid:hover{background:#b8923e;transform:translateY(-2px)}
+.btn-line{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);font-family:var(--fs);font-weight:600;font-size:.8rem;letter-spacing:.04em;text-transform:uppercase;padding:14px 28px;border-radius:100px;text-decoration:none;transition:all .2s}
+.btn-line:hover{border-color:rgba(255,255,255,.6);color:#fff}
+.hero-stats{display:flex;gap:0;border-top:1px solid rgba(255,255,255,.08);margin-top:auto}
+.hs{flex:1;padding:22px 0;border-right:1px solid rgba(255,255,255,.08)}
+.hs:last-child{border-right:none}
+.hs strong{display:block;font-family:var(--fh);font-size:2rem;color:var(--gold);line-height:1}
+.hs small{font-size:.65rem;font-family:var(--fs);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-top:3px;display:block}
+
+/* RIGHT – cream */
+.hero-r{
+  background:var(--cream);
+  display:flex;flex-direction:column;
+  border-left:1px solid var(--line);
+}
+.hero-course-preview{
+  flex:1;display:flex;flex-direction:column;
+}
+.hcp{
+  flex:1;padding:28px 36px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:22px;
+  position:relative;overflow:hidden;
+  transition:background .3s;cursor:none;
+}
+.hcp:last-child{border-bottom:none}
+.hcp:hover{background:rgba(14,12,8,.03)}
+.hcp-num{font-family:var(--fh);font-size:3.5rem;line-height:1;opacity:.08;position:absolute;right:28px;top:50%;transform:translateY(-50%);transition:opacity .3s}
+.hcp:hover .hcp-num{opacity:.14}
+.hcp-icon{
+  width:52px;height:52px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;flex-shrink:0;
+}
+.hcp-kr .hcp-icon{background:rgba(0,52,120,.1);color:var(--kr)}
+.hcp-it .hcp-icon{background:rgba(27,67,50,.1);color:var(--it)}
+.hcp-ai .hcp-icon{background:rgba(74,14,143,.1);color:var(--ai)}
+.hcp-text{}
+.hcp-label{font-family:var(--fs);font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);margin-bottom:4px}
+.hcp-title{font-family:var(--fh);font-size:1.35rem;letter-spacing:-.01em;color:var(--ink)}
+.hcp-sub{font-size:.8rem;color:var(--mid);margin-top:2px}
+.hcp-arrow{margin-left:auto;flex-shrink:0;width:32px;height:32px;border:1px solid var(--line);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--mid);transition:all .3s}
+.hcp:hover .hcp-arrow{background:var(--ink);border-color:var(--ink);color:#fff;transform:translateX(4px)}
+
+/* ═══════════════════════════════════════════════════════
+   SHARED
+═══════════════════════════════════════════════════════ */
+.wrap{max-width:1240px;margin:0 auto;padding:0 52px}
+section{padding:108px 0}
+.sec-eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--fs);font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);margin-bottom:16px}
+.sec-eyebrow::before{content:'';width:18px;height:1px;background:currentColor}
+h2.sec-h{font-family:var(--fh);font-size:clamp(2.4rem,4.5vw,4.2rem);line-height:1.02;letter-spacing:-.02em;margin-bottom:64px}
+h2.sec-h em{font-style:italic;color:var(--red)}
+h2.sec-h.wh{color:#fff}
+h2.sec-h.wh em{color:var(--gold)}
+
+/* ═══════════════════════════════════════════════════════
+   §1 KOREYS TILI (HERO SECTION)
+═══════════════════════════════════════════════════════ */
+#korean{background:var(--ink);position:relative;overflow:hidden;padding:0}
+.kr-inner{
+  display:grid;grid-template-columns:1fr 1fr;
+  min-height:90vh;
+}
+/* left text */
+.kr-text{
+  padding:90px 64px;display:flex;flex-direction:column;justify-content:center;
+  position:relative;z-index:2;
+  border-right:1px solid rgba(255,255,255,.08);
+}
+/* hangul bg watermark */
+.kr-text::before{
+  content:'한국어';position:absolute;
+  bottom:-60px;left:-20px;
+  font-size:22rem;line-height:1;
+  color:rgba(0,52,120,.15);
+  font-family:serif;pointer-events:none;z-index:0;
+}
+.kr-eyebrow{font-family:var(--fs);font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(0,52,120,.6);margin-bottom:8px}
+.kr-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#6BA5FF;animation:bl 2s infinite;margin-right:8px}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.1}}
+h2.kr-h{
+  font-family:var(--fh);
+  font-size:clamp(3rem,5.5vw,5.5rem);
+  line-height:.95;color:#fff;
+  margin-bottom:12px;position:relative;z-index:1;
+}
+h2.kr-h em{font-style:italic;color:#6BA5FF}
+.kr-ko{
+  font-family:var(--fh);font-size:clamp(1.4rem,2.5vw,2rem);
+  color:rgba(255,255,255,.18);letter-spacing:.05em;
+  margin-bottom:40px;position:relative;z-index:1;
+}
+.kr-text p{font-size:.95rem;line-height:1.78;color:rgba(255,255,255,.45);max-width:420px;margin-bottom:40px;position:relative;z-index:1}
+.kr-text p strong{color:rgba(255,255,255,.8)}
+
+/* levels */
+.kr-levels{display:flex;flex-direction:column;gap:12px;margin-bottom:40px;position:relative;z-index:1}
+.krl{
+  display:flex;align-items:center;gap:16px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(107,165,255,.15);
+  border-radius:8px;padding:14px 18px;
+  transition:background .25s,border-color .25s;
+}
+.krl:hover{background:rgba(107,165,255,.07);border-color:rgba(107,165,255,.35)}
+.krl-n{font-family:var(--fs);font-size:.65rem;font-weight:700;letter-spacing:.1em;color:#6BA5FF;min-width:28px}
+.krl-name{font-family:var(--fs);font-weight:600;font-size:.9rem;color:#fff}
+.krl-dur{margin-left:auto;font-size:.75rem;color:rgba(255,255,255,.3);font-family:var(--fs);font-weight:500}
+.krl-bar{width:60px;height:3px;background:rgba(255,255,255,.1);border-radius:100px;overflow:hidden}
+.krl-bar span{display:block;height:100%;background:#6BA5FF;border-radius:100px}
+
+/* right visual panel */
+.kr-visual{
+  background:linear-gradient(160deg, #001a4a 0%, #003478 50%, #001833 100%);
+  display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+}
+.kr-vis-top{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  padding:60px 48px;position:relative;
+}
+/* animated hangul circles */
+.kr-circle{
+  position:absolute;border-radius:50%;
+  border:1px solid rgba(107,165,255,.15);
+  animation:krrot linear infinite;
+}
+.kr-circle:nth-child(1){width:400px;height:400px;animation-duration:60s}
+.kr-circle:nth-child(2){width:280px;height:280px;animation-duration:40s;animation-direction:reverse}
+.kr-circle:nth-child(3){width:160px;height:160px;animation-duration:25s}
+@keyframes krrot{to{transform:rotate(360deg)}}
+.kr-center{position:relative;z-index:2;text-align:center}
+.kr-char{font-size:8rem;line-height:1;color:#fff;opacity:.9;display:block;font-family:serif;animation:krf 4s ease-in-out infinite alternate}
+@keyframes krf{from{opacity:.5;transform:scale(.95)}to{opacity:.95;transform:scale(1)}}
+.kr-topik{
+  position:relative;z-index:2;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  border-radius:8px;padding:10px 18px;margin-top:16px;
+  font-family:var(--fs);font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.5);display:inline-block;
+}
+/* camping teaser */
+.kr-camping{
+  border-top:1px solid rgba(255,255,255,.08);
+  padding:28px 40px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+}
+.kr-camping-text p:first-child{font-family:var(--fs);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6BA5FF;margin-bottom:4px}
+.kr-camping-text p:last-child{font-size:.85rem;color:rgba(255,255,255,.5)}
+.kr-camping-text p:last-child strong{color:#fff}
+.btn-kr{display:inline-flex;align-items:center;gap:8px;background:#6BA5FF;color:var(--ink);font-family:var(--fs);font-weight:700;font-size:.75rem;letter-spacing:.04em;text-transform:uppercase;padding:11px 22px;border-radius:100px;text-decoration:none;white-space:nowrap;transition:background .2s}
+.btn-kr:hover{background:#93BBFF}
+
+/* courses flow */
+.kr-flow{border-top:1px solid rgba(255,255,255,.08);display:flex}
+.krf-item{
+  flex:1;padding:24px 28px;border-right:1px solid rgba(255,255,255,.06);
+  position:relative;
+}
+.krf-item:last-child{border-right:none}
+.krf-dur{font-family:var(--fs);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6BA5FF;margin-bottom:6px}
+.krf-n{font-family:var(--fs);font-weight:700;font-size:.88rem;color:#fff;margin-bottom:4px}
+.krf-d{font-size:.78rem;color:rgba(255,255,255,.3);line-height:1.5}
+
+/* ═══════════════════════════════════════════════════════
+   §2 IT DASTURLASH
+═══════════════════════════════════════════════════════ */
+#it{background:var(--cream);border-top:1px solid var(--line)}
+.it-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line)}
+.it-intro{
+  padding:64px 52px;
+  border-right:1px solid var(--line);
+  background:var(--it);
+  position:relative;overflow:hidden;
+}
+.it-intro::before{
+  content:'< />';position:absolute;
+  bottom:-40px;right:-20px;
+  font-size:16rem;line-height:1;font-family:monospace;
+  color:rgba(255,255,255,.04);pointer-events:none;
+}
+.it-intro h3{font-family:var(--fh);font-size:clamp(2.2rem,4vw,3.8rem);color:#fff;line-height:.97;margin-bottom:16px}
+.it-intro h3 em{font-style:italic;color:#6EE7B7}
+.it-intro p{font-size:.92rem;line-height:1.75;color:rgba(255,255,255,.45);margin-bottom:36px}
+.it-intro p strong{color:rgba(255,255,255,.8)}
+.it-skills{display:flex;flex-wrap:wrap;gap:8px}
+.itsk{font-family:var(--fs);font-size:.68rem;font-weight:600;letter-spacing:.06em;background:rgba(110,231,183,.12);border:1px solid rgba(110,231,183,.25);color:#6EE7B7;border-radius:100px;padding:6px 14px}
+.it-modules{padding:0}
+.it-mod{
+  padding:28px 36px;border-bottom:1px solid var(--line);
+  display:flex;align-items:flex-start;gap:22px;
+  transition:background .25s;
+}
+.it-mod:last-child{border-bottom:none}
+.it-mod:hover{background:rgba(27,67,50,.04)}
+.it-mod-n{
+  flex-shrink:0;width:48px;height:48px;border-radius:10px;
+  background:rgba(27,67,50,.1);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fh);font-size:1rem;color:var(--it);
+}
+.it-mod-dur{font-family:var(--fs);font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--it);margin-bottom:4px}
+.it-mod-name{font-family:var(--fs);font-weight:700;font-size:.95rem;color:var(--ink);margin-bottom:4px}
+.it-mod-desc{font-size:.82rem;line-height:1.55;color:var(--mid)}
+.it-arrow{margin-left:auto;flex-shrink:0;font-size:.8rem;color:var(--mid);opacity:.4}
+
+/* ═══════════════════════════════════════════════════════
+   §3 SUN'IY INTELLEKT (AI)
+═══════════════════════════════════════════════════════ */
+#ai{background:var(--ink);position:relative;overflow:hidden;border-top:1px solid rgba(255,255,255,.06)}
+/* animated bg */
+#ai::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 70% 40%, rgba(74,14,143,.35) 0%, transparent 60%),
+             radial-gradient(ellipse 60% 80% at 20% 80%, rgba(124,58,237,.2) 0%, transparent 50%);
+  pointer-events:none;
+}
+.ai-top{display:grid;grid-template-columns:1fr 1fr;gap:0;position:relative;z-index:2}
+.ai-text{padding:80px 60px;border-right:1px solid rgba(255,255,255,.07)}
+.ai-eyebrow{font-family:var(--fs);font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(167,139,250,.7);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.ai-eyebrow::before{content:'';width:16px;height:1px;background:rgba(167,139,250,.5)}
+h2.ai-h{font-family:var(--fh);font-size:clamp(2.8rem,5vw,5rem);color:#fff;line-height:.95;letter-spacing:-.01em;margin-bottom:20px}
+h2.ai-h em{font-style:italic;color:#A78BFA}
+.ai-text p{font-size:.95rem;line-height:1.78;color:rgba(255,255,255,.4);margin-bottom:40px}
+.ai-text p strong{color:rgba(255,255,255,.8)}
+/* ai feature list */
+.ai-feats{display:flex;flex-direction:column;gap:14px}
+.aif{
+  display:flex;align-items:flex-start;gap:14px;
+  background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.15);
+  border-radius:8px;padding:14px 18px;
+  transition:background .25s,border-color .25s;
+}
+.aif:hover{background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.3)}
+.aif-i{font-size:1.1rem;flex-shrink:0;margin-top:1px}
+.aif-t{font-family:var(--fs);font-weight:600;font-size:.88rem;color:#fff;margin-bottom:2px}
+.aif-d{font-size:.8rem;color:rgba(255,255,255,.35);line-height:1.5}
+/* ai visual */
+.ai-visual{padding:80px 60px;display:flex;flex-direction:column;justify-content:center;gap:20px}
+.ai-card{
+  background:rgba(255,255,255,.04);border:1px solid rgba(167,139,250,.15);
+  border-radius:12px;padding:22px 24px;
+  transition:background .25s,border-color .25s,transform .25s;
+}
+.ai-card:hover{background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.35);transform:translateX(6px)}
+.ai-card-tag{font-family:var(--fs);font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#A78BFA;margin-bottom:8px}
+.ai-card-title{font-family:var(--fs);font-weight:700;font-size:.95rem;color:#fff;margin-bottom:6px}
+.ai-card-desc{font-size:.8rem;color:rgba(255,255,255,.35);line-height:1.55}
+/* bottom strip */
+.ai-bottom{
+  position:relative;z-index:2;
+  border-top:1px solid rgba(255,255,255,.07);
+  display:grid;grid-template-columns:repeat(4,1fr);
+}
+.ai-stat{padding:28px 36px;border-right:1px solid rgba(255,255,255,.07)}
+.ai-stat:last-child{border-right:none}
+.ai-stat strong{display:block;font-family:var(--fh);font-size:2.4rem;color:#A78BFA;letter-spacing:.02em;line-height:1}
+.ai-stat span{font-family:var(--fs);font-size:.65rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-top:4px;display:block}
+
+/* ═══════════════════════════════════════════════════════
+   §4 SMART CLASS
+═══════════════════════════════════════════════════════ */
+#smart{background:var(--cream);border-top:1px solid var(--line)}
+.smart-inner{display:grid;grid-template-columns:1fr 1.6fr;gap:0;border:1px solid var(--line)}
+.smart-l{padding:60px 52px;border-right:1px solid var(--line);display:flex;flex-direction:column;justify-content:space-between}
+.smart-l h3{font-family:var(--fh);font-size:clamp(1.8rem,3vw,3rem);line-height:1;margin-bottom:16px}
+.smart-l h3 em{font-style:italic;color:var(--red)}
+.smart-l p{font-size:.9rem;line-height:1.72;color:var(--mid);margin-bottom:32px}
+.smart-specs{display:flex;flex-direction:column;gap:12px}
+.ssp{display:flex;align-items:center;gap:14px;padding:14px 18px;background:rgba(14,12,8,.04);border:1px solid var(--line);border-radius:6px;transition:border-color .2s}
+.ssp:hover{border-color:var(--red)}
+.ssp-v{font-family:var(--fh);font-size:1.6rem;color:var(--red);min-width:56px;line-height:1}
+.ssp-t{font-size:.82rem;color:var(--mid)}
+.ssp-t strong{color:var(--ink);display:block;font-weight:600}
+.smart-r{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+.scard{
+  background:var(--ink);display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;min-height:200px;
+  border:1px solid rgba(255,255,255,.03);
+  transition:background .3s;
+}
+.scard:hover{background:#181410}
+.scard-icon{font-size:3rem;color:rgba(255,255,255,.12);display:block;margin-bottom:10px}
+.scard-name{font-family:var(--fs);font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.2);text-align:center}
+.scard-label{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.8));padding:20px 16px 12px;font-family:var(--fs);font-size:.72rem;font-weight:500;letter-spacing:.06em;color:rgba(255,255,255,.45)}
+.scard.big{grid-column:span 2;min-height:160px}
+.scard.pres{background:linear-gradient(135deg,#0a0a12,#0c0e1a)}
+.pres-inner{text-align:center;padding:20px}
+.pres-year{font-family:var(--fh);font-size:3.5rem;color:rgba(200,48,10,.3);line-height:1;margin-bottom:6px}
+.pres-text{font-family:var(--fs);font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.15)}
+
+/* ═══════════════════════════════════════════════════════
+   §5 ABOUT / HAQIDA
+═══════════════════════════════════════════════════════ */
+#about{background:var(--ink);border-top:1px solid rgba(255,255,255,.06)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;align-items:start}
+.about-l{padding:80px 60px;border-right:1px solid rgba(255,255,255,.07)}
+.about-l h2{font-family:var(--fh);font-size:clamp(2rem,4vw,3.8rem);color:#fff;line-height:1;margin-bottom:40px}
+.about-l h2 em{font-style:italic;color:var(--gold)}
+.about-facts{display:flex;flex-direction:column;gap:18px}
+.af{display:flex;align-items:flex-start;gap:16px;padding:20px 22px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:8px;transition:border-color .25s}
+.af:hover{border-color:rgba(201,168,76,.3)}
+.af-n{flex-shrink:0;width:32px;height:32px;background:var(--gold);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:.9rem;color:var(--ink)}
+.af p{font-size:.88rem;line-height:1.65;color:rgba(255,255,255,.4)}
+.af p strong{color:rgba(255,255,255,.8)}
+.about-r{padding:80px 60px}
+.gain-h{font-family:var(--fh);font-size:1.6rem;color:#fff;margin-bottom:28px}
+.gains{display:flex;flex-direction:column;gap:12px;margin-bottom:40px}
+.gain{
+  display:flex;align-items:center;gap:14px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  border-radius:8px;padding:16px 20px;
+  transition:transform .2s,border-color .2s;
+}
+.gain:hover{transform:translateX(6px);border-color:rgba(201,168,76,.3)}
+.gain-num{font-family:var(--fh);font-size:1rem;color:var(--gold);min-width:24px}
+.gain span:last-child{font-family:var(--fs);font-weight:600;font-size:.88rem;color:#fff}
+.pres-box{background:linear-gradient(135deg,rgba(200,48,10,.12),rgba(200,48,10,.05));border:1px solid rgba(200,48,10,.25);border-radius:10px;padding:24px 28px}
+.pres-box-tag{font-family:var(--fs);font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(200,48,10,.7);margin-bottom:8px}
+.pres-box p{font-size:.87rem;line-height:1.68;color:rgba(255,255,255,.4)}
+.pres-box p strong{color:#fff}
+
+/* ═══════════════════════════════════════════════════════
+   §6 PARTNERS
+═══════════════════════════════════════════════════════ */
+#partners{background:var(--cream);border-top:1px solid var(--line)}
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.pc{background:var(--cream);padding:28px 30px;transition:background .25s}
+.pc:hover{background:var(--ink)}
+.pc:hover .pct{color:var(--gold)}
+.pc:hover .pc-title{color:#fff}
+.pc:hover .pc-desc{color:rgba(255,255,255,.4)}
+.pct{font-family:var(--fs);font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:8px;transition:color .25s}
+.pc-title{font-family:var(--fs);font-weight:700;font-size:.9rem;color:var(--ink);margin-bottom:6px;transition:color .25s}
+.pc-desc{font-size:.8rem;line-height:1.6;color:var(--mid);transition:color .25s}
+
+/* ═══════════════════════════════════════════════════════
+   §7 CONTACT
+═══════════════════════════════════════════════════════ */
+#contact{background:var(--ink);border-top:1px solid rgba(255,255,255,.07)}
+.contact-inner{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.cl{padding:80px 60px;border-right:1px solid rgba(255,255,255,.07)}
+.cl h2{font-family:var(--fh);font-size:clamp(2rem,4vw,3.6rem);color:#fff;line-height:1;margin-bottom:12px}
+.cl h2 em{font-style:italic;color:var(--gold)}
+.cl > p{font-size:.9rem;color:rgba(255,255,255,.4);margin-bottom:44px;line-height:1.7}
+.cis{display:flex;flex-direction:column;gap:14px}
+.ci{display:flex;align-items:flex-start;gap:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:18px 20px;transition:border-color .25s}
+.ci:hover{border-color:rgba(201,168,76,.35)}
+.ci-i{width:40px;height:40px;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.ci-l{font-family:var(--fs);font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:3px}
+.ci-v{font-size:.88rem;color:#fff;font-weight:500}
+.ci-v a{color:var(--gold);text-decoration:none}
+.ci-v a:hover{text-decoration:underline}
+.cr{padding:80px 60px;display:flex;flex-direction:column;gap:0}
+.map-wrap{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;overflow:hidden;min-height:300px}
+.map-wrap iframe{width:100%;height:100%;min-height:300px;border:none;filter:grayscale(30%) contrast(1.1) brightness(.85)}
+
+/* ═══════════════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════════════ */
+footer{
+  background:var(--red);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:16px;
+  padding:24px 52px;
+}
+.fl{font-family:var(--fh);font-size:1.4rem;letter-spacing:.04em;color:#fff}
+.flinks{display:flex;gap:24px;flex-wrap:wrap}
+.flinks a{font-family:var(--fs);font-size:.75rem;font-weight:600;color:rgba(255,255,255,.7);text-decoration:none;letter-spacing:.04em}
+.flinks a:hover{color:#fff}
+.fcp{font-size:.72rem;color:rgba(255,255,255,.5);font-family:var(--fs)}
+
+/* ═══════════════════════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════════════════════ */
+.sr{opacity:0;transform:translateY(30px);transition:opacity .9s ease,transform .9s cubic-bezier(.16,1,.3,1)}
+.sr.up{opacity:1;transform:none}
+.sr.d1{transition-delay:.07s}.sr.d2{transition-delay:.15s}.sr.d3{transition-delay:.23s}.sr.d4{transition-delay:.31s}
+.sr.from-left{transform:translateX(-30px)}
+.sr.from-right{transform:translateX(30px)}
+.sr.from-left.up,.sr.from-right.up{transform:none}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════ */
+@media(max-width:1024px){
+  .hero{grid-template-columns:1fr;min-height:auto}
+  .hero-r{border-left:none;border-top:1px solid var(--line)}
+  .kr-inner,.it-grid,.ai-top,.about-grid,.contact-inner,.smart-inner{grid-template-columns:1fr}
+  .kr-text,.it-intro,.ai-text,.about-l,.cl{border-right:none;border-bottom:1px solid rgba(255,255,255,.07)}
+  .ai-bottom{grid-template-columns:1fr 1fr}
+  #partners .pg{grid-template-columns:1fr 1fr}
+  .smart-r{grid-template-columns:1fr}
+  .scard.big{grid-column:span 1}
+}
+@media(max-width:768px){
+  nav,footer{padding-left:20px;padding-right:20px}
+  .wrap{padding:0 20px}
+  section{padding:72px 0}
+  .nlinks{display:none}
+  .nbg{display:flex}
+  .hero-l{padding:56px 20px 36px}
+  .kr-text,.ai-text,.about-l,.cl{padding:56px 24px}
+  .kr-visual,.ai-visual,.about-r,.cr,.smart-l,.it-intro,.it-modules{padding:40px 24px}
+  .kr-flow{flex-direction:column}
+  .ai-bottom{grid-template-columns:1fr 1fr}
+  #partners .pg{grid-template-columns:1fr}
+  footer{padding:20px;flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur2"></div>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="tk-r" id="tkr"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nlogo">
+    <div class="nlogo-h"><span>H</span>ANCOM</div>
+    <div class="nlogo-d"></div>
+    <div class="nlogo-s">Smart Class<br>Academy</div>
+  </a>
+  <div class="nlinks" id="nlinks">
+    <a href="#korean">Koreys Tili</a>
+    <a href="#it">IT Dasturlash</a>
+    <a href="#ai">Sun'iy Intellekt</a>
+    <a href="#smart">Smart Sinf</a>
+    <a href="#about">Haqida</a>
+    <a href="#contact" class="ncta">Bog'lanish →</a>
+  </div>
+  <div class="nbg" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- ════════════ HERO ════════════ -->
+<header class="hero">
+  <div class="hero-l">
+    <div>
+      <div class="hero-tag"><span>Hancom Academy</span> · Smart Class Project · O'zbekiston</div>
+      <h1 class="hero-h">
+        Kelajak<br>
+        <em>ta'limi</em><br>
+        shu yerda
+      </h1>
+      <p class="hero-desc">
+        <strong>43+ Smart sinfxona</strong>, Samsung texnologiyalari va Janubiy Koreya standartlari asosida qurilgan zamonaviy ta'lim tizimi.
+      </p>
+      <div class="hero-btns">
+        <a href="#korean" class="btn-solid">Kurslarni ko'rish →</a>
+        <a href="#contact" class="btn-line">Bog'lanish</a>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hs"><strong>43+</strong><small>Smart Sinf</small></div>
+      <div class="hs"><strong>75"</strong><small>Samsung Doska</small></div>
+      <div class="hs"><strong>21</strong><small>Noutbuk/Sinf</small></div>
+    </div>
+  </div>
+
+  <div class="hero-r">
+    <div class="hero-course-preview">
+      <a href="#korean" class="hcp hcp-kr">
+        <div class="hcp-num">01</div>
+        <div class="hcp-icon">🇰🇷</div>
+        <div class="hcp-text">
+          <div class="hcp-label">Asosiy yo'nalish</div>
+          <div class="hcp-title">Koreys Tili</div>
+          <div class="hcp-sub">Boshlang'ichdan TOPIK · Koreya camping</div>
+        </div>
+        <div class="hcp-arrow">→</div>
+      </a>
+      <a href="#it" class="hcp hcp-it">
+        <div class="hcp-num">02</div>
+        <div class="hcp-icon">💻</div>
+        <div class="hcp-text">
+          <div class="hcp-label">Muhandislik</div>
+          <div class="hcp-title">IT Dasturlash</div>
+          <div class="hcp-sub">Frontend · Backend · 17 oy dastur</div>
+        </div>
+        <div class="hcp-arrow">→</div>
+      </a>
+      <a href="#ai" class="hcp hcp-ai">
+        <div class="hcp-num">03</div>
+        <div class="hcp-icon">🤖</div>
+        <div class="hcp-text">
+          <div class="hcp-label">Yangi yo'nalish</div>
+          <div class="hcp-title">Sun'iy Intellekt</div>
+          <div class="hcp-sub">AI / Python · ChatGPT · Avtomatlashtirish</div>
+        </div>
+        <div class="hcp-arrow">→</div>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ════════════ §1 KOREYS TILI ════════════ -->
+<section id="korean" style="padding:0;position:relative;overflow:hidden">
+  <div class="kr-inner">
+    <!-- LEFT TEXT -->
+    <div class="kr-text">
+      <div>
+        <div class="kr-eyebrow"><span class="kr-dot"></span>Asosiy yo'nalish · 01</div>
+        <h2 class="kr-h">Koreys <em>tilini</em><br>o'rganish</h2>
+        <p class="kr-ko">한국어 교육 프로그램</p>
+        <p>
+          <strong>King Sejong Institute</strong> hamkorligida, sertifikatlangan o'qituvchilar tomonidan olib boriladigan koreys tili kurslari. Boshlang'ichdan professional darajagacha — <strong>TOPIK imtihoni</strong> va <strong>Koreya camping</strong>igacha.
+        </p>
+        <div class="kr-levels sr">
+          <div class="krl">
+            <span class="krl-n">01</span>
+            <span class="krl-name">Boshlang'ich 1 — VRWare Edu School</span>
+            <span class="krl-dur">3 oy</span>
+            <div class="krl-bar"><span style="width:20%"></span></div>
+          </div>
+          <div class="krl">
+            <span class="krl-n">02</span>
+            <span class="krl-name">Boshlang'ich 2 — Butter Korean</span>
+            <span class="krl-dur">12 oy</span>
+            <div class="krl-bar"><span style="width:75%"></span></div>
+          </div>
+          <div class="krl">
+            <span class="krl-n">03</span>
+            <span class="krl-name">Online darslari</span>
+            <span class="krl-dur">6 oy</span>
+            <div class="krl-bar"><span style="width:45%"></span></div>
+          </div>
+          <div class="krl">
+            <span class="krl-n">04</span>
+            <span class="krl-name">King Sejong Academy</span>
+            <span class="krl-dur">Doimiy</span>
+            <div class="krl-bar"><span style="width:100%"></span></div>
+          </div>
+        </div>
+        <a href="#contact" class="btn-kr sr">Ro'yxatdan o'tish ✈️</a>
+      </div>
+    </div>
+
+    <!-- RIGHT VISUAL -->
+    <div class="kr-visual">
+      <div class="kr-vis-top">
+        <div class="kr-circle"></div>
+        <div class="kr-circle"></div>
+        <div class="kr-circle"></div>
+        <div class="kr-center">
+          <span class="kr-char">한</span>
+          <div class="kr-topik">TOPIK · KING SEJONG · CAMPING</div>
+        </div>
+      </div>
+
+      <div class="kr-camping">
+        <div class="kr-camping-text">
+          <p>✈️ Janubiy Koreya Camping</p>
+          <p>Boshlang'ich 2 tamomlagan talabalar <strong>Koreya kampusiga</strong> ariza bera oladi</p>
+        </div>
+        <a href="#contact" class="btn-kr">Batafsil →</a>
+      </div>
+
+      <div class="kr-flow">
+        <div class="krf-item">
+          <div class="krf-dur">3 oy</div>
+          <div class="krf-n">Boshlang'ich 1</div>
+          <div class="krf-d">IT orqali koreys tili</div>
+        </div>
+        <div class="krf-item">
+          <div class="krf-dur">12 oy</div>
+          <div class="krf-n">Boshlang'ich 2</div>
+          <div class="krf-d">Butter Korean metodikasi</div>
+        </div>
+        <div class="krf-item">
+          <div class="krf-dur">6 oy</div>
+          <div class="krf-n">Online</div>
+          <div class="krf-d">Jonli amaliyot</div>
+        </div>
+        <div class="krf-item">
+          <div class="krf-dur">—</div>
+          <div class="krf-n">King Sejong</div>
+          <div class="krf-d">Rasmiy sertifikat</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ §2 IT DASTURLASH ════════════ -->
+<section id="it">
+  <div class="wrap">
+    <div class="sec-eyebrow sr">Muhandislik yo'nalishi · 02</div>
+    <h2 class="sec-h sr">IT <em>Dasturlash</em></h2>
+  </div>
+  <div class="wrap">
+    <div class="it-grid sr">
+      <div class="it-intro">
+        <h3>Kod yozish<br><em>san'atini</em><br>o'rganish</h3>
+        <p>
+          <strong>17 oylik</strong> to'liq dastur — kompyuter fanlaridan boshlab frontend, backend va AI/Python dasturlashgacha. Real loyihalar, real ko'nikmalar.
+        </p>
+        <div class="it-skills">
+          <span class="itsk">HTML/CSS</span>
+          <span class="itsk">JavaScript</span>
+          <span class="itsk">Python</span>
+          <span class="itsk">React</span>
+          <span class="itsk">Node.js</span>
+          <span class="itsk">SQL</span>
+          <span class="itsk">API</span>
+          <span class="itsk">AI Tools</span>
+        </div>
+      </div>
+      <div class="it-modules">
+        <div class="it-mod">
+          <div class="it-mod-n">01</div>
+          <div>
+            <div class="it-mod-dur">3 oy</div>
+            <div class="it-mod-name">Computer Science</div>
+            <div class="it-mod-desc">Kompyuterlar va Tarmoqlar, Algoritmlar, Kompyuter Tizimlari asoslari</div>
+          </div>
+          <div class="it-arrow">→</div>
+        </div>
+        <div class="it-mod">
+          <div class="it-mod-n">02</div>
+          <div>
+            <div class="it-mod-dur">7 oy</div>
+            <div class="it-mod-name">Frontend Coding</div>
+            <div class="it-mod-desc">Veb Dizayn, Interface Yaratish, HTML/CSS/JS, Raqamli Ilovalar</div>
+          </div>
+          <div class="it-arrow">→</div>
+        </div>
+        <div class="it-mod">
+          <div class="it-mod-n">03</div>
+          <div>
+            <div class="it-mod-dur">7 oy</div>
+            <div class="it-mod-name">Backend Coding</div>
+            <div class="it-mod-desc">Server va API Dasturlash, Ma'lumotlar Bazalari, Server Menejment</div>
+          </div>
+          <div class="it-arrow">→</div>
+        </div>
+        <div class="it-mod">
+          <div class="it-mod-n">04</div>
+          <div>
+            <div class="it-mod-dur">Portfolio</div>
+            <div class="it-mod-name">Amaliy Loyiha + Ish Topish</div>
+            <div class="it-mod-desc">Real loyiha yaratish, portfolio to'plash va ish beruvchilar bilan tanishish</div>
+          </div>
+          <div class="it-arrow">→</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ §3 SUN'IY INTELLEKT ════════════ -->
+<section id="ai" style="padding:0">
+  <div class="ai-top">
+    <div class="ai-text">
+      <div class="ai-eyebrow">Yangi yo'nalish · 03</div>
+      <h2 class="ai-h">Sun'iy<br><em>Intellekt</em></h2>
+      <p>
+        <strong>ChatGPT, AI vositalar va Python</strong> — hozirgi davr eng talab qilinadigan ko'nikmalari. Jarayonlarni avtomatlashtirish, AI bilan biznes qurish va real hayotda qo'llash.
+      </p>
+      <div class="ai-feats sr">
+        <div class="aif"><span class="aif-i">🤖</span><div><div class="aif-t">ChatGPT va AI vositalar</div><div class="aif-d">Zamonaviy AI toollarni professional darajada ishlatish</div></div></div>
+        <div class="aif"><span class="aif-i">⚡</span><div><div class="aif-t">Avtomatlashtirish</div><div class="aif-d">Biznes jarayonlarini AI orqali optimallashtirish</div></div></div>
+        <div class="aif"><span class="aif-i">🐍</span><div><div class="aif-t">Python dasturlash</div><div class="aif-d">AI uchun asos — ma'lumotlar tahlili va ML asoslari</div></div></div>
+        <div class="aif"><span class="aif-i">💡</span><div><div class="aif-t">Real loyihalar</div><div class="aif-d">AI bilan amaliy mahsulot va biznes qurishni o'rganish</div></div></div>
+      </div>
+    </div>
+    <div class="ai-visual sr">
+      <div class="ai-card"><div class="ai-card-tag">Modul 01</div><div class="ai-card-title">AI va Robotexnika Asoslari</div><div class="ai-card-desc">Sun'iy intellektning nazariy asoslari, tarmoqlar, ma'lumotlar</div></div>
+      <div class="ai-card"><div class="ai-card-tag">Modul 02</div><div class="ai-card-title">ChatGPT va Zamonaviy AI Toollar</div><div class="ai-card-desc">Produktivlikni oshiruvchi AI vositalarni amalda ishlatish</div></div>
+      <div class="ai-card"><div class="ai-card-tag">Modul 03</div><div class="ai-card-title">Python + AI Dasturlash</div><div class="ai-card-desc">AI uchun Python — ma'lumotlar tahlili, avtomatlashtirish</div></div>
+      <div class="ai-card"><div class="ai-card-tag">Modul 04</div><div class="ai-card-title">AI Bilan Biznes Qurish</div><div class="ai-card-desc">Real hayotda AI qo'llash — startap va korporativ muhit</div></div>
+    </div>
+  </div>
+  <div class="ai-bottom">
+    <div class="ai-stat"><strong>4</strong><span>Modul</span></div>
+    <div class="ai-stat"><strong>7+</strong><span>Oy davomiyligi</span></div>
+    <div class="ai-stat"><strong>100%</strong><span>Amaliy</span></div>
+    <div class="ai-stat"><strong>∞</strong><span>Imkoniyatlar</span></div>
+  </div>
+</section>
+
+<!-- ════════════ §4 SMART CLASS ════════════ -->
+<section id="smart">
+  <div class="wrap">
+    <div class="sec-eyebrow sr">Samsung · Koreya standarti</div>
+    <h2 class="sec-h sr">Smart Class <em>Project</em></h2>
+  </div>
+  <div class="wrap">
+    <div class="smart-inner sr">
+      <div class="smart-l">
+        <div>
+          <h3>Zamonaviy <em>sinf</em> muhiti</h3>
+          <p>Janubiy Koreya ta'lim standartlarida qurilgan, Samsung texnologiyalari bilan jihozlangan smart sinfxonalar. 2025-yil Prezident tashrifi bilan tasdiq.</p>
+        </div>
+        <div class="smart-specs">
+          <div class="ssp"><div class="ssp-v">43+</div><div class="ssp-t"><strong>Smart Sinfxona</strong>O'zbekiston bo'ylab</div></div>
+          <div class="ssp"><div class="ssp-v">75"</div><div class="ssp-t"><strong>Samsung Smart Doska</strong>Har bir sinfda</div></div>
+          <div class="ssp"><div class="ssp-v">21</div><div class="ssp-t"><strong>Samsung Noutbuk</strong>Har bir sinfda</div></div>
+        </div>
+      </div>
+      <div class="smart-r">
+        <div class="scard">
+          <div class="scard-icon">🖥️</div>
+          <div class="scard-name">Oddiy tipdagi Smart Sinf</div>
+          <div class="scard-label">Oddiy tipdagi Smart Sinf — 75" Samsung doska</div>
+        </div>
+        <div class="scard">
+          <div class="scard-icon">⭐</div>
+          <div class="scard-name">Premium Smart Sinf</div>
+          <div class="scard-label">Premium Smart Sinf — To'liq jihozlangan</div>
+        </div>
+        <div class="scard big pres">
+          <div class="pres-inner">
+            <div class="pres-year">2025</div>
+            <div class="pres-text">Bektemir · 358-Maktab · Prezident Tashrifi</div>
+          </div>
+          <div class="scard-label">2025-yil mart — O'zbekiston Respublikasi Prezidentining tashrifi bilan ochilish marosimi</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ §5 ABOUT ════════════ -->
+<section id="about" style="padding:0">
+  <div class="about-grid">
+    <div class="about-l">
+      <h2>Hancom <em>Academy</em><br>haqida</h2>
+      <div class="about-facts">
+        <div class="af sr d1"><div class="af-n">1</div><p><strong>2025-yil holatiga ko'ra, 43 tadan ortiq Smart sinfxona</strong> — mamlakat bo'ylab zamonaviy ta'lim muhiti</p></div>
+        <div class="af sr d2"><div class="af-n">2</div><p>Har bir sinf <strong>Samsung 75" smart doska</strong> va <strong>21 ta Samsung noutbuk</strong> bilan jihozlangan</p></div>
+        <div class="af sr d3"><div class="af-n">3</div><p><strong>Arzon va qulay o'quv to'lovlari</strong> — barcha talabalarga sifatli ta'lim imkoniyati</p></div>
+        <div class="af sr d4"><div class="af-n">4</div><p>Barcha darslar <strong>Janubiy Koreya ta'lim standartlariga</strong> muvofiq o'tkaziladi</p></div>
+      </div>
+    </div>
+    <div class="about-r sr">
+      <div class="gain-h">Siz qo'lga kiritasiz</div>
+      <div class="gains">
+        <div class="gain"><span class="gain-num">01</span><span>🏆 Rasmiy Sertifikat</span></div>
+        <div class="gain"><span class="gain-num">02</span><span>🎓 Koreyada o'qish imkoniyati</span></div>
+        <div class="gain"><span class="gain-num">03</span><span>💼 Ish bilan ta'minlash</span></div>
+        <div class="gain"><span class="gain-num">04</span><span>🌏 Koreyada ishlash imkoniyati</span></div>
+      </div>
+      <div class="pres-box sr">
+        <div class="pres-box-tag">🇺🇿 2025 — Prezident tashrifi</div>
+        <p>Bektemir tumanidagi 358-maktabda <strong>Hancom Smart Class ochilish marosimi</strong> O'zbekiston Respublikasi Prezidentining shaxsiy tashrifi bilan nishonlandi.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ §6 PARTNERS ════════════ -->
+<section id="partners">
+  <div class="wrap">
+    <div class="sec-eyebrow sr">Hamkorlar va qo'llab-quvvatlovchilar</div>
+    <h2 class="sec-h sr">Hamkorlarimiz</h2>
+    <div class="pg sr">
+      <div class="pc"><div class="pct">2023, Dekabr</div><div class="pc-title">Raqamli Texnologiyalar Vazirligi</div><div class="pc-desc">Hancom Group vitse-prezidentining tashrifi va rasmiy hamkorlik</div></div>
+      <div class="pc"><div class="pct">2023, Dekabr</div><div class="pc-title">Maktab Ta'limi Vazirligi</div><div class="pc-desc">MOU shartnomasi imzolandi — Smart Sinf kengaytirish</div></div>
+      <div class="pc"><div class="pct">MOU</div><div class="pc-title">Yuksalish Maktablari</div><div class="pc-desc">Asoschisi M. Eshonqulov bilan hamkorlik memorandumi</div></div>
+      <div class="pc"><div class="pct">MOU</div><div class="pc-title">Int'l House Academic Lyceum</div><div class="pc-desc">Hamkorlik Memorandumi imzolandi</div></div>
+      <div class="pc"><div class="pct">MOU</div><div class="pc-title">Toshkent Davlat Iqtisodiyot Universiteti</div><div class="pc-desc">Hamkorlik Memorandumi (MOU) imzolandi</div></div>
+      <div class="pc"><div class="pct">Smart Sinf</div><div class="pc-title">Kimyo Xalqaro Universiteti</div><div class="pc-desc">Smart sinf ochilish marosimi o'tkazildi</div></div>
+      <div class="pc"><div class="pct">Media</div><div class="pc-title">O'zbekiston24 Telekanali</div><div class="pc-desc">Milliy televideniyeda maxsus intervyu</div></div>
+      <div class="pc"><div class="pct">Smart Sinf</div><div class="pc-title">Yangi O'zbekiston Universiteti</div><div class="pc-desc">Xalq Ta'limi Vazirining tashrifi bilan ochilish marosimi</div></div>
+      <div class="pc"><div class="pct">Global Hamkor</div><div class="pc-title">King Sejong Institute</div><div class="pc-desc">Koreys tili darslari uchun rasmiy sertifikatlash instituti</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ §7 CONTACT ════════════ -->
+<section id="contact" style="padding:0">
+  <div class="contact-inner">
+    <div class="cl">
+      <h2>Biz bilan<br><em>bog'laning</em></h2>
+      <p>Savollaringiz bo'lsa yoki ro'yxatdan o'tmoqchi bo'lsangiz — quyidagi kanallar orqali murojaat qiling.</p>
+      <div class="cis">
+        <div class="ci"><div class="ci-i">🌐</div><div><div class="ci-l">Web Sayt</div><div class="ci-v"><a href="https://www.hancomuz.com" target="_blank">www.hancomuz.com</a></div></div></div>
+        <div class="ci"><div class="ci-i">📞</div><div><div class="ci-l">Telefon</div><div class="ci-v"><a href="tel:+998978022317">+99897-802-23-17</a></div></div></div>
+        <div class="ci"><div class="ci-i">✈️</div><div><div class="ci-l">Telegram</div><div class="ci-v"><a href="https://t.me/Hancom_A" target="_blank">@Hancom_A</a></div></div></div>
+        <div class="ci"><div class="ci-i">📍</div><div><div class="ci-l">Manzil</div><div class="ci-v">Shota Rustaveli ko'chasi 156/3<br>KIUT (B803), Toshkent</div></div></div>
+      </div>
+    </div>
+    <div class="cr">
+      <div class="map-wrap">
+        <iframe src="https://maps.google.com/maps?q=Shota+Rustaveli+156+Toshkent+Uzbekistan&output=embed&z=15" allowfullscreen loading="lazy"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fl">HANCOM ACADEMY</div>
+  <div class="flinks">
+    <a href="https://www.hancomuz.com" target="_blank">hancomuz.com</a>
+    <a href="https://t.me/Hancom_A" target="_blank">@Hancom_A</a>
+    <a href="tel:+998978022317">+99897-802-23-17</a>
+  </div>
+  <div class="fcp">© 2025 Hancom Academy · Toshkent, O'zbekiston</div>
+</footer>
+
+<script>
+/* ── CURSOR ── */
+const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
+let mx=0,my=0,cx=0,cy=0,cx2=0,cy2=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+document.querySelectorAll('a,button,.hcp,.krl,.aif,.ai-card,.pc,.scard,.apt,.af,.gain').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{document.body.classList.add('cursor-big')});
+  el.addEventListener('mouseleave',()=>{document.body.classList.remove('cursor-big')});
+});
+(function loop(){
+  cx+=(mx-cx)*.15;cy+=(my-cy)*.15;
+  cx2+=(mx-cx2)*.08;cy2+=(my-cy2)*.08;
+  cur.style.left=cx+'px';cur.style.top=cy+'px';
+  cur2.style.left=cx2+'px';cur2.style.top=cy2+'px';
+  requestAnimationFrame(loop);
+})();
+
+/* ── TICKER ── */
+const words=[
+  {t:'🇰🇷 Koreys Tili',c:'a'},{t:'한국어 교육',c:'a'},
+  {t:'💻 IT Dasturlash',c:'b'},{t:'Frontend · Backend',c:'b'},
+  {t:'🤖 Sun\'iy Intellekt',c:'c'},{t:'AI · Python',c:'c'},
+  {t:'📍 TMEI Toshkent',c:''},{t:'43+ Smart Sinf',c:''},
+  {t:'Samsung Texnologiyasi',c:''},{t:'🏆 Sertifikat',c:''},
+  {t:'King Sejong Institute',c:'a'},{t:'✈️ Koreya Camping',c:'a'},
+];
+const tkEl=document.getElementById('tkr');
+const html=[...words,...words].map(w=>`<span class="${w.c}">${w.t}</span>`).join('');
+tkEl.innerHTML=html+html;
+
+/* ── SCROLL REVEAL ── */
+const obs=new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('up');obs.unobserve(e.target)}});
+},{threshold:.07});
+document.querySelectorAll('.sr').forEach(el=>obs.observe(el));
+
+/* ── MOBILE MENU ── */
+function toggleMenu(){
+  const nl=document.getElementById('nlinks');
+  const open=nl.style.display==='flex';
+  nl.style.cssText=open?'':
+    'display:flex;flex-direction:column;position:fixed;top:64px;left:0;right:0;background:rgba(250,248,243,.98);padding:24px 20px;border-bottom:1px solid rgba(14,12,8,.1);gap:20px;z-index:799;backdrop-filter:blur(20px)';
+}
+</script>
+</body>
+</html>
