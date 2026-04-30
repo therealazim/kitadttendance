@@ -1178,13 +1178,6 @@ async def get_student_attendance_kb(group_id, selected_indices):
     ))
     return builder.as_markup()
 
-async def managment_page(request):
-    """Management university page"""
-    html_path = os.path.join(os.path.dirname(__file__), 'managment_univ.html')
-    with open(html_path, 'r', encoding='utf-8') as f:
-        html = f.read()
-    return web.Response(text=html, content_type='text/html', charset='utf-8')
-
 async def handle(request):
     """Asosiy sahifa — KITA landing page"""
     import os
@@ -10036,9 +10029,6 @@ async def main():
             app.router.add_post(route, handler)
             app.router.add_get(route, handler)
     
-    # Managment page
-    app.router.add_get('/managment', managment_page)
-    
     # Static files
     static_path = os.path.join(os.path.dirname(__file__), 'static')
     if os.path.exists(static_path):
@@ -10504,6 +10494,17 @@ async def main():
             return web.Response(text='File not found', status=404)
     
     app.router.add_get('/aiclass', handle_aiclass)
+    
+    async def handle_managment(request):
+        html_path = os.path.join(os.path.dirname(__file__), 'managment_univ.html')
+        try:
+            with open(html_path, 'r', encoding='utf-8') as f:
+                html = f.read()
+            return web.Response(text=html, content_type='text/html', charset='utf-8')
+        except FileNotFoundError:
+            return web.Response(text='File not found', status=404)
+    
+    app.router.add_get('/managment', handle_managment)
     import os as _os
     if _os.path.isdir('static'):
         app.router.add_static('/static', path='static', name='static')
