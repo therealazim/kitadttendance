@@ -742,6 +742,16 @@ const obs=new IntersectionObserver(es=>{
 },{threshold:.07});
 document.querySelectorAll('.sr').forEach(el=>obs.observe(el));
 
+/* ── SMOOTH SCROLL NAV OFFSET ── */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const id=a.getAttribute('href');
+    if(id==='#')return;
+    const el=document.querySelector(id);
+    if(el){e.preventDefault();const top=el.getBoundingClientRect().top+window.scrollY-80;window.scrollTo({top,behavior:'smooth'})}
+  });
+});
+
 /* ── MOBILE MENU ── */
 function toggleMenu(){
   const nl=document.getElementById('nlinks');
