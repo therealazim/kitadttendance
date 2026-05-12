@@ -2855,13 +2855,12 @@ async def admin_api_student_add(request):
         # O'qituvchiga xabar
         try:
             grp = groups.get(gid)
-            gname = grp['group_name'] if grp else 'Noma\'lum'
-            msg_uz = f"🆕 *{gname}* guruhiga yangi o'quvchi qo'shildi!\n\n👤 Ism: {name}\n📞 Telefon: {phone}"
-            msg_ru = f"🆕 В группу *{gname}* добавлен новый ученик!\n\n👤 Имя: {name}\n📞 Телефон: {phone}"
-            for tid, spec in user_specialty.items():
-                if user_status.get(tid) in ('active', None) and spec in ('IT', 'Koreys tili'):
-                    lang = user_languages.get(tid, 'uz')
-                    await bot.send_message(tid, msg_uz if lang == 'uz' else msg_ru, parse_mode="Markdown")
+            if grp and grp.get('teacher_id'):
+                tid = grp['teacher_id']
+                gname = grp['group_name']
+                lang = user_languages.get(tid, 'uz')
+                msg = f"🆕 *{gname}* guruhiga yangi o'quvchi qo'shildi!\n\n👤 Ism: {name}\n📞 Telefon: {phone}" if lang == 'uz' else f"🆕 В группу *{gname}* добавлен новый ученик!\n\n👤 Имя: {name}\n📞 Телефон: {phone}"
+                await bot.send_message(tid, msg, parse_mode="Markdown")
         except Exception: pass
         return web.Response(text=_json.dumps({'ok': True, 'id': sid, 'name': name, 'phone': phone}), content_type='application/json')
     except Exception as e:
