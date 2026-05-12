@@ -2862,18 +2862,16 @@ async def admin_api_student_add(request):
         if gid not in group_students:
             group_students[gid] = []
         group_students[gid].append({'id': sid, 'name': name, 'phone': phone})
-        # O'qituvchiga xabar
+        # Barcha o'qituvchilarga xabar
         try:
             grp = groups.get(gid)
-            if grp and grp.get('teacher_id'):
-                tid = grp['teacher_id']
-                gname = grp['group_name']
-                lang = user_languages.get(tid, 'uz')
-                if lang == 'ru':
-                    msg = f"🆕 В группу *{gname}* добавлен новый ученик!\n\n👤 Имя: {name}\n📞 Телефон: {phone}"
-                else:
-                    msg = f"🆕 *{gname}* guruhiga yangi o'quvchi qo'shildi!\n\n👤 Ism: {name}\n📞 Telefon: {phone}"
-                await bot.send_message(tid, msg, parse_mode="Markdown")
+            gname = grp['group_name'] if grp else 'Noma\'lum'
+            msg_uz = f"🆕 *{gname}* guruhiga yangi o'quvchi qo'shildi!\n\n👤 Ism: {name}\n📞 Telefon: {phone}"
+            msg_ru = f"🆕 В группу *{gname}* добавлен новый ученик!\n\n👤 Имя: {name}\n📞 Телефон: {phone}"
+            for tid, spec in user_specialty.items():
+                if user_status.get(tid) in ('active', None) and spec in ('IT', 'Koreys tili'):
+                    lang = user_languages.get(tid, 'uz')
+                    await bot.send_message(tid, msg_uz if lang == 'uz' else msg_ru, parse_mode="Markdown")
         except Exception: pass
         return web.Response(text=_json.dumps({'ok': True, 'id': sid, 'name': name, 'phone': phone}), content_type='application/json')
     except Exception as e:
@@ -2910,20 +2908,18 @@ async def admin_api_student_delete(request):
         # RAM dan o'chirish
         for gid, sts in group_students.items():
             group_students[gid] = [s for s in sts if s.get('id') != sid]
-        # O'qituvchiga xabar
+        # Barcha o'qituvchilarga xabar
         if std:
             try:
                 grp = groups.get(std['group_id'])
-                if grp and grp.get('teacher_id'):
-                    tid = grp['teacher_id']
-                    gname = grp['group_name']
-                    sname = std['student_name']
-                    lang = user_languages.get(tid, 'uz')
-                    if lang == 'ru':
-                        msg = f"❌ Из группы *{gname}* удален ученик!\n\n👤 Имя: {sname}"
-                    else:
-                        msg = f"❌ *{gname}* guruhidan o'quvchi o'chirildi!\n\n👤 Ism: {sname}"
-                    await bot.send_message(tid, msg, parse_mode="Markdown")
+                gname = grp['group_name'] if grp else 'Noma\'lum'
+                sname = std['student_name']
+                msg_uz = f"❌ *{gname}* guruhidan o'quvchi o'chirildi!\n\n👤 Ism: {sname}"
+                msg_ru = f"❌ Из группы *{gname}* удален ученик!\n\n👤 Имя: {sname}"
+                for tid, spec in user_specialty.items():
+                    if user_status.get(tid) in ('active', None) and spec in ('IT', 'Koreys tili'):
+                        lang = user_languages.get(tid, 'uz')
+                        await bot.send_message(tid, msg_uz if lang == 'uz' else msg_ru, parse_mode="Markdown")
             except Exception: pass
         return web.Response(text=_json.dumps({'ok': True, 'name': std['student_name'] if std else ''}), content_type='application/json')
     except Exception as e:
@@ -4537,18 +4533,16 @@ async def miniapp_add_student(request):
         if gid not in group_students:
             group_students[gid] = []
         group_students[gid].append({'id': sid, 'name': name, 'phone': phone})
-        # O'qituvchiga tasdiq xabari
+        # Barcha o'qituvchilarga xabar
         try:
             grp = groups.get(gid)
-            if grp and grp.get('teacher_id'):
-                tid = grp['teacher_id']
-                gname = grp['group_name']
-                lang = user_languages.get(tid, 'uz')
-                if lang == 'ru':
-                    msg = f"🆕 В группу *{gname}* добавлен новый ученик!\n\n👤 Имя: {name}\n📞 Телефон: {phone}"
-                else:
-                    msg = f"🆕 *{gname}* guruhiga yangi o'quvchi qo'shildi!\n\n👤 Ism: {name}\n📞 Telefon: {phone}"
-                await bot.send_message(tid, msg, parse_mode="Markdown")
+            gname = grp['group_name'] if grp else 'Noma\'lum'
+            msg_uz = f"🆕 *{gname}* guruhiga yangi o'quvchi qo'shildi!\n\n👤 Ism: {name}\n📞 Telefon: {phone}"
+            msg_ru = f"🆕 В группу *{gname}* добавлен новый ученик!\n\n👤 Имя: {name}\n📞 Телефон: {phone}"
+            for tid, spec in user_specialty.items():
+                if user_status.get(tid) in ('active', None) and spec in ('IT', 'Koreys tili'):
+                    lang = user_languages.get(tid, 'uz')
+                    await bot.send_message(tid, msg_uz if lang == 'uz' else msg_ru, parse_mode="Markdown")
         except Exception: pass
         return web.Response(text=_json.dumps({'ok': True, 'id': sid}), content_type='application/json')
     except Exception as e:
@@ -4568,18 +4562,16 @@ async def miniapp_del_student(request):
             )
         if gid in group_students:
             group_students[gid] = [s for s in group_students[gid] if s['name'] != student_name]
-        # O'qituvchiga tasdiq xabari
+        # Barcha o'qituvchilarga xabar
         try:
             grp = groups.get(gid)
-            if grp and grp.get('teacher_id'):
-                tid = grp['teacher_id']
-                gname = grp['group_name']
-                lang = user_languages.get(tid, 'uz')
-                if lang == 'ru':
-                    msg = f"❌ Из группы *{gname}* удален ученик!\n\n👤 Имя: {student_name}"
-                else:
-                    msg = f"❌ *{gname}* guruhidan o'quvchi o'chirildi!\n\n👤 Ism: {student_name}"
-                await bot.send_message(tid, msg, parse_mode="Markdown")
+            gname = grp['group_name'] if grp else 'Noma\'lum'
+            msg_uz = f"❌ *{gname}* guruhidan o'quvchi o'chirildi!\n\n👤 Ism: {student_name}"
+            msg_ru = f"❌ Из группы *{gname}* удален ученик!\n\n👤 Имя: {student_name}"
+            for tid, spec in user_specialty.items():
+                if user_status.get(tid) in ('active', None) and spec in ('IT', 'Koreys tili'):
+                    lang = user_languages.get(tid, 'uz')
+                    await bot.send_message(tid, msg_uz if lang == 'uz' else msg_ru, parse_mode="Markdown")
         except Exception: pass
         return web.Response(text=_json.dumps({'ok': True}), content_type='application/json')
     except Exception as e:
