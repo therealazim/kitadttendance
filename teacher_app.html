@@ -924,7 +924,7 @@ async function loadProfilePhoto(){
   try{
     const r = await fetch(`${BASE}/teacher/api/profile/photo?user_id=${UID}`);
     const data = await r.json();
-    if(data.ok && data.url) _profPhotoUrl = data.url;
+    if(data.ok && data.url) _profPhotoUrl = data.url.startsWith('http') ? data.url : (BASE + data.url);
   }catch(e){}
 }
 

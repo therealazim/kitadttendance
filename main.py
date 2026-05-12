@@ -51,7 +51,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 if not DATABASE_URL:
     raise ValueError("DATABASE_URL topilmadi! Render.com da environment variable qo'shing")
 BASE_URL = os.environ.get("WEBHOOK_URL", "https://www.kita.uz")
-ADMIN_GROUP_ID = -1003885800610 
+ADMIN_GROUP_ID = int(os.environ.get("ADMIN_GROUP_ID", "-1003885800610"))
 UZB_TZ = pytz.timezone('Asia/Tashkent') 
 
 # Bot obyektini yaratish
@@ -201,7 +201,7 @@ class Database:
                 await conn.execute("ALTER TABLE bootcamp_applications ADD COLUMN IF NOT EXISTS school TEXT DEFAULT ''")
                 await conn.execute("ALTER TABLE bootcamp_applications ADD COLUMN IF NOT EXISTS school_year TEXT DEFAULT ''")
                 await conn.execute("ALTER TABLE bootcamp_applications ADD COLUMN IF NOT EXISTS school_name TEXT DEFAULT ''")
-            except Exception: pass
+            except Exception as e: logging.warning(f"bootcamp_applications ALTER xato (non-critical): {e}")
             await conn.execute("""
 CREATE TABLE IF NOT EXISTS aiclass_applications (
                     id SERIAL PRIMARY KEY,
@@ -220,7 +220,7 @@ CREATE TABLE IF NOT EXISTS aiclass_applications (
             """)
             try:
                 await conn.execute("ALTER TABLE aiclass_applications ADD COLUMN IF NOT EXISTS school TEXT DEFAULT ''")
-            except Exception: pass
+            except Exception as e: logging.warning(f"aiclass_applications ALTER xato (non-critical): {e}")
             await conn.execute("""
                 CREATE TABLE IF NOT EXISTS news (
                     id SERIAL PRIMARY KEY,
@@ -239,14 +239,12 @@ CREATE TABLE IF NOT EXISTS aiclass_applications (
             for col in [('title_ru','TEXT DEFAULT \'\''),('body_ru','TEXT DEFAULT \'\''),('title_kr','TEXT DEFAULT \'\''),('body_kr','TEXT DEFAULT \'\'')]:
                 try:
                     await conn.execute(f"ALTER TABLE news ADD COLUMN IF NOT EXISTS {col[0]} {col[1]}")
-                except Exception:
-                    pass
+                except Exception as e: logging.warning(f"news ALTER xato (non-critical): {e}")
             # Groups table migration - add student_count column if not exist
             try:
                 await conn.execute("ALTER TABLE groups ADD COLUMN IF NOT EXISTS student_count INTEGER DEFAULT 0")
                 await conn.execute("ALTER TABLE groups ADD COLUMN IF NOT EXISTS sort_order INTEGER DEFAULT 0")
-            except Exception:
-                pass
+            except Exception as e: logging.warning(f"groups ALTER xato (non-critical): {e}")
             await conn.execute("""
                 CREATE TABLE IF NOT EXISTS site_config (
                     key TEXT PRIMARY KEY,
@@ -712,14 +710,8 @@ user_photo_cache = {}  # uid -> Telegram photo URL
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "7117")
 
 def _check_admin_request(request) -> bool:
-    # Cookie ni tekshirish (asosiy usul)
     password = request.cookies.get('admin_token', '')
-    if password == ADMIN_PASSWORD:
-        return True
-    
-    # URL parametrini tekshirish (fallback)
-    password_query = request.rel_url.query.get('p', '')
-    return password_query == ADMIN_PASSWORD
+    return password == ADMIN_PASSWORD
 
 WEEKDAYS_UZ =["Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba", "Yakshanba"]
 
@@ -1046,15 +1038,15 @@ async def main_keyboard(user_id: int):
     webapp_url = f"{BASE_URL}/teacher?user_id={user_id}&section=stats"
     buttons = [
         KeyboardButton(text=get_button_text(user_id, 'attendance'), request_location=True),
-        KeyboardButton(
-            text=app_btn_text,
-            web_app=types.WebAppInfo(url=webapp_url)
-        ),
         KeyboardButton(text=lang_btn_text),
     ]
     builder.add(*buttons)
-    builder.adjust(2, 1)
-    return builder.as_markup(resize_keyboard=True)
+    builder.adjust(2)
+    reply_markup = builder.as_markup(resize_keyboard=True)
+    inline_builder = InlineKeyboardBuilder()
+    inline_builder.button(text=app_btn_text, web_app=types.WebAppInfo(url=webapp_url))
+    inline_markup = inline_builder.as_markup()
+    return reply_markup, inline_markup
 
 
 async def language_selection_keyboard():
@@ -4245,15 +4237,14 @@ async def _cache_all_photos():
             photos = await bot.get_user_profile_photos(uid, limit=1)
             if photos.total_count > 0:
                 file_id = photos.photos[0][-1].file_id
-                file_obj = await bot.get_file(file_id)
-                user_photo_cache[uid] = f"https://api.telegram.org/file/bot{TOKEN}/{file_obj.file_path}"
+                user_photo_cache[uid] = file_id
         except Exception:
             pass
         await _as.sleep(0.3)
     logging.info(f"Photo cache: {len(user_photo_cache)} ta")
 
 async def miniapp_get_profile_photo(request):
-    """Foydalanuvchi Telegram profil rasmini URL qaytarish"""
+    """Foydalanuvchi Telegram profil rasmini proxy URL qaytarish"""
     import json as _json
     try:
         uid = int(request.query.get('user_id', 0))
@@ -4262,11 +4253,8 @@ async def miniapp_get_profile_photo(request):
         try:
             photos = await bot.get_user_profile_photos(uid, limit=1)
             if photos.total_count > 0:
-                file_id = photos.photos[0][-1].file_id
-                file = await bot.get_file(file_id)
-                url = f"https://api.telegram.org/file/bot{TOKEN}/{file.file_path}"
                 return web.Response(
-                    text=_json.dumps({'ok': True, 'url': url}),
+                    text=_json.dumps({'ok': True, 'url': f'/photo?user_id={uid}'}),
                     content_type='application/json'
                 )
         except Exception as e:
@@ -4346,6 +4334,28 @@ async def miniapp_teacher_page(request):
         return web.Response(text=html, content_type='text/html', charset='utf-8')
     except FileNotFoundError:
         return web.Response(text='<h1>teacher_app.html topilmadi</h1>', content_type='text/html')
+
+async def handle_photo_proxy(request):
+    """Telegram profil rasmini server orqali proksi - token ochiq ketmaydi"""
+    uid = int(request.query.get('user_id', 0))
+    if not uid:
+        return web.Response(status=400, text='Bad Request')
+    try:
+        photos = await bot.get_user_profile_photos(uid, limit=1)
+        if photos.total_count > 0:
+            file_id = photos.photos[0][-1].file_id
+            file_obj = await bot.get_file(file_id)
+            url = f"https://api.telegram.org/file/bot{TOKEN}/{file_obj.file_path}"
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url) as resp:
+                    if resp.status == 200:
+                        data = await resp.read()
+                        ct = resp.headers.get('Content-Type', 'image/jpeg')
+                        return web.Response(body=data, content_type=ct)
+        return web.Response(status=404, text='Not Found')
+    except Exception as e:
+        logging.error(f"photo proxy error: {e}")
+        return web.Response(status=500, text='Error')
 
 async def miniapp_teacher_data(request):
     """O'qituvchi asosiy ma'lumotlari - statistika, jadval, guruhlar"""
@@ -5217,7 +5227,7 @@ async def cmd_start(message: types.Message, state: FSMContext):
         return
 
     user_ids.add(user_id)
-    keyboard = await main_keyboard(user_id)
+    keyboard, inline_kb = await main_keyboard(user_id)
     name = user_names.get(user_id, message.from_user.full_name)
     specialty = user_specialty.get(user_id, '')
 
@@ -5230,6 +5240,7 @@ async def cmd_start(message: types.Message, state: FSMContext):
         welcome_text,
         reply_markup=keyboard
     )
+    await message.answer("📱", reply_markup=inline_kb)
 
 @dp.message(Registration.waiting_for_name)
 async def process_name(message: types.Message, state: FSMContext):
@@ -5275,7 +5286,7 @@ async def process_specialty(message: types.Message, state: FSMContext):
     
     await state.clear()
     
-    keyboard = await main_keyboard(user_id)
+    keyboard, inline_kb = await main_keyboard(user_id)
     name = user_names.get(user_id)
     specialty_display = get_specialty_display(specialty, lang)
     
@@ -5285,6 +5296,7 @@ async def process_specialty(message: types.Message, state: FSMContext):
         welcome_text,
         reply_markup=keyboard
     )
+    await message.answer("📱", reply_markup=inline_kb)
 
 @dp.callback_query(F.data.startswith("lang_"))
 async def set_initial_language(callback: types.CallbackQuery, state: FSMContext):
@@ -5327,12 +5339,9 @@ async def set_changed_language(callback: types.CallbackQuery):
             await db.save_user(user_id, user['full_name'], user['specialty'], lang)
         
         await callback.answer()
-        keyboard = await main_keyboard(user_id)
-        try:
-            pass  # message.delete() webhook da ishlamas
-        except Exception:
-            pass
+        keyboard, inline_kb = await main_keyboard(user_id)
         await bot.send_message(user_id, get_text(user_id, 'language_changed'), reply_markup=keyboard)
+        await bot.send_message(user_id, "📱", reply_markup=inline_kb)
     except Exception as e:
         logging.error(f"set_changed_language error: {e}")
         await callback.answer("Xatolik yuz berdi")
@@ -5465,12 +5474,9 @@ async def back_to_main_menu(callback: types.CallbackQuery):
     user_id = callback.from_user.id
     
     await callback.answer()
-    keyboard = await main_keyboard(user_id)
-    try:
-        pass  # message.delete() webhook da ishlamas
-    except Exception:
-        pass
+    keyboard, inline_kb = await main_keyboard(user_id)
     await bot.send_message(user_id, "🏠 Asosiy menyu", reply_markup=keyboard)
+    await bot.send_message(user_id, "📱", reply_markup=inline_kb)
 
 @dp.message(F.text == "📅 Dars jadvalim")
 async def view_my_schedule_pdf(message: types.Message):
@@ -6002,8 +6008,9 @@ async def handle_location(message: types.Message, state: FSMContext):
         )
         
         # Keyboard yangilash (yangi tugmalar bilan)
-        new_kb = await main_keyboard(user_id)
+        new_kb, inline_kb = await main_keyboard(user_id)
         await message.answer(success_text, parse_mode="Markdown", reply_markup=new_kb)
+        await message.answer("📱", reply_markup=inline_kb)
 
         # --- O'QUVCHILAR DAVOMATI TIZIMI (faqat o'qituvchilar uchun) ---
         if user_specialty.get(user_id) != 'Ofis xodimi':
@@ -10516,6 +10523,16 @@ async def main():
 
     app = web.Application()
 
+    @web.middleware
+    async def admin_auth_middleware(request, handler):
+        if request.path.startswith('/admin/api/'):
+            if not _check_admin_request(request):
+                import json as _j
+                return web.Response(text=_j.dumps({'ok': False, 'error': 'Unauthorized'}), content_type='application/json', status=401)
+        return await handler(request)
+
+    app.middlewares.append(admin_auth_middleware)
+
     SimpleRequestHandler(dispatcher=dp, bot=bot).register(app, path=WEBHOOK_PATH)
     setup_application(app, dp, bot=bot)
 
@@ -10630,6 +10647,7 @@ async def main():
     app.router.add_post('/admin/api/branch/delete', admin_api_branch_delete)
     app.router.add_post('/admin/api/branch/update', admin_api_branch_update)
     app.router.add_get('/teacher', miniapp_teacher_page)
+    app.router.add_get('/photo', handle_photo_proxy)
     app.router.add_get('/teacher/api/profile/photo', miniapp_get_profile_photo)
     app.router.add_post('/teacher/api/profile/update', miniapp_update_profile)
     app.router.add_post('/teacher/api/lang/change', miniapp_change_lang)
@@ -10674,6 +10692,8 @@ async def main():
     finally:
         await bot.delete_webhook()
         await runner.cleanup()
+        if db.pool:
+            await db.pool.close()
 
 
 def _build_attendance_pdf(rows, start, end):
