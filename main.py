@@ -1038,15 +1038,12 @@ async def main_keyboard(user_id: int):
     webapp_url = f"{BASE_URL}/teacher?user_id={user_id}&section=stats"
     buttons = [
         KeyboardButton(text=get_button_text(user_id, 'attendance'), request_location=True),
+        KeyboardButton(text=app_btn_text, web_app=types.WebAppInfo(url=webapp_url)),
         KeyboardButton(text=lang_btn_text),
     ]
     builder.add(*buttons)
-    builder.adjust(2)
-    reply_markup = builder.as_markup(resize_keyboard=True)
-    inline_builder = InlineKeyboardBuilder()
-    inline_builder.button(text=app_btn_text, web_app=types.WebAppInfo(url=webapp_url))
-    inline_markup = inline_builder.as_markup()
-    return reply_markup, inline_markup
+    builder.adjust(2, 1)
+    return builder.as_markup(resize_keyboard=True)
 
 
 async def language_selection_keyboard():
@@ -5239,7 +5236,7 @@ async def cmd_start(message: types.Message, state: FSMContext):
         return
 
     user_ids.add(user_id)
-    keyboard, inline_kb = await main_keyboard(user_id)
+    keyboard = await main_keyboard(user_id)
     name = user_names.get(user_id, message.from_user.full_name)
     specialty = user_specialty.get(user_id, '')
 
@@ -5252,7 +5249,6 @@ async def cmd_start(message: types.Message, state: FSMContext):
         welcome_text,
         reply_markup=keyboard
     )
-    await message.answer("📱 HANCOM Teacher", reply_markup=inline_kb)
 
 @dp.message(Registration.waiting_for_name)
 async def process_name(message: types.Message, state: FSMContext):
@@ -5298,7 +5294,7 @@ async def process_specialty(message: types.Message, state: FSMContext):
     
     await state.clear()
     
-    keyboard, inline_kb = await main_keyboard(user_id)
+    keyboard = await main_keyboard(user_id)
     name = user_names.get(user_id)
     specialty_display = get_specialty_display(specialty, lang)
     
@@ -5308,7 +5304,6 @@ async def process_specialty(message: types.Message, state: FSMContext):
         welcome_text,
         reply_markup=keyboard
     )
-    await message.answer("📱 HANCOM Teacher", reply_markup=inline_kb)
 
 @dp.callback_query(F.data.startswith("lang_"))
 async def set_initial_language(callback: types.CallbackQuery, state: FSMContext):
@@ -5351,9 +5346,8 @@ async def set_changed_language(callback: types.CallbackQuery):
             await db.save_user(user_id, user['full_name'], user['specialty'], lang)
         
         await callback.answer()
-        keyboard, inline_kb = await main_keyboard(user_id)
+        keyboard = await main_keyboard(user_id)
         await bot.send_message(user_id, get_text(user_id, 'language_changed'), reply_markup=keyboard)
-        await bot.send_message(user_id, "📱 HANCOM Teacher", reply_markup=inline_kb)
     except Exception as e:
         logging.error(f"set_changed_language error: {e}")
         await callback.answer("Xatolik yuz berdi")
@@ -5486,9 +5480,8 @@ async def back_to_main_menu(callback: types.CallbackQuery):
     user_id = callback.from_user.id
     
     await callback.answer()
-    keyboard, inline_kb = await main_keyboard(user_id)
+    keyboard = await main_keyboard(user_id)
     await bot.send_message(user_id, "🏠 Asosiy menyu", reply_markup=keyboard)
-    await bot.send_message(user_id, "📱 HANCOM Teacher", reply_markup=inline_kb)
 
 @dp.message(F.text == "📅 Dars jadvalim")
 async def view_my_schedule_pdf(message: types.Message):
@@ -6020,9 +6013,8 @@ async def handle_location(message: types.Message, state: FSMContext):
         )
         
         # Keyboard yangilash (yangi tugmalar bilan)
-        new_kb, inline_kb = await main_keyboard(user_id)
+        new_kb = await main_keyboard(user_id)
         await message.answer(success_text, parse_mode="Markdown", reply_markup=new_kb)
-        await message.answer("📱 HANCOM Teacher", reply_markup=inline_kb)
 
         # --- O'QUVCHILAR DAVOMATI TIZIMI (faqat o'qituvchilar uchun) ---
         if user_specialty.get(user_id) != 'Ofis xodimi':
