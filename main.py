@@ -2138,15 +2138,13 @@ async def admin_api_user_photos(request):
     for uid in user_ids:
         try:
             if uid in user_photo_cache:
-                result.append({'user_id': uid, 'photo_url': user_photo_cache[uid]})
+                result.append({'user_id': uid, 'photo_url': f'/photo?user_id={uid}'})
             else:
                 photos = await bot.get_user_profile_photos(uid, limit=1)
                 if photos.total_count > 0:
                     file_id = photos.photos[0][-1].file_id
-                    file_obj = await bot.get_file(file_id)
-                    url = f"https://api.telegram.org/file/bot{TOKEN}/{file_obj.file_path}"
-                    user_photo_cache[uid] = url
-                    result.append({'user_id': uid, 'photo_url': url})
+                    user_photo_cache[uid] = file_id
+                    result.append({'user_id': uid, 'photo_url': f'/photo?user_id={uid}'})
         except Exception:
             pass
     return web.Response(text=_json.dumps({'ok': True, 'users': result, 'count': len(result)}), content_type='application/json')
@@ -4229,7 +4227,7 @@ async def admin_api_teacher_salary_configs_save(request):
         return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
 
 async def _cache_all_photos():
-    """Barcha foydalanuvchilar Telegram rasmini background da cache qilish (file_id)"""
+    """Barcha foydalanuvchilar Telegram rasmini background da cache qilish"""
     import asyncio as _as
     await _as.sleep(15)
     for uid in list(user_ids):
@@ -4241,7 +4239,7 @@ async def _cache_all_photos():
         except Exception as e:
             logging.warning(f"Photo cache error for user {uid}: {e}")
         await _as.sleep(0.3)
-    logging.info(f"Photo cache: {len(user_photo_cache)} ta")
+    logging.info(f"Photo cache: {len(user_photo_cache)} ta (file_id)")
 
 async def miniapp_get_profile_photo(request):
     """Foydalanuvchi Telegram profil rasmini proxy URL qaytarish"""
@@ -4984,7 +4982,7 @@ async def admin_api_data(request):
                     'language': user_languages.get(uid, 'uz'),
                     'status': 'archived' if is_archived else user_status.get(uid, 'active'),
                     'attendance_count': month_att,
-                    'photo_url': user_photo_cache.get(uid),
+                    'photo_url': f'/photo?user_id={uid}' if uid in user_photo_cache else None,
                 })
             except Exception as e:
                 logging.warning(f"Error processing user {uid}: {e}")
@@ -5098,7 +5096,7 @@ async def admin_api_data(request):
                         'teacher_id': tid,
                         'teacher_name': cls['teacher_name'],
                         'specialty': user_specialty.get(tid, ''),
-                        'photo_url': user_photo_cache.get(tid),
+                        'photo_url': f'/photo?user_id={tid}' if tid in user_photo_cache else None,
                         'classes_count': 0,
                         'attended_count': 0,
                         'classes': []
