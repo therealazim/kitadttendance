@@ -629,9 +629,14 @@ body::before {
 }
 
 [data-theme="dark"] .inp, [data-theme="dark"] .sr {
-  background: rgba(255,255,255,0.06) !important;
-  border: 1px solid rgba(255,255,255,0.1) !important;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), inset 0 -1px 0 rgba(255,255,255,0.05) !important;
+  background: rgba(30,35,45,0.85) !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), inset 0 -1px 0 rgba(255,255,255,0.05) !important;
+  color: var(--tx) !important;
+}
+[data-theme="dark"] .inp option, [data-theme="dark"] .sr option {
+  background: #161b22 !important;
+  color: #f0f6fc !important;
 }
 
 .inp:focus {

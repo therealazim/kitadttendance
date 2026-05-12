@@ -4229,7 +4229,7 @@ async def admin_api_teacher_salary_configs_save(request):
         return web.Response(text=_json.dumps({'ok': False, 'error': str(e)}), content_type='application/json')
 
 async def _cache_all_photos():
-    """Barcha foydalanuvchilar Telegram rasmini background da cache qilish"""
+    """Barcha foydalanuvchilar Telegram rasmini background da cache qilish (file_id)"""
     import asyncio as _as
     await _as.sleep(15)
     for uid in list(user_ids):
@@ -4238,8 +4238,8 @@ async def _cache_all_photos():
             if photos.total_count > 0:
                 file_id = photos.photos[0][-1].file_id
                 user_photo_cache[uid] = file_id
-        except Exception:
-            pass
+        except Exception as e:
+            logging.warning(f"Photo cache error for user {uid}: {e}")
         await _as.sleep(0.3)
     logging.info(f"Photo cache: {len(user_photo_cache)} ta")
 
@@ -4250,15 +4250,24 @@ async def miniapp_get_profile_photo(request):
         uid = int(request.query.get('user_id', 0))
         if not uid:
             return web.Response(text=_json.dumps({'ok': False, 'url': None}), content_type='application/json')
+        # Cache dan tekshirish
+        if uid in user_photo_cache:
+            return web.Response(
+                text=_json.dumps({'ok': True, 'url': f'/photo?user_id={uid}'}),
+                content_type='application/json'
+            )
+        # Agar cache da yo'q bo'lsa, yangidan so'rash
         try:
             photos = await bot.get_user_profile_photos(uid, limit=1)
             if photos.total_count > 0:
+                file_id = photos.photos[0][-1].file_id
+                user_photo_cache[uid] = file_id
                 return web.Response(
                     text=_json.dumps({'ok': True, 'url': f'/photo?user_id={uid}'}),
                     content_type='application/json'
                 )
         except Exception as e:
-            logging.error(f"get profile photo error: {e}")
+            logging.error(f"get profile photo error for {uid}: {e}")
         return web.Response(text=_json.dumps({'ok': True, 'url': None}), content_type='application/json')
     except Exception as e:
         return web.Response(text=_json.dumps({'ok': False, 'url': None}), content_type='application/json')
@@ -4341,12 +4350,18 @@ async def handle_photo_proxy(request):
     if not uid:
         return web.Response(status=400, text='Bad Request')
     try:
-        photos = await bot.get_user_profile_photos(uid, limit=1)
-        if photos.total_count > 0:
-            file_id = photos.photos[0][-1].file_id
-            file_obj = await bot.get_file(file_id)
-            url = f"https://api.telegram.org/file/bot{TOKEN}/{file_obj.file_path}"
-            async with aiohttp.ClientSession() as session:
+        # Cache dan file_id ni olish
+        file_id = user_photo_cache.get(uid)
+        if not file_id:
+            photos = await bot.get_user_profile_photos(uid, limit=1)
+            if photos.total_count > 0:
+                file_id = photos.photos[0][-1].file_id
+                user_photo_cache[uid] = file_id
+            else:
+                return web.Response(status=404, text='Not Found')
+        file_obj = await bot.get_file(file_id)
+        url = f"https://api.telegram.org/file/bot{TOKEN}/{file_obj.file_path}"
+        async with aiohttp.ClientSession() as session:
                 async with session.get(url) as resp:
                     if resp.status == 200:
                         data = await resp.read()
