@@ -2389,7 +2389,7 @@ async def admin_api_bootcamp_applications_get(request):
     import json as _json
     try:
         async with db.pool.acquire() as conn:
-            rows = await conn.fetch("SELECT * FROM bootcamp_applications ORDER BY created_at DESC LIMIT 100")
+            rows = await conn.fetch("SELECT * FROM bootcamp_applications ORDER BY created_at DESC")
             apps = [dict(r) for r in rows]
             for a in apps:
                 if a.get('created_at'):
@@ -2468,7 +2468,7 @@ async def admin_api_aiclass_applications_get(request):
     import json as _json
     try:
         async with db.pool.acquire() as conn:
-            rows = await conn.fetch("SELECT * FROM aiclass_applications ORDER BY created_at DESC LIMIT 100")
+            rows = await conn.fetch("SELECT * FROM aiclass_applications ORDER BY created_at DESC")
             apps = [dict(r) for r in rows]
             for a in apps:
                 if a.get('created_at'):
@@ -2507,7 +2507,7 @@ async def admin_api_applications_get(request):
     import json as _json
     try:
         async with db.pool.acquire() as conn:
-            rows = await conn.fetch("SELECT * FROM applications ORDER BY created_at DESC LIMIT 100")
+            rows = await conn.fetch("SELECT * FROM applications ORDER BY created_at DESC")
             apps = [dict(r) for r in rows]
             for a in apps:
                 if a.get('created_at'):
