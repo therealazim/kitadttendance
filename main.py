@@ -2892,15 +2892,18 @@ async def admin_api_student_delete(request):
             if std:
                 await conn.execute("DELETE FROM group_students WHERE id=$1", sid)
         # RAM dan o'chirish
-        for gid, sts in group_students.items():
-            group_students[gid] = [s for s in sts if s.get('id') != sid]
+        if std:
+            gid = std['group_id']
+            sname = std['student_name']
+            if gid in group_students:
+                group_students[gid] = [s for s in group_students[gid] if s.get('name') != sname]
         # O'qituvchiga xabar
         if std:
             try:
                 grp = groups.get(std['group_id'])
                 gname = grp['group_name'] if grp else 'Noma\'lum'
                 sname = std['student_name']
-                tid = grp.get('teacher_id')
+                tid = grp.get('teacher_id') if grp else None
                 if tid:
                     lang = user_languages.get(tid, 'uz')
                     msg = f"❌ *{gname}* guruhidan o'quvchi o'chirildi!\n\n👤 Ism: {sname}" if lang == 'uz' else f"❌ Из группы *{gname}* удален ученик!\n\n👤 Имя: {sname}"
